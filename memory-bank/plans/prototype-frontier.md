@@ -14,15 +14,16 @@ This is a running interview map, not a settled implementation plan. Ask small nu
 - Slight overhead tilt that preserves the top-down feel; player rotation and bounded zoom, with no player tilt adjustment.
 - Goal-size completion celebrates a visually striking final bite and offers Next level while continued eating remains available.
 
+- Predictable shape-aware eating thresholds; no precise approach alignment requirement. Suitable thin objects may snap as part of engulfing presentation.
+- Opaque foreground obstacles with a subdued goo outline visible through them.
+
 ## Current independent frontier
 
-1. Edibility: decide whether shape influences a predictable eating threshold with responsive engulfing visuals, or whether physical fit can prevent an otherwise size-eligible bite. The user wants some realism but has not chosen its gameplay role.
-2. Occlusion: with a tilted, rotatable overhead camera, decide whether foreground objects automatically reveal the goo or require camera rotation to see behind them.
+1. Edible-target feedback: how the player recognizes nearby edible food without trying every object.
+2. Part-to-whole accounting: confirm that consumed parts are excluded from the remaining whole reward, and that its eating threshold follows the bulk that remains.
 
 ## Held for later rounds
 
-- Edible-target feedback depends on the edibility rule.
-- Remaining whole accounting and object-size tuning follow the edibility decision.
-- Camera bindings, movement relative to camera rotation, and zoom limits remain open; hold these lower-priority frontier items for a later small round.
+- Camera bindings, movement relative to camera rotation, and zoom limits remain lower-priority frontier items.
 - The final bite needs a strong visual payoff; specific effects remain open and must preserve readable play.
 - Physics implementation and performance feasibility are engineering investigations, not questions for the user.

@@ -24,3 +24,7 @@ Eating presentation: engulf and shrink edible objects on contact without pausing
 Camera: preserve a top-down feel with a slight overhead tilt. Players can rotate around the goo and zoom within reasonable limits, but cannot change tilt. Exact angle, zoom bounds, and control bindings remain to be tuned.
 
 Completion presentation: reaching the goal size celebrates completion and makes Next level available while the scene remains playable. The final bite must be satisfying and visually striking. Its specific effects remain open.
+
+Edibility: use predictable thresholds informed by object shape and bulk. Engulfing responds visually to shape without requiring precise alignment to eat an eligible object. Suitable thin objects may snap during engulfing; this optional animation does not introduce a separate breaking action or extra growth reward.
+
+Occlusion: an opaque foreground obstacle hides the ordinary goo rendering, but a subdued goo outline remains visible through it. Do not make the obstacle transparent.

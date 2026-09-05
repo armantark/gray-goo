@@ -42,4 +42,6 @@ Camera: preserve a top-down feel with a slight overhead tilt. Players can rotate
 
 Completion presentation: reaching the goal size celebrates completion and makes Next level available while the scene remains playable. The final bite must be satisfying and visually striking. Its specific effects remain open.
 
-Edibility remains undecided: the user wants a more realistic element but is unsure whether it should affect eligibility or only swallowing presentation. Their belief that the original uses internal numerical thresholds is not a verified implementation fact. Separate eligibility, growth contribution, and engulfing presentation in the next frontier round.
+Edibility is settled: use predictable, shape-aware eating thresholds with responsive engulfing visuals. Thin shapes can be easier to eat than their length alone suggests, without requiring precise approach alignment. The user suggested a possible break-in-half animation for suitable thin objects; this is optional presentation, not a separately controlled breaking mechanic. The original game's internal formula remains unverified.
+
+Occlusion confirmed on 2026-09-04: keep foreground obstacles opaque and show a subdued outline of the goo through them when it is hidden. Do not fade the obstacle or reveal the surrounding food through it.
