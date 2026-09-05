@@ -35,3 +35,5 @@ Level entry sizing: the user confirmed on 2026-09-04 that each level starts at a
 The user confirmed hybrid level completion on 2026-09-04: every consumed object contributes toward the goal size; the main milestone usually pushes the goo over that goal. Completion depends on size, not a separate required-object condition.
 
 Controls confirmed on 2026-09-04: WASD and arrow keys, plus optional mouse steering while the mouse button is held. The goo moves toward the pointer. Both input methods use the same responsive steering, stopping drift, and body deformation.
+
+Eating presentation confirmed on 2026-09-04: edible objects are engulfed and shrink on contact without pausing movement; larger bites visibly stretch the goo. Puddles disappear only where touched. The user invoked grill-me and corrected the interview format: ask small rounds of independent frontier decisions, with recommendations, rather than isolated serial questions. The remaining design tree is in plans/prototype-frontier.md.

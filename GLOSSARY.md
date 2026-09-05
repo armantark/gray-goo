@@ -24,3 +24,9 @@ A group or connected structure whose arrangement can emerge through object inter
 
 **Part-to-whole progression**:
 Eating accessible parts provides growth toward consuming the remaining larger object. It can occur without a size jump.
+
+**Goal size**:
+The goo size at which a level is complete. All consumed matter contributes growth toward it.
+
+**Milestone**:
+A prominent edible target that marks a major growth payoff and usually supplies the final growth needed to reach the level goal size. It is not a separately required objective.
