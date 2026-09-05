@@ -16,3 +16,5 @@ Sources:
 Optional scale transitions: each level declares zero to two size jumps, with ordinary growth inside each camera view. A jump reveals larger types and retires tiny detail. Edible parts and emergent formations are independent of camera transitions. Candidate data stores jumps as a bounded array rather than three mandatory phases.
 
 Level entry sizing: the user confirmed on 2026-09-04 that each level starts at a size tailored to its scene, rather than carrying size over from the previous level. Growth remains continuous within each level, including across any optional camera size jumps.
+
+Level completion: every consumed object contributes growth, and reaching the level goal size completes the level. Tune the food budget so the main milestone object usually supplies the growth that crosses the goal. The milestone is not a separate mandatory completion gate.

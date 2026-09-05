@@ -31,3 +31,5 @@ Original levels are inspiration seeds only. Do not recreate their 60-level campa
 Status artifacts require no visual testing. The user explicitly stopped artifact screenshot and viewport checks on 2026-09-04; mechanical preflight, the required Zen opening, and hosting still apply. This exemption is also recorded in the canonical fleet Codex rules. The game itself retains its single final visual/performance pass.
 
 Level entry sizing: the user confirmed on 2026-09-04 that each level starts at a size tailored to its scene, rather than carrying size over from the previous level. Growth remains continuous within each level, including across any optional camera size jumps.
+
+The user confirmed hybrid level completion on 2026-09-04: every consumed object contributes toward the goal size; the main milestone usually pushes the goo over that goal. Completion depends on size, not a separate required-object condition.
