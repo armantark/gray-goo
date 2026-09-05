@@ -5,6 +5,8 @@ var _frames := PackedFloat64Array()
 var _sample := false
 var _previous_tick := 0
 var _output := "res://builds/level-views"
+var _level := -1
+var _tier := -1
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -20,6 +22,14 @@ func _run() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--output="):
 			_output = arg.trim_prefix("--output=")
+		elif arg.begins_with("--level="):
+			_level = int(arg.trim_prefix("--level="))
+		elif arg.begins_with("--tier="):
+			_tier = int(arg.trim_prefix("--tier="))
+	if _level < -1 or _level > 3 or _tier < -1 or _tier > 4:
+		push_error("Choose a level from 0 to 3 and a tier from 0 to 4")
+		quit(1)
+		return
 	DirAccess.make_dir_recursive_absolute(_output)
 	Engine.max_fps = 0
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
@@ -28,9 +38,13 @@ func _run() -> void:
 	current_scene = _game
 	var results: Array[Dictionary] = []
 	for level in 4:
+		if _level >= 0 and level != _level:
+			continue
 		_game.start_level(level)
 		_game.set_physics_process(false)
 		for tier in 5:
+			if _tier >= 0 and tier != _tier:
+				continue
 			results.append(await _inspect_view(level, tier))
 	FileAccess.open(_output.path_join("views.json"), FileAccess.WRITE).store_string(JSON.stringify(results, "\t"))
 	print("VIEW_CHECK_DONE count=", results.size())

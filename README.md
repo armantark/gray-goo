@@ -49,6 +49,13 @@ Check that each tier can fund the next jump and each food belongs to a visible w
 
 Require `WORLD_CHECK_OK=true` and no script errors. Godot can return exit status zero after a script parse failure.
 
+Use `-- --trials=8 --seed=9217` for a randomized food-order sweep. Check wheel pivots and compare cached obstacle queries with the full scan:
+
+```sh
+/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script scripts/check_wheel_spin.gd
+/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script scripts/check_obstacles.gd
+```
+
 Record complete native routes through all four levels with the saved movement speed at 100%:
 
 ```sh
@@ -56,6 +63,8 @@ Record complete native routes through all four levels with the saved movement sp
 ```
 
 The driver uses ordinary directional input. It saves progress, jump times, completion times, frame measurements, and one image per reached view. `--start=2 --last=2` selects only the skatepark. `--limit=900` sets the verification timeout in seconds; it does not add a game timer.
+
+`--seed=439` varies target choices reproducibly. The driver retries another target if it stops moving or makes no growth for 15 seconds, so it cannot chase an inaccessible moving part forever.
 
 For faster pacing experiments, use `--headless --fixed-fps 60` before `--script` and `--simulation-clock` after `--`. Those reports use simulation seconds and identify the headless display server. They do not establish native completion time or render performance.
 
@@ -67,13 +76,15 @@ Inspect untouched scenes at all five sizes and measure their uncapped render per
 
 These staged views do not consume food and are not completion-time evidence. They can retain dense colliders that a normal route has already eaten.
 
+Use `-- --level=0 --tier=4` for a single view. Stop other simulation jobs before measuring native frame rates.
+
 ## Manual verification
 
 Play each scene from its starting size through completion. Check keyboard and mouse steering, camera rotation and limits, object engulfing, retained food color, attached parts, and the nearest-food pointer. Watch the body reach and grip with uneven forward lobes while rear contacts stretch and peel. Release the controls for several seconds and check that it spreads into an irregular shallow puddle with unequal, slowly spreading lobes; move again and check that it gathers into a rolling mass. During keyboard steering, check that the pupils look toward the highlighted target. Hold the left mouse button to switch to cursor-following eyes, and confirm that the chosen gaze mode persists after release. After a colored bite, check that the contact patch blends slowly and leaves a lasting tint. In the tide pool, cross the water and check that only local sections disappear. In the skatepark, nudge moving boards and cross the curved ground. In spacetime, consume the final fabric and keep moving in the void. After each goal, verify continued play and Next level.
 
 Change Movement speed in the scene menu, resume play, and check that steering responds at the selected rate. Restart the app and check that the setting remains selected.
 
-The project follows the requested basic launch checks and one final visual/performance pass rather than a separate unit/integration/end-to-end test suite. The build plan is under `memory-bank/status-updates` and remains unchanged for comparison with results.
+Verification combines behavior canaries, randomized world checks, ordinary-input routes, and native visual/performance checks. In the skatepark, confirm that wheel hubs stay on their axles while the wheels spin. The build plan is under `memory-bank/status-updates` and remains unchanged for comparison with results.
 
 ## Record a motion clip
 

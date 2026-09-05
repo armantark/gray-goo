@@ -11,6 +11,9 @@ var current_tier := 0
 var _layout: RefCounted
 var _time := 0.0
 var _rng := RandomNumberGenerator.new()
+var _obstacle_foods: Array[Food] = []
+var _obstacle_radius := -1.0
+var _obstacle_tier := -1
 
 func build(level_index: int) -> void:
 	_level = level_index
@@ -35,15 +38,24 @@ func get_ground_height(point: Vector3) -> float:
 	return _layout.ground_height(point)
 
 func get_obstacles(center: Vector3, reach: float) -> Array:
+	# Growth changes eligibility; movement changes positions, which remain live below.
+	if player_radius != _obstacle_radius or current_tier != _obstacle_tier:
+		_obstacle_radius = player_radius
+		_obstacle_tier = current_tier
+		_obstacle_foods.clear()
+		for food in foods:
+			if is_instance_valid(food) and food.active and food.collider_radius > 0.0 and not is_edible(food, player_radius):
+				_obstacle_foods.append(food)
 	var result: Array = []
-	for food in foods:
-		if not is_instance_valid(food) or not food.active or food.collider_radius <= 0.0 or is_edible(food, player_radius):
+	for food in _obstacle_foods:
+		if not is_instance_valid(food) or not food.active or food.collider_radius <= 0.0:
 			continue
-		var offset := Vector2(food.global_position.x - center.x, food.global_position.z - center.z)
+		var point := food.global_position
+		var offset := Vector2(point.x - center.x, point.z - center.z)
 		if offset.length_squared() > pow(reach + food.collider_radius, 2):
 			continue
-		var obstacle := {"center": food.global_position, "radius": food.collider_radius,
-			"bottom": food.global_position.y, "top": food.global_position.y + food.height * 0.72}
+		var obstacle := {"center": point, "radius": food.collider_radius,
+			"bottom": point.y, "top": point.y + food.height * 0.72}
 		if not food.freeze:
 			obstacle["body"] = food
 		result.append(obstacle)
@@ -86,6 +98,7 @@ func _add_food(kind: String, at: Vector2, size: float, threshold: float, volume:
 		food.position = Vector3(at.x, lift, at.y)
 	food.rotation.y = _rng.randf_range(-PI, PI)
 	foods.append(food)
+	_obstacle_radius = -1.0
 	return food
 
 func _pool(at: Vector3, extent: Vector2, color: Color, volume: float, threshold: float = 0.0, fabric: bool = false) -> LocalPool:

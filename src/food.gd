@@ -72,6 +72,7 @@ func configure(kind: String, size: float, required_size: float, food_volume: flo
 	physics_material.bounce = 0.12
 	physics_material_override = physics_material
 	_sway_phase = randf() * TAU
+	set_physics_process(moving or kind in ["polyp", "plankton"])
 
 func rename(label: String, color: Color) -> void:
 	title = label
@@ -137,6 +138,7 @@ func consume(target: Node3D) -> void:
 	_meal_target = target
 	_meal_start = global_position
 	_meal_scale = scale
+	set_physics_process(true)
 	if model_name == "board":
 		_snap_board()
 

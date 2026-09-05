@@ -48,6 +48,7 @@ func _update_camera(delta: float) -> void:
 	var depth_per_size := absf(sin(yaw)) * aspect + absf(cos(yaw)) / sin(TILT)
 	var largest_view := minf(field.size.x / width_per_size, field.size.y / depth_per_size)
 	camera.size = minf(_view_size * zoom, largest_view)
+	camera.far = maxf(200.0, camera.size * 3.0)
 	var half_width := camera.size * viewport.x / viewport.y * 0.5
 	var half_depth := camera.size / sin(TILT) * 0.5
 	var margin_x := absf(cos(yaw)) * half_width + absf(sin(yaw)) * half_depth

@@ -84,3 +84,25 @@ The original demo reference was read only from `/Applications/Tasty Planet.app/C
 ## Skateboard wheel axle correction
 
 The user observed wheels rotating away from their center axis. The model follows the shared floor-origin contract, but the board animation used that floor origin as the spin pivot. The scene now compensates the visual position around the asset's axle. The geometry, collider, and food positions stay fixed. `scripts/check_wheel_spin.gd` exercises the real board animation for four wheels and requires both rotation and stationary centers. The failing probe measured `max_center_drift=0.31996077299118`; the corrected probe reports `max_center_drift=0.00000001490116 spinning=true pass=true`. Native 1920×1080 close-ups at three rotation phases show each wheel centered on its axle. Evidence: `/tmp/level-root-wheel-spin-before.log`, `/tmp/level-root-wheel-spin-after.log`, `/tmp/level-root-wheel-phase-0.png`, `/tmp/level-root-wheel-phase-1.png`, `/tmp/level-root-wheel-phase-2.png`.
+
+## Final pacing and performance checks
+
+Sugar Water: seed439 ordinary-input headless route wins in 509.316666666532 simulation seconds; view durations [175.000000000031, 61.60000000004899, 141.683333333238, 81.83333333325896, 49.199999999955025]. These are simulated play times, not native rendering measurements.
+
+Coral Colony Tide Pool: seed439 ordinary-input headless route wins in 454.549999999915 simulation seconds; view durations [112.233333333328, 132.766666666759, 68.89999999995601, 57.433333333280984, 83.21666666659098]. These are simulated play times, not native rendering measurements.
+
+Skatepark Bowl: seed439 ordinary-input headless route wins in 468.899999999902 simulation seconds; view durations [168.666666666693, 98.16666666672597, 86.16666666658904, 72.88333333326699, 43.016666666626975]. These are simulated play times, not native rendering measurements.
+
+Cosmic Web: seed439 ordinary-input headless route wins in 670.333333333052 simulation seconds; view durations [102.566666666662, 216.533333333376, 165.566666666517, 78.26666666659503, 107.39999999990198]. These are simulated play times, not native rendering measurements.
+
+The final randomized sweep passes 32 cases and 160 tier checks. The obstacle regression matches 420 queries against the uncached scan, including live movement, new solids, consumption, growth, and a radius decrease. The wheel regression and seven-level nested meal animation pass. `/tmp/level-root-final-native-views.log` contains 20 fresh uncapped native views at 1920×1080; Sugar final averages 68.6052681554562 FPS with 16.77 ms at the 95th percentile. Cosmic final averages 59.1386489011507 FPS with 17.681 ms at the 95th percentile; it now shows the full scene instead of clipping to black. No engine warnings/errors appear in those final view, budget, or nested-meal logs. Consolidated measurements: `builds/level-verification/report.json`.
+
+The performance correction stops empty Food callbacks and caches only obstacle eligibility across unchanged radius/tier; positions remain live. Atomic transform batching differs from the previous 300-step snapshot by at most 0.0000972747802983065 world units across 2687 objects. No goo-body, HUD, or speed-law edits were made. Headless Tide/Skate route shutdown still emits a dummy-renderer material warning and resource-leak notices after the win; native view/meal shutdown is clean.
+
+## Final live movement limitation
+
+The final 20-second Sugar Water native canary measured `7.30575653765586 average_fps`, `148.112 p95_ms`, and `18.067944 measured_seconds`. The same ordinary-input driver with an empty obstacle callback measured `57.9811818051833 average_fps`, `18.12 p95_ms`, and `18.023089 measured_seconds`. This diagnostic bypass was never applied to production. The earlier staged-only characterization is obsolete: contact cost now affects normal play in the expanded scene. Fable owns the body solver; the exact reproduction and current measurements are in `docs/design/level-runtime-handoff.md`. The final 20-second Cosmic Web native canary measured `43.6035259758876 average_fps`, `47.355 p95_ms`, and `18.071933 measured_seconds`. These short canaries do not establish completion or human pacing. Evidence is consolidated in `builds/level-verification/report.json`. Do not report native play as uniformly smooth.
+
+## Organic patterns: research reference
+
+The user asked whether https://pub.sakana.ai/asal/ and https://en.wikipedia.org/wiki/Artificial_life could help generate more organic patterns. ASAL searches artificial-life simulation parameters with visual-model evaluation. Candidate uses are local interaction rules for plankton or particles and Lenia-like surface behavior. This is a research direction, not approval to install ASAL or change the four levels. Prefer offline selection with cheap runtime rules, and preserve visible wholes, reachability, and performance.

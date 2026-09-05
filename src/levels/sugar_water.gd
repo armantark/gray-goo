@@ -296,12 +296,14 @@ func _step_orbits(delta: float) -> void:
 		if not is_instance_valid(electron) or not electron.active:
 			continue
 		orbit.phase += delta * float(orbit.speed)
+		var at := electron.position
 		if electron.parent_food.get_meta("electron_cloud", false):
-			electron.position.x = sin(orbit.phase * 0.73) * float(orbit.radius) * 0.62
-			electron.position.z = cos(orbit.phase * 1.17) * float(orbit.radius) * 0.48
+			at.x = sin(orbit.phase * 0.73) * float(orbit.radius) * 0.62
+			at.z = cos(orbit.phase * 1.17) * float(orbit.radius) * 0.48
 		else:
-			electron.position.x = cos(orbit.phase) * float(orbit.radius)
-			electron.position.z = sin(orbit.phase) * float(orbit.radius)
+			at.x = cos(orbit.phase) * float(orbit.radius)
+			at.z = sin(orbit.phase) * float(orbit.radius)
+		electron.position = at
 
 func _step_particles() -> void:
 	for entry in _particles:
@@ -556,6 +558,6 @@ func _step_drifters() -> void:
 		var phase: float = entry.phase
 		var eddy := Vector3(sin(time * 0.17 + phase) - sin(phase), 0,
 			cos(time * 0.13 + phase) - cos(phase)) * float(entry.amplitude)
-		food.position = entry.home + current + eddy
-		food.rotation = Vector3(sin(time * 0.09 + phase) * float(entry.tilt),
+		var angles := Vector3(sin(time * 0.09 + phase) * float(entry.tilt),
 			float(entry.yaw) + time * float(entry.spin), cos(time * 0.07 + phase) * float(entry.tilt))
+		food.transform = Transform3D(Basis.from_euler(angles).scaled(food.scale), entry.home + current + eddy)

@@ -17,6 +17,8 @@ var _skipped := {}
 var _last_position := Vector3.ZERO
 var _progress_age := 0.0
 var _stalled := 0.0
+var _last_volume := 0.0
+var _growth_age := 0.0
 var _limit := 900.0
 var _output := "res://builds/level-routes.json"
 var _simulation_clock := false
@@ -99,6 +101,10 @@ func _capture_view() -> void:
 	root.get_texture().get_image().save_png(path)
 
 func _check_stall(delta: float) -> void:
+	_growth_age += delta
+	if _game._volume > _last_volume + 0.0000001:
+		_last_volume = _game._volume
+		_growth_age = 0.0
 	_progress_age += delta
 	if _progress_age < 1.0:
 		return
@@ -108,11 +114,12 @@ func _check_stall(delta: float) -> void:
 		_stalled = 0.0
 	_last_position = _game.goo.global_position
 	_progress_age = 0.0
-	if _stalled > 2.0 and is_instance_valid(_target):
+	if (_stalled > 2.0 or _growth_age > 15.0) and is_instance_valid(_target):
 		print("ROUTE_BLOCKED ", _target.title, " at=", _target.center())
 		_skipped[_target.get_instance_id()] = _elapsed + 15.0
 		_target = null
 		_stalled = 0.0
+		_growth_age = 0.0
 
 func _choose_target() -> void:
 	var nearest := INF
@@ -196,4 +203,6 @@ func _finish_level() -> void:
 	_target = null
 	_skipped.clear()
 	_stalled = 0.0
+	_last_volume = 0.0
+	_growth_age = 0.0
 	_ending = false
