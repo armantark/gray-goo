@@ -280,4 +280,6 @@ func _step_board(item: Dictionary, delta: float) -> void:
 			for part in board.parts:
 				if is_instance_valid(part) and part.active and part.model_name == "wheel":
 					part.visual.rotation.z -= velocity.length() / part.radius * delta
+					var axle := Vector3.UP * float(Art.manifest().wheel.height) * 0.5
+					part.visual.position = Vector3.UP * part.height * 0.5 - part.visual.basis * axle
 	item.velocity = velocity
