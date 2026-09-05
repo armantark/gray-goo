@@ -13,9 +13,11 @@ Sources:
 - https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html
 - https://docs.godotengine.org/en/stable/tutorials/physics/large_world_coordinates.html
 
-Optional scale transitions: each level declares zero to two size jumps, with ordinary growth inside each camera view. A jump reveals larger types and retires tiny detail. Edible parts and emergent formations are independent of camera transitions. Candidate data stores jumps as a bounded array rather than three mandatory phases.
+Optional scale transitions: each level declares a `jumps` list, with ordinary growth inside each camera view. A jump reveals larger types and retires tiny detail. The demo levels use five tiers and four jumps, per `docs/design/level-contract.md`. Each scene config also carries a `tiers` list of display names for the HUD ladder strip.
 
 Level entry sizing: the user confirmed on 2026-09-04 that each level starts at a size tailored to its scene, rather than carrying size over from the previous level. Growth remains continuous within each level, including across any optional camera size jumps.
+
+Level structure: a level is one recognizable place, and every object belongs to a visible whole. Three patterns apply: nested wholes, the whole was always there, and damage shows. Each tier's whole becomes ordinary food in the next tier. The full contract for Astra is `docs/design/level-contract.md`.
 
 Level completion: every consumed object contributes growth, and reaching the level goal size completes the level. Tune the food budget so the main milestone object usually supplies the growth that crosses the goal. The milestone is not a separate mandatory completion gate.
 
@@ -38,6 +40,8 @@ Camera controls confirmed on 2026-09-04: WASD and arrow keys move relative to th
 Winning bite confirmed on 2026-09-04: brief slow motion, exaggerated squash and stretch, and a strong color pulse through the goo. Return to normal play with Next level available. Normal bites retain uninterrupted movement.
 
 Pool performance: collect the weighted contact position during local consumption and upload a dirty density mask at a bounded cadence. Do not search for the nearest filled cell before every ordinary bite. Nearest-cell queries are for guidance and whole-surface contact only.
+
+Every model gets a baked procedural albedo texture from Blender, passed through a new `albedo` uniform on the toon shader. Flat colors alone are rejected. Space must look real: near-black, warm and white stars, muted dust.
 
 Asset colors: Blender material node inputs use linear RGB. Convert authored sRGB hex colors before assignment so exported GLBs retain the intended palette. The custom toon light divides LIGHT_COLOR by PI and applies ALBEDO once.
 

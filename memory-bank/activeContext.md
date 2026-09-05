@@ -30,6 +30,10 @@ Food is engulfed and shrinks on contact without pausing movement. Shape-aware th
 
 Every consumed item contributes to goal size. Completion depends on size, not a separate required-object flag. The final bite uses brief slow motion, squash/stretch, and a color pulse, then permits continued play and Next level. Opaque foreground objects stay opaque; only a subdued goo outline shows through them.
 
+## Settled 2026-09-05 design interview
+
+The interview settled: the root structure rule, five tiers and four jumps per demo level at about ten minutes each, Sugar Water (sucrose in water) as the subatomic level, tide pool, skatepark, and cosmic web ladders, textures on every model, 3D backgrounds, realistic space, a constant body-length speed law with smoothing, and the specimen readout HUD with a ladder strip. The contract for Astra is `docs/design/level-contract.md`. Fable owns speed and HUD. Awaiting the user's confirmation to dispatch.
+
 ## Next design review
 
 The user wants protons and neutrons to keep constant sizes. Different elements use different constituent counts, with visibly orbiting electrons in the old textbook diagram style. Loose-quark scatter is a poor fit. Other subatomic types can move at readable game speeds. The user now explicitly requests a proposed subatomic system and a grill-me interview before implementation. Settle and obtain approval for the design before changing the scene. Do not dismiss these consistency requirements as scientific literalism.

@@ -27,3 +27,7 @@ Q1 accepted: one recognizable place, nested wholes, the whole was always there, 
 Q2: sucrose in water. Q3: see Q1. Q4: constant body-length speed with a smoothing curve matched to the animation; the slider stays. Q5: specimen readout HUD.
 
 Facts: `docs/design/sources/original-levels.json` confirms the recycling pattern (mouse, rat, cat, dog, person, car, house, train). The runtime supports exactly one jump: `src/game.gd:114` uses a boolean `_revealed` and `camera_sizes[1]`. The contract must generalize to a list of jumps.
+
+## Round 2 answers
+
+Q6 through Q10 accepted. Additions: realistic space instead of shimmery purple, 3D backgrounds for every level, proper textures on every model. Contract written at `docs/design/level-contract.md`.
