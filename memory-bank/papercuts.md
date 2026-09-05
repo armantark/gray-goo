@@ -74,3 +74,13 @@
 2026-09-04: Larger tide pools exposed an integration hot path: game._physics_process called closest_point on every pool every frame before attempting a local bite. Native run fell to `27.4260548947516 average_fps` with `181.505 p95_frame_ms`. Capture the weighted consumed contact during consume_at, reject out-of-bounds whole-pool contact, and avoid guidance searches for ordinary bites. Bound nearest-cell search by actual unsearched regions instead of a loose distance-from-origin estimate.
 
 2026-09-04: Kimi's first approved read-only source review failed with `error: tool loop exceeded 24 turns` and returned no findings. Retried the same approved files directly in one prompt with filesystem tools disabled; do not treat the failed call as a completed review. The first rejection prevented the whole shell command, including creation of `/tmp/tasty-art-review-prompt.txt`; recreating that prompt was required before the approved retry.
+
+2026-09-04: A follow-up source read assumed `src/goo.gd`; the actual implementation is `src/goo_body.gd`. Check the tracked file inventory before guessing a path.
+
+2026-09-04: Checking a long-running review with `ps -axo pid,etime,pcpu,command` failed with `zsh:1: operation not permitted: ps` inside the sandbox. Use the existing exec session and output files for progress instead.
+
+2026-09-04: Native eye inspection showed cursor offsets could be overpowered by the eye's body-facing neutral direction. Base the pupil ray on the camera direction, then add the bounded screen-space cursor offset.
+
+2026-09-04: Reference lookup encountered `403 Forbidden` on Devolver's game page and a reCAPTCHA on PMC; public search results provided alternative official trailer and university microscopy sources. Watch first failed under sandbox DNS (`Failed to resolve www.youtube.com`) and the free transcript fallback hit the uv cache restriction; retried the public trailer fetch with network permission.
+
+2026-09-04: The permitted Carrion watch retry obtained metadata but failed to download media with `HTTP Error 403: Forbidden`; no video frames were inspected. Do not claim to have watched it. Final pupil headless import exited 0 with only the known sandbox certificate/editor-settings errors, including `Cannot save file /Users/ArmanTarkhanian1/Library/Application Support/Godot/editor_settings-4.7.tres`.

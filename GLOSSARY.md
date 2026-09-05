@@ -5,7 +5,7 @@ Language for the game's growth journey and level variety.
 ## Language
 
 **Gray goo**:
-The player-controlled, rounded, deformable mass that rolls and crawls with sticky floor contact, consumes matter, and grows.
+The player-controlled, rounded, deformable mass that crawls by planting and pulling with short tendrils, consumes matter, and grows.
 
 **Scale band**:
 A range of physical sizes within the growth journey. Several settings can share a scale band.
