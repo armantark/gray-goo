@@ -90,8 +90,17 @@ func _physics_process(delta: float) -> void:
 	world.player_radius = goo.radius
 	# Speed is a constant number of body lengths per second, so a speck and a giant feel the same.
 	goo.set_drive(rig.movement_direction(), BODY_LENGTHS_PER_SECOND * goo.radius * 2.0 * hud.movement_speed)
+	_consume_foods()
+	_consume_pools(delta)
+	_update_scale()
+	if not _won and _volume >= pow(world.config.goal_radius, 3.0):
+		_complete()
+
+func _consume_foods() -> void:
 	var eaten := 0
 	for food in world.foods:
+		if is_instance_valid(food) and food.active and food.touched.has_connections() and goo.touches(food.center(), food.radius):
+			food.touched.emit()
 		if not world.is_edible(food, goo.radius):
 			continue
 		if goo.touches(food.center(), food.radius * 0.72):
@@ -99,8 +108,10 @@ func _physics_process(delta: float) -> void:
 			eaten += 1
 			if eaten == 5:
 				break
+
+func _consume_pools(delta: float) -> void:
 	for pool in world.pools:
-		if pool.remaining_volume <= 0.00001:
+		if not pool.is_edible(_tier, goo.radius):
 			continue
 		var contact := Vector3.ZERO
 		var portion := 0.0
@@ -113,13 +124,18 @@ func _physics_process(delta: float) -> void:
 		if portion > 0.0:
 			_add_growth(portion, pool.pigment, contact)
 			hud.show_meal("Spacetime fabric" if _level == 3 else "Water", "", pool.pigment)
+
+func _update_scale() -> void:
 	while _tier + 1 < world.config.jumps.size() and goo.radius >= float(world.config.jumps[_tier + 1].radius):
 		_tier += 1
 		world.advance_scale(_tier)
 		rig.reveal(float(world.config.jumps[_tier].view_size))
 		print("LEVEL_TIER ", _level, " ", _tier, " ", world.config.tiers[_tier])
-	if not _won and _volume >= pow(world.config.goal_radius, 3.0):
-		_complete()
+	var jump: Dictionary = world.config.jumps[_tier]
+	var growth_view: float = float(jump.view_size) * goo.radius / float(jump.radius)
+	if _tier + 1 < world.config.jumps.size():
+		growth_view = minf(growth_view, float(world.config.jumps[_tier + 1].view_size) * 0.82)
+	rig.reveal(growth_view)
 
 func _eat(food: Food) -> void:
 	var portion := food.remaining_volume()
@@ -178,7 +194,7 @@ func _process(delta: float) -> void:
 		target_name = target.title
 	else:
 		for pool in world.pools:
-			if pool.remaining_volume > 0.00001:
+			if pool.is_edible(_tier, goo.radius):
 				target_position = pool.closest_point(goo.global_position)
 				target_name = "Spacetime fabric" if _level == 3 else "Water"
 				break
