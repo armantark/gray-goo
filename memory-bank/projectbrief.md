@@ -1,7 +1,7 @@
 # Project brief
 
-Build a modern Tasty Planet-style top-down eating game with 3D assets and a gray goo protagonist. The proof of concept has four levels. The long-term target is 60 levels. Begin at the smallest possible scale of the universe, with the precise starting scale and scientific representation to be settled in the requested design interview. Objects must use proper relative scales.
+Build a modern Tasty Planet-style top-down eating game with 3D assets and a gray goo protagonist. The proof of concept has four levels. The long-term target is 60 levels. Begin at subatomic scale. Objects must use proper relative scales; the exact starting size and scientific representation remain open. Multiple settings can occupy the same scale band.
 
-Generate art direction concepts with Codex imagegen, select a target with the user, and iterate against actual in-game screenshots while meeting a measured 60 fps target. Target hardware, resolution, engine, and performance measurement criteria remain undecided.
+Generate art direction concepts with Codex imagegen, select a target with the user, and iterate against actual in-game screenshots while meeting a measured 60 fps target at 1920 × 1080. The user favors the cartoon direction and wants to compare low-poly and voxel treatments. Engine and performance measurement criteria remain undecided. Use the local M1 Max Mac Studio as the proposed benchmark device unless the user specifies another target.
 
-The user requested Blender MCP and Astra with high reasoning. Installation must pass the user's preinstall review and confirmation rule. No game implementation starts before the requested design interview settles the material decisions.
+The user prefers Blender CLI over MCP and confirmed that Astra's reasoning setting is already correct. Use the existing Blender installation through its bundled executable. No game implementation starts before the requested design interview settles the material decisions.
