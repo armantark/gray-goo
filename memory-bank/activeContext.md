@@ -2,13 +2,15 @@
 
 Last staleness sweep: 2026-09-05
 
-The five-anchor, irregular-idle-ooze revision is exported to `builds/Gray Goo.app`. The updated clip is `builds/gray-goo-ooze-2026-09-05.mp4`. Native motion and final body/control canaries are checked; evidence is in `progress.md`. Do not push without a request. The user still plans an in-depth scene change list. Do not call the overall game visually accepted or fully balanced.
+The second goo body is implemented and exported to `builds/Gray Goo.app`. The Body menu switches between Shell and Procedural and preserves the current game state. Both native Coral routes run near 60 FPS at 1920 × 1080 with the user's saved 200% speed. Shell behavior is unchanged. Procedural grip/peel and rolling circulation remain less visually distinct than requested; do not claim full visual acceptance. Evidence is in `builds/body-verification/report.json` and `progress.md`.
+
+The user requested this final sequence: complete the body experiment, refine a few models through MCP in live Blender with a separate multi-angle critic scoring above 8, add jazzy MIDI music, publish GitHub source plus a downloadable standalone app, publish a playable GPT Sites browser build, and shelve the project. GitHub publishing is authorized for that final result. MCP installation still requires approval of the preinstall decision. The fixed critic rubric and scope are in `plans/final-shipping.md`.
 
 ## Current scope
 
 The user approved the four-scene plan with "Go for it" on 2026-09-04. Sugar Water, Coral Colony Tide Pool, Skatepark Bowl, and Cosmic Web are implemented per `docs/design/level-contract.md`, each with five tiers and four jumps in `src/levels/`. The accepted catalogue in `docs/design/selection.json` is inspiration for future scope, not authorization to build the 60-level campaign. Do not reopen the design interview or present another full catalogue.
 
-Godot 4.7.2 standard supplies the native runtime, with the Mobile renderer and a 1920 × 1080 render size. Blender 5.2.1 LTS supplies editable source assets through its CLI; no MCP was installed. The user prefers personal Mac play; browser delivery is outside this build. Everything informs scale and theme diversity, not gameplay or origin story.
+Godot 4.7.2 standard supplies the native runtime, with the Mobile renderer and a 1920 × 1080 render size. Blender 5.2.1 LTS supplies editable source assets through its CLI; no MCP was installed. The final shipping scope includes a playable browser export in addition to the Mac app. Everything informs scale and theme diversity, not gameplay or origin story.
 
 ## Settled behavior
 
@@ -44,7 +46,7 @@ Ordinary Sugar Water movement ran at `10.9985906405953` FPS (`131.81` ms p95) on
 
 ## HUD
 
-The specimen readout HUD is live: paper slide label with a log-scale dial that flashes on calibration jumps, five-rung ladder strip from `config.tiers` and `world.current_tier`, specimen card for the last meal, light-year units from a tenth of a light year up, and a slide-tray menu. `scripts/capture_hud.gd` captures the meal, completion, and menu states; `scripts/inspect_levels.gd` captures the twenty tier views. The `Body` toggle from `plans/goo-body-brief.md` is not built yet.
+The specimen readout HUD is live: paper slide label with a log-scale dial that flashes on calibration jumps, five-rung ladder strip from `config.tiers` and `world.current_tier`, specimen card for the last meal, light-year units from a tenth of a light year up, and a slide-tray menu. `scripts/capture_hud.gd` captures the meal, completion, and menu states; `scripts/inspect_levels.gd` captures the twenty tier views. The `Body` toggle from `plans/goo-body-brief.md` is implemented.
 
 ## Verification and communication boundaries
 

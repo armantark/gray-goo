@@ -118,3 +118,19 @@ Fable's results artifact: `memory-bank/status-updates/hud-speed-results-2026-09-
 ## Second body in progress
 
 On 2026-09-05 the user authorized `memory-bank/plans/goo-body-brief.md`. The frozen plan is `memory-bank/status-updates/procedural-body-plan-2026-09-05.html`, hosted at https://uhehoukipt9k.postplan.dev . The shell baseline passes in `/tmp/body-root-shell-before.log`. The user then clarified that movement and eating are "more than fine rn"; the main weaknesses are level layouts/progression and the cohesion of everything visual. They use the 200% speed slider. Treat the procedural body as an optional comparison, preserve that preference, and make level design and visual cohesion the focus of the next separate design pass. Do not infer permission to expand the current body task into a level redesign.
+
+## Body experiment delivered, with visual limitations
+
+Commit `c0fe45a` adds the procedural skin and persistent Body selector. `BODY_CHECK_OK=true checks=54` covers both bodies through actual food contact, growth, pigment, meal swaps, camera, celebration, terrain, and boundaries. The original `src/goo_body.gd` is unchanged; `/tmp/body-root-shell-before.log` and `/tmp/body-root-shell-after.log` are byte-identical. The source export and native standalone startup complete without engine errors.
+
+shell: `59.9408304623926 average_fps`, `17.329 p95_frame_ms`, `959 frames` over `15.999111 measured_seconds`, native Mobile at 1920×1080, speed multiplier2.0. Source: `builds/body-verification/body-root-shell-native.json`.
+
+procedural: `60.0060156030643 average_fps`, `17.399 p95_frame_ms`, `960 frames` over `15.998396 measured_seconds`, native Mobile at 1920×1080, speed multiplier2.0. Source: `builds/body-verification/body-root-procedural-native.json`.
+
+Matched clips: `builds/goo-shell-2026-09-05.mp4` and `builds/goo-procedural-2026-09-05.mp4`. FFprobe confirms each has 1080 H.264 frames at60/1, AAC audio, and duration18.000000 seconds. These fixed-frame movies are visual evidence only. Frame indices below are zero-based. Root inspected 150,170,190,230,250,300,359,420,540,719,734,760 in both clips. Procedural: reach/stretch at150–190; a turn and shape recovery at250–300; uneven idle spread at420,540,719; regather at734; orange contact pigment at760. The sampled skin remains continuous with no observed tearing or floor sinking. Five independent grip/peel cycles and rolling circulation are not clearly distinct at game scale. Jelly wobble is subtle. This is the delivered experiment, not full visual acceptance.
+
+The actual selector callback changed Shell to Procedural; a separate native process loaded `kind=procedural speed=2.0 procedural=true`. It then restored Shell, preserving200%. Native menu screenshots show both labels without truncation. CUA and injected key input did not establish a physical click, so this persistence check uses the real callback plus restart. Evidence: `builds/body-verification/body-root-menu-callback.log`, `body-root-menu-restored.log`, and `builds/body-menu/`.
+
+The final shipping scope is in `plans/final-shipping.md`. Static preinstall audit recommends project-only ahujasid/blender-mcp1.9.1 with telemetry disabled, safe mode enabled, and external asset services disabled. No installation or live connection has occurred. User approval remains required.
+
+The body results and Blender installation decision are in `memory-bank/status-updates/procedural-body-results-2026-09-05.html`, hosted at https://2pof4cpnafxt.postplan.dev . The corrected artifact passed mechanical preflight and opened in Zen. The body plan remains unchanged. The next required user action is approval of the audited project-only MCP installation; no models, music, GitHub release, or Sites build from the final shipping sequence have been completed yet.

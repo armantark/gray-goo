@@ -152,3 +152,9 @@
 
 - 2026-09-05: The body recorder commit was rejected with `scripts/record_motion.gd: _process 16 (was 7)` by slop-gate; replaced the route branch chain with a phase table.
 - 2026-09-05: CUA actions on the source Godot window did not visibly change the menu; the native scripted HUD capture worked. Calling app AX inspection after closing Godot auto-launched its Project Manager.
+
+- 2026-09-05: Native CUA `getApp` and `getState` each timed out after 30 seconds during body menu verification. Injected key events also did not select the popup while the app was unfocused; used the actual selector callback plus process restart to check persistence, and native renders for layout.
+
+- 2026-09-05: Blender MCP static audit found that Git commit `c5f35d9cc54451d785ac4c00c48bf9e98a2e8db9` omits ignored `src/blender_mcp/config.py`; PyPI1.9.1 includes it. The audited wheel SHA256 is `ede3aed34926f77142b8f00ee4f8544f68067d2dc747da8295d1c456171355b2`; use pinned wheel provenance if approved.
+
+- 2026-09-05: The body results preflight rejected ordinary outbound links as `FAIL A5 remote src/href asset (artifact must be self-contained)`. The first grouped shell call also opened the artifact after that failed check; use `&&` to gate opening on preflight success. The report now shows those source URLs as text.
