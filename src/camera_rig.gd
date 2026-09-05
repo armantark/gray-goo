@@ -41,8 +41,12 @@ func _process(delta: float) -> void:
 
 func _update_camera(delta: float) -> void:
 	_view_size = lerpf(_view_size, _target_view, 1.0 - exp(-2.8 * delta))
-	camera.size = _view_size * zoom
 	var viewport := get_viewport().get_visible_rect().size
+	var aspect := viewport.x / viewport.y
+	var width_per_size := absf(cos(yaw)) * aspect + absf(sin(yaw)) / sin(TILT)
+	var depth_per_size := absf(sin(yaw)) * aspect + absf(cos(yaw)) / sin(TILT)
+	var largest_view := minf(field.size.x / width_per_size, field.size.y / depth_per_size)
+	camera.size = minf(_view_size * zoom, largest_view)
 	var half_width := camera.size * viewport.x / viewport.y * 0.5
 	var half_depth := camera.size / sin(TILT) * 0.5
 	var margin_x := absf(cos(yaw)) * half_width + absf(sin(yaw)) * half_depth
@@ -53,6 +57,7 @@ func _update_camera(delta: float) -> void:
 	var extent_z := maxf(0.0, field.size.y * 0.5 - margin_z)
 	desired.x = clampf(desired.x, center.x - extent_x, center.x + extent_x)
 	desired.z = clampf(desired.z, center.y - extent_z, center.y + extent_z)
+	desired.y = float(_ground_height.call(desired))
 	_focus = _focus.lerp(desired, 1.0 - exp(-7.0 * delta))
 	var direction := Vector3(sin(yaw) * cos(TILT), sin(TILT), cos(yaw) * cos(TILT))
 	camera.global_position = _focus + direction * maxf(camera.size * 1.6, 12.0)

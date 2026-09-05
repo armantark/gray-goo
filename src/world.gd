@@ -248,21 +248,21 @@ func _lighting(background: Color, key: Color, rim: Color) -> void:
 	environment.environment.background_color = background
 	environment.environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	environment.environment.ambient_light_color = key
-	environment.environment.ambient_light_energy = 0.62
+	environment.environment.ambient_light_energy = 0.25
 	environment.environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	add_child(environment)
 	var sun := DirectionalLight3D.new()
 	add_child(sun)
 	sun.rotation_degrees = Vector3(-58.0, -28.0, 0.0)
 	sun.light_color = key
-	sun.light_energy = 1.4
+	sun.light_energy = 0.7
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 65.0
 	var fill := DirectionalLight3D.new()
 	add_child(fill)
 	fill.rotation_degrees = Vector3(-25.0, 140.0, 0.0)
 	fill.light_color = rim
-	fill.light_energy = 0.55
+	fill.light_energy = 0.2
 
 func _terrain(color: Color, visible_surface: bool = true) -> void:
 	var vertices := PackedVector3Array()

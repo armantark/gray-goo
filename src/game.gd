@@ -14,6 +14,7 @@ var _win_sound: AudioStreamPlayer
 var _last_sound := 0
 var _frame_times := PackedFloat64Array()
 var _record_performance := false
+var _last_frame_usec := 0
 var _closing := false
 
 func _ready() -> void:
@@ -51,6 +52,7 @@ func _install_controls() -> void:
 			InputMap.action_add_event(action, event)
 
 func start_level(index: int) -> void:
+	_last_frame_usec = 0
 	get_tree().paused = false
 	Engine.time_scale = 1.0
 	_cinematic = -1.0
@@ -143,7 +145,10 @@ func _process(delta: float) -> void:
 	if not is_instance_valid(world):
 		return
 	if _record_performance and not get_tree().paused:
-		_frame_times.append(delta / Engine.time_scale)
+		var now := Time.get_ticks_usec()
+		if _last_frame_usec > 0:
+			_frame_times.append((now - _last_frame_usec) / 1000000.0)
+		_last_frame_usec = now
 	if _cinematic >= 0.0:
 		_cinematic += delta / Engine.time_scale
 		Engine.time_scale = lerpf(0.22, 1.0, smoothstep(0.2, 0.85, _cinematic))
@@ -196,6 +201,7 @@ func _bite_particles(point: Vector3, color: Color, strength: float) -> void:
 	particles.emitting = true
 
 func _set_paused(paused: bool) -> void:
+	_last_frame_usec = 0
 	get_tree().paused = paused
 
 func _notification(what: int) -> void:
