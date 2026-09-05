@@ -1,6 +1,9 @@
 class_name Food
 extends RigidBody3D
 
+signal part_consumed(part: Food)
+signal touched
+
 var title: String
 var model_name: String
 var radius: float
@@ -13,6 +16,8 @@ var active := true
 var milestone := false
 var parts: Array[Food] = []
 var parent_food: Food
+var context_whole: Node3D
+var loose_reason := ""
 var visual: Node3D
 var collider_radius: float
 var drift := Vector3.ZERO
@@ -29,23 +34,32 @@ func configure(kind: String, size: float, required_size: float, food_volume: flo
 	model_name = kind
 	title = label
 	radius = size
-	height = Art.model_height(kind, size)
+	height = Art.model_height(kind, size) if not kind.is_empty() else size * 0.4
 	threshold = required_size
 	volume = food_volume
-	pigment = Art.food_color(kind)
+	pigment = Art.food_color(kind) if not kind.is_empty() else Color.WHITE
 	tier = band
-	collider_radius = radius
+	collider_radius = radius if not kind.is_empty() else 0.0
 	if kind in ["coral_branch", "coral_fan", "rail"]:
 		collider_radius *= 0.48
-	visual = Art.model(kind, size)
+	if kind == "board":
+		collider_radius *= 0.28
+	visual = Art.model(kind, size) if not kind.is_empty() else Node3D.new()
 	add_child(visual)
-	var shape := CollisionShape3D.new()
-	var cylinder := CylinderShape3D.new()
-	cylinder.radius = maxf(collider_radius, 0.025)
-	cylinder.height = maxf(height * 0.72, 0.04)
-	shape.shape = cylinder
-	shape.position.y = cylinder.height * 0.5
-	add_child(shape)
+	if collider_radius > 0.0:
+		var shape := CollisionShape3D.new()
+		if kind == "board":
+			var deck := BoxShape3D.new()
+			deck.size = Vector3(radius * 2.0, maxf(height, 0.04), radius * 0.63)
+			shape.shape = deck
+			shape.position.y = deck.size.y * 0.5
+		else:
+			var cylinder := CylinderShape3D.new()
+			cylinder.radius = maxf(collider_radius, 0.025)
+			cylinder.height = maxf(height * 0.72, 0.04)
+			shape.shape = cylinder
+			shape.position.y = cylinder.height * 0.5
+		add_child(shape)
 	collision_layer = 2
 	collision_mask = 3
 	freeze = not moving
@@ -58,6 +72,11 @@ func configure(kind: String, size: float, required_size: float, food_volume: flo
 	physics_material.bounce = 0.12
 	physics_material_override = physics_material
 	_sway_phase = randf() * TAU
+
+func rename(label: String, color: Color) -> void:
+	title = label
+	pigment = color
+	Art.tint_model(visual, color)
 
 func set_highlighted(enabled: bool) -> void:
 	enabled = enabled and active
@@ -113,6 +132,8 @@ func consume(target: Node3D) -> void:
 	collision_layer = 0
 	collision_mask = 0
 	_disable_parts()
+	if is_instance_valid(parent_food):
+		parent_food.part_consumed.emit(self)
 	_meal_target = target
 	_meal_start = global_position
 	_meal_scale = scale
@@ -148,7 +169,9 @@ func _physics_process(delta: float) -> void:
 		global_position = _meal_start.lerp(_meal_target.global_position, progress * progress)
 		scale = _meal_scale * maxf(0.001, 1.0 - progress)
 		if progress >= 1.0:
-			queue_free()
+			# Scene graphs keep part references for damage and motion until the level ends.
+			hide()
+			set_physics_process(false)
 		return
 	if not active:
 		return
