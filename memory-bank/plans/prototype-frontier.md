@@ -17,10 +17,14 @@ This is a running interview map, not a settled implementation plan. Ask small nu
 - Predictable shape-aware eating thresholds; no precise approach alignment requirement. Suitable thin objects may snap as part of engulfing presentation.
 - Opaque foreground obstacles with a subdued goo outline visible through them.
 
+- A nearest-edible pointer supplies food guidance rather than nearby-object highlights.
+- Food color leaves a lasting impression on the goo; exact mixing and persistence remain open.
+- Coral consists of distinct composite parts; continuous erosion is not the model.
+
 ## Current independent frontier
 
-1. Edible-target feedback: how the player recognizes nearby edible food without trying every object.
-2. Part-to-whole accounting: confirm that consumed parts are excluded from the remaining whole reward, and that its eating threshold follows the bulk that remains.
+1. Food color: decide whether consumed colors accumulate and persist until displaced by later food, or gradually return toward gray over time.
+2. Composite thresholds: clarify whether distinct parts and the remaining whole have separate authored eating thresholds. The previous proposal to reduce the whole threshold as remaining bulk shrinks was not accepted. Preserve the already requested parts-to-whole payoff; do not reopen it as whether whole consumption exists.
 
 ## Held for later rounds
 

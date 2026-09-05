@@ -33,3 +33,6 @@ A prominent edible target that marks a major growth payoff and usually supplies 
 
 **Eating threshold**:
 The minimum goo size needed to consume an object, informed by its shape and bulk. This is distinct from the growth the object contributes when consumed.
+
+**Composite**:
+An object or structure made of distinct parts, such as a coral colony. Its parts remain identifiable pieces rather than a continuously eroded mass.

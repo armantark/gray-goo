@@ -17,3 +17,5 @@ The user wants zero, one, or two optional size jumps per level, plus emergent fo
 Original levels are inspiration seeds only. Do not recreate their 60-level campaign, enforce one-to-one mappings, or generate a fixed set of reskins for every original level. Use their pacing, playful arrangements, interactions, and growth payoffs to invent fresh scenes. Source references document influences, not required replicas.
 
 Player controls: WASD or arrow keys for directional movement; hold the mouse button to steer toward the pointer. Both methods share the same movement physics and deformation.
+
+Guide eating with a pointer toward the nearest edible object rather than highlighting nearby food. Consumed food influences the goo's color, using the food's average color and persisting beyond a brief flash. The mixing and return-to-gray behavior remain to be decided.
