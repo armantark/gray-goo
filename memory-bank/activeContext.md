@@ -4,7 +4,7 @@ Last staleness sweep: 2026-09-05
 
 The second goo body is implemented and exported to `builds/Gray Goo.app`. The Body menu switches between Shell and Procedural and preserves the current game state. Both native Coral routes run near 60 FPS at 1920 × 1080 with the user's saved 200% speed. Shell behavior is unchanged. Procedural grip/peel and rolling circulation remain less visually distinct than requested; do not claim full visual acceptance. Evidence is in `builds/body-verification/report.json` and `progress.md`.
 
-The user requested this final sequence: complete the body experiment, refine a few models through MCP in live Blender with a separate multi-angle critic scoring above 8, add jazzy MIDI music, publish GitHub source plus a downloadable standalone app, publish a playable GPT Sites browser build, and shelve the project. GitHub publishing is authorized for that final result. MCP installation still requires approval of the preinstall decision. The fixed critic rubric and scope are in `plans/final-shipping.md`.
+The user requested this final sequence: complete the body experiment, refine a few models through MCP in live Blender with a separate multi-angle critic scoring above 8, add jazzy MIDI music, publish GitHub source plus a downloadable standalone app, publish a playable GPT Sites browser build, and shelve the project. GitHub publishing is authorized for that final result. The user approved project-only MCP installation conditional on avoiding context bloat; setup and canary verification are complete. The fixed critic rubric and scope are in `plans/final-shipping.md`.
 
 ## Current scope
 

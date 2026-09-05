@@ -1,0 +1,11 @@
+[mcp_servers.blender_gray_goo]
+command = "./scripts/blender/server.sh"
+enabled_tools = ["get_scene_info", "execute_blender_code", "get_viewport_screenshot"]
+startup_timeout_sec = 20
+tool_timeout_sec = 180
+
+[mcp_servers.blender_gray_goo.tools.get_scene_info]
+output_token_limit = 1000
+
+[mcp_servers.blender_gray_goo.tools.execute_blender_code]
+output_token_limit = 1000

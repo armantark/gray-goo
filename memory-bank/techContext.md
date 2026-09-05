@@ -8,7 +8,7 @@ The installer came from https://download.blender.org/release/Blender5.2/blender-
 
 The installed app passed a factory-startup headless Python check that saved a .blend scene, exported a GLB, and rendered a PNG, all under `/tmp/tasty-planet-blender-update/`. The process exited 0 and printed `BLENDER_ASSET_SMOKE_OK 5.2.1 LTS`. Its build hash is `9e2066aef7ef`. These are asset-pipeline smoke checks, not game-performance measurements.
 
-The user selected Blender CLI over MCP. No add-on, server, or MCP configuration was installed. Performance must be checked in the running game at 1920 × 1080; the local Mac Studio is the proposed baseline device. Headless Blender success is not render or game performance evidence.
+The project also has an approved Blender MCP setup for live model refinement. `.codex/config.toml` allows only scene information, code execution, and viewport screenshots, with text output limits. `scripts/blender/server.sh` enables safe mode and disables telemetry. The addon uses an isolated profile under ignored `.tooling/blender-mcp/`; its pinned Python runtime lives under `tooling/blender-mcp/`. Performance must be checked in the running game at 1920 × 1080; the local Mac Studio is the proposed baseline device. Headless Blender success is not render or game performance evidence.
 
 Blender CLI can run Python for asset creation, materials, rendering, and export. The third-party ahujasid/blender-mcp adds a live-session bridge and external asset-service integrations; those conveniences are not bundled CLI features.
 

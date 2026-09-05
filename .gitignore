@@ -3,3 +3,5 @@ __pycache__/
 docs/design/curation-prompt.txt
 .godot/
 builds/
+.tooling/
+tooling/blender-mcp/.venv/

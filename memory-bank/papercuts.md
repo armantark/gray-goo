@@ -158,3 +158,5 @@
 - 2026-09-05: Blender MCP static audit found that Git commit `c5f35d9cc54451d785ac4c00c48bf9e98a2e8db9` omits ignored `src/blender_mcp/config.py`; PyPI1.9.1 includes it. The audited wheel SHA256 is `ede3aed34926f77142b8f00ee4f8544f68067d2dc747da8295d1c456171355b2`; use pinned wheel provenance if approved.
 
 - 2026-09-05: The body results preflight rejected ordinary outbound links as `FAIL A5 remote src/href asset (artifact must be self-contained)`. The first grouped shell call also opened the artifact after that failed check; use `&&` to gate opening on preflight success. The report now shows those source URLs as text.
+
+- 2026-09-05: The narrow Codex MCP documentation search returned a large unrelated changelog. Filter search hits before printing them; fetch the specific MCP page for `enabled_tools` and output limits. `.codex/` did not exist before the project setup.
