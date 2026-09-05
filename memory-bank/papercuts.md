@@ -84,3 +84,5 @@
 2026-09-04: Reference lookup encountered `403 Forbidden` on Devolver's game page and a reCAPTCHA on PMC; public search results provided alternative official trailer and university microscopy sources. Watch first failed under sandbox DNS (`Failed to resolve www.youtube.com`) and the free transcript fallback hit the uv cache restriction; retried the public trailer fetch with network permission.
 
 2026-09-04: The permitted Carrion watch retry obtained metadata but failed to download media with `HTTP Error 403: Forbidden`; no video frames were inspected. Do not claim to have watched it. Final pupil headless import exited 0 with only the known sandbox certificate/editor-settings errors, including `Cannot save file /Users/ArmanTarkhanian1/Library/Application Support/Godot/editor_settings-4.7.tres`.
+
+2026-09-04: Microworld's embedded reference video fetch was throttled (`Online fetch throttled`); its primary microscopy photographs and written observations remain available.
