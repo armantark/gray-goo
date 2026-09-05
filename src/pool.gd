@@ -4,6 +4,8 @@ extends Node3D
 var pigment := Color(0.16, 0.66, 0.79, 0.7)
 var remaining_volume := 0.0
 var whole_threshold := 0.0
+var min_tier := 0
+var minimum_radius := 0.0
 var last_contact := Vector3.ZERO
 var center: Vector3:
 	get:
@@ -19,6 +21,45 @@ var _dirty := false
 var _upload_time := 0.0
 var _resolution := 64
 var _mask_texture: ImageTexture
+var _basin_heights := PackedFloat32Array()
+var _initial_surface := 0.0
+var _initial_volume := 0.0
+var _basin_bottom := 0.0
+
+func set_basin(height_at: Callable) -> void:
+	_initial_surface = global_position.y
+	_initial_volume = remaining_volume
+	_basin_bottom = _initial_surface
+	_basin_heights.resize(_fill.size())
+	for z in range(_resolution + 1):
+		for x in range(_resolution + 1):
+			var index := _index(x, z)
+			var height: float = height_at.call(global_position + _point(x, z))
+			_basin_heights[index] = height
+			_fill[index] *= maxf(0.0, _initial_surface - height)
+			_basin_bottom = minf(_basin_bottom, height)
+	_lower_surface()
+	_dirty = true
+
+func _lower_surface() -> void:
+	if _basin_heights.is_empty() or remaining_volume <= 0.0:
+		return
+	var lowest_wet := _initial_surface
+	for index in _fill.size():
+		if _fill[index] > EDGE:
+			lowest_wet = minf(lowest_wet, _basin_heights[index])
+	global_position.y = maxf(lowest_wet + 0.02, lerpf(_basin_bottom, _initial_surface, remaining_volume / _initial_volume))
+	var weight := 0.0
+	for index in _fill.size():
+		if _basin_heights[index] >= global_position.y - 0.01 or _fill[index] <= EDGE:
+			_fill[index] = 0.0
+		weight += _fill[index]
+	# A receding shore redistributes the remaining water; only contact grants growth.
+	assert(weight > 0.0, "Basin must retain a wet cell while water remains")
+	_unit_volume = remaining_volume / weight
+
+func is_edible(tier: int, goo_radius: float) -> bool:
+	return remaining_volume > 0.00001 and tier >= min_tier and goo_radius >= minimum_radius
 
 func configure(at: Vector3, extent: Vector2, color: Color, volume: float,
 		final_threshold: float = 0.0, fabric: bool = false) -> void:
@@ -52,6 +93,8 @@ func configure(at: Vector3, extent: Vector2, color: Color, volume: float,
 	material.shader = preload("res://shaders/liquid.gdshader")
 	material.set_shader_parameter("pigment", color)
 	material.set_shader_parameter("fabric", fabric)
+	if fabric:
+		material.set_shader_parameter("albedo", load("res://assets/models/ground_space.png"))
 	material.set_shader_parameter("extent", extent)
 	material.set_shader_parameter("mask_threshold", EDGE)
 	_mask_texture = ImageTexture.create_from_image(Image.create_from_data(
@@ -173,5 +216,6 @@ func _process(delta: float) -> void:
 	if _dirty and _upload_time >= 0.08:
 		_upload_time = 0.0
 		_dirty = false
+		_lower_surface()
 		_mask_texture.update(Image.create_from_data(
 			_resolution + 1, _resolution + 1, false, Image.FORMAT_RF, _fill.to_byte_array()))
