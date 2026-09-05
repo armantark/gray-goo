@@ -48,3 +48,5 @@ The scene menu owns a saved movement-speed preference in `user://settings.cfg`, 
 Target guidance reuses the existing nearest-edible lookup. Only the selected object and its surviving composite parts receive a depth-tested yellow outline; consumption clears it. The last-meal portrait uses an isolated 192-pixel SubViewport, refreshed only when the displayed item changes. Liquids display a colored puddle.
 
 Pupils are a gaze-controlled color region on each eye mesh, using `shaders/eye.gdshader`. There is no overlapping pupil geometry to clip against the eyeball. The eye whites retain independent body-driven spring motion.
+
+Continuous rolling uses exact rotation of the shell material plus forward flow. Each particle stores its previous prescribed flow separately from its residual deformation velocity; do not mix retained tangential inertia into a partially relaxed rotation target. Adhesive floor bonds age with normalized travel and release asymmetrically. At the invisible field boundary, block outward propulsion so the body cannot roll up that edge.

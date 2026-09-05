@@ -2,7 +2,6 @@ class_name GooBody
 extends Node3D
 
 # The center is the shell's mean, so adhesion and impacts move the whole organism.
-const Tendrils = preload("res://src/goo_tendrils.gd")
 const SUBSTEPS := 2
 const SOLVER_ITERATIONS := 4
 const GRAY := Color(0.57, 0.61, 0.65)
@@ -52,11 +51,10 @@ var _obstacles: Callable
 var _field: Rect2
 var _drive := Vector3.ZERO
 var _speed: float = 0.0
-var _food_target := Vector3.ZERO
-var _food_radius: float = -1.0
-var _tendrils: MeshInstance3D
 var _points := PackedVector3Array()
 var _previous := PackedVector3Array()
+var _previous_flow := PackedVector3Array()
+var _flow_drive := Vector3.ZERO
 var _previous_dt: float = 1.0 / (Engine.physics_ticks_per_second * SUBSTEPS)
 var _rest := PackedVector3Array()
 var _faces := PackedInt32Array()
@@ -64,6 +62,8 @@ var _edges: Array[Vector2i] = []
 var _edge_lengths := PackedFloat32Array()
 var _anchors := PackedVector3Array()
 var _attached := PackedByteArray()
+var _anchor_age := PackedFloat32Array()
+var _release_time := PackedFloat32Array()
 var _colors := PackedColorArray()
 var _normals := PackedVector3Array()
 var _gradients := PackedVector3Array()
@@ -96,20 +96,12 @@ func configure(start: Vector3, starting_radius: float, ground_height: Callable,
 	global_position.y = maxf(start.y, float(_ground_height.call(start)) + radius)
 	_build_shell()
 	_build_render_mesh()
-	_tendrils = Tendrils.new()
-	_tendrils.name = "Filaments"
-	add_child(_tendrils)
-	_tendrils.configure(self)
 	_configured = true
 	_update_surface()
 
 func set_drive(direction: Vector3, speed: float) -> void:
 	_drive = Vector3(direction.x, 0, direction.z).limit_length(1.0)
 	_speed = maxf(speed, 0.0)
-
-func set_food_target(at: Vector3, food_radius: float) -> void:
-	_food_target = at
-	_food_radius = food_radius
 
 func grow_to(new_radius: float) -> void:
 	_target_radius = maxf(_target_radius, new_radius)
@@ -157,7 +149,8 @@ func _physics_process(delta: float) -> void:
 	if not _configured:
 		return
 	var frame_dt := minf(delta, 1.0 / 30.0)
-	var substeps := clampi(ceili(_speed * _drive.length() * frame_dt / (radius * 0.25)), SUBSTEPS, 6)
+	var travel_speed := maxf(_speed * _drive.length(), _flow_drive.length())
+	var substeps := clampi(ceili(travel_speed * frame_dt / (radius * 0.25)), SUBSTEPS, 8)
 	var dt := frame_dt / substeps
 	var old_center := global_position
 	for _substep in substeps:
@@ -172,16 +165,33 @@ func _step(dt: float) -> void:
 	radius = lerpf(radius, _target_radius, 1.0 - exp(-3.5 * dt))
 	var growth := radius / old_radius
 	var center := global_position
-	var traction: PackedVector3Array = _tendrils.advance(dt)
+	_flow_drive = _flow_drive.lerp(_drive * _speed, 1.0 - exp(-24.0 * dt))
+	# The invisible field edge stops propulsion; it is not a surface the goo can roll up.
+	if (center.x <= _field.position.x + radius and _flow_drive.x < 0.0) or (center.x >= _field.end.x - radius and _flow_drive.x > 0.0):
+		_flow_drive.x = 0.0
+	if (center.z <= _field.position.y + radius and _flow_drive.z < 0.0) or (center.z >= _field.end.y - radius and _flow_drive.z > 0.0):
+		_flow_drive.z = 0.0
+	var desired := _flow_drive
+	var travel_rate := desired.length() / radius
+	var turn := Basis.IDENTITY
+	if not desired.is_zero_approx():
+		turn = Basis(Vector3.UP.cross(desired).normalized(), travel_rate * 0.8 * dt)
 	var solids: Array = _obstacles.call(center, radius * 2.2)
 	for i in _points.size():
 		_points[i] = center + (_points[i] - center) * growth
 		_previous[i] = center + (_previous[i] - center) * growth
 		# Displacement belongs to the previous step, including across slow-motion changes.
-		var point_velocity := (_points[i] - _previous[i]) / _previous_dt
+		var residual_velocity := (_points[i] - _previous[i]) / _previous_dt - _previous_flow[i] * growth
 		_previous[i] = _points[i]
-		var acceleration := -point_velocity * 4.0 + Vector3.DOWN * radius * 27.0 + traction[i]
-		_points[i] += point_velocity * dt + acceleration * dt * dt
+		var offset := _points[i] - center
+		# Advect material exactly; only deformation retains inertia, so circulation cannot pump energy into the shell.
+		var flow := desired * dt + turn * offset - offset
+		_previous_flow[i] = flow / dt
+		residual_velocity = turn * residual_velocity * exp(-9.0 * dt) + Vector3.DOWN * radius * 27.0 * dt
+		_points[i] += flow + residual_velocity * dt
+		_release_time[i] = maxf(0.0, _release_time[i] - dt)
+		if _attached[i]:
+			_anchor_age[i] += dt * travel_rate
 	# Compliance scales with dt squared so a slow-motion step cannot release a full-speed spring.
 	var elasticity := pow(dt * Engine.physics_ticks_per_second * SUBSTEPS, 2.0)
 	for iteration in SOLVER_ITERATIONS:
@@ -235,19 +245,21 @@ func _solve_contact(i: int, solids: Array, dt: float, last_iteration: bool) -> v
 	var floor_y := float(_ground_height.call(point)) + skin
 	var was_below := point.y <= floor_y
 	point.y = maxf(point.y, floor_y)
-	var moving := _drive.length_squared() > 0.001 and _speed > 0.0
-	if moving:
-		_attached[i] = 0
-	elif _attached[i]:
+	if _attached[i]:
 		var strain := Vector2(point.x - _anchors[i].x, point.z - _anchors[i].z).length()
-		if strain > radius * 0.85 or point.y - _anchors[i].y > radius * 0.35:
+		var trailing := clampf(-(_anchors[i] - global_position).dot(_drive) / radius, 0.0, 1.0)
+		var tear_distance := radius * lerpf(0.3, 1.15, trailing)
+		var bond_life := lerpf(0.3, 1.7, trailing) + float(i % 11) * 0.03
+		if strain > tear_distance or point.y - _anchors[i].y > radius * 0.45 or _anchor_age[i] > bond_life:
 			_attached[i] = 0
+			_release_time[i] = radius * 0.25 / maxf(_drive.length() * _speed, radius)
 		else:
-			point = point.lerp(_anchors[i], 0.78)
-	elif was_below:
+			point = point.lerp(_anchors[i], 0.68)
+	elif was_below and _release_time[i] <= 0.0:
 		point.y = floor_y
 		_attached[i] = 1
 		_anchors[i] = point
+		_anchor_age[i] = 0.0
 	point.x = clampf(point.x, _field.position.x + skin, _field.end.x - skin)
 	point.z = clampf(point.z, _field.position.y + skin, _field.end.y - skin)
 	for solid in solids:
@@ -342,8 +354,11 @@ func _build_shell() -> void:
 		_points.append(global_position + rest_point * radius)
 		_colors.append(GRAY)
 	_previous = _points.duplicate()
+	_previous_flow.resize(_points.size())
 	_anchors.resize(_points.size())
 	_attached.resize(_points.size())
+	_anchor_age.resize(_points.size())
+	_release_time.resize(_points.size())
 	_normals.resize(_points.size())
 	_gradients.resize(_points.size())
 
@@ -443,8 +458,6 @@ func _update_surface(delta: float = 0.0) -> void:
 	_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	_material.set_shader_parameter("celebration", _celebration)
 	_update_eyes(delta)
-	if _tendrils != null:
-		_tendrils.refresh_mesh()
 
 func _update_eyes(delta: float) -> void:
 	var camera := get_viewport().get_camera_3d()

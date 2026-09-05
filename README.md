@@ -43,8 +43,17 @@ The editable Blender library stays in `assets/source`; Godot imports the exporte
 
 ## Manual verification
 
-Play each scene from its starting size through completion. Check keyboard and mouse steering, camera rotation and limits, object engulfing, retained food color, attached parts, and the nearest-food pointer. Watch the tendrils plant and pull as you move, then release the controls and check that the body and eyes settle. Move the cursor around the goo and check that both pupils follow it. After a colored bite, check that the contact patch blends slowly and leaves a lasting tint. In the tide pool, cross the water and check that only local sections disappear. In the skatepark, nudge moving boards and cross the curved ground. In spacetime, consume the final fabric and keep moving in the void. After each goal, verify continued play and Next level.
+Play each scene from its starting size through completion. Check keyboard and mouse steering, camera rotation and limits, object engulfing, retained food color, attached parts, and the nearest-food pointer. Watch the body roll and flow while its ground contacts stretch and peel, then release the controls and check that the body and eyes settle. Move the cursor around the goo and check that both pupils follow it. After a colored bite, check that the contact patch blends slowly and leaves a lasting tint. In the tide pool, cross the water and check that only local sections disappear. In the skatepark, nudge moving boards and cross the curved ground. In spacetime, consume the final fabric and keep moving in the void. After each goal, verify continued play and Next level.
 
 Change Movement speed in the scene menu, resume play, and check that steering responds at the selected rate. Restart the app and check that the setting remains selected.
 
 The project follows the requested basic launch checks and one final visual/performance pass rather than a separate unit/integration/end-to-end test suite. The build plan is under `memory-bank/status-updates` and remains unchanged for comparison with results.
+
+## Record a motion clip
+
+The recording driver uses ordinary directional input in the tide-pool scene, including turns and release. Godot's movie mode records fixed simulation frames; use the live game for performance measurements.
+
+```sh
+/Applications/Godot.app/Contents/MacOS/Godot --path . --script res://scripts/record_motion.gd --write-movie builds/motion-capture.avi --fixed-fps 60 --quit-after 780 --disable-vsync
+ffmpeg -ss 2 -i builds/motion-capture.avi -t 10 -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -movflags +faststart builds/motion-preview.mp4
+```

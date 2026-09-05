@@ -173,9 +173,7 @@ func _process(delta: float) -> void:
 	if is_instance_valid(target):
 		target_position = target.center()
 		target_name = target.title
-		goo.set_food_target(target_position, target.radius)
 	else:
-		goo.set_food_target(Vector3.ZERO, -1.0)
 		for pool in world.pools:
 			if pool.remaining_volume > 0.00001:
 				target_position = pool.closest_point(goo.global_position)
