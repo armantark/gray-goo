@@ -14,12 +14,12 @@ var _groups: Array[Dictionary] = []
 func definition() -> Dictionary:
 	return {"title": "Cosmic Web", "meters_per_unit": 9.4607e15,
 		"initial_radius": 0.4, "goal_radius": 9.5, "start_position": Vector3(-36.5, 0, -12.8),
-		"accent": Color("e3c393"), "field": Rect2(-65, -50, 130, 100),
+		"accent": Color("e3c393"), "field": Rect2(-180, -155, 360, 270),
 		"tiers": ["Stars", "Nebulae and clusters", "Galaxies", "Groups and clusters", "The web"],
 		"jumps": [{"radius": 0.4, "view_size": 9.0}, {"radius": 0.85, "view_size": 15.0},
 			{"radius": 1.75, "view_size": 25.0, "meters_per_unit": 1e20},
 			{"radius": 3.3, "view_size": 39.0, "meters_per_unit": 1e21},
-			{"radius": 6.0, "view_size": 67.0, "meters_per_unit": 1e22}],
+			{"radius": 6.0, "view_size": 180.0, "meters_per_unit": 1e22}],
 		"background_color": Color("020407"), "ground_color": Color("0c1017"),
 		"key_color": Color("eee5d7"), "fill_color": Color("6c8199"),
 		"ground_texture": "res://assets/models/ground_space.png", "visible_ground": false}
@@ -33,10 +33,11 @@ func build(scene_world: GameWorld) -> void:
 	filament.name = "VisibleCosmicFilament"
 	world.add_child(filament)
 	_build_filament()
-	supercluster = _whole(Vector2.ZERO, 52.0, 6.0, 190.0, "Filament supercluster", 4)
+	supercluster = _whole(Vector2.ZERO, 180.0, 6.0, 192.0, "Filament supercluster", 4)
 	supercluster.context_whole = filament
 	supercluster.milestone = true
 	_build_supercluster()
+	_build_outlying_filaments()
 	fabric = world._pool(Vector3(0, 0.035, 0), Vector2(59, 43), Color(0.1, 0.14, 0.2, 0.85), 450.0, 0.0, true)
 	fabric.min_tier = 99
 	fabric.minimum_radius = 6.0
@@ -86,9 +87,9 @@ func _dust_path(parent: Node3D, points: PackedVector3Array, count: int, spread: 
 	parent.add_child(dust)
 
 func _build_supercluster() -> void:
-	for index in range(7):
+	for index in range(28):
 		var point := _group_point(index)
-		var group := _whole(Vector2(point.x, point.z), 9.5, 3.3 + index * 0.12, 19.0,
+		var group := _whole(Vector2(point.x, point.z), 9.5, 3.3 + (index % 7) * 0.12, 6.3,
 			"Galaxy group " + str(index + 1), 3, supercluster)
 		group.rotation.y = 0.12 if index == 1 else world._rng.randf_range(-1.8, 1.8)
 		_groups.append({"food": group, "home": group.position, "phase": world._rng.randf_range(0, TAU)})
@@ -102,9 +103,9 @@ func _build_group(group: Food, index: int) -> void:
 	var spiral := _spiral(group, Vector2(-4.2, 0) + _galaxy_offset(), index)
 	_galaxies.append(spiral)
 	var elliptical := world._add_food("elliptical_galaxy", Vector2(3.4, 3.6) + _galaxy_offset(), 2.3, 2.05,
-		4.4, "Elliptical galaxy", false, 2, group)
+		0.375, "Elliptical galaxy", false, 2, group)
 	var dwarf := world._add_food("dwarf_galaxy", Vector2(4.0, -4.1) + _galaxy_offset(), 1.4, 1.75,
-		2.8, "Dwarf galaxy", false, 2, group)
+		0.33, "Dwarf galaxy", false, 2, group)
 	_nonblocking(elliptical)
 	_nonblocking(dwarf)
 	_galaxies.append_array([elliptical, dwarf])
@@ -112,28 +113,30 @@ func _build_group(group: Food, index: int) -> void:
 		galaxy.set_meta("spin", world._rng.randf_range(-0.028, 0.028))
 	_nebula(elliptical, Vector2(0.6, 0), 0.8, index * 3 + 1)
 	_nebula(dwarf, Vector2.ZERO, 0.7, index * 3 + 2)
+	_nebula(elliptical, Vector2(-0.9, -0.5), 0.75, index * 3 + 1)
+	_nebula(dwarf, Vector2(0.8, -0.6), 0.6, index * 3 + 2)
 
 func _spiral(group: Food, at: Vector2, seed_index: int) -> Food:
-	var galaxy := _whole(at, 4.2, 2.4, 4.0, "Spiral galaxy", 2, group)
+	var galaxy := _whole(at, 4.2, 2.4, 0.3, "Spiral galaxy", 2, group)
 	Geometry.backdrop_model(galaxy.visual, "galaxy_bulge", Vector3.ZERO, 0.92)
 	for index in range(3):
-		var arm := world._add_food("galaxy_arm", Vector2.ZERO, 3.5, 1.75, 0.6,
+		var arm := world._add_food("galaxy_arm", Vector2.ZERO, 3.5, 1.75, 0.05,
 			"Spiral arm", false, 2, galaxy)
 		arm.rotation.y = index * TAU / 3.0
 		_nonblocking(arm)
-		if index == 0:
+		if index < 2:
 			_nebula(arm, Vector2(1.7, 0.4), 1.25, seed_index * 3)
 	var hole := world._add_food("black_hole", Vector2(0.12, 0.15), 0.35, 1.1,
-		0.18, "Black hole with accretion disk", false, 1, galaxy, 0.1)
+		0.045, "Black hole with accretion disk", false, 1, galaxy, 0.7)
 	hole.set_meta("accretion_disk", true)
 	galaxy.part_consumed.connect(_spiral_changed.bind(galaxy))
 	return galaxy
 
 func _nebula(parent: Food, at: Vector2, size: float, index: int) -> void:
-	var nebula := world._add_food("nebula", at, size, 1.05, 0.4, "Stellar nursery nebula", false, 1, parent)
+	var nebula := world._add_food("nebula", at, size, 1.05, 0.025, "Stellar nursery nebula", false, 1, parent)
 	nebula.rotation = Vector3.ZERO
 	_nonblocking(nebula)
-	var cluster := _whole(Vector2.ZERO, size * 0.82, 0.85, 0.18, "Open star cluster", 1, nebula)
+	var cluster := _whole(Vector2.ZERO, size * 0.82, 0.85, 0.0165, "Open star cluster", 1, nebula)
 	for star_index in range(9):
 		var lobe := Vector2(-0.28, 0.13) if star_index < 6 else Vector2(0.34, -0.22)
 		var scatter := Vector2(world._rng.randfn(0, 0.2), world._rng.randfn(0, 0.14))
@@ -141,7 +144,7 @@ func _nebula(parent: Food, at: Vector2, size: float, index: int) -> void:
 		var kind: String = ["red_dwarf", "yellow_star", "blue_giant"][star_index % 3]
 		var star_size: float = [0.115, 0.15, 0.2][star_index % 3]
 		var star := world._add_food(kind, position,
-			star_size, 0.4, 0.0045, kind.replace("_", " ").capitalize(), false, 0, cluster, 0.025)
+			star_size, 0.4, 0.00225, kind.replace("_", " ").capitalize(), false, 0, cluster, 0.025)
 		_stars.append({"food": star, "home": star.position, "phase": world._rng.randf_range(0, TAU), "speed": world._rng.randf_range(0.15, 0.3)})
 
 func _spiral_changed(part: Food, galaxy: Food) -> void:
@@ -164,7 +167,7 @@ func _build_background() -> void:
 	_starfield(background)
 	for branch in range(5):
 		_background_filament(background, branch)
-	var fields := [Vector2(-87, -31), Vector2(-79, 49), Vector2(15, 76), Vector2(88, 35), Vector2(39, -79)]
+	var fields := [Vector2(-215, -31), Vector2(-205, 155), Vector2(15, 165), Vector2(220, 35), Vector2(39, -198)]
 	for index in range(85):
 		var center: Vector2 = fields[index % fields.size()]
 		var scatter := Vector2(world._rng.randfn(0, 8), world._rng.randfn(0, 7)).limit_length(13)
@@ -191,9 +194,9 @@ func _starfield(parent: Node3D) -> void:
 	batch.transform_format = MultiMesh.TRANSFORM_3D
 	batch.use_colors = true
 	batch.mesh = plane
-	batch.instance_count = 1800
+	batch.instance_count = 4800
 	for index in batch.instance_count:
-		var point := Vector3(world._rng.randf_range(-110, 110), 0.09, world._rng.randf_range(-85, 85))
+		var point := Vector3(world._rng.randf_range(-250, 250), 0.09, world._rng.randf_range(-225, 185))
 		var size := world._rng.randf_range(0.035, 0.12)
 		batch.set_instance_transform(index, Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * size), point))
 		var tint := Color("f5e3c4") if index % 4 == 0 else Color("cbd8e5")
@@ -208,8 +211,8 @@ func _starfield(parent: Node3D) -> void:
 	parent.add_child(stars)
 
 func _background_filament(parent: Node3D, branch: int) -> void:
-	var starts := [Vector2(-115, -70), Vector2(-104, -45), Vector2(-91, 70), Vector2(78, -111), Vector2(-138, 19)]
-	var ends := [Vector2(-82, 110), Vector2(96, -88), Vector2(113, 93), Vector2(91, 125), Vector2(-66, -101)]
+	var starts := [Vector2(-260, -150), Vector2(-250, 180), Vector2(250, -220), Vector2(-255, -200), Vector2(-300, 30)]
+	var ends := [Vector2(-230, 240), Vector2(280, 220), Vector2(240, 235), Vector2(300, -220), Vector2(-245, -260)]
 	var points := PackedVector3Array()
 	for index in range(61):
 		var t := index / 60.0
@@ -246,11 +249,14 @@ func _group_point(index: int) -> Vector3:
 	var spine := [-0.96, -0.68, -0.68, -0.09, -0.09, 0.58, 0.58]
 	var offsets := [Vector2.ZERO, Vector2.ZERO, Vector2(-6, 15), Vector2.ZERO,
 		Vector2(14, -14), Vector2.ZERO, Vector2(13, 12)]
-	return _filament_point(spine[index]) + Vector3(offsets[index].x, 0, offsets[index].y)
+	var local := index % 7
+	var patch: Vector3 = [Vector3.ZERO, Vector3(115, 0, -43), Vector3(-112, 0, 52), Vector3(5, 0, -105)][index / 7]
+	return _filament_point(spine[local]) + Vector3(offsets[local].x, 0, offsets[local].y) + patch
 
 func _build_branch(index: int) -> void:
 	var origins := {2: 1, 4: 3, 6: 5}
-	var start := _group_point(origins[index])
+	var region := (index / 7) * 7
+	var start := _group_point(region + origins[index % 7])
 	var end := _group_point(index)
 	var side := Vector3(-(end.z - start.z), 0, end.x - start.x) * 0.14
 	var points := PackedVector3Array()
@@ -271,3 +277,20 @@ func _step_groups(delta: float) -> void:
 	for galaxy in _galaxies:
 		if galaxy.active:
 			galaxy.rotation.y += delta * float(galaxy.get_meta("spin"))
+
+func _build_outlying_filaments() -> void:
+	for patch in [Vector3(115, 0, -43), Vector3(-112, 0, 52), Vector3(5, 0, -105)]:
+		var points := PackedVector3Array()
+		for index in range(81):
+			points.append(_filament_point(index / 40.0 - 1.0) + patch)
+		_dust_path(filament, points, 1100, 1.5)
+		var inward := -1.0 if patch.x > 0 else 1.0
+		var start := _filament_point(-inward)
+		var finish: Vector3 = _filament_point(inward) + patch
+		var link := PackedVector3Array()
+		for index in range(33):
+			var t := index / 32.0
+			link.append(start.lerp(finish, t) + Vector3(0, 0, sin(t * PI) * 6.0))
+		_dust_path(filament, link, 300, 1.1)
+	for index in [9, 11, 13, 16, 18, 20, 23, 25, 27]:
+		_build_branch(index)

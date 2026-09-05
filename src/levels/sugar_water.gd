@@ -24,11 +24,11 @@ var _drifters: Array[Dictionary] = []
 func definition() -> Dictionary:
 	return {"title": "Sugar Water", "meters_per_unit": 1e-15,
 		"initial_radius": 0.16, "goal_radius": 7.0, "start_position": Vector3(-25, 0, 17),
-		"accent": Color("f1c78a"), "field": Rect2(-64, -50, 128, 100),
+		"accent": Color("f1c78a"), "field": Rect2(-96, -75, 192, 150),
 		"tiers": ["Particle soup", "Formations", "Small nuclei", "Atoms", "Molecules"],
 		"jumps": [{"radius": 0.16, "view_size": 5.0}, {"radius": 0.38, "view_size": 12.0},
 			{"radius": 0.85, "view_size": 20.0}, {"radius": 1.8, "view_size": 34.0, "meters_per_unit": 1e-11},
-			{"radius": 4.5, "view_size": 60.0, "meters_per_unit": 1e-10}],
+			{"radius": 4.5, "view_size": 90.0, "meters_per_unit": 1e-10}],
 		"background_color": Color("0b1622"), "ground_color": Color("263644"),
 		"key_color": Color("e4ebe8"), "fill_color": Color("8da4bb"),
 		"ground_texture": "res://assets/models/ground_particle.png"}
@@ -40,6 +40,7 @@ func build(scene_world: GameWorld) -> void:
 	world = scene_world
 	drop = Node3D.new()
 	drop.name = "SugarWaterDrop"
+	drop.scale = Vector3.ONE * 1.5
 	world.add_child(drop)
 	Geometry.line(drop, PackedVector3Array([Vector3(-51, 0.03, -27), Vector3(-33, 0.03, -43),
 		Vector3(8, 0.03, -47), Vector3(46, 0.03, -36), Vector3(58, 0.03, -8),
@@ -60,7 +61,7 @@ func _whole(at: Vector2, size: float, threshold: float, volume: float, label: St
 	return food
 
 func _build_sucrose() -> void:
-	sucrose = _whole(Vector2(6, -5), 17.0, 6.5, 130.0, "Sucrose molecule · C12H22O11", 4)
+	sucrose = _whole(Vector2(6, -5), 17.0, 6.5, 40.0, "Sucrose molecule · C12H22O11", 4)
 	sucrose.milestone = true
 	_add_drift(sucrose, 1.0, 0.012, 0.006)
 	var atoms: Array[Food] = []
@@ -86,6 +87,7 @@ func _build_sucrose() -> void:
 	sucrose.set_meta("formula", "C12H22O11")
 	sucrose.set_meta("atom_count", 45)
 	sucrose.set_meta("ring_sizes", [6, 5])
+	sucrose.part_consumed.connect(_molecule_changed.bind(sucrose))
 
 func _add_sucrose_hydroxyls(atoms: Array[Food], sites: Array[Vector2]) -> void:
 	for index in [1, 3, 4, 8, 9, 11, 12, 13]:
@@ -123,21 +125,25 @@ func _build_water() -> void:
 		Vector2(-44, 8), Vector2(24, 18), Vector2(36, 24), Vector2(31, 1), Vector2(29, 5),
 		Vector2(20, 29), Vector2(7, 22), Vector2(-1, 40), Vector2(11, 38), Vector2(3, -32),
 		Vector2(17, -35), Vector2(28, -25), Vector2(37, -33), Vector2(42, -17)]
+	for index in range(30):
+		var center: Vector2 = [Vector2(-60, -40), Vector2(-58, 40), Vector2(60, 40), Vector2(60, -40), Vector2(0, 53)][index % 5]
+		sites.append(center + Vector2(world._rng.randfn(0, 15), world._rng.randfn(0, 12)).limit_length(24))
 	for site in sites:
 		var at: Vector2 = site + Vector2(world._rng.randfn(0, 0.8), world._rng.randfn(0, 0.8))
-		var water := _whole(at, 3.7, 4.5, 8.0, "Water molecule · H2O", 4)
+		var water := _whole(at, 3.7, 4.5, 4.5, "Water molecule · H2O", 4)
 		var oxygen := _atom(water, Vector2.ZERO, 8, 8, 3, 2.6)
 		for side in [-1, 1]:
 			var hydrogen := _atom(water, Vector2(side * 2.25, 1.65), 1, 0, 3, 1.0)
 			_bond(water, oxygen, hydrogen)
 		water.set_meta("formula", "H2O")
+		water.part_consumed.connect(_molecule_changed.bind(water))
 		_waters.append(water)
 		water.rotation.y = world._rng.randf_range(-PI, PI)
 		_add_drift(water, world._rng.randf_range(0.7, 1.3), 0.028, 0.014)
 
 func _atom(parent: Food, at: Vector2, protons: int, neutrons: int, tier: int, threshold: float) -> Food:
 	var atom_radius := 0.8 if protons <= 2 else 1.45
-	var atom := _whole(at, atom_radius, threshold, 1.25, ELEMENTS[protons] + " atom", tier, parent)
+	var atom := _whole(at, atom_radius, threshold, 0.6, ELEMENTS[protons] + " atom", tier, parent)
 	atom.set_meta("protons", protons)
 	atom.set_meta("electrons", protons)
 	var nucleus := _nucleus(atom, protons, neutrons)
@@ -158,7 +164,7 @@ func _nucleus(atom: Food, protons: int, neutrons: int) -> Food:
 		var distance := sqrt(float(index)) * NUCLEON_RADIUS * 0.86
 		var kind := "proton" if proton else "neutron"
 		var nucleon := world._add_food(kind, Vector2.from_angle(angle) * distance, NUCLEON_RADIUS,
-			0.85, 0.008, kind.capitalize(), false, 2, nucleus, (index % 3) * 0.035)
+			0.85, 0.006, kind.capitalize(), false, 2, nucleus, (index % 3) * 0.035)
 		nucleon.set_meta("proton", proton)
 	return nucleus
 
@@ -208,12 +214,12 @@ func _build_nursery() -> void:
 		for nucleon in nucleus.parts:
 			nucleon.tier = 1
 			nucleon.threshold = 0.44
-			nucleon.volume = 0.012
+			nucleon.volume = 0.0095
 			_clumps.append({"food": nucleon, "home": nucleon.position})
 			_bind_quarks(nucleon, 3, index)
 	for index in range(12):
 		var at := _nursery_point(index + 4)
-		var pion := world._add_food("pion", at, 0.21, 0.38, 0.012, "Pion", false, 1)
+		var pion := world._add_food("pion", at, 0.21, 0.38, 0.0095, "Pion", false, 1)
 		_add_drift(pion, 0.45, 0.09)
 		pion.context_whole = drop
 		pion.loose_reason = "Quark and antiquark condense together in the drop."
@@ -225,10 +231,10 @@ func _build_nursery() -> void:
 func _bind_quarks(nucleon: Food, count: int, phase: int) -> void:
 	for index in range(count):
 		var at := Vector2.from_angle(TAU * index / count) * 0.23
-		var quark := world._add_food("quark", at, 0.075, 0.16, 0.0008, "Bound quark", false, 0, nucleon)
+		var quark := world._add_food("quark", at, 0.075, 0.16, 0.00025, "Bound quark", false, 0, nucleon)
 		quark.rename("Bound quark", Color(["ed7169", "77bba0", "719ed6"][index % 3]))
 		_formations.append({"food": quark, "home": at, "phase": phase * 0.4 + index})
-	var gluon := world._add_food("gluon", Vector2.ZERO, 0.06, 0.16, 0.0005, "Binding gluon", false, 0, nucleon)
+	var gluon := world._add_food("gluon", Vector2.ZERO, 0.06, 0.16, 0.0002, "Binding gluon", false, 0, nucleon)
 	_particles.append({"food": gluon, "home": Vector2.ZERO, "phase": float(phase), "kind": "gluon"})
 	nucleon.part_consumed.connect(_collapse_nucleon.bind(nucleon))
 
@@ -250,7 +256,7 @@ func _add_free_particle(index: int) -> void:
 	var kind: String = kinds[index % kinds.size()]
 	var at := _nursery_point(index)
 	var particle := world._add_food(kind, at, 0.06 if kind != "quark" else 0.075,
-		0.16, 0.0008, kind.capitalize(), false, 0)
+		0.16, 0.00025, kind.capitalize(), false, 0)
 	particle.context_whole = drop
 	particle.loose_reason = "Thermal particle soup in the water drop."
 	if kind == "quark":
@@ -268,7 +274,7 @@ func _build_background() -> void:
 		var root := _molecule_replica(source, 0.35 if index % 3 == 0 else 0.9)
 		root.name = "BackgroundSucroseMolecule" if index % 3 == 0 else "BackgroundWaterMolecule"
 		world.add_child(root)
-		root.position = Vector3(sites[index].x, 0.8 + index % 3, sites[index].y)
+		root.position = Vector3(sites[index].x * 1.5, 0.8 + index % 3, sites[index].y * 1.5)
 		root.rotation.y = world._rng.randf_range(-PI, PI)
 		_background.append(root)
 
@@ -361,7 +367,7 @@ func _build_free_hosts() -> void:
 		var proton: Food = nucleus.parts[0]
 		proton.tier = 1
 		proton.threshold = 0.38
-		proton.volume = 0.012
+		proton.volume = 0.0095
 		proton.part_consumed.connect(_collapse_nucleon.bind(proton))
 		_free_hosts.append(proton)
 
@@ -504,6 +510,16 @@ func _atom_changed(_part: Food, atom: Food) -> void:
 			child.visible = false
 	if electrons > 0 or atom.get_meta("remnant", false):
 		return
+	_show_remnant(atom)
+
+func _molecule_changed(_part: Food, molecule: Food) -> void:
+	for part in molecule.parts:
+		if is_instance_valid(part) and part.active:
+			return
+	molecule.rename("Molecular remnant", Color("a7b9c4"))
+	_show_remnant(molecule)
+
+func _show_remnant(atom: Food) -> void:
 	atom.set_meta("remnant", true)
 	var mesh := SphereMesh.new()
 	mesh.radius = atom.radius * 0.3
@@ -517,10 +533,10 @@ func _atom_changed(_part: Food, atom: Food) -> void:
 	remnant.position.y = 0.12
 
 func _nursery_point(index: int) -> Vector2:
-	var centers := [Vector2(-25, 17), Vector2(-18.5, 14.5), Vector2(-20, 23), Vector2(-29, 23.5)]
+	var centers := [Vector2(-25, 17), Vector2(-12, 12), Vector2(-15, 29), Vector2(-33, 30)]
 	var memberships := [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3]
 	var cloud: int = memberships[index % memberships.size()]
-	var offset := Vector2(world._rng.randfn(0, 1.7), world._rng.randfn(0, 0.95)).limit_length(3.0)
+	var offset := Vector2(world._rng.randfn(0, 2.5), world._rng.randfn(0, 1.4)).limit_length(4.5)
 	return centers[cloud] + offset.rotated(cloud * 1.13)
 
 func _add_drift(food: Food, amplitude: float, spin: float, tilt: float = 0.0) -> void:
