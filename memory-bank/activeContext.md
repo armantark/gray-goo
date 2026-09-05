@@ -6,7 +6,7 @@ The five-anchor, irregular-idle-ooze revision is exported to `builds/Gray Goo.ap
 
 ## Current scope
 
-The user approved the four-scene plan with "Go for it" on 2026-09-04. Quark Dust Ladder, Coral Colony Tide Pool, Skatepark Bowl, and Tablecloth of Everything are implemented. The accepted catalogue in `docs/design/selection.json` is inspiration for future scope, not authorization to build the 60-level campaign. Do not reopen the design interview or present another full catalogue.
+The user approved the four-scene plan with "Go for it" on 2026-09-04. Sugar Water, Coral Colony Tide Pool, Skatepark Bowl, and Cosmic Web are implemented per `docs/design/level-contract.md`, each with five tiers and four jumps in `src/levels/`. The accepted catalogue in `docs/design/selection.json` is inspiration for future scope, not authorization to build the 60-level campaign. Do not reopen the design interview or present another full catalogue.
 
 Godot 4.7.2 standard supplies the native runtime, with the Mobile renderer and a 1920 × 1080 render size. Blender 5.2.1 LTS supplies editable source assets through its CLI; no MCP was installed. The user prefers personal Mac play; browser delivery is outside this build. Everything informs scale and theme diversity, not gameplay or origin story.
 
@@ -32,13 +32,15 @@ Every consumed item contributes to goal size. Completion depends on size, not a 
 
 ## Settled 2026-09-05 design interview
 
-The interview settled: the root structure rule, five tiers and four jumps per demo level at about ten minutes each, Sugar Water (sucrose in water) as the subatomic level, tide pool, skatepark, and cosmic web ladders, textures on every model, 3D backgrounds, realistic space, a constant body-length speed law with smoothing, and the specimen readout HUD with a ladder strip. The contract for Astra is `docs/design/level-contract.md`. Fable owns speed and HUD. The user dispatched Astra with the plan on 2026-09-05. The speed law landed first so Astra's playthrough timings use it. Fable's HUD rebuild waits for Astra's `tiers` list; until then Fable does not edit `src/hud.gd`.
+The interview settled: the root structure rule, five tiers and four jumps per demo level at about ten minutes each, Sugar Water (sucrose in water) as the subatomic level, tide pool, skatepark, and cosmic web ladders, textures on every model, 3D backgrounds, realistic space, a constant body-length speed law with smoothing, and the specimen readout HUD with a ladder strip. The contract for Astra is `docs/design/level-contract.md`. Fable owns speed and HUD. The user dispatched Astra with the plan on 2026-09-05. The speed law landed first so Astra's playthrough timings use it. Astra completed the level rebuild and released the checkout on 2026-09-05; the runtime hand-off is `docs/design/level-runtime-handoff.md` and results are at https://2c8gwk9dw7m5.postplan.dev . Fable now rebuilds the HUD.
 
-## Next design review
+## Goo body second option
 
-The user wants protons and neutrons to keep constant sizes. Different elements use different constituent counts, with visibly orbiting electrons in the old textbook diagram style. Loose-quark scatter is a poor fit. Other subatomic types can move at readable game speeds. The user now explicitly requests a proposed subatomic system and a grill-me interview before implementation. Settle and obtain approval for the design before changing the scene. Do not dismiss these consistency requirements as scientific literalism.
+The user judges the simulated shell semi-decent but glitchy and wants a procedural skin over a simple core as a second body, with a `Body` toggle in the settings menu so both can be compared in game. The brief for Astra's next round is `plans/goo-body-brief.md`. It runs after the level rebuild, in the same checkout, one owner at a time.
 
-The desired typical duration is roughly 3–5 minutes, but human pacing and final balance remain unverified. The new movement speed changes travel time; do not reuse old completion times as evidence of current pacing.
+## Open performance issue
+
+Ordinary Sugar Water movement runs at `7.30575653765586` FPS with `148.112` ms p95 on a 20-second native route; the same route with an empty obstacle callback runs at `57.9811818051833` FPS. The cost is body-to-obstacle contact in `src/goo_body.gd` against the dense particle scene. Cosmic Web averages `43.6035259758876` FPS. Reproduce with `scripts/drive_levels.gd -- --start=0 --last=0 --limit=20`. Do not call the rebuild performance-complete until this is fixed. Human pacing at about ten minutes is unverified; the four headless routes took 509, 455, 469, and 670 simulation seconds.
 
 ## Verification and communication boundaries
 
