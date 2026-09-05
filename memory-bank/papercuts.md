@@ -145,3 +145,4 @@
 - 2026-09-05: Native release inspection called unsupported `App.getState()` after context recovery; use the documented `getAXState()` and `getScreenshot()` methods.
 
 - 2026-09-05: Results artifact preflight rejects an ordinary navigation link as `FAIL A5 remote src/href asset (artifact must be self-contained)`; retained the approved plan address as text.
+- 2026-09-05T14:55: `scripts/check_obstacles.gd` compared obstacle arrays with order-sensitive equality, so a correct grid query failed the check until the comparison sorted both sides. The handoff attributed the Sugar Water slowdown to body contact; the real cost was the full-food scans in `get_obstacles` and `_consume_foods` plus physics catch-up. Profile before trusting a handoff's attribution.
