@@ -16,7 +16,7 @@ Use smooth cartoon forms, bright colors, cel shading, and outlines. Original Tas
 
 The goo is one continuous rolling, sticky, gooey mass. Its own material circulates and flows into temporary extensions; floor contacts stretch and peel. The user now accepts feet-like reaching when it uses four or five irregular anchors rather than two alternating ones. Preserve the trailing stickiness and add forward reaching and grip. At rest, it should slowly melt into a broad, shallow, irregular puddle with unequal slowly spreading lobes, then gather again when movement resumes. Separate filament meshes and meaty Carrion appendages remain rejected. Keep cartoon pigment and googly eyes. Native motion takes precedence over generated references.
 
-The default requested drive speed is one quarter of the September 4 clip, calibrated with multiplier 3.7 instead of 10.0 to account for the added forward grip. Movement speed in the scene menu adjusts keyboard and mouse steering from 10% to 200%, with 100% as the new baseline. Saved percentages remain valid. Physical travel is approximate because acceleration, traction, and turns affect it.
+The drive speed is a constant four body lengths per second at every size, with the drive ramp at 6 per second to match the reach cycle. The user tunes the default by feel. Movement speed in the scene menu adjusts keyboard and mouse steering from 10% to 200%, with 100% as the new baseline. Saved percentages remain valid. Physical travel is approximate because acceleration, traction, and turns affect it.
 
 WASD and arrows move relative to the screen. Hold the left mouse button to steer toward the pointer. Right-button drag rotates only the camera; scrolling changes zoom within the active scale view. Keep the camera tilt fixed. Do not bind rotation to Q/E or use tank controls. Invisible field walls constrain the goo, and the camera stops following near the boundary.
 
@@ -32,7 +32,7 @@ Every consumed item contributes to goal size. Completion depends on size, not a 
 
 ## Settled 2026-09-05 design interview
 
-The interview settled: the root structure rule, five tiers and four jumps per demo level at about ten minutes each, Sugar Water (sucrose in water) as the subatomic level, tide pool, skatepark, and cosmic web ladders, textures on every model, 3D backgrounds, realistic space, a constant body-length speed law with smoothing, and the specimen readout HUD with a ladder strip. The contract for Astra is `docs/design/level-contract.md`. Fable owns speed and HUD. Awaiting the user's confirmation to dispatch.
+The interview settled: the root structure rule, five tiers and four jumps per demo level at about ten minutes each, Sugar Water (sucrose in water) as the subatomic level, tide pool, skatepark, and cosmic web ladders, textures on every model, 3D backgrounds, realistic space, a constant body-length speed law with smoothing, and the specimen readout HUD with a ladder strip. The contract for Astra is `docs/design/level-contract.md`. Fable owns speed and HUD. The user dispatched Astra with the plan on 2026-09-05. The speed law landed first so Astra's playthrough timings use it. Fable's HUD rebuild waits for Astra's `tiers` list; until then Fable does not edit `src/hud.gd`.
 
 ## Next design review
 
