@@ -7,8 +7,7 @@ var foods: Array[Food] = []
 var pools: Array[LocalPool] = []
 var player_radius := 0.5
 var _level := 0
-var _revealed := false
-var _locked: Array[Food] = []
+var current_tier := 0
 var _currents: Array[Food] = []
 var _time := 0.0
 var _rng := RandomNumberGenerator.new()
@@ -19,25 +18,29 @@ func build(level_index: int) -> void:
 	match _level:
 		0:
 			config = {"title": "Quark Dust Ladder", "meters_per_unit": 1e-15, "initial_radius": 0.5, "goal_radius": 3.85,
-				"jump_radius": 1.5, "camera_sizes": [14.0, 26.0], "start_position": Vector3(-32.0, 0.0, 29.0), "accent": Color("ffbc70")}
+				"tiers": ["Particle soup", "Formations", "Small nuclei", "Atoms", "Molecules"],
+				"jumps": _jumps(0.5, 14.0), "start_position": Vector3(-32.0, 0.0, 29.0), "accent": Color("ffbc70")}
 			_lighting(Color("10152e"), Color("a7b9ee"), Color("ff92b1"))
 			_terrain(Color("202747"))
 			_quarks()
 		1:
 			config = {"title": "Coral Colony Tide Pool", "meters_per_unit": 0.01, "initial_radius": 0.55, "goal_radius": 3.75,
-				"jump_radius": 1.45, "camera_sizes": [14.0, 26.0], "start_position": Vector3(-33.0, 0.0, 28.0), "accent": Color("73ead9")}
+				"tiers": ["Plankton and polyps", "Branches and shells", "Pool animals", "Rocks and water", "The pool"],
+				"jumps": _jumps(0.55, 14.0), "start_position": Vector3(-33.0, 0.0, 28.0), "accent": Color("73ead9")}
 			_lighting(Color("376f83"), Color("e2fff4"), Color("81c9ff"))
 			_terrain(Color("c9c7a1"))
 			_coral()
 		2:
 			config = {"title": "Skatepark Bowl", "meters_per_unit": 0.25, "initial_radius": 0.55, "goal_radius": 3.75,
-				"jump_radius": 0.0, "camera_sizes": [16.0], "start_position": Vector3(-33.0, 0.0, 29.0), "accent": Color("ffaf68")}
+				"tiers": ["Litter in the gutter", "Boards and gear", "Skaters and furniture", "Rails and pipes", "The park"],
+				"jumps": _jumps(0.55, 16.0), "start_position": Vector3(-33.0, 0.0, 29.0), "accent": Color("ffaf68")}
 			_lighting(Color("8eabbc"), Color("fff0d0"), Color("98dcff"))
 			_terrain(Color("65a6b3"))
 			_skatepark()
 		3:
 			config = {"title": "Tablecloth of Everything", "meters_per_unit": 1e21, "initial_radius": 0.6, "goal_radius": 3.8,
-				"jump_radius": 1.6, "camera_sizes": [14.0, 28.0], "start_position": Vector3(-32.0, 0.0, 26.0), "accent": Color("c5a6ff")}
+				"tiers": ["Stars", "Nebulae and clusters", "Galaxies", "Groups and clusters", "The web"],
+				"jumps": _jumps(0.6, 14.0), "start_position": Vector3(-32.0, 0.0, 26.0), "accent": Color("c5a6ff")}
 			_lighting(Color("080b1a"), Color("c9c5ff"), Color("679be8"))
 			_terrain(Color("080b1a"), false)
 			_cosmos()
@@ -60,7 +63,7 @@ func get_ground_height(point: Vector3) -> float:
 func get_obstacles(center: Vector3, reach: float) -> Array:
 	var result: Array = []
 	for food in foods:
-		if not is_instance_valid(food) or not food.active or food.threshold <= player_radius:
+		if not is_instance_valid(food) or not food.active or is_edible(food, player_radius):
 			continue
 		var offset := Vector2(food.global_position.x - center.x, food.global_position.z - center.z)
 		if offset.length_squared() > pow(reach + food.collider_radius, 2):
@@ -76,7 +79,7 @@ func nearest_edible(point: Vector3, goo_radius: float) -> Food:
 	var nearest: Food
 	var distance := INF
 	for food in foods:
-		if not is_instance_valid(food) or not food.active or food.threshold > goo_radius:
+		if not is_edible(food, goo_radius):
 			continue
 		var candidate := point.distance_squared_to(food.center())
 		if candidate < distance:
@@ -84,22 +87,16 @@ func nearest_edible(point: Vector3, goo_radius: float) -> Food:
 			nearest = food
 	return nearest
 
-func advance_scale() -> void:
-	if _revealed:
-		return
-	_revealed = true
-	for food in _locked:
-		if is_instance_valid(food):
-			food.active = true
-			food.visible = true
-			food.collision_layer = 2
-	for food in foods:
-		if is_instance_valid(food) and food.active and food.tier == 0 and food.radius < 0.3 and food.parent_food == null:
-			food.active = false
-			food.collision_layer = 0
-			food.collision_mask = 0
-			food.queue_free()
-	_locked.clear()
+func _jumps(initial_radius: float, first_view: float) -> Array[Dictionary]:
+	return [{"radius": initial_radius, "view_size": first_view},
+		{"radius": 0.85, "view_size": 18.0}, {"radius": 1.35, "view_size": 23.0},
+		{"radius": 2.1, "view_size": 30.0}, {"radius": 3.0, "view_size": 38.0}]
+
+func is_edible(food: Food, goo_radius: float) -> bool:
+	return is_instance_valid(food) and food.active and food.tier <= current_tier and food.threshold <= goo_radius
+
+func advance_scale(tier_index: int) -> void:
+	current_tier = tier_index
 
 func _add_food(kind: String, at: Vector2, size: float, threshold: float, volume: float,
 		label: String, moving: bool = false, tier: int = 0, parent: Food = null, lift: float = 0.0) -> Food:
@@ -118,11 +115,6 @@ func _add_food(kind: String, at: Vector2, size: float, threshold: float, volume:
 		food.position = Vector3(at.x, lift, at.y)
 	food.rotation.y = _rng.randf_range(-PI, PI)
 	foods.append(food)
-	if tier > 0 and float(config["jump_radius"]) > 0.0:
-		food.active = false
-		food.visible = false
-		food.collision_layer = 0
-		_locked.append(food)
 	return food
 
 func _pool(at: Vector3, extent: Vector2, color: Color, volume: float, threshold: float = 0.0, fabric: bool = false) -> void:

@@ -8,7 +8,7 @@ var hud: GameHUD
 var _volume := 0.0
 var _level := 0
 var _won := false
-var _revealed := false
+var _tier := 0
 var _cinematic := -1.0
 var _bite_sound: AudioStreamPlayer
 var _win_sound: AudioStreamPlayer
@@ -68,7 +68,7 @@ func start_level(index: int) -> void:
 		world.free()
 	_level = index
 	_won = false
-	_revealed = false
+	_tier = 0
 	world = GameWorld.new()
 	add_child(world)
 	world.build(index)
@@ -80,7 +80,7 @@ func start_level(index: int) -> void:
 	world.player_radius = goo.radius
 	rig = GooCamera.new()
 	add_child(rig)
-	rig.configure(world.field, world.config.camera_sizes[0], goo, world.get_ground_height)
+	rig.configure(world.field, world.config.jumps[0].view_size, goo, world.get_ground_height)
 	hud.configure(index, world.config)
 	print("LEVEL_READY ", index, " ", world.config.title)
 
@@ -92,7 +92,7 @@ func _physics_process(delta: float) -> void:
 	goo.set_drive(rig.movement_direction(), BODY_LENGTHS_PER_SECOND * goo.radius * 2.0 * hud.movement_speed)
 	var eaten := 0
 	for food in world.foods:
-		if not is_instance_valid(food) or not food.active or food.threshold > goo.radius:
+		if not world.is_edible(food, goo.radius):
 			continue
 		if goo.touches(food.center(), food.radius * 0.72):
 			_eat(food)
@@ -113,10 +113,11 @@ func _physics_process(delta: float) -> void:
 		if portion > 0.0:
 			_add_growth(portion, pool.pigment, contact)
 			hud.show_meal("Spacetime fabric" if _level == 3 else "Water", "", pool.pigment)
-	if not _revealed and world.config.jump_radius > 0.0 and goo.radius >= world.config.jump_radius:
-		_revealed = true
-		world.advance_scale()
-		rig.reveal(world.config.camera_sizes[1])
+	while _tier + 1 < world.config.jumps.size() and goo.radius >= float(world.config.jumps[_tier + 1].radius):
+		_tier += 1
+		world.advance_scale(_tier)
+		rig.reveal(float(world.config.jumps[_tier].view_size))
+		print("LEVEL_TIER ", _level, " ", _tier, " ", world.config.tiers[_tier])
 	if not _won and _volume >= pow(world.config.goal_radius, 3.0):
 		_complete()
 
