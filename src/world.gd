@@ -11,9 +11,12 @@ var current_tier := 0
 var _layout: RefCounted
 var _time := 0.0
 var _rng := RandomNumberGenerator.new()
-var _obstacle_foods: Array[Food] = []
-var _obstacle_radius := -1.0
-var _obstacle_tier := -1
+# Foods wander a bounded distance from where the layout placed them, so a grid keyed by
+# placement plus a wander margin answers "what is near the goo" without scanning every food.
+const CELL := 8.0
+const WANDER := 8.0
+var _cells: Dictionary = {}
+var _widest_collider := 0.0
 
 func build(level_index: int) -> void:
 	_level = level_index
@@ -38,17 +41,9 @@ func get_ground_height(point: Vector3) -> float:
 	return _layout.ground_height(point)
 
 func get_obstacles(center: Vector3, reach: float) -> Array:
-	# Growth changes eligibility; movement changes positions, which remain live below.
-	if player_radius != _obstacle_radius or current_tier != _obstacle_tier:
-		_obstacle_radius = player_radius
-		_obstacle_tier = current_tier
-		_obstacle_foods.clear()
-		for food in foods:
-			if is_instance_valid(food) and food.active and food.collider_radius > 0.0 and not is_edible(food, player_radius):
-				_obstacle_foods.append(food)
 	var result: Array = []
-	for food in _obstacle_foods:
-		if not is_instance_valid(food) or not food.active or food.collider_radius <= 0.0:
+	for food in nearby(center, reach):
+		if not food.active or food.collider_radius <= 0.0 or is_edible(food, player_radius):
 			continue
 		var point := food.global_position
 		var offset := Vector2(point.x - center.x, point.z - center.z)
@@ -59,6 +54,22 @@ func get_obstacles(center: Vector3, reach: float) -> Array:
 		if not food.freeze:
 			obstacle["body"] = food
 		result.append(obstacle)
+	return result
+
+func nearby(center: Vector3, reach: float) -> Array[Food]:
+	if _cells.is_empty():
+		_widest_collider = 0.0
+		for food in foods:
+			var point := food.global_position
+			_cells.get_or_add(Vector2i(floori(point.x / CELL), floori(point.z / CELL)), []).append(food)
+			_widest_collider = maxf(_widest_collider, food.collider_radius)
+	var margin := reach + WANDER + _widest_collider
+	var result: Array[Food] = []
+	for x in range(floori((center.x - margin) / CELL), floori((center.x + margin) / CELL) + 1):
+		for z in range(floori((center.z - margin) / CELL), floori((center.z + margin) / CELL) + 1):
+			for food in _cells.get(Vector2i(x, z), []):
+				if is_instance_valid(food):
+					result.append(food)
 	return result
 
 func nearest_edible(point: Vector3, goo_radius: float) -> Food:
@@ -98,7 +109,7 @@ func _add_food(kind: String, at: Vector2, size: float, threshold: float, volume:
 		food.position = Vector3(at.x, lift, at.y)
 	food.rotation.y = _rng.randf_range(-PI, PI)
 	foods.append(food)
-	_obstacle_radius = -1.0
+	_cells.clear()
 	return food
 
 func _pool(at: Vector3, extent: Vector2, color: Color, volume: float, threshold: float = 0.0, fabric: bool = false) -> LocalPool:

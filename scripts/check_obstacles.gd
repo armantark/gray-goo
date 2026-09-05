@@ -38,9 +38,14 @@ func _run() -> void:
 
 func _check(world: GameWorld, center: Vector3, reach: float) -> void:
 	_checks += 1
-	if world.get_obstacles(center, reach) != _reference(world, center, reach):
+	# Obstacle order is not a contract; compare the two queries as sets.
+	if _sorted(world.get_obstacles(center, reach)) != _sorted(_reference(world, center, reach)):
 		_valid = false
 		push_error("Obstacle query differs from the uncached scan in " + str(world.config.title))
+
+func _sorted(obstacles: Array) -> Array:
+	obstacles.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.center < b.center)
+	return obstacles
 
 func _reference(world: GameWorld, center: Vector3, reach: float) -> Array:
 	var result: Array = []

@@ -98,8 +98,8 @@ func _physics_process(delta: float) -> void:
 
 func _consume_foods() -> void:
 	var eaten := 0
-	for food in world.foods:
-		if is_instance_valid(food) and food.active and food.touched.has_connections() and goo.touches(food.center(), food.radius):
+	for food in world.nearby(goo.global_position, goo.radius * 3.0):
+		if food.active and food.touched.has_connections() and goo.touches(food.center(), food.radius):
 			food.touched.emit()
 		if not world.is_edible(food, goo.radius):
 			continue
