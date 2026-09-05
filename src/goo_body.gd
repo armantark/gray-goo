@@ -176,7 +176,8 @@ func _step(dt: float) -> void:
 	radius = lerpf(radius, _target_radius, 1.0 - exp(-3.5 * dt))
 	var growth := radius / old_radius
 	var center := global_position
-	_flow_drive = _flow_drive.lerp(_drive * _speed, 1.0 - exp(-24.0 * dt))
+	# Drive ramps over about one reach cycle so acceleration reads as the body gathering itself, not a snap.
+	_flow_drive = _flow_drive.lerp(_drive * _speed, 1.0 - exp(-6.0 * dt))
 	# The invisible field edge stops propulsion; it is not a surface the goo can roll up.
 	if (center.x <= _field.position.x + radius and _flow_drive.x < 0.0) or (center.x >= _field.end.x - radius and _flow_drive.x > 0.0):
 		_flow_drive.x = 0.0
