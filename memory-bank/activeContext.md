@@ -11,3 +11,5 @@ Everything informs scale and diversity of themes within a scale band only. The u
 The user accepted four consecutive opening levels across two neighboring scale bands with two environments per band. A coherent outward journey through a laboratory sample is accepted provisionally. Exact objects, sizes, and themes remain to be designed.
 
 Open frontier: growth continuity between levels and playable platform. Later questions include precise edible-size/growth rules, controls, hazards, engine, and explicit performance acceptance criteria. The Blender update is complete; asset design can use the new CLI.
+
+The user asked for an engine/platform recommendation, naming Godot and asking whether greater ambition requires something else. Recommendation pending acceptance: Godot 4 with standalone desktop as the primary target; browser demo optional and separately validated. Do not treat the earlier browser-first suggestion as an accepted requirement. Instant browser access versus desktop visual/performance freedom is the remaining platform tradeoff.
