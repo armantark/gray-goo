@@ -40,3 +40,5 @@ Winning bite confirmed on 2026-09-04: brief slow motion, exaggerated squash and 
 Pool performance: collect the weighted contact position during local consumption and upload a dirty density mask at a bounded cadence. Do not search for the nearest filled cell before every ordinary bite. Nearest-cell queries are for guidance and whole-surface contact only.
 
 Asset colors: Blender material node inputs use linear RGB. Convert authored sRGB hex colors before assignment so exported GLBs retain the intended palette. The custom toon light divides LIGHT_COLOR by PI and applies ALBEDO once.
+
+Metric HUD contract: world config declares `meters_per_unit`; displayed size is `2 * radius * meters_per_unit`, including the goal, and scale reveals never reset it. Current authored calibrations are Quark `1e-15`, Coral `0.01`, Skatepark `0.25`, Cosmos `1e21` metres per world unit. These calibrate the cartoon scenes, not empirical object measurements. Prefixes follow SI casing, including `fm` (femtometre) and `Zm` (zettametre); reference https://www.nist.gov/pml/owm/metric-si-prefixes .

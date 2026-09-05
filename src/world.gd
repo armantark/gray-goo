@@ -18,25 +18,25 @@ func build(level_index: int) -> void:
 	_rng.seed = 7309 + level_index * 197
 	match _level:
 		0:
-			config = {"title": "Quark Dust Ladder", "initial_radius": 0.5, "goal_radius": 3.85,
+			config = {"title": "Quark Dust Ladder", "meters_per_unit": 1e-15, "initial_radius": 0.5, "goal_radius": 3.85,
 				"jump_radius": 1.5, "camera_sizes": [14.0, 26.0], "start_position": Vector3(-32.0, 0.0, 29.0), "accent": Color("ffbc70")}
 			_lighting(Color("10152e"), Color("a7b9ee"), Color("ff92b1"))
 			_terrain(Color("202747"))
 			_quarks()
 		1:
-			config = {"title": "Coral Colony Tide Pool", "initial_radius": 0.55, "goal_radius": 3.75,
+			config = {"title": "Coral Colony Tide Pool", "meters_per_unit": 0.01, "initial_radius": 0.55, "goal_radius": 3.75,
 				"jump_radius": 1.45, "camera_sizes": [14.0, 26.0], "start_position": Vector3(-33.0, 0.0, 28.0), "accent": Color("73ead9")}
 			_lighting(Color("376f83"), Color("e2fff4"), Color("81c9ff"))
 			_terrain(Color("c9c7a1"))
 			_coral()
 		2:
-			config = {"title": "Skatepark Bowl", "initial_radius": 0.55, "goal_radius": 3.75,
+			config = {"title": "Skatepark Bowl", "meters_per_unit": 0.25, "initial_radius": 0.55, "goal_radius": 3.75,
 				"jump_radius": 0.0, "camera_sizes": [16.0], "start_position": Vector3(-33.0, 0.0, 29.0), "accent": Color("ffaf68")}
 			_lighting(Color("8eabbc"), Color("fff0d0"), Color("98dcff"))
 			_terrain(Color("65a6b3"))
 			_skatepark()
 		3:
-			config = {"title": "Tablecloth of Everything", "initial_radius": 0.6, "goal_radius": 3.8,
+			config = {"title": "Tablecloth of Everything", "meters_per_unit": 1e21, "initial_radius": 0.6, "goal_radius": 3.8,
 				"jump_radius": 1.6, "camera_sizes": [14.0, 28.0], "start_position": Vector3(-32.0, 0.0, 26.0), "accent": Color("c5a6ff")}
 			_lighting(Color("080b1a"), Color("c9c5ff"), Color("679be8"))
 			_terrain(Color("080b1a"), false)

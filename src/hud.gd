@@ -19,6 +19,7 @@ var pointer: FoodPointer
 var _root: Control
 var _scene_index := 0
 var _hint_time := 0.0
+var _meters_per_unit: float
 
 class FoodPointer extends Control:
 	var position_on_screen := Vector2.ZERO
@@ -164,6 +165,8 @@ func _build_menu() -> void:
 
 func configure(index: int, config: Dictionary) -> void:
 	_scene_index = index
+	_meters_per_unit = float(config.meters_per_unit)
+	size_label.tooltip_text = "Goo body diameter and the diameter needed to finish this scene."
 	title_label.text = config.title
 	completion.hide()
 	menu.hide()
@@ -172,7 +175,7 @@ func configure(index: int, config: Dictionary) -> void:
 
 func update_game(radius: float, initial: float, goal: float, camera: Camera3D,
 		goo_position: Vector3, target_position: Vector3, target_name: String) -> void:
-	size_label.text = "%.1f×   /   %.1f× goal" % [radius / initial, goal / initial]
+	size_label.text = "%s   /   %s goal" % [format_size(radius * 2.0 * _meters_per_unit), format_size(goal * 2.0 * _meters_per_unit)]
 	goal_bar.value = clampf((radius - initial) / (goal - initial) * 100.0, 0.0, 100.0)
 	target_label.text = target_name
 	pointer.target_visible = not target_name.is_empty() and not menu.visible
@@ -183,6 +186,17 @@ func update_game(radius: float, initial: float, goal: float, camera: Camera3D,
 		var screen_radius := radius / camera.size * get_viewport().get_visible_rect().size.y
 		pointer.position_on_screen = center + pointer.direction * (screen_radius + 33.0)
 	pointer.queue_redraw()
+
+static func format_size(meters: float) -> String:
+	for unit in [[1e24, "Ym"], [1e21, "Zm"], [1e18, "Em"], [1e15, "Pm"],
+			[1e12, "Tm"], [1e9, "Gm"], [1e6, "Mm"], [1e3, "km"], [1.0, "m"],
+			[1e-2, "cm"], [1e-3, "mm"], [1e-6, "µm"], [1e-9, "nm"],
+			[1e-12, "pm"], [1e-15, "fm"]]:
+		if meters >= unit[0]:
+			var size: float = meters / float(unit[0])
+			var precision := 2 if size < 10.0 else (1 if size < 100.0 else 0)
+			return ("%.*f %s" % [precision, size, unit[1]])
+	return "%.2f fm" % (meters / 1e-15)
 
 func show_completion() -> void:
 	completion.show()

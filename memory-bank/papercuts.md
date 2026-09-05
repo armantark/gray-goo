@@ -86,3 +86,9 @@
 2026-09-04: The permitted Carrion watch retry obtained metadata but failed to download media with `HTTP Error 403: Forbidden`; no video frames were inspected. Do not claim to have watched it. Final pupil headless import exited 0 with only the known sandbox certificate/editor-settings errors, including `Cannot save file /Users/ArmanTarkhanian1/Library/Application Support/Godot/editor_settings-4.7.tres`.
 
 2026-09-04: Microworld's embedded reference video fetch was throttled (`Online fetch throttled`); its primary microscopy photographs and written observations remain available.
+
+2026-09-04: CUA stopped a window-enlarge action with `The user changed /Applications/Godot.app. Re-query the latest state with get_app_state before sending more actions.` Refreshed the native state and left the user-controlled game running rather than overriding their interaction.
+
+2026-09-04: Metric-scope search included nonexistent `docs/design/scenes.json`; the accepted catalogue lives in `docs/design/selection.json`. Runtime scene configuration remains in `src/world.gd`.
+
+2026-09-04: The user's deliberate turn interruption also left `goo_body` interrupted. Root sent `send_message` updates, which queue text but do not restart an interrupted agent, and mistakenly waited for implementation progress. `interrupt_agent` returned `previous_status: interrupted`; `followup_task` resumed it. Leaf confirmed no filament files or new travel results existed at that point. After a turn-abort, inspect agent status and use followup_task to resume unfinished work.
