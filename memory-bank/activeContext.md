@@ -24,7 +24,7 @@ Eye whites spring, lag on turns, and settle after stopping. Pupils follow the ar
 
 The nearest edible object has both an arrow and a yellow outline, including its surviving parts when the whole is selected. This supersedes the original arrow-only decision. A named portrait of the last consumed object appears at bottom left. Water and spacetime also update that portrait.
 
-Play is untimed and damage is deferred. Each scene starts at its own size. The HUD shows central body diameter and goal diameter in metric units; extended strands do not affect it. Per-scene physical calibrations are illustrative, not empirical object measurements. A scene can have zero, one, or two optional camera size jumps. Growth continues within each view.
+Play is untimed and damage is deferred. Each scene starts at its own size. The HUD shows central body diameter and goal diameter in metric units; extended strands do not affect it. Per-scene physical calibrations are illustrative, not empirical object measurements. A scene can have zero or more camera size jumps; the demo levels now target about ten minutes with several jumps. Growth continues within each view.
 
 Food is engulfed and shrinks on contact without pausing movement. Shape-aware thresholds do not require precise approach alignment. Parts and wholes have separate thresholds; removed parts do not lower the whole threshold or count twice. Board snapping is optional presentation. Puddles are consumed locally, leaving a coherent translucent remainder; do not add remote ingestion through strands or whole-pool suction. A sufficiently large goo can consume the final spacetime surface.
 

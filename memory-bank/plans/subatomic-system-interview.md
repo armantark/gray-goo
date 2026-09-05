@@ -19,3 +19,11 @@ The user answered the endpoint question: the subatomic level ends at a whole mol
 The user widened the interview: all four demo levels read as structurally nonsensical, and the output of this interview is a contract for Astra to rebuild the four level designs, including requests for new 3D models. The user also assigned Fable the controls and UI work: movement speed must scale with size (too fast at the start, too slow after growth), and the HUD needs a from-scratch revamp.
 
 Fact for the speed question, from `src/game.gd:90`: drive speed is `(2.8 + radius * 0.8) * 3.7 * slider`. In body diameters per second this is about 11.8 at the Quark start (radius 0.5) and about 2.8 at the Quark goal (radius 3.85), a four-fold drop across one level. Camera views are fixed per size band (`camera_sizes` 14 then 26), so on-screen speed jumps at each reveal.
+
+## Round 1 answers (2026-09-05)
+
+Q1 accepted: one recognizable place, nested wholes, the whole was always there, damage shows. The user adds the original game's recycling progression: each level's whole becomes the next tier's ordinary food. In this clone that progression happens inside a level through size jumps. Levels should run about ten minutes with more than two size jumps. The subatomic start is free particles (quarks, positrons, photons), then quarks in formations that form other particles, then protons, neutrons, and electrons, then compound nuclei, then whole atoms, and so on.
+
+Q2: sucrose in water. Q3: see Q1. Q4: constant body-length speed with a smoothing curve matched to the animation; the slider stays. Q5: specimen readout HUD.
+
+Facts: `docs/design/sources/original-levels.json` confirms the recycling pattern (mouse, rat, cat, dog, person, car, house, train). The runtime supports exactly one jump: `src/game.gd:114` uses a boolean `_revealed` and `camera_sizes[1]`. The contract must generalize to a list of jumps.
