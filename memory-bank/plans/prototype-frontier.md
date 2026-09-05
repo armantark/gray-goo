@@ -18,16 +18,16 @@ This is a running interview map, not a settled implementation plan. Ask small nu
 - Opaque foreground obstacles with a subdued goo outline visible through them.
 
 - A nearest-edible pointer supplies food guidance rather than nearby-object highlights.
-- Food color leaves a lasting impression on the goo; exact mixing and persistence remain open.
-- Coral consists of distinct composite parts; continuous erosion is not the model.
+- Food color starts as a localized patch at the contact point, then gradually blends throughout the goo to leave a lasting tint.
+- Coral consists of distinct composite parts with their own thresholds plus a separate whole-colony threshold. Eating parts does not automatically lower the whole threshold. The final bite consumes only surviving parts.
 
 ## Current independent frontier
 
-1. Food color: decide whether consumed colors accumulate and persist until displaced by later food, or gradually return toward gray over time.
-2. Composite thresholds: clarify whether distinct parts and the remaining whole have separate authored eating thresholds. The previous proposal to reduce the whole threshold as remaining bulk shrinks was not accepted. Preserve the already requested parts-to-whole payoff; do not reopen it as whether whole consumption exists.
+1. Camera handling: confirm screen-relative keyboard steering while rotating, with Q/E rotation and scroll-wheel zoom as proposed bindings. Manual zoom stays within the active scale view rather than triggering a size jump.
+2. Completion emphasis: decide whether the goal-reaching bite includes brief slow motion, or stays at full speed with deformation and effects supplying the payoff.
 
-## Held for later rounds
+## Engineering and tuning assumptions to surface at confirmation
 
-- Camera bindings, movement relative to camera rotation, and zoom limits remain lower-priority frontier items.
-- The final bite needs a strong visual payoff; specific effects remain open and must preserve readable play.
+- Exact camera tilt, zoom bounds, color mixing strength and timing, food budgets, and size thresholds need tuning in the playable prototype.
 - Physics implementation and performance feasibility are engineering investigations, not questions for the user.
+- Preserve the agreed four-scene scope and single final visual/performance pass; no game implementation has begun.

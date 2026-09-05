@@ -18,4 +18,4 @@ Original levels are inspiration seeds only. Do not recreate their 60-level campa
 
 Player controls: WASD or arrow keys for directional movement; hold the mouse button to steer toward the pointer. Both methods share the same movement physics and deformation.
 
-Guide eating with a pointer toward the nearest edible object rather than highlighting nearby food. Consumed food influences the goo's color, using the food's average color and persisting beyond a brief flash. The mixing and return-to-gray behavior remain to be decided.
+Guide eating with a pointer toward the nearest edible object rather than highlighting nearby food. Consumed food first leaves a localized patch of its average color where it touches the goo. That patch gradually blends through the organism to leave a lasting tint, rather than flashing back to gray.
