@@ -5,6 +5,21 @@ extends Node3D
 const SUBSTEPS := 2
 const SOLVER_ITERATIONS := 4
 const GRAY := Color(0.57, 0.61, 0.65)
+const OUTLINE_SHADER := """
+shader_type spatial;
+render_mode unshaded, cull_front;
+uniform float width = 2.5;
+void vertex() {
+	vec3 view_normal = MODELVIEW_NORMAL_MATRIX * NORMAL;
+	vec2 outward = view_normal.xy / max(length(view_normal.xy), 0.0001);
+	vec4 clip = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(VERTEX, 1.0);
+	clip.xy += outward * width * 2.0 / VIEWPORT_SIZE * clip.w;
+	POSITION = clip;
+}
+void fragment() {
+	ALBEDO = vec3(0.035, 0.045, 0.065);
+}
+"""
 const SILHOUETTE_SHADER := """
 shader_type spatial;
 render_mode unshaded, depth_test_disabled, depth_draw_never, cull_back;
@@ -150,8 +165,8 @@ func _step(dt: float) -> void:
 		var point_velocity := (_points[i] - _previous[i]) / _previous_dt
 		_previous[i] = _points[i]
 		var rolling_velocity := desired + spin.cross(_points[i] - center) * 0.8
-		var drive_acceleration := (rolling_velocity - point_velocity) * 6.5
-		drive_acceleration.y = (rolling_velocity.y - point_velocity.y) * 3.0 - radius * 17.0
+		var drive_acceleration := (rolling_velocity - point_velocity) * 9.0
+		drive_acceleration.y = (rolling_velocity.y - point_velocity.y) * 3.0 - radius * 27.0
 		_points[i] += point_velocity * dt + drive_acceleration * dt * dt
 		_release_time[i] = maxf(0.0, _release_time[i] - dt)
 		if _attached[i]:
@@ -174,7 +189,7 @@ func _solve_edges() -> void:
 		var distance := separation.length()
 		if distance < 0.00001:
 			continue
-		var correction := separation * ((distance - _edge_lengths[e] * radius) / distance) * 0.28
+		var correction := separation * ((distance - _edge_lengths[e] * radius) / distance) * 0.10
 		_points[pair.x] += correction
 		_points[pair.y] -= correction
 
@@ -207,7 +222,11 @@ func _solve_contact(i: int, solids: Array, dt: float, last_iteration: bool) -> v
 	point.y = maxf(point.y, floor_y)
 	if _attached[i]:
 		var strain := Vector2(point.x - _anchors[i].x, point.z - _anchors[i].z).length()
-		if strain > radius * 0.24 or point.y - _anchors[i].y > radius * 0.19 or _anchor_age[i] > 0.42 + float(i % 11) * 0.02:
+		# Rear bonds carry the body's pull before peeling, rather than all slipping together.
+		var trailing := clampf(-(point - global_position).dot(_drive) / radius, 0.0, 1.0)
+		var tear_distance := radius * lerpf(0.22, 0.57, trailing)
+		var bond_life := lerpf(0.23, 0.85, trailing) + float(i % 11) * 0.018
+		if strain > tear_distance or point.y - _anchors[i].y > radius * 0.25 or _anchor_age[i] > bond_life:
 			_attached[i] = 0
 			_release_time[i] = 0.12
 		else:
@@ -250,7 +269,7 @@ func _project_obstacle(point: Vector3, solid: Dictionary, skin: float,
 func _diffuse_pigment(dt: float) -> void:
 	# Equal edge exchanges conserve pigment; gray is never reapplied after eating.
 	var next := _colors.duplicate()
-	var rate := minf(dt * 0.7, 0.08)
+	var rate := minf(dt * 0.07, 0.08)
 	for edge in _edges:
 		var flow := (_colors[edge.y] - _colors[edge.x]) * rate
 		next[edge.x] += flow
@@ -287,6 +306,12 @@ func _build_shell() -> void:
 			var ca := _midpoint(c, a, cache)
 			subdivided.append_array(PackedInt32Array([a,ab,ca, b,bc,ab, c,ca,bc, ab,bc,ca]))
 		_faces = subdivided
+	# These rest lengths belong to the physical shell, not a render-only distortion.
+	for i in _rest.size():
+		var p := _rest[i]
+		var angle := atan2(p.z, p.x)
+		var lobes := 1.0 + (0.09 * sin(angle * 3.0 + 0.5) + 0.045 * cos(angle * 5.0)) * (1.0 - p.y * p.y)
+		_rest[i] = Vector3(p.x * lobes, p.y, p.z * lobes)
 	var seen := {}
 	_rest_volume = 0.0
 	for f in range(0, _faces.size(), 3):
@@ -336,6 +361,11 @@ func _build_render_mesh() -> void:
 	_render_colors.resize(_render_sources.size())
 	_material = ShaderMaterial.new()
 	_material.shader = load("res://shaders/goo.gdshader")
+	var contour_shader := Shader.new()
+	contour_shader.code = OUTLINE_SHADER
+	var outline_material := ShaderMaterial.new()
+	outline_material.shader = contour_shader
+	_material.next_pass = outline_material
 	render_mesh = MeshInstance3D.new()
 	render_mesh.name = "GooSurface"
 	render_mesh.mesh = _mesh
@@ -362,7 +392,11 @@ func _build_render_mesh() -> void:
 		eye.mesh = sphere
 		var white := StandardMaterial3D.new()
 		white.albedo_color = Color(0.94, 0.96, 0.91)
-		white.roughness = 0.3
+		white.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		var eye_outline := ShaderMaterial.new()
+		eye_outline.shader = contour_shader
+		eye_outline.set_shader_parameter("width", 1.5)
+		white.next_pass = eye_outline
 		eye.material_override = white
 		add_child(eye)
 		_eyes.append(eye)
@@ -370,9 +404,10 @@ func _build_render_mesh() -> void:
 		pupil.mesh = sphere
 		var ink := StandardMaterial3D.new()
 		ink.albedo_color = Color(0.025, 0.045, 0.055)
+		ink.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		pupil.material_override = ink
-		pupil.scale = Vector3(0.44, 0.44, 0.44)
-		pupil.position = Vector3(0, 0.15, 0.8)
+		pupil.scale = Vector3(0.50, 0.57, 0.20)
+		pupil.position = Vector3(0.10 - float(_eye_index) * 0.20, 0.10, 0.93)
 		eye.add_child(pupil)
 
 func _update_surface() -> void:
@@ -407,11 +442,12 @@ func _update_surface() -> void:
 	_update_eyes()
 
 func _update_eyes() -> void:
+	var camera := get_viewport().get_camera_3d()
 	if _drive.length_squared() > 0.01:
 		_facing = _facing.lerp(_drive.normalized(), 0.08).normalized()
 	var side := _facing.cross(Vector3.UP).normalized()
 	for e in _eyes.size():
-		var direction := (_facing * 0.7 + Vector3.UP * 0.62 + side * (float(e) * 2.0 - 1.0) * 0.3).normalized()
+		var direction := (_facing * 0.34 + Vector3.UP * 0.88 + side * (float(e) * 2.0 - 1.0) * 0.38).normalized()
 		var surface := Vector3.ZERO
 		var normal := Vector3.ZERO
 		var total := 0.0
@@ -421,5 +457,12 @@ func _update_eyes() -> void:
 			surface += _points[i] * weight
 			normal += _normals[i] * weight
 			total += weight
-		_eyes[e].position = surface / total - global_position + normal.normalized() * radius * 0.07
-		_eyes[e].basis = Basis.looking_at(-_facing, Vector3.UP).scaled(Vector3.ONE * radius * 0.15)
+		_eyes[e].position = surface / total - global_position + normal.normalized() * radius * 0.10
+		var gaze := (Vector3.UP * 0.9 + _facing * 0.3).normalized()
+		_eyes[e].basis = Basis(side, gaze.cross(side).normalized(), gaze).scaled(Vector3(0.23, 0.265, 0.23) * radius)
+		if camera != null:
+			var mouse_offset := get_viewport().get_mouse_position() - camera.unproject_position(_eyes[e].global_position)
+			var world_direction := camera.global_basis.x * mouse_offset.x - camera.global_basis.y * mouse_offset.y
+			var local_direction := _eyes[e].global_basis.orthonormalized().inverse() * world_direction
+			var offset := Vector2(local_direction.x, local_direction.y).limit_length(100.0) * 0.004
+			_eyes[e].get_child(0).position = Vector3(offset.x, offset.y, sqrt(1.0 - offset.length_squared()) * 0.9)

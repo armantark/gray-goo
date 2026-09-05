@@ -99,12 +99,14 @@ func _physics_process(delta: float) -> void:
 	for pool in world.pools:
 		if pool.remaining_volume <= 0.00001:
 			continue
-		var contact := pool.closest_point(goo.global_position)
+		var contact := Vector3.ZERO
 		var portion := 0.0
 		if pool.whole_threshold > 0.0 and goo.radius >= pool.whole_threshold and pool.touches(goo.global_position, goo.radius):
+			contact = pool.closest_point(goo.global_position)
 			portion = pool.consume_whole()
 		else:
 			portion = pool.consume_at(goo.global_position, goo.radius, delta)
+			contact = pool.last_contact
 		if portion > 0.0:
 			_add_growth(portion, pool.pigment, contact)
 	if not _revealed and world.config.jump_radius > 0.0 and goo.radius >= world.config.jump_radius:

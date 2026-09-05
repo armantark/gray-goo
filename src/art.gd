@@ -8,6 +8,13 @@ static var _models: Dictionary = {}
 static var _materials: Dictionary = {}
 static var _outline: ShaderMaterial
 
+static func ground_material(color: Color, grain_scale: float = 4.0) -> ShaderMaterial:
+	var mat := ShaderMaterial.new()
+	mat.shader = preload("res://shaders/ground.gdshader")
+	mat.set_shader_parameter("base_color", color)
+	mat.set_shader_parameter("grain_scale", grain_scale)
+	return mat
+
 static func manifest() -> Dictionary:
 	if _manifest.is_empty():
 		_manifest = JSON.parse_string(FileAccess.get_file_as_string("res://assets/asset_manifest.json"))

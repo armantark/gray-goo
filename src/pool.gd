@@ -4,11 +4,11 @@ extends Node3D
 var pigment := Color(0.16, 0.66, 0.79, 0.7)
 var remaining_volume := 0.0
 var whole_threshold := 0.0
+var last_contact := Vector3.ZERO
 var center: Vector3:
 	get:
 		return global_position
 
-const RESOLUTION := 64
 const EDGE := 0.015
 var _extent := Vector2.ONE
 var _step := Vector2.ONE
@@ -16,20 +16,23 @@ var _fill := PackedFloat32Array()
 var _unit_volume := 0.0
 var _surface: MeshInstance3D
 var _dirty := false
-var _remesh_time := 0.0
+var _upload_time := 0.0
+var _resolution := 64
+var _mask_texture: ImageTexture
 
 func configure(at: Vector3, extent: Vector2, color: Color, volume: float,
 		final_threshold: float = 0.0, fabric: bool = false) -> void:
 	global_position = at
 	_extent = extent
-	_step = extent * 2.0 / RESOLUTION
+	_resolution = clampi(int(ceil(maxf(extent.x, extent.y) * 8.0)), 64, 384)
+	_step = extent * 2.0 / _resolution
 	pigment = color
 	whole_threshold = final_threshold
-	_fill.resize((RESOLUTION + 1) * (RESOLUTION + 1))
+	_fill.resize((_resolution + 1) * (_resolution + 1))
 	var weight := 0.0
-	for z in range(RESOLUTION + 1):
-		for x in range(RESOLUTION + 1):
-			var p := Vector2(float(x) / RESOLUTION * 2.0 - 1.0, float(z) / RESOLUTION * 2.0 - 1.0)
+	for z in range(_resolution + 1):
+		for x in range(_resolution + 1):
+			var p := Vector2(float(x) / _resolution * 2.0 - 1.0, float(z) / _resolution * 2.0 - 1.0)
 			var boundary: float
 			if fabric:
 				boundary = 1.0 - pow(absf(p.x), 6.0) - pow(absf(p.y), 6.0)
@@ -49,12 +52,21 @@ func configure(at: Vector3, extent: Vector2, color: Color, volume: float,
 	material.shader = preload("res://shaders/liquid.gdshader")
 	material.set_shader_parameter("pigment", color)
 	material.set_shader_parameter("fabric", fabric)
+	material.set_shader_parameter("extent", extent)
+	material.set_shader_parameter("mask_threshold", EDGE)
+	_mask_texture = ImageTexture.create_from_image(Image.create_from_data(
+		_resolution + 1, _resolution + 1, false, Image.FORMAT_RF, _fill.to_byte_array()))
+	material.set_shader_parameter("depletion_mask", _mask_texture)
+	var plane := PlaneMesh.new()
+	plane.size = extent * 2.0
+	plane.subdivide_width = 24
+	plane.subdivide_depth = 24
+	_surface.mesh = plane
 	_surface.material_override = material
 	_surface.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	_remesh()
 
 func _index(x: int, z: int) -> int:
-	return z * (RESOLUTION + 1) + x
+	return z * (_resolution + 1) + x
 
 func _point(x: int, z: int) -> Vector3:
 	return Vector3(-_extent.x + x * _step.x, 0.0, -_extent.y + z * _step.y)
@@ -74,10 +86,11 @@ func consume_at(point: Vector3, goo_radius: float, delta: float) -> float:
 		return 0.0
 	var local := point - global_position
 	var x_min := maxi(0, int(floor((local.x - contact_radius + _extent.x) / _step.x)))
-	var x_max := mini(RESOLUTION, int(ceil((local.x + contact_radius + _extent.x) / _step.x)))
+	var x_max := mini(_resolution, int(ceil((local.x + contact_radius + _extent.x) / _step.x)))
 	var z_min := maxi(0, int(floor((local.z - contact_radius + _extent.y) / _step.y)))
-	var z_max := mini(RESOLUTION, int(ceil((local.z + contact_radius + _extent.y) / _step.y)))
+	var z_max := mini(_resolution, int(ceil((local.z + contact_radius + _extent.y) / _step.y)))
 	var removed := 0.0
+	var contact_sum := Vector3.ZERO
 	for z in range(z_min, z_max + 1):
 		for x in range(x_min, x_max + 1):
 			var distance := Vector2(_point(x, z).x - local.x, _point(x, z).z - local.z).length()
@@ -89,7 +102,9 @@ func consume_at(point: Vector3, goo_radius: float, delta: float) -> float:
 				bite = _fill[index]
 			_fill[index] -= bite
 			removed += bite * _unit_volume
+			contact_sum += _point(x, z) * bite * _unit_volume
 	if removed > 0.0:
+		last_contact = global_position + contact_sum / removed
 		remaining_volume = maxf(0.0, remaining_volume - removed)
 		_dirty = true
 	return removed
@@ -105,6 +120,9 @@ func consume_whole() -> float:
 func touches(point: Vector3, goo_radius: float) -> bool:
 	if remaining_volume <= 0.0:
 		return false
+	var local := point - global_position
+	if absf(local.x) > _extent.x + goo_radius or absf(local.z) > _extent.y + goo_radius:
+		return false
 	var reach := _contact_radius(point, goo_radius)
 	if reach <= 0.0:
 		return false
@@ -112,78 +130,48 @@ func touches(point: Vector3, goo_radius: float) -> bool:
 	return Vector2(nearest.x - point.x, nearest.z - point.z).length_squared() < reach * reach
 
 func closest_point(point: Vector3) -> Vector3:
+	if remaining_volume <= 0.0:
+		return Vector3(INF, INF, INF)
 	var best := Vector3(INF, INF, INF)
 	var best_distance := INF
 	var local := point - global_position
-	for z in range(RESOLUTION + 1):
-		for x in range(RESOLUTION + 1):
-			if _fill[_index(x, z)] <= EDGE:
-				continue
-			var candidate := _point(x, z)
-			var distance := Vector2(candidate.x - local.x, candidate.z - local.z).length_squared()
-			if distance < best_distance:
-				best_distance = distance
-				best = candidate + global_position
+	var cell := Vector2i(
+		clampi(roundi((local.x + _extent.x) / _step.x), 0, _resolution),
+		clampi(roundi((local.z + _extent.y) / _step.y), 0, _resolution))
+	# Search out from contact; ordinary bites need only a few neighboring cells.
+	for ring in range(_resolution + 1):
+		var left := maxi(0, cell.x - ring)
+		var right := mini(_resolution, cell.x + ring)
+		var top := maxi(0, cell.y - ring)
+		var bottom := mini(_resolution, cell.y + ring)
+		for z in range(top, bottom + 1):
+			var columns = range(left, right + 1) if z == top or z == bottom else [left, right]
+			for x in columns:
+				if _fill[_index(x, z)] <= EDGE:
+					continue
+				var candidate := _point(x, z)
+				var distance := Vector2(candidate.x - local.x, candidate.z - local.z).length_squared()
+				if distance < best_distance:
+					best_distance = distance
+					best = candidate + global_position
+		var unsearched := [
+			Rect2(-_extent, Vector2(left * _step.x, _extent.y * 2.0)),
+			Rect2(Vector2(-_extent.x + right * _step.x, -_extent.y), Vector2((_resolution - right) * _step.x, _extent.y * 2.0)),
+			Rect2(-_extent, Vector2(_extent.x * 2.0, top * _step.y)),
+			Rect2(Vector2(-_extent.x, -_extent.y + bottom * _step.y), Vector2(_extent.x * 2.0, (_resolution - bottom) * _step.y))]
+		var unsearched_distance := INF
+		var local_point := Vector2(local.x, local.z)
+		for region in unsearched:
+			if region.has_area():
+				unsearched_distance = minf(unsearched_distance, local_point.distance_squared_to(local_point.clamp(region.position, region.end)))
+		if best_distance <= unsearched_distance:
+			break
 	return best
 
 func _process(delta: float) -> void:
-	_remesh_time += delta
-	if _dirty and _remesh_time >= 0.12:
-		_remesh_time = 0.0
-		_remesh()
-
-func _remesh() -> void:
-	_dirty = false
-	var vertices := PackedVector3Array()
-	for z in range(RESOLUTION):
-		for x in range(RESOLUTION):
-			var index := _index(x, z)
-			var fa := _fill[index]
-			var fb := _fill[index + 1]
-			var fc := _fill[index + RESOLUTION + 2]
-			var fd := _fill[index + RESOLUTION + 1]
-			if maxf(maxf(fa, fb), maxf(fc, fd)) <= EDGE:
-				continue
-			var a := _point(x, z)
-			var b := a + Vector3(_step.x, 0.0, 0.0)
-			var c := a + Vector3(_step.x, 0.0, _step.y)
-			var d := a + Vector3(0.0, 0.0, _step.y)
-			if minf(minf(fa, fb), minf(fc, fd)) > EDGE:
-				vertices.append(a)
-				vertices.append(b)
-				vertices.append(c)
-				vertices.append(a)
-				vertices.append(c)
-				vertices.append(d)
-			else:
-				_clip_triangle(vertices, [a, b, c], [fa, fb, fc])
-				_clip_triangle(vertices, [a, c, d], [fa, fc, fd])
-	if vertices.is_empty():
-		_surface.mesh = null
-		return
-	var normals := PackedVector3Array()
-	normals.resize(vertices.size())
-	normals.fill(Vector3.UP)
-	var arrays := []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_NORMAL] = normals
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	_surface.mesh = mesh
-
-func _clip_triangle(output: PackedVector3Array, points: Array, amounts: Array) -> void:
-	var polygon: Array[Vector3] = []
-	for i in range(3):
-		var previous := (i + 2) % 3
-		var inside: bool = amounts[i] > EDGE
-		var was_inside: bool = amounts[previous] > EDGE
-		if inside != was_inside:
-			var fraction: float = (EDGE - amounts[previous]) / (amounts[i] - amounts[previous])
-			polygon.append(points[previous].lerp(points[i], fraction))
-		if inside:
-			polygon.append(points[i])
-	for i in range(1, polygon.size() - 1):
-		output.append(polygon[0])
-		output.append(polygon[i])
-		output.append(polygon[i + 1])
+	_upload_time += delta
+	if _dirty and _upload_time >= 0.08:
+		_upload_time = 0.0
+		_dirty = false
+		_mask_texture.update(Image.create_from_data(
+			_resolution + 1, _resolution + 1, false, Image.FORMAT_RF, _fill.to_byte_array()))

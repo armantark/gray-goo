@@ -2,7 +2,7 @@ class_name GameWorld
 extends Node3D
 
 var config: Dictionary
-var field := Rect2(-18.0, -18.0, 36.0, 36.0)
+var field := Rect2(-50.0, -50.0, 100.0, 100.0)
 var foods: Array[Food] = []
 var pools: Array[LocalPool] = []
 var player_radius := 0.5
@@ -11,33 +11,33 @@ var _revealed := false
 var _locked: Array[Food] = []
 var _currents: Array[Food] = []
 var _time := 0.0
+var _rng := RandomNumberGenerator.new()
 
 func build(level_index: int) -> void:
 	_level = level_index
+	_rng.seed = 7309 + level_index * 197
 	match _level:
 		0:
-			config = {"title": "Quark Dust Ladder", "initial_radius": 0.5, "goal_radius": 3.7,
-				"jump_radius": 1.5, "camera_sizes": [16.0, 32.0], "start_position": Vector3(-3.0, 0.0, 3.0), "accent": Color("ffbc70")}
+			config = {"title": "Quark Dust Ladder", "initial_radius": 0.5, "goal_radius": 3.85,
+				"jump_radius": 1.5, "camera_sizes": [14.0, 26.0], "start_position": Vector3(-32.0, 0.0, 29.0), "accent": Color("ffbc70")}
 			_lighting(Color("10152e"), Color("a7b9ee"), Color("ff92b1"))
 			_terrain(Color("202747"))
 			_quarks()
 		1:
-			config = {"title": "Coral Colony Tide Pool", "initial_radius": 0.55, "goal_radius": 3.65,
-				"jump_radius": 1.45, "camera_sizes": [17.0, 32.0], "start_position": Vector3(-4.0, 0.0, 4.0), "accent": Color("73ead9")}
+			config = {"title": "Coral Colony Tide Pool", "initial_radius": 0.55, "goal_radius": 3.75,
+				"jump_radius": 1.45, "camera_sizes": [14.0, 26.0], "start_position": Vector3(-33.0, 0.0, 28.0), "accent": Color("73ead9")}
 			_lighting(Color("376f83"), Color("e2fff4"), Color("81c9ff"))
 			_terrain(Color("c9c7a1"))
 			_coral()
 		2:
-			field = Rect2(-16.0, -16.0, 32.0, 32.0)
-			config = {"title": "Skatepark Bowl", "initial_radius": 0.55, "goal_radius": 3.5,
-				"jump_radius": 0.0, "camera_sizes": [27.0], "start_position": Vector3(-4.0, 0.0, 3.0), "accent": Color("ffaf68")}
+			config = {"title": "Skatepark Bowl", "initial_radius": 0.55, "goal_radius": 3.75,
+				"jump_radius": 0.0, "camera_sizes": [16.0], "start_position": Vector3(-33.0, 0.0, 29.0), "accent": Color("ffaf68")}
 			_lighting(Color("8eabbc"), Color("fff0d0"), Color("98dcff"))
 			_terrain(Color("65a6b3"))
 			_skatepark()
 		3:
-			field = Rect2(-20.0, -20.0, 40.0, 40.0)
 			config = {"title": "Tablecloth of Everything", "initial_radius": 0.6, "goal_radius": 3.8,
-				"jump_radius": 1.6, "camera_sizes": [17.0, 36.0], "start_position": Vector3(-3.0, 0.0, 3.0), "accent": Color("c5a6ff")}
+				"jump_radius": 1.6, "camera_sizes": [14.0, 28.0], "start_position": Vector3(-32.0, 0.0, 26.0), "accent": Color("c5a6ff")}
 			_lighting(Color("080b1a"), Color("c9c5ff"), Color("679be8"))
 			_terrain(Color("080b1a"), false)
 			_cosmos()
@@ -53,9 +53,9 @@ func get_ground_height(point: Vector3) -> float:
 	if _level != 2:
 		return 0.0
 	# The floor and the native collision mesh sample this same bowl profile.
-	var distance := Vector2(point.x, point.z).length()
-	var slope := clampf((distance - 6.0) / 7.0, 0.0, 1.0)
-	return 2.2 * slope * slope * (3.0 - 2.0 * slope)
+	var distance := Vector2((point.x - 16.0) / 1.2, point.z + 6.0).length()
+	var slope := clampf((distance - 9.0) / 10.0, 0.0, 1.0)
+	return -2.6 * (1.0 - slope * slope * (3.0 - 2.0 * slope))
 
 func get_obstacles(center: Vector3, reach: float) -> Array:
 	var result: Array = []
@@ -116,7 +116,7 @@ func _add_food(kind: String, at: Vector2, size: float, threshold: float, volume:
 		food.global_position = point + Vector3.UP * (get_ground_height(point) + lift + (0.05 if moving else 0.0))
 	else:
 		food.position = Vector3(at.x, lift, at.y)
-	food.rotation.y = atan2(at.x, at.y) * 0.55
+	food.rotation.y = _rng.randf_range(-PI, PI)
 	foods.append(food)
 	if tier > 0 and float(config["jump_radius"]) > 0.0:
 		food.active = false
@@ -131,115 +131,160 @@ func _pool(at: Vector3, extent: Vector2, color: Color, volume: float, threshold:
 	pool.configure(at, extent, color, volume, threshold, fabric)
 	pools.append(pool)
 
+func _patch(center: Vector2, spread: Vector2, count: int, separation: float = 0.8) -> Array[Vector2]:
+	var points: Array[Vector2] = []
+	for i in range(count):
+		var candidate := center
+		for attempt in range(40):
+			candidate = center + Vector2(_rng.randfn(0.0, 0.48), _rng.randfn(0.0, 0.48)).clamp(Vector2(-1, -1), Vector2(1, 1)) * spread
+			candidate = candidate.clamp(field.position + Vector2(5, 5), field.end - Vector2(5, 5))
+			var clear := true
+			for other in points:
+				if other.distance_squared_to(candidate) < separation * separation:
+					clear = false
+					break
+			if clear:
+				break
+		points.append(candidate)
+	return points
+
 func _quarks() -> void:
-	# Three curling particle streams converge on the small proton assemblies.
-	for stream in range(3):
-		for i in range(14):
-			var angle := float(i) * 0.47 + stream * TAU / 3.0
-			var distance := 2.2 + i * 0.28
-			var at := Vector2(cos(angle), sin(angle)) * distance
-			var particle := _add_food("quark", at, 0.22, 0.34, 0.05, "Quark", true)
-			particle.drift = Vector3(-sin(angle), 0.0, cos(angle)) * 0.18
-			_currents.append(particle)
-	for i in range(7):
-		var angle := i * TAU / 7.0 + 0.3
-		var at := Vector2(cos(angle), sin(angle)) * 6.4
-		var proton := _add_food("proton", at, 0.88, 0.95, 0.7, "Proton")
-		for part in range(3):
-			var phi := part * TAU / 3.0
-			_add_food("quark", Vector2(cos(phi), sin(phi)) * 0.84, 0.26, 0.43, 0.07, "Bound quark", false, 0, proton, 0.04)
-	for i in range(8):
-		var angle := i * TAU / 8.0 + 0.12
-		_add_food("nucleus", Vector2(cos(angle), sin(angle)) * 10.0, 1.5, 1.65, 2.6, "Nucleus", false, 1)
-	for i in range(3):
-		var angle := i * TAU / 3.0 - 0.4
-		_add_food("nucleus", Vector2(cos(angle), sin(angle)) * 14.0, 2.5, 2.55, 7.0, "Heavy nucleus", false, 1)
-	var final := _add_food("nucleus", Vector2(0.0, -14.0), 3.4, 3.0, 12.0, "Atomic heart", false, 1)
+	var pockets := [Vector2(-32, 28), Vector2(-15, 12), Vector2(5, 30),
+		Vector2(30, 9), Vector2(12, -13), Vector2(-24, -31), Vector2(33, -31)]
+	var counts := [24, 18, 16, 20, 14, 16, 12]
+	for region in range(pockets.size()):
+		var center: Vector2 = pockets[region]
+		var spread := Vector2(_rng.randf_range(5.0, 8.0), _rng.randf_range(3.0, 6.0))
+		var points := _patch(center, spread, counts[region], 0.8)
+		for i in range(points.size()):
+			var moving := i < 2
+			var particle := _add_food("quark", points[i], _rng.randf_range(0.2, 0.29), 0.34, 0.025, "Quark", moving)
+			if moving:
+				particle.drift = Vector3(_rng.randf_range(-0.12, 0.12), 0.0, _rng.randf_range(-0.12, 0.12))
+				_currents.append(particle)
+		# Loose assemblies grow along short, differently oriented local chains.
+		var direction := Vector2.from_angle(_rng.randf_range(-PI, PI))
+		var at := center + direction * 3.0
+		var assemblies := 2 if region == 6 else 3
+		for i in range(assemblies):
+			at += direction.rotated(_rng.randf_range(-0.65, 0.65)) * _rng.randf_range(2.8, 4.3)
+			var proton := _add_food("proton", at, _rng.randf_range(0.76, 0.98), 0.9, 0.48, "Proton")
+			for part in range(3):
+				var phi := part * TAU / 3.0 + _rng.randf_range(-0.22, 0.22)
+				_add_food("quark", Vector2.from_angle(phi) * proton.radius * 0.92, 0.25, 0.43, 0.04, "Bound quark", false, 0, proton, 0.04)
+	for center in [Vector2(-5, 7), Vector2(17, 32), Vector2(36, -5), Vector2(-31, -17)]:
+		for at in _patch(center, Vector2(9, 7), 3, 3.5):
+			_add_food("nucleus", at, _rng.randf_range(1.35, 1.65), 1.65, 1.5, "Nucleus", false, 1)
+	for at in [Vector2(-39, 14), Vector2(-12, -30), Vector2(16, -27), Vector2(37, 31), Vector2(37, -35)]:
+		_add_food("nucleus", at, _rng.randf_range(2.3, 2.7), 2.45, 4.0, "Heavy nucleus", false, 0 if at == Vector2(-39, 14) else 1)
+	var final := _add_food("nucleus", Vector2(5, -39), 3.5, 3.65, 10.0, "Atomic heart", false, 1)
 	final.milestone = true
-	for ring in [4.0, 10.0, 15.5]:
-		_ring(Vector2.ZERO, ring, 0.025, 0.018, Color("3b4367"))
 
 func _coral() -> void:
-	_pool(Vector3(-2.0, 0.12, 1.0), Vector2(8.0, 6.5), Color(0.14, 0.7, 0.8, 0.59), 3.0)
-	_pool(Vector3(7.0, 0.1, -6.0), Vector2(7.0, 5.5), Color(0.15, 0.66, 0.76, 0.64), 2.0)
-	for i in range(30):
-		var along := float(i) / 29.0
-		var at := Vector2(-6.0 + along * 12.0, 2.5 * sin(along * TAU * 1.5) + 1.5)
-		var plankton := _add_food("plankton", at, 0.23, 0.33, 0.035, "Plankton", true)
-		plankton.drift = Vector3(0.15, 0.0, cos(along * TAU) * 0.09)
-		_currents.append(plankton)
-	for i in range(10):
-		var angle := i * TAU / 10.0
-		_add_food("shell", Vector2(cos(angle) * 7.0, sin(angle) * 5.8), 0.4, 0.48, 0.09, "Shell")
-	for i in range(6):
-		var angle := i * TAU / 6.0 + 0.4
-		var coral := _add_food("coral_branch", Vector2(cos(angle) * 5.8, sin(angle) * 4.5), 1.1, 0.92, 0.7, "Coral branch")
-		_polyps(coral, 5, 0.23, 0.44, 0.045, 0)
-	for i in range(6):
-		var angle := i * TAU / 6.0
-		var colony := _add_food("coral_branch", Vector2(cos(angle), sin(angle)) * 11.1, 1.9, 1.65, 2.1, "Coral colony", false, 1)
-		_polyps(colony, 5, 0.42, 1.1, 0.1, 1)
-	for at in [Vector2(-13.0, -8.0), Vector2(12.0, -10.0), Vector2(3.0, 13.0)]:
-		_add_food("coral_fan", at, 2.9, 2.5, 5.0, "Coral fan", false, 1)
-	var final := _add_food("coral_fan", Vector2(-1.0, -12.0), 3.6, 2.9, 10.0, "Great coral crown", false, 1)
+	var beds := [Vector2(-33, 27), Vector2(-14, 10), Vector2(9, 28),
+		Vector2(33, 8), Vector2(16, -18), Vector2(-26, -29), Vector2(32, -35)]
+	_pool(Vector3(-29, 0.12, 24), Vector2(12, 9), Color(0.14, 0.7, 0.8, 0.59), 1.0)
+	_pool(Vector3(-9, 0.1, 9), Vector2(14, 10), Color(0.15, 0.66, 0.76, 0.64), 1.0)
+	_pool(Vector3(29, 0.12, 8), Vector2(13, 17), Color(0.14, 0.7, 0.8, 0.59), 1.5)
+	_pool(Vector3(-12, 0.1, -29), Vector2(18, 11), Color(0.15, 0.66, 0.76, 0.64), 1.5)
+	for region in range(beds.size()):
+		var center: Vector2 = beds[region]
+		var drift_direction := Vector2.from_angle(_rng.randf_range(-PI, PI))
+		var plankton_count: int = [18, 9, 14, 7, 11, 16, 9][region]
+		for i in range(plankton_count):
+			var at := center + drift_direction * _rng.randf_range(-6.0, 7.0)
+			at += drift_direction.orthogonal() * _rng.randfn(0.0, 1.3)
+			var plankton := _add_food("plankton", at, _rng.randf_range(0.21, 0.29), 0.33, 0.012, "Plankton", i == 0)
+			if i == 0:
+				plankton.drift = Vector3(drift_direction.x, 0.0, drift_direction.y) * 0.12
+				_currents.append(plankton)
+		for at in _patch(center + Vector2(2, 3), Vector2(7, 4), [7, 3, 4, 6, 3, 8, 4][region], 1.0):
+			_add_food("shell", at, _rng.randf_range(0.32, 0.48), 0.48, 0.045, "Shell")
+		for at in _patch(center + Vector2(-5, 0), Vector2(4, 7), [2, 4, 2, 5, 3, 3, 2][region], 1.7):
+			_add_food("rock", at, _rng.randf_range(0.65, 1.1), 1.25, 0.15, "Tide stone")
+		for at in _patch(center + Vector2(4, -3), Vector2(6, 5), [2, 1, 3, 2, 2, 1, 3][region], 2.8):
+			var coral := _add_food("coral_branch", at, _rng.randf_range(0.95, 1.2), 0.83, 0.38, "Coral branch")
+			_polyps(coral, 4, 0.23, 0.44, 0.027, 0)
+	for center in [Vector2(-23, -9), Vector2(27, 29), Vector2(24, -26)]:
+		for at in _patch(center, Vector2(10, 7), 3, 3.8):
+			var colony := _add_food("coral_branch", at, _rng.randf_range(1.7, 2.05), 1.6, 1.4, "Coral colony", false, 1)
+			_polyps(colony, 4, 0.4, 1.05, 0.07, 1)
+	for at in [Vector2(-40, 17), Vector2(39, -18), Vector2(6, -34), Vector2(2, 39)]:
+		_add_food("coral_fan", at, _rng.randf_range(2.65, 3.0), 2.45, 4.0, "Coral fan", false, 0 if at == Vector2(-40, 17) else 1)
+	var final := _add_food("coral_fan", Vector2(-11, -39), 3.7, 3.55, 9.0, "Great coral crown", false, 1)
 	final.milestone = true
-	for i in range(12):
-		var angle := i * TAU / 12.0 + 0.2
-		_add_food("rock", Vector2(cos(angle), sin(angle)) * 16.0, 0.8 + (i % 3) * 0.2, 1.3, 0.25, "Tide stone", false, 1)
 
 func _polyps(coral: Food, count: int, size: float, threshold: float, volume: float, tier: int) -> void:
 	for i in range(count):
-		var angle := i * TAU / count
-		# Low branch tips keep the living parts in reach before the whole is edible.
-		var at := Vector2(cos(angle), sin(angle)) * coral.radius * 0.68
-		_add_food("polyp", at, size, threshold, volume, "Living polyp", false, tier, coral, size * (0.25 + (i % 2) * 0.3))
+		var angle := i * TAU / count + _rng.randf_range(-0.3, 0.3)
+		# Low branch tips keep living parts reachable before the colony is edible.
+		var at := Vector2.from_angle(angle) * coral.radius * _rng.randf_range(0.6, 0.83)
+		_add_food("polyp", at, size, threshold, volume, "Living polyp", false, tier, coral, size * _rng.randf_range(0.2, 0.65))
 
 func _skatepark() -> void:
-	for lane in range(3):
-		for i in range(10):
-			var at := Vector2(-5.5 + i * 1.15, -3.8 + lane * 3.2 + sin(i * 0.7) * 0.35)
-			_add_food("wheel", at, 0.28, 0.4, 0.045, "Loose wheel", true)
-	for i in range(10):
-		var angle := i * TAU / 10.0 + 0.2
-		var board := _add_food("board", Vector2(cos(angle), sin(angle)) * 6.8, 1.1, 0.73, 0.45, "Skate deck", true)
-		board.linear_velocity = Vector3(-sin(angle), 0.0, cos(angle)) * 0.45
-	for i in range(8):
-		var angle := i * TAU / 8.0
-		var board := _add_food("skateboard", Vector2(cos(angle), sin(angle)) * 9.3, 1.5, 1.2, 1.3, "Skateboard", true)
-		board.linear_velocity = Vector3(-sin(angle), 0.0, cos(angle)) * 0.65
-	for i in range(4):
-		var angle := i * TAU / 4.0 + 0.4
-		_add_food("rail", Vector2(cos(angle), sin(angle)) * 11.9, 2.0, 1.7, 2.0, "Practice rail")
-	for i in range(3):
-		var angle := i * TAU / 3.0 + 0.2
-		var ramp := _add_food("ramp", Vector2(cos(angle), sin(angle)) * 13.0, 2.8, 2.25, 5.0, "Quarter pipe")
-		ramp.rotation.y = -angle + PI * 0.5
-	var final := _add_food("ramp", Vector2(0.0, -12.0), 3.5, 2.65, 8.0, "Big quarter pipe")
+	var spots := [Vector2(-33, 29), Vector2(-13, 15), Vector2(16, 25),
+		Vector2(34, -5), Vector2(14, -7), Vector2(-27, -22), Vector2(27, -34)]
+	for region in range(spots.size()):
+		var center: Vector2 = spots[region]
+		for at in _patch(center, Vector2(7, 5), [18, 9, 12, 6, 15, 14, 10][region], 0.85):
+			_add_food("wheel", at, _rng.randf_range(0.26, 0.36), 0.4, 0.032, "Loose wheel")
+		var deck_count: int = [6, 3, 4, 5, 6, 3, 5][region]
+		for at in _patch(center + Vector2(5, -3), Vector2(9, 6), deck_count, 2.1):
+			var moving := region == 1 or region == 4
+			var board := _add_food("board", at, _rng.randf_range(0.9, 1.2), 0.73, 0.25, "Skate deck", moving)
+			if moving:
+				board.linear_velocity = Vector3(_rng.randf_range(-0.3, 0.3), 0.0, _rng.randf_range(-0.3, 0.3))
+	for center in [Vector2(-8, 30), Vector2(11, 2), Vector2(31, -27)]:
+		for i in range(6):
+			var at: Vector2 = center + Vector2(_rng.randf_range(-6, 6), _rng.randf_range(-5, 5))
+			var board := _add_food("skateboard", at, _rng.randf_range(1.25, 1.65), 1.2, 0.7, "Skateboard", i == 0)
+			if i == 0:
+				board.linear_velocity = Vector3(0.4, 0.0, -0.25)
+	for at in [Vector2(-30, 14), Vector2(-17, 34), Vector2(-8, -2), Vector2(2, 23), Vector2(31, 18),
+		Vector2(39, -14), Vector2(-39, -19), Vector2(-13, -25), Vector2(11, -35), Vector2(36, -37)]:
+		var rail := _add_food("rail", at, _rng.randf_range(1.8, 2.2), 1.7, 1.1, "Practice rail")
+		rail.rotation.y = _rng.randf_range(-0.5, 0.5) + (PI * 0.5 if at.x < 0 else 0.0)
+	for at in [Vector2(-40, 19), Vector2(-2, 37), Vector2(38, 34), Vector2(39, 0), Vector2(5, -39)]:
+		var ramp := _add_food("ramp", at, _rng.randf_range(2.6, 3.0), 2.25, 2.8, "Quarter pipe")
+		ramp.rotation.y = atan2(16.0 - at.x, -6.0 - at.y)
+	var final := _add_food("ramp", Vector2(-26, -38), 3.7, 3.6, 8.0, "Big quarter pipe")
 	final.milestone = true
-	_ring(Vector2.ZERO, 13.0, 2.24, 0.16, Color("d4eee7"))
-	_ring(Vector2.ZERO, 6.1, 0.035, 0.035, Color("8ac8ca"))
-	for i in range(5):
-		var stripe := BoxMesh.new()
-		stripe.size = Vector3(2.0, 0.018, 0.14)
-		var node := Art.mesh_node(stripe, Color("efd9aa"))
-		add_child(node)
-		node.position = Vector3(-3.0 + i * 1.4, 0.026, -1.7)
+	# Coping follows the actual off-center elliptical bowl, not the equipment layout.
+	var tube := SurfaceTool.new()
+	tube.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for i in range(96):
+		var angle := float(i) / 96.0 * TAU
+		var next_angle := float(i + 1) / 96.0 * TAU
+		var a := Vector3(16.0 + cos(angle) * 22.8, 0.035, -6.0 + sin(angle) * 19.0)
+		var b := Vector3(16.0 + cos(next_angle) * 22.8, 0.035, -6.0 + sin(next_angle) * 19.0)
+		var side := (b - a).cross(Vector3.UP).normalized() * 0.1
+		for point in [a - side, b + side, a + side, a - side, b - side, b + side]:
+			tube.set_normal(Vector3.UP)
+			tube.add_vertex(point)
+	add_child(Art.mesh_node(tube.commit(), Color("d4eee7")))
 
 func _cosmos() -> void:
-	_pool(Vector3(0.0, 0.1, 0.0), Vector2(17.4, 16.0), Color(0.22, 0.36, 0.67, 0.8), 34.0, 2.9, true)
-	for arm in range(3):
-		for i in range(12):
-			var angle := arm * TAU / 3.0 + i * 0.36
-			var distance := 1.8 + i * 0.46
-			_add_food("knot", Vector2(cos(angle), sin(angle)) * distance, 0.25, 0.4, 0.055, "Cosmic knot")
-	for i in range(8):
-		var angle := i * TAU / 8.0 + 0.2
-		_add_food("galaxy", Vector2(cos(angle), sin(angle)) * 7.8, 1.15, 0.86, 0.85, "Galaxy")
-	for i in range(7):
-		var angle := i * TAU / 7.0
-		_add_food("galaxy", Vector2(cos(angle), sin(angle)) * 12.4, 2.0, 1.6, 2.5, "Spiral galaxy", false, 1)
-	for at in [Vector2(-11.0, -10.0), Vector2(12.0, -9.0), Vector2(1.0, 13.0)]:
-		_add_food("knot", at, 2.65, 2.4, 4.5, "Spacetime knot", false, 1)
+	_pool(Vector3(0, 0.1, 0), Vector2(44, 43), Color(0.22, 0.36, 0.67, 0.8), 24.0, 3.3, true)
+	var groups := [Vector2(-32, 26), Vector2(-12, 10), Vector2(13, 30),
+		Vector2(31, 6), Vector2(9, -13), Vector2(-25, -28), Vector2(27, -31)]
+	for region in range(groups.size()):
+		var center: Vector2 = groups[region]
+		var direction := Vector2.from_angle(_rng.randf_range(-PI, PI))
+		var count: int = [24, 14, 19, 15, 22, 12, 20][region]
+		var points := _patch(center, Vector2(6, 5), count - 8, 0.8)
+		for i in range(8):
+			var distance := _rng.randf_range(3.0, 12.0)
+			points.append(center + direction * distance + direction.orthogonal() * _rng.randfn(0.0, 1.4))
+		for at in points:
+			_add_food("knot", at, _rng.randf_range(0.21, 0.3), 0.4, 0.02, "Cosmic knot")
+		var galaxy_count: int = [4, 2, 5, 3, 3, 4, 3][region]
+		for at in _patch(center + direction * 5.0, Vector2(8, 6), galaxy_count, 2.6):
+			_add_food("galaxy", at, _rng.randf_range(0.85, 1.25), 0.78, 0.3, "Galaxy")
+	for center in [Vector2(-23, 15), Vector2(1, 27), Vector2(31, -16), Vector2(-7, -31)]:
+		for at in _patch(center, Vector2(10, 8), 4, 3.9):
+			_add_food("galaxy", at, _rng.randf_range(1.7, 2.15), 1.55, 1.25, "Spiral galaxy", false, 0 if center == Vector2(-23, 15) else 1)
+	for at in [Vector2(-37, -33), Vector2(34, 33), Vector2(34, -35), Vector2(4, -37)]:
+		_add_food("knot", at, _rng.randf_range(2.4, 2.8), 2.35, 2.4, "Spacetime knot", false, 1)
 
 func _lighting(background: Color, key: Color, rim: Color) -> void:
 	var environment := WorldEnvironment.new()
@@ -267,7 +312,7 @@ func _lighting(background: Color, key: Color, rim: Color) -> void:
 func _terrain(color: Color, visible_surface: bool = true) -> void:
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
-	var resolution := 64 if _level == 2 else 1
+	var resolution := 128 if _level == 2 else 1
 	for z in range(resolution):
 		for x in range(resolution):
 			var corners: Array[Vector3] = []
@@ -290,6 +335,7 @@ func _terrain(color: Color, visible_surface: bool = true) -> void:
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	if visible_surface:
 		var surface := Art.mesh_node(mesh, color)
+		surface.material_override = Art.ground_material(color, [3.0, 3.0, 5.0, 1.0][_level])
 		add_child(surface)
 	var body := StaticBody3D.new()
 	add_child(body)
@@ -321,24 +367,10 @@ func _walls() -> void:
 			else:
 				body.position.z += side * (field.size.y * 0.5 + 0.5)
 
-func _ring(at: Vector2, radius: float, height: float, width: float, color: Color) -> void:
-	var torus := TorusMesh.new()
-	torus.inner_radius = radius - width
-	torus.outer_radius = radius + width
-	torus.rings = 96
-	torus.ring_segments = 8
-	var node := Art.mesh_node(torus, color)
-	add_child(node)
-	node.position = Vector3(at.x, height, at.y)
-
 func _physics_process(delta: float) -> void:
 	_time += delta
 	for food in _currents:
 		if not is_instance_valid(food) or not food.active:
 			continue
-		if _level == 0:
-			var at := food.global_position
-			var tangent := Vector3(-at.z, 0.0, at.x).normalized()
-			food.drift = tangent * 0.18 - Vector3(at.x, 0.0, at.z) * 0.004
-		else:
-			food.drift = Vector3(0.14 * cos(_time * 0.08), 0.0, 0.07 * sin(_time * 0.15 + food.global_position.x * 0.3))
+		var phase := food.global_position.x * 0.17 + food.global_position.z * 0.11
+		food.drift = Vector3(0.11 * cos(_time * 0.13 + phase), 0.0, 0.09 * sin(_time * 0.17 + phase))

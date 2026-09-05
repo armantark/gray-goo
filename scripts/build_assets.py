@@ -48,7 +48,9 @@ MODEL_COLORS = {
 
 def rgba(hex_color: str, alpha: float = 1.0) -> tuple[float, float, float, float]:
     value = hex_color.removeprefix("#")
-    return tuple(int(value[index : index + 2], 16) / 255 for index in (0, 2, 4)) + (alpha,)
+    srgb = (int(value[index : index + 2], 16) / 255 for index in (0, 2, 4))
+    # Blender shader inputs are linear; the palette is authored in display sRGB.
+    return tuple(channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4 for channel in srgb) + (alpha,)
 
 
 def material(
