@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HUD, speed, and frame-rate results · Gray Goo</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%234ade80'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#0c0e12;--surface:#161a21;--surface-2:#1e232c;--border:#2a3040;--text:#e8ecf4;--text-dim:#8b95a8;--accent:#4f8cff;--accent-glow:rgba(79,140,255,.15);--red:#ff5c5c;--green:#4ade80;--amber:#fbbf24;--purple:#a78bfa;--radius:12px;
+--paper:#f6f3e8;--ink:#1b2a2c;--ink-soft:#5c6f70;--edge:#cfc7ad;--teal:#277a68}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Outfit,"Avenir Next",Avenir,"Segoe UI",system-ui,sans-serif;line-height:1.45}
+main{max-width:1180px;margin:0 auto;padding:32px 20px 80px}
+.badge{display:inline-block;font-family:"JetBrains Mono",Menlo,monospace;font-size:.7rem;letter-spacing:.12em;color:var(--green);background:rgba(74,222,128,.12);border:1px solid var(--green);border-radius:999px;padding:4px 12px}
+h1{font-size:2rem;font-weight:700;margin:14px 0 6px}
+h2{font-size:1.15rem;margin:36px 0 12px;display:flex;align-items:center;gap:10px}
+h2 .n{font-family:"JetBrains Mono",Menlo,monospace;font-size:.7rem;color:var(--accent);background:var(--accent-glow);border-radius:6px;padding:3px 8px}
+.sub{color:var(--text-dim);font-size:.95rem;max-width:760px;margin:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}
+.card h3{margin:0 0 6px;font-size:1rem}
+.card p{margin:0 0 8px;color:var(--text-dim);font-size:.9rem}
+.tag{font-family:"JetBrains Mono",Menlo,monospace;font-size:.65rem;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:3px 8px;margin-right:4px}
+.stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.stat div{background:var(--surface-2);border-radius:8px;padding:10px 12px}
+.stat b{display:block;font-family:"JetBrains Mono",Menlo,monospace;font-size:1.4rem}
+.stat small{color:var(--text-dim);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+.stat .bad b{color:var(--red)}.stat .good b{color:var(--green)}
+.bars{display:flex;gap:14px;align-items:flex-end;height:110px;margin:12px 0 4px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:.72rem;color:var(--text-dim);text-align:center}
+.bar i{display:block;width:100%;border-radius:6px 6px 0 0;background:var(--red)}
+.bar.after i{background:var(--green)}
+/* slide-card mockup */
+.slide{background:var(--paper);color:var(--ink);border:2px solid var(--edge);border-radius:8px;padding:14px;display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.dial{width:112px;height:112px;border-radius:50%;border:7px solid var(--edge);border-top-color:var(--teal);border-left-color:var(--teal);display:grid;place-items:center;text-align:center;font-family:"JetBrains Mono",Menlo,monospace;font-size:.85rem;line-height:1.25;transform:rotate(-45deg)}
+.dial span{transform:rotate(45deg);display:block}
+.dial small{display:block;color:var(--ink-soft);font-size:.62rem}
+.cap{font-family:"JetBrains Mono",Menlo,monospace;font-size:.6rem;letter-spacing:.1em;color:var(--ink-soft)}
+.slide h4{margin:2px 0;font-size:1.15rem}
+.slide .tier{color:var(--ink-soft);font-size:.78rem;margin-bottom:4px}
+.strip{display:flex;gap:3px;margin:4px 0 8px}
+.strip b{width:34px;padding:3px 0;text-align:center;border-radius:4px;font:11px "JetBrains Mono",Menlo,monospace;background:rgba(207,199,173,.5);color:var(--ink-soft)}
+.strip b.lit{background:var(--teal);color:var(--paper)}
+.strip b.now{outline:2px solid var(--ink)}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+td,th{border-bottom:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--text-dim);font-weight:500;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
+.scroll{overflow-x:auto}
+.ok{color:var(--green)}.warn{color:var(--amber)}
+.next{margin-top:32px;background:var(--surface);border:1px solid var(--amber);border-radius:var(--radius);padding:16px 20px}
+.next strong{color:var(--amber)}
+@media (max-width:900px){.two{grid-template-columns:1fr}.slide{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<span class="badge">COMPLETED · FABLE'S HALF · 2026-09-05</span>
+<h1>The slide label is on, and Sugar Water runs at 60 again</h1>
+<p class="sub">Three pieces of the level rebuild plan belonged to Fable: the speed law, the specimen readout HUD, and the dense-scene frame rate that Astra's hand-off flagged. All three are done and in the exported app at <code>builds/Gray Goo.app</code>. Compare against the plan at https://fv8t5e1fuo3m.postplan.dev .</p>
+
+<h2><span class="n">01</span> Specimen readout HUD</h2>
+<div class="two">
+<div class="card">
+<h3>What you see now</h3>
+<p>A paper slide label replaces the dark panel. The dial shows the goo's diameter on a log scale from the starting size to the goal and flashes a ring when a size jump changes the unit. The five rungs light as tiers unlock; the current rung has an ink border. The last meal is a specimen card, the menu is a slide tray, and the hint sits in a dark pill so it reads on bright concrete.</p>
+<p>Cosmic Web reads in light years from 0.1 ly upward: <span class="tag">0.80 ly</span> <span class="tag">goal 19.0 ly</span> <span class="tag">kly · Mly · Gly</span></p>
+<p><span class="tag">src/hud.gd</span><span class="tag">src/game.gd</span><span class="tag">scripts/capture_hud.gd</span></p>
+</div>
+<div class="slide">
+<div class="dial"><span>0.76 fm<small>goal 14.0 fm</small></span></div>
+<div>
+<div class="cap">SPECIMEN SLIDE</div>
+<h4>Sugar Water</h4>
+<div class="tier">Tier 2 of 5 · Formations</div>
+<div class="strip"><b class="lit">1</b><b class="lit now">2</b><b>3</b><b>4</b><b>5</b></div>
+<div class="cap">NEAREST FOOD</div>
+<div style="font-size:.95rem">Photon</div>
+</div>
+</div>
+</div>
+
+<h2><span class="n">02</span> Speed law</h2>
+<div class="card">
+<p>Speed is four body lengths per second at every size. The drive ramps at 6 per second so acceleration reads as the body gathering itself. The slider still scales the rate from 10% to 200%, and the default is yours to tune by feel.</p>
+<div class="bars">
+<div class="bar"><i style="height:100%"></i>old, start<br>11.8</div>
+<div class="bar"><i style="height:42%"></i>old, mid<br>4.9</div>
+<div class="bar"><i style="height:24%"></i>old, goal<br>2.8</div>
+<div class="bar after"><i style="height:34%"></i>new, any size<br>4.0</div>
+</div>
+<p style="font-size:.75rem">Body lengths per second before the slider.</p>
+</div>
+
+<h2><span class="n">03</span> Frame rate in dense scenes</h2>
+<div class="two">
+<div class="card">
+<h3>Cause</h3>
+<p>Every physics substep scanned all 2687 Sugar Water foods twice, once for obstacles and once for eating. Each slow tick made Godot run extra ticks to catch up, which made the next frame slower. The hand-off attributed this to body contact; profiling showed the contact loop was a minor share.</p>
+<h3>Fix</h3>
+<p>Foods wander a bounded distance from where the layout placed them. A grid keyed by placement, with a margin for wander and for the widest collider, answers both queries from a few cells. Astra's obstacle check now compares results as sets because order was never a contract.</p>
+<p><span class="tag">src/world.gd</span><span class="tag">src/game.gd</span><span class="tag">scripts/check_obstacles.gd</span></p>
+</div>
+<div class="card">
+<h3>Same 20-second native route, 1920 × 1080</h3>
+<div class="stat">
+<div class="bad"><small>Sugar Water before</small><b>11.0 fps</b>131.8 ms p95</div>
+<div class="good"><small>Sugar Water after</small><b>58.7 fps</b>17.7 ms p95</div>
+<div class="good"><small>Cosmic Web after</small><b>58.7 fps</b>17.7 ms p95</div>
+<div><small>Headroom warning</small><b class="warn">~2 ms</b>Rendering the first Sugar view alone costs about 15 ms per frame.</div>
+</div>
+</div>
+</div>
+
+<h2><span class="n">04</span> Verification</h2>
+<div class="scroll"><table>
+<tr><th>Check</th><th>Result</th></tr>
+<tr><td>Headless launch and exported app launch</td><td class="ok">LEVEL_READY 0 Sugar Water, no errors</td></tr>
+<tr><td>Twenty tier views with the new HUD, inspected</td><td class="ok">No truncation. Gauge text moved inside the ring after the first pass.</td></tr>
+<tr><td>Meal card, completion card, menu captures</td><td class="ok">Completion card moved above the hint pill; menu shrunk to its content.</td></tr>
+<tr><td>World trials</td><td class="ok">WORLD_CHECK_OK=true</td></tr>
+<tr><td>Obstacle queries versus full scan</td><td class="ok">420 queries, pass=true, set comparison</td></tr>
+<tr><td>Human pacing at about ten minutes</td><td class="warn">Unverified. Headless routes took 509, 455, 469, and 670 simulation seconds.</td></tr>
+</table></div>
+
+<div class="next"><strong>Next.</strong> Play the exported app and tune the speed slider. The procedural body with the Body toggle is briefed in <code>memory-bank/plans/goo-body-brief.md</code> and is not started. Any new per-tick cost above about 2 ms in Sugar Water will push it under 60 fps again, so the body experiment must measure that route.</div>
+</main>
+</body>
+</html>
