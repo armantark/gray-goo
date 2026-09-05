@@ -7,3 +7,5 @@ The user is primarily playing for themselves. Native desktop play on their Mac t
 Reference mechanics verified against https://www.dingogames.com/tastyplanet/instructions/gameplay.htm on 2026-09-04: mouse or arrow-key movement; eat smaller objects and grow; reach a target size to complete a level; helper arrow identifies a nearby edible target. The user chose untimed play and deferred damage. Movement, physics, and interactions should make the world interesting without combat or time pressure.
 
 The prototype should explore a representative range of scales; its exact four-level lineup is pending. The user is comfortable with cartoon subatomic representations and expects larger scales to provide richer interactions. The target duration is roughly 3–5 minutes per typical level.
+
+The full campaign culminates at cosmic scales and consuming spacetime. Puddle consumption is local and progressive: each contacted section disappears into the goo, leaving the rest of the translucent liquid behind. The goo's rolling, squashing, stretching, and sticky contact with the floor are central to the intended feel.

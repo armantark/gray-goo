@@ -8,11 +8,13 @@ The user prefers CLI to MCP. Blender was updated to 5.2.1 LTS for Apple Silicon 
 
 Everything informs scale and diversity of themes within a scale band only. The user is discussing level-theme progression, not origin story. Do not reopen narrative framing or propose Everything-style gameplay. Low-poly and voxel art were considered and not selected.
 
-The user proposed replacing the consecutive opening levels with four representative levels across scales to test more interesting mechanics. The prior two-neighboring-band layout is no longer the implementation plan. Sampler lineup and exact objects, sizes, and themes need agreement.
+The user tentatively accepted the subatomic/droplet/kitchen/garden sampler, while emphasizing that the campaign must culminate at cosmic scales and consuming spacetime itself. The prior two-neighboring-band layout is no longer the implementation plan. Clarify whether to replace garden with a cosmic finale in the four-level sampler.
 
-Settled: cartoon abstraction at subatomic scales; meaningful relative sizes at larger scales; untimed play only; no damage yet; roughly 3–5 minute levels. Do not reopen scientific literalism or propose timers/personal bests. The user wants movement, physics, and interconnected world behavior and suggested vacuum-like liquid consumption.
+Settled: cartoon abstraction at subatomic scales; meaningful relative sizes at larger scales; untimed play only; no damage yet; roughly 3–5 minute levels. Do not reopen scientific literalism or propose timers/personal bests. The user wants movement, physics, and interconnected world behavior.
 
-Open frontier: representative level lineup and suction behavior. Later decisions include the scope of interactions between world objects, growth rules, and concrete completion criteria. The Blender update is complete; asset design can use the new CLI.
+Liquid consumption means mopping a puddle locally, section by section. The remaining puddle stays coherent and translucent. The user suggested connected points underneath a continuous surface. Do not implement automatic consumption of the entire puddle or assume long-range suction.
+
+The goo must be a rounded rolling, deformable mass with sticky-looking floor contact and physics. A generated REST/ROLL/RELEASE sheet illustrates the proposed look; it is not simulation evidence or a final approved model. Open frontier: cosmic level in the sampler and steering weight/inertia. Later decisions include interactions between world objects, growth rules, and concrete completion criteria. The Blender update is complete; asset design can use the new CLI.
 
 The user accepted Godot standalone and said browser access is not important because the game is mostly for personal play. Target their local Mac first. Browser delivery is outside the proof of concept. Godot has not been installed and no game implementation has started.
 
