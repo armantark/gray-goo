@@ -203,7 +203,7 @@ func _process(delta: float) -> void:
 	else:
 		goo.gaze_screen_position = rig.camera.unproject_position(target_position if not target_name.is_empty() else goo.global_position)
 	hud.update_game(pow(_volume, 1.0 / 3.0), world.config.initial_radius,
-		world.config.goal_radius, rig.camera, goo.global_position, target_position, target_name)
+		world.config.goal_radius, world.current_tier, rig.camera, goo.global_position, target_position, target_name)
 
 func _bite_particles(point: Vector3, color: Color, strength: float) -> void:
 	var particles := CPUParticles3D.new()
