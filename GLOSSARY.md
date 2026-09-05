@@ -42,3 +42,6 @@ One rung of a ladder: the set of objects the goo can eat at one size band, and t
 
 **Composite**:
 An object or structure made of distinct parts, such as a coral colony. Its parts remain identifiable pieces rather than a continuously eroded mass.
+
+**Organic clustering**:
+Uneven, off-center groups with a visible cause, varied gaps, and local motion. Food follows currents, shelter, worn paths, and parent structures instead of grids or concentric rings.

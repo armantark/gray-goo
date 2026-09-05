@@ -63,3 +63,20 @@ The 2026-09-05 level design interview settled. The plan artifact is `memory-bank
 ## Follow-up idea: jazzy MIDI music
 
 On 2026-09-05 the user asked to record this idea for after the level rebuild: Astra could try composing fun, jazzy MIDI music with a feel similar to the original Tasty Planet soundtrack. This is a future composition experiment, not part of the current level rebuild.
+
+## Level rebuild: measured routes before pacing expansion
+
+The final organic-layout baseline completed all four levels at the saved movement speed of 100%. These are native wall-clock measurements at 1920 × 1080 with the Mobile renderer. They precede the content expansion toward the approved ten-minute target.
+
+| Scene | Four jump times, seconds | Completion, seconds | Average FPS | 95th-percentile frame time, ms |
+| --- | --- | ---: | ---: | ---: |
+| Sugar Water | 14.325089, 46.0452899999999, 146.262189, 177.589638 | 195.855211 | 56.6764528868166 | 18.005 |
+| Coral Colony Tide Pool | 81.086842, 155.003373, 189.730495, 224.455588 | 228.012069 | 59.21503943784 | 17.448 |
+| Skatepark Bowl | 28.956679, 75.289264, 127.03958, 166.545475 | 171.168752 | 58.9171092075349 | 17.625 |
+| Cosmic Web | 81.237122, 103.488713, 109.310933, 119.324832 | 225.677534999999 | 59.0330930131359 | 17.592 |
+
+Evidence: `/tmp/level-final-routes.json` and `/tmp/level-final-routes.log`. Cosmic Web emitted four nested-scale Jolt warnings during this baseline. Commit `fecb0c7` fixes them. The native seven-deep nested-meal probe then reported `NESTED_MEAL_OK=true depth=7` with no warnings; root inspected the intermediate and completed frames.
+
+The full untouched-scene view pass produced 20 native captures. Sugar Water view five measured `96.0245503874707 average_fps`, `15.499 p95_ms`, `289 frames`, and `3.009647 measured_seconds` with the frame cap and vertical synchronization disabled. This is staged rendering evidence, not a route time. Sugar view two exposed an untouched dense-contact slowdown; an A/B/A obstacle-callback probe confirmed that contact processing causes it. The exact measurements and ownership boundary are in `docs/design/level-runtime-handoff.md`. Fable owns the body solver.
+
+The original demo reference was read only from `/Applications/Tasty Planet.app/Contents/Resources/assets`. The user explicitly prohibited further launch attempts. XML and image inspection informed organic motion, uneven scene density, and soft luminous space material. No original assets or level data entered this repository.

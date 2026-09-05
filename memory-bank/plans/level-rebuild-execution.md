@@ -40,3 +40,25 @@ Implement every row and rule for owned levels in level-contract. Include five ac
 Root performs integration: headless closure and structural checks, ordinary-input full native routes with measured jump/goal times, 1920x1080 view and performance checks, ten sampled membership explanations per world, final export. About ten minutes per level is a measured tuning target, not a claimed result until routes establish it. Preserve the user’s current speed formula. If the target conflicts with reasonable play, report evidence and tune food/location density inside this contract; never add timers or hidden wait gates.
 
 User handoff: Fable finished at94caa8c. Root verified HEAD was already94caa8c; git rebase94caa8c reported up to date. Preserve BODY_LENGTHS_PER_SECOND4.0 and goo drive ramp6.0. Never edit hud.gd. Commit jumps/tiers integration first and alone. Fable will rebuild HUD after that commit.
+
+## Layout direction confirmed during the native pass
+
+On 2026-09-05 the user said, "I think stuff should be floating around more and less grid-like. Messy but structured like real life," then rejected the frequent circular and concentric layouts. Use organic clustering: asymmetric patches, branch junctions, and uneven open space. Do not merely add jitter to rows or rings. Keep intrinsic structures, such as textbook electron orbits, chemical rings, the bowl terrain, and the pool basin. Floating matter moves in local groups; solid park objects stay on the ground.
+
+The first completed native routes use the preserved speed law and movement_speed1.0. Sugar Water took232.530975seconds; Tide Pool took312.533750999999seconds. These are baseline measurements before the organic layout pass. Timing changes must use food budgets and placement, not a changed speed law or a wait gate. Root asked whether the ten-minute target refers to a first human playthrough or an efficient automated route; scene and motion corrections continue while the answer is pending.
+
+Kimi's bounded source review incorrectly summed14+1+8+8+14 as51 and proposed mandatory part stripping. Root rejected those findings: the actual scene has45 sucrose atom Foods, and the contract permits whole meals with surviving parts. The useful observation was to remove intact orbital guides from an atom after its nucleus disappears; the atomic scene now uses an electron cloud or a visible remnant and preserves the remaining growth volume.
+
+## Installed demo reference
+
+The user supplied `/Applications/Tasty Planet.app` and explicitly prohibited more launch attempts. Read its package contents only. The original assets remain outside this repository. Do not copy its assets or level data.
+
+The installed XML supports these design lessons: coherent travel with local speed and heading variation (`space15.xml:4-36`); distinct motion speeds for galaxy families (`space17.xml:7-38`); curved streams inside a larger place (`amoeba.xml:41-77`); irregular stationary landmarks with selective moving life (`grass1.xml:7-97`, `table1.xml:265-299`); dense dust branches around a central bulge (`space16.xml:954-978`); and sparse star overlays with varied opacity (`space15.xml:109-138`). These are authored-data observations, not observed gameplay. Original image inspection shows soft luminous dust and many small star points against a dark background. Our space keeps its muted palette and finite nested food budget. The filament now uses diffuse particles along a branching path; it no longer uses parallel hard lines.
+
+## Pacing and accelerated verification
+
+The organic-layout native baseline finished all four scenes in roughly three to four minutes. The approved target remains about ten minutes. Root retained that target and dispatched bounded scene-content and growth-budget tuning. Increase actual independent encounters and keep each view substantial. Do not change the speed law, add waiting gates, require part stripping, or pad the route with empty space.
+
+The user then explicitly requested headless accelerated simulations and/or Monte Carlo instead of more wall-clock playthroughs. This supersedes the planned repeated full native route sweep. `scripts/drive_levels.gd` supports fixed-timestep headless runs with `--simulation-clock`; reports label their clock and display server. `--seed=N` perturbs nearest-target preferences reproducibly, while seed0 retains strict nearest-target routing. Root will use a bounded seed sweep plus brief native visual/runtime checks. Headless throughput is not native rendering performance.
+
+The first clock canary preserved actual input and physics. Thirty simulated seconds took about thirteen wall-clock seconds, and its first skatepark jump differed from the native baseline by about1.6seconds. Timing experiments remain predictions until the final bounded native check; report which clock each figure uses.

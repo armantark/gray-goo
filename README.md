@@ -1,6 +1,6 @@
 # Gray Goo
 
-A standalone Mac eat-and-grow game with four scenes: Quark Dust Ladder, Coral Colony Tide Pool, Skatepark Bowl, and Tablecloth of Everything.
+A standalone Mac eat-and-grow game with four scenes: Sugar Water, Coral Colony Tide Pool, Skatepark Bowl, and Cosmic Web. Each place has five food tiers and four size jumps. Objects belong to visible larger structures, and eating their parts changes what remains.
 
 ## Play
 
@@ -39,7 +39,33 @@ Regenerate the original assets:
 python3 scripts/build_audio.py
 ```
 
-The editable Blender library stays in `assets/source`; Godot imports the exported GLBs. The game uses the Mobile renderer at a fixed 1920 × 1080 render size.
+The editable Blender library stays in `assets/source`; Godot imports the textured GLBs. Model builders live in `scripts/asset_builders/`. The game uses the Mobile renderer at a fixed 1920 × 1080 render size.
+
+Check that each tier can fund the next jump and each food belongs to a visible whole:
+
+```sh
+/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script scripts/check_worlds.gd
+```
+
+Require `WORLD_CHECK_OK=true` and no script errors. Godot can return exit status zero after a script parse failure.
+
+Record complete native routes through all four levels with the saved movement speed at 100%:
+
+```sh
+/Applications/Godot.app/Contents/MacOS/Godot --path . --resolution 1920x1080 --script scripts/drive_levels.gd -- --output=res://builds/level-routes.json
+```
+
+The driver uses ordinary directional input. It saves progress, jump times, completion times, frame measurements, and one image per reached view. `--start=2 --last=2` selects only the skatepark. `--limit=900` sets the verification timeout in seconds; it does not add a game timer.
+
+For faster pacing experiments, use `--headless --fixed-fps 60` before `--script` and `--simulation-clock` after `--`. Those reports use simulation seconds and identify the headless display server. They do not establish native completion time or render performance.
+
+Inspect untouched scenes at all five sizes and measure their uncapped render performance:
+
+```sh
+/Applications/Godot.app/Contents/MacOS/Godot --path . --resolution 1920x1080 --script scripts/inspect_levels.gd
+```
+
+These staged views do not consume food and are not completion-time evidence. They can retain dense colliders that a normal route has already eaten.
 
 ## Manual verification
 
