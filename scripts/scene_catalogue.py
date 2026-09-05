@@ -49,7 +49,7 @@ def candidates():
 def prepare(rows):
     (DESIGN / "catalogue.json").write_text(json.dumps(rows, indent=2, ensure_ascii=False) + "\n")
     prompt = (DESIGN / "curation-instructions.txt").read_text()
-    prompt += "\n<sources>" + json.dumps(SOURCES) + "</sources>"
+    prompt += "\n<sources>" + json.dumps([{k: r[k] for k in ("id", "entities", "controllers")} for r in SOURCES]) + "</sources>"
     prompt += "\n<band_order>" + json.dumps(BANDS) + "</band_order>\n<candidates>\n"
     prompt += "\n".join(json.dumps(row, ensure_ascii=False) for row in rows)
     prompt += "\n</candidates>\n"
@@ -77,18 +77,22 @@ def scene(row, reason="", number=None):
 
 
 def selection(rows):
-    raw = json.loads((DESIGN / "curation.raw.json").read_text())
-    review = json.loads(raw["result"])
+    review = json.loads((DESIGN / "curation.native.json").read_text())
     campaign = [r["scene_id"] for r in review["campaign"]]
     prototype = [r["scene_id"] for r in review["prototype"]]
     by_id = {r["id"]: r for r in rows}
     assert len(campaign) == len(set(campaign)) == 60
     assert len(prototype) == len(set(prototype)) == 4
     assert set(campaign) <= by_id.keys() and set(prototype) <= set(campaign)
+    for selected in review["campaign"]:
+        row = by_id[selected["scene_id"]]
+        row.update(selected["scene"])
+        validate_scene(row)
     band_order = [BANDS.index(by_id[i]["band"]) for i in campaign]
     assert band_order == sorted(band_order), "Campaign moves backward between scale bands"
     assert any(not by_id[i]["jumps"] for i in campaign), "Campaign forces jumps in every level"
     assert band_order[0] == 0 and band_order[-1] == 11
+    (DESIGN / "catalogue.json").write_text(json.dumps(rows, indent=2, ensure_ascii=False) + "\n")
     (DESIGN / "selection.json").write_text(json.dumps(review, indent=2, ensure_ascii=False) + "\n")
     return review, by_id, campaign, prototype
 
@@ -108,7 +112,7 @@ def render(rows):
     document = """<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gray goo · Scene atlas</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%239aa5b6'/%3E%3C/svg%3E"><style>
     :root{--bg:#0c0e12;--surface:#161a21;--surface-2:#1e232c;--border:#2a3040;--text:#e8ecf4;--text-dim:#a2acbd;--accent:#4f8cff;--accent-glow:rgba(79,140,255,.15);--red:#ff5c5c;--green:#4ade80;--amber:#fbbf24;--purple:#a78bfa;--radius:12px;color-scheme:dark}
     *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 Outfit,system-ui,sans-serif}main{max-width:1240px;margin:auto;padding:48px 24px 80px}header{border-bottom:1px solid var(--border);padding-bottom:28px;margin-bottom:36px}h1{font-size:clamp(2rem,6vw,3.8rem);line-height:1.08;margin:18px 0}h2{margin-top:40px}h3{line-height:1.3;margin:8px 0 12px}p{color:var(--text-dim);max-width:85ch}a{color:#8eb9ff;text-underline-offset:4px}nav{display:flex;gap:24px;flex-wrap:wrap}.badge,small{font:12px/1.5 'JetBrains Mono',monospace;letter-spacing:.06em;color:var(--green)}.counts{display:flex;gap:32px;margin:26px 0;flex-wrap:wrap}.counts b{display:block;font-size:34px;line-height:1.2}.counts span{color:var(--text-dim)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}article{min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;overflow-wrap:anywhere}article p{margin:0 0 16px}dl{margin:0}dt{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-top:12px}dd{margin:2px 0 0;font-size:14px}details{border-top:1px solid var(--border);margin:0 0 10px;padding-top:4px}summary{padding:15px 5px;cursor:pointer;font-size:19px}summary span{float:right;font-size:13px;color:var(--text-dim);padding-top:5px}details[open]>summary{color:var(--green)}.notice{border-left:3px solid var(--amber);padding:12px 20px;background:var(--surface-2);margin:26px 0}.notice p{margin:0}li{margin-bottom:12px}footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);color:var(--text-dim);font-size:13px}@media(max-width:700px){main{padding:28px 16px 56px}.grid{grid-template-columns:1fr}.counts{gap:24px}article{padding:18px}summary span{float:none;display:block;padding-left:19px}}
-    </style></head><body><main><header><span class="badge">EXPLORATION RESULTS · DESIGN PROPOSAL</span><h1>From particles<br>to spacetime.</h1><p>SCENE_SUMMARY</p><div class="counts"><div><b>240</b><span>scene candidates</span></div><div><b>60</b><span>campaign selections</span></div><div><b>4</b><span>prototype recommendations</span></div></div><nav><a href="#prototype">Prototype</a><a href="#campaign">Campaign</a><a href="#risks">Open design work</a><a href="#catalogue">All candidates</a></nav></header><aside class="notice"><p>This is a scene proposal. The first Tasty Planet informs pacing, playful arrangements, and growth rewards. These are new scene proposals, not copies of its levels. The source is its official Mac demo, edition 1.4.1; identity with the 2006 release is unverified. New interactions, edible parts, and camera jumps are our proposals. A level can have zero, one, or two jumps. No levels are built yet. Exact scale continuity and balance remain open.</p></aside><section id="prototype"><h2>Four scenes to build first</h2><div class="grid">PROTOTYPE_CARDS</div></section><section id="campaign"><h2>The proposed campaign</h2><p>Open a scale band to see its levels in campaign order.</p>CAMPAIGN_CARDS</section><section id="risks"><h2>Open design work</h2><ul>DESIGN_RISKS</ul>CORRECTIONS</section><section id="catalogue"><h2>The full candidate pool</h2><p>These include scenes the curator did not select. Open a scale band to review alternatives.</p>ALL_CARDS</section><footer>Drafted by three Luna agents. Curated by Kimi K3. Codex checked counts, source references, jump limits, and campaign order. Original levels supplied design influences. The campaign does not follow their level list or require coverage of each source. Final scene choices remain with the user.</footer></main></body></html>"""
+    </style></head><body><main><header><span class="badge">EXPLORATION RESULTS · DESIGN PROPOSAL</span><h1>From particles<br>to spacetime.</h1><p>SCENE_SUMMARY</p><div class="counts"><div><b>240</b><span>scene candidates</span></div><div><b>60</b><span>campaign selections</span></div><div><b>4</b><span>prototype recommendations</span></div></div><nav><a href="#prototype">Prototype</a><a href="#campaign">Campaign</a><a href="#risks">Open design work</a><a href="#catalogue">All candidates</a></nav></header><aside class="notice"><p>This is a scene proposal. The first Tasty Planet informs pacing, playful arrangements, and growth rewards. These are new scene proposals, not copies of its levels. The source is its official Mac demo, edition 1.4.1; identity with the 2006 release is unverified. New interactions, edible parts, and camera jumps are our proposals. A level can have zero, one, or two jumps. No levels are built yet. Exact scale continuity and balance remain open.</p></aside><section id="prototype"><h2>Four proposed prototype scenes</h2><div class="grid">PROTOTYPE_CARDS</div></section><section id="campaign"><h2>The proposed campaign</h2><p>Open a scale band to see its levels in campaign order.</p>CAMPAIGN_CARDS</section><section id="risks"><h2>Open design work</h2><ul>DESIGN_RISKS</ul>CORRECTIONS</section><section id="catalogue"><h2>The full candidate pool</h2><p>These include unselected drafts. The proposed campaign above has refined size-jump and edible-part plans; alternatives still need that design pass. Open a scale band to review them.</p>ALL_CARDS</section><footer>Drafted by three Luna agents. Selected and refined by a separate Astra reviewer. Codex checked counts, source references, jump limits, and campaign order. Original levels supplied design influences. The campaign does not follow their level list or require coverage of each source. Final scene choices remain with the user.</footer></main></body></html>"""
     replacements = {
         "SCENE_SUMMARY": esc(review["summary"]), "PROTOTYPE_CARDS": prototype_html,
         "CAMPAIGN_CARDS": "".join(campaign_html), "DESIGN_RISKS": risks,

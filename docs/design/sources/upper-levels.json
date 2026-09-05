@@ -1,0 +1,272 @@
+[
+  {
+    "id": "sky-1",
+    "chapter": "sky",
+    "level": 1,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "sky1.xml",
+    "objects": "Grey Goo (start); Mist, Fog, Small Cloud, Billow, and Big Cloud.",
+    "layout": "Five side emitters use movedirection controllers; left/right spawn ranges are present. Farmtile, Farmtile2, and Farmtile3 tile layers form the background. Cloud entitydefs use grouped circle intersection shapes.",
+    "limits": "The XML does not state the camera, rendered cloud depth, or runtime movement beyond controller data."
+  },
+  {
+    "id": "sky-2",
+    "chapter": "sky",
+    "level": 2,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "sky2.xml",
+    "objects": "Grey Goo (start); Bird; Kite; Mist, Fog, Small Cloud, Billow, and Big Cloud.",
+    "layout": "Seven side emitters use movedirection; the Bird also has evade and avoid controllers, while all spawn from left/right ranges. Farmtile variants form tile layers. Bird and Kite use mixed rectangle/circle shapes; clouds use grouped circles.",
+    "limits": "The Bird emitter carries damage attributes and size conditions, but this file does not establish runtime outcomes or camera behavior."
+  },
+  {
+    "id": "sky-3",
+    "chapter": "sky",
+    "level": 3,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "sky3.xml",
+    "objects": "Grey Goo (start); Bird; Kite; Biplane; Mist, Fog, Small Cloud, Billow, and Big Cloud.",
+    "layout": "Eight side emitters use movedirection; Bird and Biplane add evade/avoid controllers, with left/right ranges. Farmtile variants tile the level. Bird, Kite, and Biplane use rectangle-and-circle collision shapes; cloud variants use grouped circles.",
+    "limits": "The XML includes damage fields on flying emitters, but it does not say how collisions, avoidance, or damage look in play."
+  },
+  {
+    "id": "sky-4",
+    "chapter": "sky",
+    "level": 4,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "sky4.xml",
+    "objects": "Grey Goo (start); Kite; Biplane; Hot Air Balloon; Mist, Fog, Small Cloud, Billow, and Big Cloud.",
+    "layout": "Eight left/right side emitters use movedirection; Biplane has evade/avoid and Hot Air Balloon has avoid. Farmtile variants repeat. Biplane uses multiple rectangles; Balloon is circular; Kite and clouds use circle groups.",
+    "limits": "Emitter size, angular velocity, and controller values are data only; visual wind behavior and camera framing are unspecified."
+  },
+  {
+    "id": "sky-5",
+    "chapter": "sky",
+    "level": 5,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "sky5.xml",
+    "objects": "Grey Goo (start); Biplane; Fighter Jet; Bullet; Hot Air Balloon; Mist, Fog, Small Cloud, Billow, and Big Cloud.",
+    "layout": "Nine emitters combine side and shot types. Biplane and Fighter Jet use movedirection plus evade/avoid; Fighter Jet attacks; Bullet is a movedirection shot. Farmtile variants tile the scene. Plane shapes use rotated rectangles, Balloon a circle, and clouds grouped circles.",
+    "limits": "Attack and damage fields are present, but XML does not establish whether those interactions are required, avoidable, or visually represented."
+  },
+  {
+    "id": "sky-6",
+    "chapter": "sky",
+    "level": 6,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "sky6.xml",
+    "objects": "Grey Goo (start); Biplane; Fighter Jet; Bullet; Hot Air Balloon; Blimp; Mist, Fog, Small Cloud, Billow, and Big Cloud.",
+    "layout": "Ten emitters combine side and shot types. Fighter Jet attacks and flying objects use evade/avoid; Bullet is a movedirection shot. Farmtile variants tile the scene. Planes use rotated rectangles, Balloon and Blimp circles, and clouds grouped circles.",
+    "limits": "Attack and damage fields are present, but XML does not establish whether those interactions are required, avoidable, or visually represented."
+  },
+  {
+    "id": "sky-7",
+    "chapter": "sky",
+    "level": 7,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "sky7.xml",
+    "objects": "Grey Goo (start); Fighter Jet; Bullet; Jumbo Jet; Hot Air Balloon; Blimp; Mist, Fog, Small Cloud, Billow, and Big Cloud.",
+    "layout": "Ten emitters combine side and shot types. Fighter Jet attacks; Jumbo Jet, Balloon, and Blimp use movedirection with avoid; Bullet is a movedirection shot. Farmtile variants tile the scene. Jet meshes use rotated rectangles and round components.",
+    "limits": "Damage fields and attack controllers are declared, but the XML does not document runtime collision results or camera behavior."
+  },
+  {
+    "id": "orbit-1",
+    "chapter": "orbit",
+    "level": 1,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space1.xml",
+    "objects": "Grey Goo (start); Meteoroid (two entitydefs); Sputnik.",
+    "layout": "Four right-side Meteoroid emitters use movedirection; Sputnik is a stationary spot emitter. Stars, overlays, and null tile layers form the background. Meteoroids use paired circle shapes; Sputnik uses a circle group.",
+    "limits": "The XML gives emitter ranges and one Sputnik position, but no camera, rendered orbit lines, or runtime collision description."
+  },
+  {
+    "id": "orbit-2",
+    "chapter": "orbit",
+    "level": 2,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space2.xml",
+    "objects": "Grey Goo (start); Meteoroid; Astronaut; Satellite.",
+    "layout": "Meteoroids, Astronaut, and Satellite use right-side emitters with movedirection. Stars, overlay, and null tile layers repeat. Meteoroids use paired circles; Astronaut mixes a circle and rotated rectangle; Satellite uses a rotated rectangle with round components.",
+    "limits": "The source does not distinguish the two Meteoroid graphics in the resolved label, nor specify camera or runtime interactions."
+  },
+  {
+    "id": "orbit-3",
+    "chapter": "orbit",
+    "level": 3,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space3.xml",
+    "objects": "Grey Goo (start); Meteoroid; Astronaut; Satellite; Space Capsule.",
+    "layout": "Meteoroids, Astronaut, Satellite, and Space Capsule use right-side emitters with movedirection. Stars, overlay, and null tile layers repeat. Meteoroids use paired circles; Astronaut, Satellite, and Capsule use mixed circle/rotated-rectangle shapes.",
+    "limits": "The XML records moving emitters and shape definitions, but does not say how the objects interact, render in depth, or frame the camera."
+  },
+  {
+    "id": "orbit-4",
+    "chapter": "orbit",
+    "level": 4,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space4.xml",
+    "objects": "Grey Goo (start); Meteoroid; Energy Entity.",
+    "layout": "Four right-side Meteoroid emitters use movedirection; Energy Entity emits from both left and right with movedirection, attack, evade, avoid, and leavelevel controllers. Stars, overlays, and null tile layers repeat. Entitydefs use circle shapes for both labels.",
+    "limits": "Energy Entity has conditions and a leavelevel controller; XML does not say what triggers leaving or how attacks affect the run."
+  },
+  {
+    "id": "orbit-5",
+    "chapter": "orbit",
+    "level": 5,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space5.xml",
+    "objects": "Grey Goo (start); Meteoroid; Satellite; Space Capsule; Energy Entity; Space Shuttle.",
+    "layout": "Meteoroid, Satellite, Capsule, Energy Entity, and Shuttle use side emitters; Meteoroids spawn right, Energy and Shuttle from left and right. Energy has attack/evade/avoid/leavelevel; Shuttle has movedirection/avoid. Shapes mix circles and rotated rectangles.",
+    "limits": "The resolved Energy Entity label covers energy1 only; the file does not state its visual form or runtime responses."
+  },
+  {
+    "id": "orbit-6",
+    "chapter": "orbit",
+    "level": 6,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space6.xml",
+    "objects": "Grey Goo (start); Meteoroid; Space Capsule; Attack Shuttle; Laser.",
+    "layout": "Meteoroids, Capsule, and Attack Shuttle use side emitters; Attack Shuttle has movedirection, attack, and avoid controllers. A Laser shot emitter uses movedirection. Stars, overlays, and null tile layers repeat. Capsule and meteoroids use circles; shuttle mixes circle/rectangle shapes and Laser is rectangular.",
+    "limits": "The XML declares shot and attack data, but does not document firing cadence effects, camera behavior, or collision outcomes."
+  },
+  {
+    "id": "orbit-7",
+    "chapter": "orbit",
+    "level": 7,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space7.xml",
+    "objects": "Grey Goo (start); Meteoroid; Space Capsule; Energy Entity; Space Shuttle; International Space Station.",
+    "layout": "Meteoroids, Capsule, Energy, and Shuttle use side emitters; Energy has attack/evade/avoid/leavelevel, Shuttle has evade/avoid. International Space Station is a stationary spot. Stars, overlays, and null layers repeat; station and capsule definitions use mixed rectangle/circle shapes.",
+    "limits": "The fixed station position and emitter rules are recorded, but no orbit path, rendered scale, or runtime interaction is specified."
+  },
+  {
+    "id": "orbit-8",
+    "chapter": "orbit",
+    "level": 8,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space8.xml",
+    "objects": "Grey Goo (start); Asteroid; Alien Spaceship; Laser.",
+    "layout": "Six side Asteroid emitters use movedirection; Alien Spaceship adds attack/evade/avoid; Laser is a movedirection shot. Stars, overlays, and null tile layers repeat. Asteroids and Alien use circle shapes; Laser uses a rotated rectangle.",
+    "limits": "The XML contains attack and damage attributes, but it does not say whether the alien or laser can be eaten, avoided, or how collisions resolve."
+  },
+  {
+    "id": "orbit-9",
+    "chapter": "orbit",
+    "level": 9,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space9.xml",
+    "objects": "Grey Goo (start); Asteroid; Energy Entity.",
+    "layout": "Four side Asteroid emitters use movedirection; Energy Entity emits from both sides with movedirection, attack, evade, avoid, and leavelevel. Stars, overlays, and null tile layers repeat. Asteroids and Energy Entity use circle shapes.",
+    "limits": "energy2 resolves to the same Energy Entity label as energy1; the source does not explain the variant's visual difference."
+  },
+  {
+    "id": "orbit-10",
+    "chapter": "orbit",
+    "level": 10,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space10.xml",
+    "objects": "Grey Goo (start); Asteroid; Earth; Moon.",
+    "layout": "Four side Asteroid emitters use movedirection. Earth is a stationary spot at the center; Moon is a spot with a looping pathfollow controller and four path pairs. Enlarged stars, overlays, and null tile layers are present. Asteroids, Earth, and Moon use circles.",
+    "limits": "The Moon path is encoded as data, but the XML does not describe camera tracking, orbital rendering, or runtime collision behavior."
+  },
+  {
+    "id": "cosmos-1",
+    "chapter": "cosmos",
+    "level": 1,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space11.xml",
+    "objects": "Grey Goo (start); Alien Mothership; Laser; Asteroid; Sun; Mercury; Venus; Earth; Mars; Jupiter; Saturn; Uranus; Neptune; Pluto.",
+    "layout": "The Mothership is a side emitter using movedirection, attack, evade, and avoid; Laser is a shot emitter. Sun is a stationary spot; planets and asteroid spots use pathfollow, mostly looping, while four asteroid paths are non-looping. Stars, overlays, and null layers repeat; celestial defs use circles.",
+    "limits": "The XML supplies path coordinates and emitter data, but not rendered orbital scale, camera behavior, or how attack and avoid rules appear."
+  },
+  {
+    "id": "cosmos-2",
+    "chapter": "cosmos",
+    "level": 2,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space12.xml",
+    "objects": "Grey Goo (start); Sol; Proxima Centauri; Alpha Centauri A; Alpha Centauri B; Barnard's Star; Wolf 359; Sirius A; Sirius B; Ross 154; Ross 248; Lalande; Tau Ceti; Epsilon Eridani.",
+    "layout": "Thirteen spot emitters are stationary at explicit positions. Stars, overlays, and null tile layers form the backdrop, and each named-star entitydef uses a circle shape.",
+    "limits": "The source provides labels and positions only; it does not define a camera route, connecting lines, or runtime star interactions."
+  },
+  {
+    "id": "cosmos-3",
+    "chapter": "cosmos",
+    "level": 3,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space13.xml",
+    "objects": "Grey Goo (start); Red Giant; Star variants using white, yellow, blue, and red graphics.",
+    "layout": "122 spot emitters are stationary: two Red Giants plus 120 Star variants. Stars, overlays, and null tile layers repeat. Red Giant and every Star variant use circle shapes.",
+    "limits": "The XML distinguishes star graphics and placements, but does not state any physical or gameplay meaning for the color variants."
+  },
+  {
+    "id": "cosmos-4",
+    "chapter": "cosmos",
+    "level": 4,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space14.xml",
+    "objects": "Grey Goo (start); Black Hole; Star variants using white, yellow, blue, and red graphics.",
+    "layout": "A stationary Black Hole spot is joined by 56 one-way pathfollow Star spots; every star path has one pair and loop=false, converging on the center. Stars, overlays, and null layers repeat. Black Hole and stars use circles.",
+    "limits": "Path endpoints and controller values are explicit, but the source does not describe what entering the Black Hole does or how the camera frames convergence."
+  },
+  {
+    "id": "cosmos-5",
+    "chapter": "cosmos",
+    "level": 5,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space15.xml",
+    "objects": "Grey Goo (start); Nebula variants 1–3; Star Cluster.",
+    "layout": "Seven side emitters use movedirection from left, right, top, and bottom ranges: two each for Nebula variants 1, 2, and 3, plus one Star Cluster. Stars, overlays, and null layers repeat. These entitydefs use circle shapes.",
+    "limits": "All three nebula labels resolve to Nebula in strings; the source does not define their visual distinction beyond entitydef and image data."
+  },
+  {
+    "id": "cosmos-6",
+    "chapter": "cosmos",
+    "level": 6,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space16.xml",
+    "objects": "Grey Goo (start); Galactic Dust; Milky Way Core; Star Cluster; Nebula variants 1–3.",
+    "layout": "175 stationary spot emitters place 157 Galactic Dust, one Milky Way Core, eight Star Clusters, and nine Nebula variants. Stars, overlays, and null layers repeat. Galactic Dust, clusters, and nebulae use circles; the core uses multiple circles.",
+    "limits": "The source records many explicit spot coordinates, but does not state whether they form a rendered spiral, how depth is shown, or how the core relates to collision."
+  },
+  {
+    "id": "cosmos-7",
+    "chapter": "cosmos",
+    "level": 7,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space17.xml",
+    "objects": "Grey Goo (start); Spiral Galaxy variants 1–2; Elliptical Galaxy variant 3.",
+    "layout": "Six side emitters use movedirection from all four boundary ranges: two each for Spiral Galaxy variants 1 and 2 and Elliptical Galaxy variant 3. Stars, overlays, and null layers repeat. Spiral defs use one circle; Elliptical uses three.",
+    "limits": "Strings resolve galaxy1 and galaxy2 to the same Spiral Galaxy label; the file does not state how their graphics differ."
+  },
+  {
+    "id": "cosmos-8",
+    "chapter": "cosmos",
+    "level": 8,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space18.xml",
+    "objects": "Grey Goo (start); Galaxy Group; Galaxy Cluster.",
+    "layout": "One side emitter each for Galaxy Group and Galaxy Cluster uses movedirection with left, right, top, and bottom ranges. Stars, overlays, and null layers repeat. Both entitydefs use circle shapes.",
+    "limits": "Only the two moving emitter definitions are present; XML does not describe internal members, cluster layout, or runtime interactions."
+  },
+  {
+    "id": "cosmos-9",
+    "chapter": "cosmos",
+    "level": 9,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "space19.xml",
+    "objects": "Grey Goo (start); Supercluster; Giant Amoeba.",
+    "layout": "Three Supercluster side emitters use movedirection from all boundaries. Giant Amoeba is another side emitter with movedirection, attack, evade, avoid, and leavelevel controllers. The blacktile layer is used. Supercluster and Giant Amoeba use circle shapes.",
+    "limits": "Giant Amoeba is explicitly the source's amoebagiant entity in cosmos level 9; its scale and interaction semantics are not defined by this XML."
+  },
+  {
+    "id": "cosmos-10",
+    "chapter": "cosmos",
+    "level": 10,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "filename": "end.xml",
+    "objects": "Grey Goo (start); Time Itself; Fabric of Space.",
+    "layout": "The XML includes an end marker, a tip, and 270 stationary spot emitters: 230 Time Itself objects and 40 Fabric of Space objects. The white tile layer is used. Both entitydefs use rotated-rectangle intersection shapes; positions are explicitly listed.",
+    "limits": "The source provides positions and counts, but not the end-state transition, camera behavior, or visual treatment."
+  }
+]

@@ -1,0 +1,470 @@
+[
+  {
+    "id": 1,
+    "source_id": "laboratory-1",
+    "band": "subatomic",
+    "title": "Quark Dust Ladder",
+    "setting": "Hadron cloud with loose quark flecks and slow charge streams around a dense central knot.",
+    "food": "Quark flecks, proton knots, neutron-rich nuclei.",
+    "interaction": "Opposite charges pull quarks together; goo rolls through, gathering flecks and nudging knots toward the center.",
+    "jumps": [],
+    "parts": "Goo nibbles accessible quarks, grows enough to eat intact protons, then consumes nuclei as a cartoon parts-to-whole payoff.",
+    "risk": "Binding must read without implying measured sizes."
+  },
+  {
+    "id": 2,
+    "source_id": "laboratory-2",
+    "band": "subatomic",
+    "title": "Charge-Tier Drift",
+    "setting": "A three-color particle cloud spreads across one open field, with dense and sparse streams crossing.",
+    "food": "Small charge beads, medium composite blobs, large bound clusters.",
+    "interaction": "Density gradients pull each species toward compatible clusters; larger blobs bend smaller streams, while goo rolls along a side current and gathers the loose tier.",
+    "jumps": [],
+    "parts": "Charge beads bind into larger composite clusters.",
+    "risk": "Three simultaneous streams may blur scale cues."
+  },
+  {
+    "id": 3,
+    "source_id": null,
+    "band": "subatomic",
+    "title": "Photon Pair Drift",
+    "setting": "A photon cloud crosses a dark field where paired light beads form and separate along a faint energy ridge.",
+    "food": "Photon flecks, paired light beads, dense energy knots.",
+    "interaction": "An energy ripple splits and reunites pairs; goo rolls across the ridge, collecting loose photons and bending the next pair toward its wake.",
+    "jumps": [
+      "View widens to reveal the ridge's second crossing."
+    ],
+    "parts": null,
+    "risk": "Bright particle paths need readable silhouettes."
+  },
+  {
+    "id": 4,
+    "source_id": null,
+    "band": "subatomic",
+    "title": "Nucleus Binding Wake",
+    "setting": "A neutron halo surrounds proton beads in a shifting field, with small nucleon clusters drifting along the outer wake.",
+    "food": "Loose neutrons, proton beads, bound nucleon clusters, compact nuclei.",
+    "interaction": "Binding fields draw particles together; goo rolls through the halo, peeling accessible beads from the wake before larger clusters settle behind it.",
+    "jumps": [],
+    "parts": "Goo nibbles loose nucleons, grows into clusters, then eats intact nuclei.",
+    "risk": "Nucleon layers need clear growth cues."
+  },
+  {
+    "id": 5,
+    "source_id": "laboratory-1",
+    "band": "subatomic",
+    "title": "Vacuum Dust Current",
+    "setting": "Loose dirt-like quanta drift through a quiet vacuum pocket, separated by a broad pressure ripple.",
+    "food": "Dust quanta, compact dust knots, heavy vacuum pearls.",
+    "interaction": "The ripple pushes quanta toward a low-pressure pocket; goo occupies the pocket, slowing the flow and making knots collect along its edge.",
+    "jumps": [],
+    "parts": null,
+    "risk": "A nearly empty field may lack strong landmarks."
+  },
+  {
+    "id": 6,
+    "source_id": "laboratory-2",
+    "band": "subatomic",
+    "title": "Three-Stream Color Fold",
+    "setting": "Three colored particle streams fold over one another inside a soft charge gradient.",
+    "food": "Colored beads, paired states, dense tricolor knots.",
+    "interaction": "Crossing streams exchange momentum at overlap points; goo enters an overlap, trapping paired beads and leaving a dense knot behind.",
+    "jumps": [
+      "The camera opens to show the streams' folded paths."
+    ],
+    "parts": "Three compatible beads bind into a tricolor knot.",
+    "risk": "Overlap feedback must be readable in cel shading."
+  },
+  {
+    "id": 7,
+    "source_id": "laboratory-1",
+    "band": "atomic",
+    "title": "Mineral Dust Strata",
+    "setting": "A warm atomic dust pocket holds light clay-like grains over heavier silt-like clusters.",
+    "food": "Light atoms, paired mineral grains, heavy silt clusters.",
+    "interaction": "A slow density current lifts the lighter layer and leaves heavier clusters behind; goo rolls along the boundary, collecting a new ridge of grains.",
+    "jumps": [],
+    "parts": null,
+    "risk": "Similar grain shapes could flatten the progression."
+  },
+  {
+    "id": 8,
+    "source_id": "laboratory-2",
+    "band": "atomic",
+    "title": "Atom Colony Drift",
+    "setting": "Three atom species occupy concentration clouds in one translucent gas pocket.",
+    "food": "Small atom clusters, medium bonded groups, large dense clumps.",
+    "interaction": "Charge attracts matching groups while flow pushes large clumps across smaller clouds; goo moves between layers and redirects a loose group.",
+    "jumps": [
+      "View shows all three concentration clouds."
+    ],
+    "parts": "Atom groups join where fields overlap.",
+    "risk": "Binding needs simple visual language."
+  },
+  {
+    "id": 9,
+    "source_id": "laboratory-3",
+    "band": "atomic",
+    "title": "Red-White Current",
+    "setting": "Red and pale atom clusters stream through a clear branching fluid pocket around a denser white cluster.",
+    "food": "Red atom beads, bacterial atom knots, pale white clusters.",
+    "interaction": "Flow splits at the fork; goo settles in one branch, slowing red clusters and exposing a side current where the pale cluster passes.",
+    "jumps": [],
+    "parts": null,
+    "risk": "Blood-inspired colors can be visually heavy."
+  },
+  {
+    "id": 10,
+    "source_id": null,
+    "band": "atomic",
+    "title": "Metal Vapor Shear",
+    "setting": "Iron-rich and copper-rich atom clouds drift through a vapor pocket, separated by a magnetic gradient.",
+    "food": "Metal atoms, paired grains, alloy clusters, metal beads.",
+    "interaction": "The gradient pulls iron-rich grains sideways while vapor carries copper across; goo settles at the boundary, collecting atoms and redirecting the alloy stream.",
+    "jumps": [],
+    "parts": "Loose atoms aggregate into soft density shells.",
+    "risk": "Metal families need distinct silhouettes."
+  },
+  {
+    "id": 11,
+    "source_id": "laboratory-2",
+    "band": "atomic",
+    "title": "Reactive Atom Foam",
+    "setting": "Light and heavy atom clouds mingle at a sparkling boundary where gas pockets fold into foam.",
+    "food": "Light atom beads, paired gas bubbles, dense reactive clusters.",
+    "interaction": "Pressure from the heavy cloud squeezes bubbles outward; goo blocks a narrow fold, forcing a pocket to bulge and shed clusters.",
+    "jumps": [
+      "The view widens to reveal the pressure boundary behind the foam."
+    ],
+    "parts": null,
+    "risk": "Foam movement can hide which clusters are edible."
+  },
+  {
+    "id": 12,
+    "source_id": null,
+    "band": "atomic",
+    "title": "Crystal Lattice Pulse",
+    "setting": "A crystal lattice of silicon-like atoms spans a clear field, with vacant gaps and dense nodes.",
+    "food": "Loose atoms, lattice links, crystal nodes, atomic blocks.",
+    "interaction": "A heat pulse expands a gap while bonds pull shut; goo occupies it, catching displaced atoms before the lattice reforms.",
+    "jumps": [],
+    "parts": "Goo nibbles links, grows, then consumes the crystal node.",
+    "risk": "Lattice motion needs simple deterministic motion."
+  },
+  {
+    "id": 13,
+    "source_id": "laboratory-1",
+    "band": "molecular",
+    "title": "Capillary Dirt Film",
+    "setting": "A coherent wet mineral film lies over porous stone, carrying loose clay molecules and silt aggregates.",
+    "food": "Mineral molecules, short aggregates, dense silt pellets.",
+    "interaction": "Capillary flow draws material through pores; goo mops a local section, leaving the surrounding translucent film coherent while aggregates slide into reach.",
+    "jumps": [],
+    "parts": "Goo nibbles exposed mineral molecules, grows into the aggregate, then consumes the intact clump.",
+    "risk": "Local film removal must show a clean boundary."
+  },
+  {
+    "id": 14,
+    "source_id": "laboratory-2",
+    "band": "molecular",
+    "title": "Molecular Colony Wash",
+    "setting": "Clear water film carries three molecule species in concentration bands, with larger colonies tucked in eddies.",
+    "food": "Small molecules, paired clusters, colonies, large droplets.",
+    "interaction": "Molecules bind on contact; goo presses one band, separating a cluster from its colony and sending it across the film.",
+    "jumps": [
+      "Camera reveals the bands beyond the first eddy."
+    ],
+    "parts": "Small molecules bind into larger droplets.",
+    "risk": "Binding feedback may be too subtle."
+  },
+  {
+    "id": 15,
+    "source_id": "laboratory-3",
+    "band": "molecular",
+    "title": "Membrane Fork",
+    "setting": "A flexible lipid sheet spans a watery pocket, with vesicle beads and protein channels opening along its folds.",
+    "food": "Lipid beads, membrane patches, vesicles, folded sacs.",
+    "interaction": "Vesicles drift through open channels; goo plugs one opening, redirecting them along the membrane edge and exposing a folded patch.",
+    "jumps": [
+      "The view shifts to show the underside of the membrane fold."
+    ],
+    "parts": null,
+    "risk": "Thin surfaces need robust collision and camera readability."
+  },
+  {
+    "id": 16,
+    "source_id": "laboratory-4",
+    "band": "molecular",
+    "title": "Algae Polymer Wash",
+    "setting": "Long sugar polymers trail through a slow molecular current beside compact pigment droplets and soft organic knots.",
+    "food": "Sugar links, cellulose-like strands, pigment droplets, thick polymer bundles.",
+    "interaction": "The current stretches strands around a bend; goo catches one strand, bunching it into a bundle while loose pigment follows the redirected flow.",
+    "jumps": [],
+    "parts": "Sugar links join into longer polymer strands.",
+    "risk": "Flexible strands may need visual simplification."
+  },
+  {
+    "id": 17,
+    "source_id": "laboratory-1",
+    "band": "molecular",
+    "title": "Puddle Molecule Mop",
+    "setting": "A translucent puddle of water molecules spans a shallow groove, with mineral crumbs resting in its edge film.",
+    "food": "Water molecules, mineral crumbs, droplet beads, coherent puddle lobes.",
+    "interaction": "Surface tension pulls crumbs toward the low edge; goo consumes one local puddle section, leaving the remainder joined and translucent as crumbs settle.",
+    "jumps": [
+      "A wider camera view reveals the connected puddle lobes beyond the first groove."
+    ],
+    "parts": null,
+    "risk": "Puddle continuity must survive local consumption."
+  },
+  {
+    "id": 18,
+    "source_id": "laboratory-2",
+    "band": "molecular",
+    "title": "Soap Film Fold",
+    "setting": "Surfactant molecules line a thin film stretched between moist folds, forming bubbles of several sizes.",
+    "food": "Surfactant beads, thin films, bubbles, foam caps.",
+    "interaction": "Air pressure inflates weak pockets and ruptures thin skins; goo presses the film, steering stable bubbles toward a lower fold without clearing the whole surface.",
+    "jumps": [],
+    "parts": null,
+    "risk": "Bubble counts need strict caps."
+  },
+  {
+    "id": 19,
+    "source_id": "laboratory-3",
+    "band": "molecular",
+    "title": "Acid-Base Boundary",
+    "setting": "Two clear molecular layers meet across a rippling boundary, where gas bubbles collect in a quiet pocket.",
+    "food": "Acid droplets, base crystals, gas bubbles, foam beads.",
+    "interaction": "Diffusion drives reaction along the boundary; goo shifts the interface, sending bubbles into a reachable pocket while both liquid layers remain coherent.",
+    "jumps": [
+      "The camera opens to reveal the full boundary and its quiet bubble pocket."
+    ],
+    "parts": null,
+    "risk": "The proposed reaction needs harmless, readable cartoon language."
+  },
+  {
+    "id": 20,
+    "source_id": "laboratory-4",
+    "band": "molecular",
+    "title": "Peptide Knot Eddy",
+    "setting": "Amino-acid chains drift through warm solvent, folding into loops around a slow eddy.",
+    "food": "Amino-acid beads, short chains, folded knots, protein globes.",
+    "interaction": "Solvent jostles chains; goo presses one loop, closing nearby bonds and pushing the knot into its feeding path.",
+    "jumps": [
+      "Camera reveals folded globes beyond the eddy."
+    ],
+    "parts": "Amino-acid links fold into knots.",
+    "risk": "Folding must read without full chemistry."
+  },
+  {
+    "id": 21,
+    "source_id": "laboratory-1",
+    "band": "microscopic",
+    "title": "Soil Droplet Sidewash",
+    "setting": "A microscopic soil droplet with clay grains, silt clusters, two side-fed currents, and dark soil walls.",
+    "food": "Clay specks, larger silt clumps, compact soil lumps.",
+    "interaction": "Side currents carry grains into the droplet; goo parks across one current, causing a local pileup while the other stream continues.",
+    "jumps": [],
+    "parts": null,
+    "risk": "Fine grains need silhouettes that read at the camera distance."
+  },
+  {
+    "id": 22,
+    "source_id": "laboratory-2",
+    "band": "microscopic",
+    "title": "Pond Bacteria Loop",
+    "setting": "A microscopic pond film with blue, pink, and green bacteria entering through opposite sides of clear water.",
+    "food": "Small blue bacteria, pink bacteria, larger green bacteria, nutrient beads.",
+    "interaction": "Cilia-like currents bend bacteria around a slow loop; goo rolls through the inner bend, feeding on the smallest tier while larger cells drift around it.",
+    "jumps": [
+      "The camera widens to show the loop's second entry stream."
+    ],
+    "parts": null,
+    "risk": "Swimming paths need simple steering."
+  },
+  {
+    "id": 23,
+    "source_id": "laboratory-3",
+    "band": "microscopic",
+    "title": "Capillary Red Drift",
+    "setting": "A microscopic bloodstream cross-section with red cells, bacterial beads, and pale white cells moving through a forked capillary.",
+    "food": "Red cells, green bacterial beads, pale white cells, plasma pearls.",
+    "interaction": "Flow splits around the fork; goo settles on one wall, collecting red cells from the slower branch while white cells cross the opening.",
+    "jumps": [],
+    "parts": null,
+    "risk": "The scene must stay abstract and avoid medical claims."
+  },
+  {
+    "id": 24,
+    "source_id": "laboratory-4",
+    "band": "microscopic",
+    "title": "Algae-and-Amoeba Pond",
+    "setting": "A microscopic pond pocket with long algae chains, paramecia, and yellow and green amoebas moving between silt ridges.",
+    "food": "Algae strands, paramecia, yellow amoebas, green amoebas.",
+    "interaction": "A slow current carries algae along parallel ridges; goo follows one strand, then bends around a ridge to collect paramecia as amoebas change course.",
+    "jumps": [
+      "A low camera reveal shows algae tracks continuing behind the silt ridge."
+    ],
+    "parts": null,
+    "risk": "Multiple moving lifeforms raise steering scope."
+  },
+  {
+    "id": 25,
+    "source_id": "laboratory-1",
+    "band": "microscopic",
+    "title": "Lichen Crust Window",
+    "setting": "A microscopic lichen crust on stone with clay dust, silt grains, fungal threads, and damp green patches.",
+    "food": "Clay dust, silt grains, fungal beads, lichen clumps.",
+    "interaction": "Moisture creeps through the crust and loosens grains; goo mops a damp patch, exposing fungal beads while the surrounding crust stays attached.",
+    "jumps": [],
+    "parts": null,
+    "risk": "Crust layers need clear depth cues."
+  },
+  {
+    "id": 26,
+    "source_id": "laboratory-2",
+    "band": "microscopic",
+    "title": "Leaf Pore Microclimate",
+    "setting": "A microscopic leaf underside with bacteria, wax ridges, pollen crumbs, and opening pores along a humid surface.",
+    "food": "Bacteria specks, pollen crumbs, pore-film beads, thick leaf cells.",
+    "interaction": "Humidity opens neighboring pores; goo covers one pore, redirecting vapor and carrying pollen toward a nearby ridge.",
+    "jumps": [
+      "The view shifts beneath the wax ridge to reveal a second pore cluster."
+    ],
+    "parts": null,
+    "risk": "Pore changes may be too small to notice."
+  },
+  {
+    "id": 27,
+    "source_id": "laboratory-3",
+    "band": "microscopic",
+    "title": "Capillary Mucus Bend",
+    "setting": "A microscopic capillary wall with red cells, pale cells, mucus threads, and a sticky side pocket.",
+    "food": "Red-cell beads, mucus droplets, bacterial knots, pale-cell clusters.",
+    "interaction": "Flow presses cells against the bend; goo anchors on the mucus, peeling a local film and gathering red beads without removing the whole lining.",
+    "jumps": [],
+    "parts": null,
+    "risk": "Sticky wall contact needs careful movement tuning."
+  },
+  {
+    "id": 28,
+    "source_id": "laboratory-4",
+    "band": "microscopic",
+    "title": "Amoeba Silt Basin",
+    "setting": "A microscopic silt basin with algae ribbons, paramecia, and two amoeba sizes weaving through shallow clear water.",
+    "food": "Algae ribbons, paramecia, small amoebas, large amoebas.",
+    "interaction": "Ribbons sweep around a basin; goo crosses their wake, collecting algae and paramecia while amoebas redirect toward denser food.",
+    "jumps": [
+      "The camera pulls back to reveal the basin's second algae lane."
+    ],
+    "parts": null,
+    "risk": "Amoeba redirection needs clear separation cues."
+  },
+  {
+    "id": 29,
+    "source_id": "outside-1",
+    "band": "miniature",
+    "title": "Bonsai Drain Soil",
+    "setting": "Miniature soil ledge beside a bonsai planter, with dirt clumps below two leaves and side-entering aphids.",
+    "food": "Small dirt clumps, large dirt clumps, aphids, ladybugs, bonsai leaves.",
+    "interaction": "Aphids gather under leaves while ladybugs follow; sticky goo rolls through soil, then uses the loosened edge to reach each leaf.",
+    "jumps": [
+      "The camera rises to reveal both bonsai leaves above the soil ledge."
+    ],
+    "parts": null,
+    "risk": "Moving insects and leaf collision need a compact build."
+  },
+  {
+    "id": 30,
+    "source_id": "outside-2",
+    "band": "miniature",
+    "title": "Pine-Needle Seed Slope",
+    "setting": "A miniature garden slope littered with seeds and four pine needles, with a leaf-lined runout below.",
+    "food": "Seeds, aphids, four pine needles, ladybugs, bonsai leaves, large flies.",
+    "interaction": "Seeds settle in shallow grooves; goo rolls down the slope, collecting them before nudging needles into a bridge toward the insects.",
+    "jumps": [],
+    "parts": null,
+    "risk": "Long needles can catch the goo unless collision shapes stay forgiving."
+  },
+  {
+    "id": 31,
+    "source_id": "outside-3",
+    "band": "miniature",
+    "title": "Aphid Leaf Swarm",
+    "setting": "A miniature bonsai canopy with a broad leaf underside, a dirt clump, and aphids streaming from both edges.",
+    "food": "Aphids in escalating clusters, large dirt clumps, bonsai leaf.",
+    "interaction": "Aphids funnel along the leaf vein; goo circles the underside, enlarging its capture area and gathering the stream without a clock.",
+    "jumps": [
+      "The camera widens to show the full aphid loop around the leaf."
+    ],
+    "parts": null,
+    "risk": "A three-hundred-aphid objective needs capped, readable populations."
+  },
+  {
+    "id": 32,
+    "source_id": "outside-2",
+    "band": "miniature",
+    "title": "Seedpod Gutter",
+    "setting": "Miniature garden gutter beneath a split seedpod, with damp husk flakes, sap beads, tiny roots, and a few ants.",
+    "food": "Husk crumbs, sap beads, seed kernels, root bulbs.",
+    "interaction": "Drizzle runs along the husk and drops kernels into a root pocket; goo rolls across the wet seam, catching crumbs and opening the pocket.",
+    "jumps": [
+      "The camera dips under the seedpod to show the root pocket."
+    ],
+    "parts": null,
+    "risk": "Wet husk surfaces need forgiving collision."
+  },
+  {
+    "id": 33,
+    "source_id": "outside-1",
+    "band": "miniature",
+    "title": "Mossy Curb Bloom",
+    "setting": "Miniature curbside moss patch with dew beads, seed husks, pale petals, and a shallow crack beside a rain-dark stone.",
+    "food": "Dew beads, husk flakes, petals, moss cushions, stone crumbs.",
+    "interaction": "Dew rolls into the crack while petals collect on moss; goo mops one wet section, leaving the film coherent.",
+    "jumps": [
+      "View rises from the crack to reveal the moss cushion behind it."
+    ],
+    "parts": null,
+    "risk": "Several soft ground materials may blend together."
+  },
+  {
+    "id": 34,
+    "source_id": "outside-1",
+    "band": "miniature",
+    "title": "Bonsai Root Pocket",
+    "setting": "A miniature planter rim where dirt clumps collect in a crack beneath two bonsai leaves, with insects threading through root shadow.",
+    "food": "Dirt clumps, aphids, ladybugs, bonsai leaves.",
+    "interaction": "Aphids follow the warm leaf side while ladybugs cross the crack; goo mops one damp section, leaving the rest of the coherent soil film in place.",
+    "jumps": [],
+    "parts": null,
+    "risk": "Layered root shadows may obscure smaller food."
+  },
+  {
+    "id": 35,
+    "source_id": null,
+    "band": "miniature",
+    "title": "Ant Trail Mulch",
+    "setting": "Miniature mulch bed where a leaf vein forms a bridge over loose soil, with ants carrying crumbs around a fallen flower.",
+    "food": "Soil crumbs, flower bits, ant-carried seeds, leaf knots, fallen fruit.",
+    "interaction": "Ant traffic circles the flower and leaves crumbs in its wake; goo rolls into the loop, turning the moving trail into a feeding chain.",
+    "jumps": [],
+    "parts": null,
+    "risk": "Ant carrying behavior needs simple, readable paths."
+  },
+  {
+    "id": 36,
+    "source_id": "outside-5",
+    "band": "miniature",
+    "title": "Birdbath Rim Spill",
+    "setting": "Miniature birdbath rim with algae film, fruit, feather barbs, and water spilling onto soil.",
+    "food": "Algae flecks, fruit skins, feather barbs, water beads, soft soil clumps.",
+    "interaction": "The spill carries light scraps downhill while heavier clumps stay; goo rolls along the rim, mopping water and reaching fruit skin.",
+    "jumps": [
+      "The camera tilts over the rim to show the spill path below."
+    ],
+    "parts": null,
+    "risk": "Water must stay coherent while only contacted sections disappear."
+  }
+]

@@ -1,26 +1,142 @@
 {
   "type": "object",
   "additionalProperties": false,
-  "required": ["summary", "campaign", "prototype", "risks", "corrections"],
+  "required": [
+    "summary",
+    "campaign",
+    "prototype",
+    "risks",
+    "corrections"
+  ],
   "properties": {
-    "summary": {"type": "string"},
+    "summary": {
+      "type": "string"
+    },
     "campaign": {
-      "type": "array", "minItems": 60, "maxItems": 60,
+      "type": "array",
+      "minItems": 60,
+      "maxItems": 60,
       "items": {
-        "type": "object", "additionalProperties": false,
-        "required": ["scene_id", "reason"],
-        "properties": {"scene_id": {"type": "integer", "minimum": 1, "maximum": 240}, "reason": {"type": "string"}}
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "scene_id",
+          "reason",
+          "scene"
+        ],
+        "properties": {
+          "scene_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 240
+          },
+          "reason": {
+            "type": "string"
+          },
+          "scene": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source_id",
+              "band",
+              "title",
+              "setting",
+              "food",
+              "interaction",
+              "jumps",
+              "parts",
+              "risk"
+            ],
+            "properties": {
+              "source_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "band": {
+                "enum": [
+                  "subatomic",
+                  "atomic",
+                  "molecular",
+                  "microscopic",
+                  "miniature",
+                  "tabletop",
+                  "human",
+                  "landscape",
+                  "planetary",
+                  "stellar",
+                  "galactic",
+                  "spacetime"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "setting": {
+                "type": "string"
+              },
+              "food": {
+                "type": "string"
+              },
+              "interaction": {
+                "type": "string"
+              },
+              "jumps": {
+                "type": "array",
+                "maxItems": 2,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "parts": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "risk": {
+                "type": "string"
+              }
+            }
+          }
+        }
       }
     },
     "prototype": {
-      "type": "array", "minItems": 4, "maxItems": 4,
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
       "items": {
-        "type": "object", "additionalProperties": false,
-        "required": ["scene_id", "reason"],
-        "properties": {"scene_id": {"type": "integer", "minimum": 1, "maximum": 240}, "reason": {"type": "string"}}
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "scene_id",
+          "reason"
+        ],
+        "properties": {
+          "scene_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 240
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
       }
     },
-    "risks": {"type": "array", "items": {"type": "string"}},
-    "corrections": {"type": "array", "items": {"type": "string"}}
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "corrections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
   }
 }

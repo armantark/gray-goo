@@ -1,0 +1,299 @@
+[
+  {
+    "id": "lab-1",
+    "chapter": "Laboratory",
+    "level": 1,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Laboratory",
+    "objects": "Tiny dirt particles and larger dirt particles.",
+    "layout": "This is the tutorial level; dirt entities drift in from offscreen, and their arrival is randomized.",
+    "limits": "No coordinates, counts, spawn timing, or object spacing are given."
+  },
+  {
+    "id": "lab-2",
+    "chapter": "Laboratory",
+    "level": 2,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Laboratory",
+    "objects": "Blue, pink, and green bacteria, presented as small-to-large tiers.",
+    "layout": "The guide says bacteria can eat smaller bacteria; pink and green bacteria hurt the goo on contact before they can be eaten.",
+    "limits": "No coordinates, counts, spawn pattern, or bacteria movement path is stated."
+  },
+  {
+    "id": "lab-3",
+    "chapter": "Laboratory",
+    "level": 3,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Laboratory",
+    "objects": "Red blood cells, green bacteria, and white blood cells; white blood cells kill the goo before they can be eaten.",
+    "layout": "A cutscene places the goo in the assistant's bloodstream; play requires avoiding white blood cells until the goo is large enough.",
+    "limits": "No vessel map, cell counts, or movement rules beyond the stated hazards are given."
+  },
+  {
+    "id": "lab-4",
+    "chapter": "Laboratory",
+    "level": 4,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Laboratory",
+    "objects": "Algae, paramecia, yellow amoebas, and larger green amoebas.",
+    "layout": "Long algae chains lead to paramecia; amoebas vary in size and can consume algae, paramecia, and one another.",
+    "limits": "No spatial positions, counts, or movement paths are stated."
+  },
+  {
+    "id": "outside-1",
+    "chapter": "Outside",
+    "level": 1,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Outside",
+    "objects": "Small and large dirt clumps, aphids, ladybugs, and two bonsai leaves.",
+    "layout": "Dirt clumps are scattered; aphids flock around the two bonsai leaves; ladybugs pursue aphids.",
+    "limits": "No coordinates, counts, or ladybug spawn pattern are given."
+  },
+  {
+    "id": "outside-2",
+    "chapter": "Outside",
+    "level": 2,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Outside",
+    "objects": "Seeds, aphids, four pine needles, ladybugs, bonsai leaves, and large flies.",
+    "layout": "The guide says this is mostly like Outside 1 and specifically includes four pine needles; no other spatial placement is specified.",
+    "limits": "No full layout, object counts beyond four needles, or spawn details are given."
+  },
+  {
+    "id": "outside-3",
+    "chapter": "Outside",
+    "level": 3,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Outside",
+    "objects": "Large dirt clumps, aphids, and bonsai leaves.",
+    "layout": "The goal is 300 aphids; increasing goo size gives a larger catching area, and bonsai leaves do not contribute to that goal.",
+    "limits": "No spatial arrangement or aphid spawn locations are stated."
+  },
+  {
+    "id": "outside-4",
+    "chapter": "Outside",
+    "level": 4,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Outside",
+    "objects": "Ladybugs, flies, five large twigs, three pennies, eight acorns, and one large golf ball.",
+    "layout": "Five large twigs are toward the northwest and eight acorns are in the southeast; the guide mentions three pennies and one golf ball without placing them.",
+    "limits": "The page does not state the placement of the pennies or golf ball, nor bug spawn locations."
+  },
+  {
+    "id": "outside-5",
+    "chapter": "Outside",
+    "level": 5,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Outside",
+    "objects": "Flies, huckleberries, blueberries, grapes, golf balls, leaves, and one massive baseball.",
+    "layout": "The guide directs progression from flies to berries, then north to grapes; leaves follow golf balls, and the massive baseball is toward the northwest.",
+    "limits": "No exact fruit, leaf, golf-ball, or fly coordinates and counts are given."
+  },
+  {
+    "id": "picnic-1",
+    "chapter": "Picnic Table",
+    "level": 1,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Picnic_Table",
+    "objects": "Flies, huckleberries, blueberries, dice, pennies, and red, yellow, and blue blocks.",
+    "layout": "Flies spawn from the sides; berries, dice, pennies, and blocks are scattered across the level.",
+    "limits": "No object counts or precise positions are given."
+  },
+  {
+    "id": "picnic-2",
+    "chapter": "Picnic Table",
+    "level": 2,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Picnic_Table",
+    "objects": "Dice, red blocks, and dominoes arranged as a face.",
+    "layout": "Dice form the eyes and nose, more dice form the mouth, blocks form the lips, and dominoes form the rest.",
+    "limits": "The guide does not give object counts or coordinates."
+  },
+  {
+    "id": "picnic-3",
+    "chapter": "Picnic Table",
+    "level": 3,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Picnic_Table",
+    "objects": "Four corner puzzle pieces, dice, red, yellow, and blue blocks, and dominoes.",
+    "layout": "One piece is near the start behind dice; another is near the top after the rightmost vertical tunnel; a third is inside blocks; dominoes form the maze walls; the final piece is bottom-right.",
+    "limits": "No exact maze dimensions, coordinates, or object counts beyond four corner pieces are provided."
+  },
+  {
+    "id": "picnic-4",
+    "chapter": "Picnic Table",
+    "level": 4,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Picnic_Table",
+    "objects": "Clusters of berries, dice, blocks, dominoes, and large mice.",
+    "layout": "Berries, dice, blocks, and dominoes are consumed before the mice; a mouse can become stuck face-first in the bottom-right dice cluster.",
+    "limits": "No full layout, object counts, or mouse spawn locations are stated."
+  },
+  {
+    "id": "picnic-5",
+    "chapter": "Picnic Table",
+    "level": 5,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Picnic_Table",
+    "objects": "Twenty-five puzzle pieces, dice, pennies, grapes, an acorn, colored blocks, and dominoes.",
+    "layout": "Pieces are described southeast of the start, behind a die in the top-left, behind a penny in the top-right, near starting grapes, by an acorn, and among blocks in the bottom-right; dominoes make the maze.",
+    "limits": "The guide gives no complete map or exact coordinates; one block is said to be almost entirely offscreen."
+  },
+  {
+    "id": "picnic-6",
+    "chapter": "Picnic Table",
+    "level": 6,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Picnic_Table",
+    "objects": "Dice, colored blocks, dominoes, pencils, mice, pens, and one massive piece of cheese.",
+    "layout": "The guide gives progression from dice, blocks, and dominoes to pencils, mice, pens, and cheese; at least 62 mice are needed for the cheese, and mice spawn somewhat randomly from the sides while crowding it.",
+    "limits": "No positions for the smaller objects or exact mouse spawn distribution are provided."
+  },
+  {
+    "id": "picnic-7",
+    "chapter": "Picnic Table",
+    "level": 7,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Picnic_Table",
+    "objects": "Dice, colored blocks, dominoes, an army man, pencils, mice, pens, rats, milk, three cheeses, and one huge orange.",
+    "layout": "Smaller objects lead to mice and rats, then the smallest cheese and chocolate milk, then the other cheeses; the huge orange is nearby.",
+    "limits": "No maze or object positions are described, and the guide does not explain the army man's role."
+  },
+  {
+    "id": "ocean-1",
+    "chapter": "Ocean",
+    "level": 1,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Ocean",
+    "objects": "Blue, gold, and orange fish.",
+    "layout": "The guide warns that larger fish can spawn near the level edges while smaller fish support the size progression.",
+    "limits": "No fish counts, routes, or coordinates are given."
+  },
+  {
+    "id": "ocean-2",
+    "chapter": "Ocean",
+    "level": 2,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Ocean",
+    "objects": "Blue, gold, and orange fish plus a pod of dolphins.",
+    "layout": "The guide says dolphins try to eat fish and that larger dolphins follow after the smallest become edible; no positions are stated.",
+    "limits": "No pod size, spawn locations, or movement paths are given."
+  },
+  {
+    "id": "ocean-3",
+    "chapter": "Ocean",
+    "level": 3,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Ocean",
+    "objects": "Blue, gold, and orange fish, dolphins, and hammerhead sharks.",
+    "layout": "The guide says sharks are more interested in fish than the goo; fish and dolphins remain in the level.",
+    "limits": "No shark count, route, or spatial layout is stated."
+  },
+  {
+    "id": "park-1",
+    "chapter": "Park",
+    "level": 1,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Park",
+    "objects": "Golf balls, leaves, mice, baseballs, and rats.",
+    "layout": "A cutscene sends the goo into a distant park; mice and rats wander randomly around the stage.",
+    "limits": "No coordinates, counts, or spawn distribution for non-rodent objects are given."
+  },
+  {
+    "id": "park-2",
+    "chapter": "Park",
+    "level": 2,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Park",
+    "objects": "Mice, rats, and cats.",
+    "layout": "The level repeats Park 1's setup with cats added; cats chase the goo when no mice or rats are nearby.",
+    "limits": "No spatial placements, counts, or cat spawn details are provided."
+  },
+  {
+    "id": "park-3",
+    "chapter": "Park",
+    "level": 3,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Park",
+    "objects": "Mice, rats, cats, and dogs.",
+    "layout": "The level adds dogs that chase cats; dogs and cats chase the goo only when no other nearby target is available.",
+    "limits": "No placements, counts, or movement paths beyond those chase priorities are stated."
+  },
+  {
+    "id": "park-4",
+    "chapter": "Park",
+    "level": 4,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Park",
+    "objects": "Cats, with a goal of eating 150.",
+    "layout": "Nothing else impedes the level; cats spawn from the left edge, and the goal is 150 cats rather than a size target.",
+    "limits": "No cat spacing or spawn cadence is given."
+  },
+  {
+    "id": "park-5",
+    "chapter": "Park",
+    "level": 5,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Park",
+    "objects": "Cats, dogs, women, and men; a coniferous tree is present but marked too large to eat.",
+    "layout": "The stated progression is cats and dogs followed by people; the page gives no spatial placement.",
+    "limits": "The coniferous tree is explicitly struck through as larger than the target; positions, counts, and movement paths are not stated."
+  },
+  {
+    "id": "park-6",
+    "chapter": "Park",
+    "level": 6,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/Park",
+    "objects": "Dogs, women, men, police officers, and bullets.",
+    "layout": "Police officers fire bullets even when the goo is large enough to eat them; the guide says bullets hurt regardless of size.",
+    "limits": "No object placement, spawn pattern, or bullet cadence is stated."
+  },
+  {
+    "id": "city-1",
+    "chapter": "City",
+    "level": 1,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/City",
+    "objects": "Stop signs, women, men, police officers, red cars, taxis, deciduous trees, and one coniferous tree.",
+    "layout": "Two roads cross at the center around four stop signs; cars drive along them. Deciduous trees are scattered, with one large coniferous tree in the bottom-right.",
+    "limits": "No coordinates or counts for most entities are given; the guide says over a hundred humans are needed for cars but not the exact total."
+  },
+  {
+    "id": "city-2",
+    "chapter": "City",
+    "level": 2,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/City",
+    "objects": "Stop signs, women, men, police officers, mounties, red cars, taxis, police cars, coniferous trees, and deciduous trees.",
+    "layout": "The guide says police cars swerve off the road toward or away from the goo; the page does not describe road placement.",
+    "limits": "No coordinates, counts, or vehicle routes are given."
+  },
+  {
+    "id": "city-3",
+    "chapter": "City",
+    "level": 3,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/City",
+    "objects": "Police officers, mounties, police cars, deciduous trees, and coniferous trees.",
+    "layout": "Officers, mounties, and cars come from every angle; the level otherwise contains trees only.",
+    "limits": "No tree placement, counts, or vehicle spawn pattern is given."
+  },
+  {
+    "id": "city-4",
+    "chapter": "City",
+    "level": 4,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/City",
+    "objects": "Women, men, police officers, mounties, deciduous trees, coniferous trees, and tanks.",
+    "layout": "Tanks spawn slowly from the top-left, follow the goo, fire projectiles, and can destroy trees; a large tree cluster is near the bottom-right.",
+    "limits": "No road map, object counts, tank cadence, or exact tree coordinates are given."
+  },
+  {
+    "id": "city-5",
+    "chapter": "City",
+    "level": 5,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/City",
+    "objects": "Stop signs, women, men, police officers, mounties, red cars, taxis, police cars, deciduous and coniferous trees, houses, and a building.",
+    "layout": "The guide describes a much farther zoomed-out version of City 2 and directs progression from stop signs and people to mounties and cars, trees, houses, and the large building near bottom-left.",
+    "limits": "No road or object coordinates, counts, or vehicle routes are provided."
+  },
+  {
+    "id": "city-6",
+    "chapter": "City",
+    "level": 6,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/City",
+    "objects": "Red cars, taxis, deciduous trees, train engines, train cars, cabooses, coniferous trees, houses, and a building.",
+    "layout": "Three tracks cross the level: left runs top-left to bottom-center with three cars, middle runs bottom-center to top-right with four cars, and right curves around trees to bottom-right with two cars; trains respawn infinitely if eaten.",
+    "limits": "Exact positions of houses, the building, and trees beyond the stated landmarks are not given."
+  },
+  {
+    "id": "city-7",
+    "chapter": "City",
+    "level": 7,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/City",
+    "objects": "Red cars, taxis, police cars, tanks, coniferous and deciduous trees, houses, buildings, and apartment buildings.",
+    "layout": "Tanks spawn slowly from the top-left; houses block some large trees in the bottom-right; the guide says there are five regular buildings and two apartment buildings.",
+    "limits": "No road layout, tree count, or precise building coordinates are stated."
+  },
+  {
+    "id": "city-8",
+    "chapter": "City",
+    "level": 8,
+    "source": "https://strategywiki.org/wiki/Tasty_Planet/City",
+    "objects": "Red cars, taxis, police cars, deciduous and coniferous trees, train engines, train cars, cabooses, a house, and apartment buildings.",
+    "layout": "Two central tracks loop around trees and a house, one clockwise with two cars and one counterclockwise with four; a surrounding road carries cars and taxis; apartment buildings flank top and bottom; a left track runs top-left to bottom-left with a three-car train.",
+    "limits": "No exact counts for trees, road traffic, houses, or apartments beyond the stated trains are given."
+  }
+]

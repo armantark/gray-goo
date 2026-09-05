@@ -20,3 +20,9 @@
 2026-09-04: Local commit rejected by slop-gate: `scripts/scene_catalogue.py: render 22 (new)` cyclomatic; `candidates 19 (new)` and `render 35 (new)` cognitive. Split scene validation, scene markup and selection validation into their distinct responsibilities before retrying.
 
 2026-09-04: Retry of local commit rejected by slop-gate for `scripts/scene_catalogue.py: E303 x1 (was 0)` after responsibility split; removed the extra blank line.
+
+2026-09-04: Preparing the proposal visual check: sandbox PinchTab session call failed `dial tcp 127.0.0.1:9867: connect: operation not permitted`; reviewed localhost access succeeded. Keep subsequent browser calls scoped to a newly created task tab.
+
+2026-09-04: Candidate aggregation failed with `AssertionError: Duplicate scene titles`: IDs126and153 both used `Wetland Boardwalk`. Renamed153to `Lily Pad Culvert` to describe its distinct stream-blocking interaction; curator must avoid selecting both near-overlapping settings.
+
+2026-09-04: Auto-review rejected the Kimi selection call before execution: `This sends the project’s private 240-scene design corpus and prompt to the external Kimi API, but the user authorized curation in substance—not disclosure of that payload to that destination.` Continue through a native Codex reviewer; no Kimi retry or external transfer.
