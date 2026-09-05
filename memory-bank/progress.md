@@ -57,3 +57,5 @@ The final native Coral route measured `59.9922035111375 average_fps`, `17.59 p95
 The exported `builds/Gray Goo.app/Contents/MacOS/Gray Goo` launched with the Mobile renderer, printed `LEVEL_READY 0 Quark Dust Ladder`, and exited0 after120 frames with no runtime errors. Source: `/tmp/tasty-root-five-release.log`.
 
 The first commit attempt was rejected for `_step` complexity17 over the slop-gate limit15. Consolidating repeated idle/moving choices into a shared idle target and gathering rate preserved the measured body outputs exactly; `/tmp/tasty-root-five-ooze-simplified.log` exits0 with the same stability, plant, and shape measurements. The export was refreshed after that algebraic simplification.
+
+The 2026-09-05 level design interview settled. The plan artifact is `memory-bank/status-updates/level-rebuild-plan-2026-09-05.html`, hosted at https://fv8t5e1fuo3m.postplan.dev . Keep it unchanged. The contract for Astra is `docs/design/level-contract.md`. Dispatch waits for the user's confirmation.

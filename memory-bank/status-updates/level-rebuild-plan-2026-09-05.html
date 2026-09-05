@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level rebuild plan · Gray Goo</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%234f8cff'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#0c0e12;--surface:#161a21;--surface-2:#1e232c;--border:#2a3040;--text:#e8ecf4;--text-dim:#8b95a8;--accent:#4f8cff;--accent-glow:rgba(79,140,255,.15);--red:#ff5c5c;--green:#4ade80;--amber:#fbbf24;--purple:#a78bfa;--radius:12px;
+--l1:#f2c94c;--l2:#65d6c1;--l3:#ffaf68;--l4:#c9c5ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Outfit,"Avenir Next",Avenir,"Segoe UI",system-ui,sans-serif;line-height:1.45}
+main{max-width:1240px;margin:0 auto;padding:32px 20px 80px}
+.badge{display:inline-block;font-family:"JetBrains Mono",Menlo,monospace;font-size:.7rem;letter-spacing:.12em;color:var(--accent);background:var(--accent-glow);border:1px solid var(--accent);border-radius:999px;padding:4px 12px}
+h1{font-size:2rem;font-weight:700;margin:14px 0 6px}
+h2{font-size:1.15rem;margin:40px 0 12px;display:flex;align-items:center;gap:10px}
+h2 .n{font-family:"JetBrains Mono",Menlo,monospace;font-size:.7rem;color:var(--accent);background:var(--accent-glow);border-radius:6px;padding:3px 8px}
+.sub{color:var(--text-dim);font-size:.95rem;max-width:760px;margin:0}
+.rule{background:linear-gradient(135deg,var(--surface),var(--surface-2));border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:18px 22px;font-size:1.05rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;transition:transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.card h3{margin:0 0 6px;font-size:1rem}
+.card p{margin:0;color:var(--text-dim);font-size:.9rem}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:999px;padding:8px 16px;font:inherit;font-size:.9rem;cursor:pointer}
+.tab[aria-selected=true]{border-color:var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent)}
+.level{display:none}.level.on{display:block}
+.level header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.level header strong{font-size:1.2rem;color:var(--c)}
+.level header span{color:var(--text-dim);font-size:.9rem}
+.ladder{display:grid;grid-template-columns:44px 1fr 1fr 1fr;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.ladder>div{padding:10px 12px;border-bottom:1px solid var(--border);font-size:.88rem}
+.ladder .h{background:var(--surface-2);color:var(--text-dim);font-family:"JetBrains Mono",Menlo,monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase}
+.ladder .rung{font-family:"JetBrains Mono",Menlo,monospace;color:var(--c);font-weight:700;background:color-mix(in srgb,var(--c) 10%,transparent);text-align:center}
+.ladder .rung small{display:block;color:var(--text-dim);font-weight:400;font-size:.6rem}
+.ladder .top{background:color-mix(in srgb,var(--c) 18%,transparent)}
+.ladder .dmg{color:var(--text-dim)}
+.models{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-family:"JetBrains Mono",Menlo,monospace;font-size:.65rem;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:3px 8px}
+.pill.new{border-color:var(--green);color:var(--green)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bars{display:flex;gap:18px;align-items:flex-end;height:120px;margin:14px 0 4px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:.75rem;color:var(--text-dim)}
+.bar i{display:block;width:100%;border-radius:6px 6px 0 0;background:var(--red)}
+.bar.after i{background:var(--green)}
+.hud{background:#0a1412;border:1px solid #1f3b35;border-radius:10px;padding:12px;font-family:"JetBrains Mono",Menlo,monospace;font-size:.7rem;color:#9fe3c5;display:grid;grid-template-columns:110px 1fr;gap:12px;align-items:center}
+.gauge{width:100px;height:100px;border-radius:50%;border:6px solid #1f3b35;border-top-color:#7fdfad;border-right-color:#7fdfad;display:grid;place-items:center;text-align:center;line-height:1.2}
+.strip{display:flex;gap:4px;margin-top:8px}
+.strip b{flex:1;padding:4px 0;text-align:center;border:1px solid #1f3b35;border-radius:4px;font-weight:400;opacity:.45}
+.strip b.lit{opacity:1;background:#14332b;border-color:#7fdfad}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.steps li{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:.92rem}
+.steps li::before{counter-increment:s;content:counter(s);font-family:"JetBrains Mono",Menlo,monospace;font-size:.75rem;background:var(--accent);color:#fff;border-radius:6px;min-width:24px;height:24px;display:grid;place-items:center}
+.owner{font-family:"JetBrains Mono",Menlo,monospace;font-size:.65rem;border-radius:6px;padding:2px 7px;margin-left:auto;white-space:nowrap}
+.astra{background:rgba(79,140,255,.15);color:var(--accent)}.fable{background:rgba(167,139,250,.15);color:var(--purple)}
+.ask{margin-top:40px;background:var(--surface);border:1px solid var(--amber);border-radius:var(--radius);padding:18px 22px}
+.ask strong{color:var(--amber)}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+td,th{border-bottom:1px solid var(--border);padding:8px 10px;text-align:left}
+th{color:var(--text-dim);font-weight:500;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
+.scroll{overflow-x:auto}
+@media (max-width:900px){.grid,.two{grid-template-columns:1fr}.ladder{grid-template-columns:40px 1fr}.ladder .h:nth-child(n+3){display:none}.ladder .w,.ladder .dmg{grid-column:2}.ladder .rung{grid-row:span 3}}
+</style>
+</head>
+<body>
+<main>
+<span class="badge">PRE-IMPLEMENTATION PLAN · 2026-09-05</span>
+<h1>Every level is a place</h1>
+<p class="sub">The four demo levels read as random scatter. This plan gives each level one place, a five-rung ladder with four size jumps, textured models, and a 3D background. Astra rebuilds the levels from the contract. Fable fixes the speed law and rebuilds the HUD.</p>
+
+<h2><span class="n">01</span> The root rule</h2>
+<div class="rule">A level is one recognizable place, and every object in it belongs to a whole that the player can see. Nothing is loose unless something in the scene made it loose.</div>
+<div class="grid" style="margin-top:14px">
+<div class="card"><h3>Nested wholes</h3><p>Every tier of food is a visible part of the next tier. Eat parts out of a whole, then eat the whole. The whole then becomes ordinary food.</p></div>
+<div class="card"><h3>The whole was always there</h3><p>The largest structure is visible from the first frame as background or as an object the goo cannot yet eat. Jumps reveal that it is food.</p></div>
+<div class="card"><h3>Damage shows</h3><p>When the goo eats a part, the whole visibly changes. A nucleus that loses a proton becomes a different element. A coral that loses polyps turns white.</p></div>
+</div>
+
+<h2><span class="n">02</span> The four ladders</h2>
+<p class="sub">Five tiers, four jumps, about ten minutes per level. Each row is one view. Click a level.</p>
+<div class="tabs" role="tablist">
+<button class="tab" role="tab" aria-selected="true" data-l="1" style="--c:var(--l1)">Sugar Water</button>
+<button class="tab" role="tab" aria-selected="false" data-l="2" style="--c:var(--l2)">Tide Pool</button>
+<button class="tab" role="tab" aria-selected="false" data-l="3" style="--c:var(--l3)">Skatepark Bowl</button>
+<button class="tab" role="tab" aria-selected="false" data-l="4" style="--c:var(--l4)">Cosmic Web</button>
+</div>
+
+<section class="level on" id="l1" style="--c:var(--l1)">
+<header><strong>Sugar Water</strong><span>One drop of sugar water. Milestone: one sucrose molecule, 45 atoms in two rings.</span></header>
+<div class="ladder">
+<div class="h">Tier</div><div class="h">Food</div><div class="h">Visible whole</div><div class="h">Damage shows</div>
+<div class="rung">5<small>top</small></div><div class="top">Water molecules; the sucrose molecule</div><div class="top w">Other molecules drift in the background</div><div class="top dmg">—</div>
+<div class="rung">4</div><div>Whole H, C, O atoms with textbook rings</div><div class="w">Water molecules and the two sucrose rings</div><div class="dmg">Rings lose electrons</div>
+<div class="rung">3</div><div>Electrons; nucleons pulled from H and He nuclei</div><div class="w">Carbon and oxygen nuclei form</div><div class="dmg">Nucleus renames by proton count: O → N → C → …</div>
+<div class="rung">2</div><div>Pions, then protons and neutrons</div><div class="w">Nucleons clump into small nuclei</div><div class="dmg">A nucleon that loses a quark collapses</div>
+<div class="rung">1<small>start</small></div><div>Free quarks, gluons, photons, electrons, positrons</div><div class="w">Quarks drift into trios and pairs</div><div class="dmg">—</div>
+</div>
+<div class="models"><span class="pill new">gluon</span><span class="pill new">photon</span><span class="pill new">electron</span><span class="pill new">positron</span><span class="pill new">pion</span><span class="pill new">neutron</span><span class="pill">quark</span><span class="pill">proton</span><span class="pill">nucleus → procedural cluster</span></div>
+</section>
+
+<section class="level" id="l2" style="--c:var(--l2)">
+<header><strong>Tide Pool</strong><span>One rock pool at low tide. Milestone: the coral crown in the deep end.</span></header>
+<div class="ladder">
+<div class="h">Tier</div><div class="h">Food</div><div class="h">Visible whole</div><div class="h">Damage shows</div>
+<div class="rung">5<small>top</small></div><div class="top">The coral crown</div><div class="top w">The beach and other pools beyond the rim</div><div class="top dmg">—</div>
+<div class="rung">4</div><div>Pool water as a puddle, boulders, the anemone rim</div><div class="w">The coral crown</div><div class="dmg">Water level drops as the goo mops</div>
+<div class="rung">3</div><div>Coral heads, hermit crabs, anemones, sea stars, a fish that hides</div><div class="w">The rock rim of the pool</div><div class="dmg">An anemone closes when touched</div>
+<div class="rung">2</div><div>Bare branches, snails, periwinkles</div><div class="w">Coral heads; a hermit crab that drags a shell</div><div class="dmg">A head that loses branches shows its base</div>
+<div class="rung">1<small>start</small></div><div>Plankton in a current; polyps on branches</div><div class="w">Coral branches</div><div class="dmg">A branch that loses polyps turns white</div>
+</div>
+<div class="models"><span class="pill new">snail</span><span class="pill new">periwinkle</span><span class="pill new">hermit crab</span><span class="pill new">anemone</span><span class="pill new">sea star</span><span class="pill new">small fish</span><span class="pill new">boulder</span><span class="pill">plankton</span><span class="pill">polyp</span><span class="pill">coral branch</span><span class="pill">coral fan</span><span class="pill">rock</span><span class="pill">shell</span></div>
+</section>
+
+<section class="level" id="l3" style="--c:var(--l3)">
+<header><strong>Skatepark Bowl</strong><span>One concrete bowl with a fence and a street. Milestone: the big quarter pipe.</span></header>
+<div class="ladder">
+<div class="h">Tier</div><div class="h">Food</div><div class="h">Visible whole</div><div class="h">Damage shows</div>
+<div class="rung">5<small>top</small></div><div class="top">The big quarter pipe</div><div class="top w">The fence and the street</div><div class="top dmg">—</div>
+<div class="rung">4</div><div>Rails, the smaller quarter pipes</div><div class="w">The big bowl</div><div class="dmg">—</div>
+<div class="rung">3</div><div>Cartoon skaters, benches, cones, trash cans</div><div class="w">Rails and quarter pipes</div><div class="dmg">A rail that loses a post tilts</div>
+<div class="rung">2</div><div>Boards that roll down the walls; helmets, shoes, bottles on the rim</div><div class="w">Skaters on boards</div><div class="dmg">A skater who loses a board stands still</div>
+<div class="rung">1<small>start</small></div><div>Bolts, bearings, bottle caps, pebbles in the gutter</div><div class="w">Skateboards: deck, two trucks, four wheels</div><div class="dmg">A board that loses a wheel tips over</div>
+</div>
+<div class="models"><span class="pill new">bolt</span><span class="pill new">bearing</span><span class="pill new">bottle cap</span><span class="pill new">pebble</span><span class="pill new">truck</span><span class="pill new">helmet</span><span class="pill new">shoe</span><span class="pill new">water bottle</span><span class="pill new">skater</span><span class="pill new">bench</span><span class="pill new">cone</span><span class="pill new">trash can</span><span class="pill new">fence</span><span class="pill new">parked car</span><span class="pill new">tree</span><span class="pill">wheel</span><span class="pill">board</span><span class="pill">skateboard → parts</span><span class="pill">rail</span><span class="pill">ramp</span></div>
+</section>
+
+<section class="level" id="l4" style="--c:var(--l4)">
+<header><strong>Cosmic Web</strong><span>One filament of the cosmic web. Milestone: the supercluster, then the fabric. Real space, no purple shimmer.</span></header>
+<div class="ladder">
+<div class="h">Tier</div><div class="h">Food</div><div class="h">Visible whole</div><div class="h">Damage shows</div>
+<div class="rung">5<small>top</small></div><div class="top">The supercluster, then the fabric puddle</div><div class="top w">The rest of the web</div><div class="top dmg">The fabric shows eaten trails</div>
+<div class="rung">4</div><div>Galaxy groups along the filament</div><div class="w">The supercluster knot</div><div class="dmg">—</div>
+<div class="rung">3</div><div>Spirals, ellipticals, dwarf galaxies</div><div class="w">A galaxy group</div><div class="dmg">—</div>
+<div class="rung">2</div><div>Nebulae, star clusters, a black hole with a disk</div><div class="w">A spiral galaxy</div><div class="dmg">A spiral that loses an arm shows a bare bulge</div>
+<div class="rung">1<small>start</small></div><div>Red dwarfs, yellow stars, blue giants in one cluster</div><div class="w">The nebula around the cluster</div><div class="dmg">—</div>
+</div>
+<div class="models"><span class="pill new">red dwarf</span><span class="pill new">yellow star</span><span class="pill new">blue giant</span><span class="pill new">nebula</span><span class="pill new">black hole</span><span class="pill new">elliptical galaxy</span><span class="pill new">dwarf galaxy</span><span class="pill new">galaxy group</span><span class="pill">spiral galaxy → removable arms</span><span class="pill">fabric puddle</span></div>
+</section>
+
+<h2><span class="n">03</span> Fable's half: speed and HUD</h2>
+<div class="two">
+<div class="card">
+<h3>Speed law</h3>
+<p>Today the goo crosses twelve body lengths per second at the start and under three at the goal. New law: a constant body-length rate with a smoothing curve matched to the animation. The slider stays as the fine control.</p>
+<div class="bars">
+<div class="bar"><i style="height:100%"></i>start<br>11.8</div>
+<div class="bar"><i style="height:42%"></i>mid<br>4.9</div>
+<div class="bar"><i style="height:24%"></i>goal<br>2.8</div>
+<div class="bar after"><i style="height:34%"></i>start<br>4</div>
+<div class="bar after"><i style="height:34%"></i>mid<br>4</div>
+<div class="bar after"><i style="height:34%"></i>goal<br>4</div>
+</div>
+<p style="font-size:.75rem">Body lengths per second, before the slider. Red is today, green is the new law. The exact default is tuned by feel.</p>
+</div>
+<div class="card">
+<h3>Specimen readout HUD</h3>
+<p>The level is a sample on a slide. A round gauge shows the current and goal diameter on one scale and re-scales when the unit prefix changes. A ladder strip replaces the goal bar and lights the tiers the goo can eat now. The last meal is a specimen label.</p>
+<div class="hud" style="margin-top:12px">
+<div class="gauge">2.4 fm<br><span style="opacity:.6">goal 7.7</span></div>
+<div>SUGAR WATER · SLIDE 01<div class="strip"><b class="lit">soup</b><b class="lit">forms</b><b>nuclei</b><b>atoms</b><b>mols</b></div><div style="margin-top:8px;opacity:.7">last meal: PION ▸ bound pair</div></div>
+</div>
+</div>
+</div>
+
+<h2><span class="n">04</span> Order of work</h2>
+<ol class="steps">
+<li>Generalize size jumps to a list and add the tier list to each scene config.<span class="owner astra">ASTRA</span></li>
+<li>Bake procedural textures in Blender and add an albedo uniform to the toon shader. Regenerate all models.<span class="owner astra">ASTRA</span></li>
+<li>Rebuild Sugar Water, Tide Pool, Skatepark Bowl, and Cosmic Web, one level per commit, with new models.<span class="owner astra">ASTRA</span></li>
+<li>Add the four 3D backgrounds and the realistic space look.<span class="owner astra">ASTRA</span></li>
+<li>Apply the constant body-length speed law with smoothing. Runs in parallel with step 1.<span class="owner fable">FABLE</span></li>
+<li>Rebuild the HUD as the specimen readout with the ladder strip, once the tier list exists.<span class="owner fable">FABLE</span></li>
+<li>Final native pass at 1920 × 1080: textures, backgrounds, ten-minute routes, no truncation, export.<span class="owner astra">ASTRA</span></li>
+</ol>
+
+<h2><span class="n">05</span> Risks</h2>
+<div class="scroll"><table>
+<tr><th>Risk</th><th>Why it matters</th><th>Owner</th></tr>
+<tr><td>Ten minutes per level is untested</td><td>Five tiers need a food budget per view. Astra measures the route times and reports them.</td><td>Astra</td></tr>
+<tr><td>45-atom sucrose with rings</td><td>Instance count in the top view must hold 60 fps.</td><td>Astra</td></tr>
+<tr><td>Texture bake time</td><td>Keep bakes at 512 px unless a model needs more.</td><td>Astra</td></tr>
+<tr><td>HUD depends on the tier list</td><td>Fable's HUD waits for step 1. The speed law does not wait.</td><td>Fable</td></tr>
+</table></div>
+
+<div class="ask"><strong>Decision needed.</strong> The contract is at <code>docs/design/level-contract.md</code>. Reply <em>dispatch</em> to send Astra the contract and start Fable's speed law. Reply with edits to change the ladders first.</div>
+</main>
+<script>
+document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){
+document.querySelectorAll('.tab').forEach(function(x){x.setAttribute('aria-selected','false')});
+document.querySelectorAll('.level').forEach(function(x){x.classList.remove('on')});
+t.setAttribute('aria-selected','true');document.getElementById('l'+t.dataset.l).classList.add('on');});});
+</script>
+</body>
+</html>
