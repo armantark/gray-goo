@@ -111,3 +111,5 @@
 - 2026-09-05T10:34:06: A second CUA screenshot of the 22-second native canary returned `Computer Use server error -10005: cgWindowNotFound` because the probe had already exited normally; use recorded frames for exact idle/resume phases.
 
 - 2026-09-05T10:39:32: Commit rejected by `slop-gate: cyclomatic complexity above 15 was introduced: src/goo_body.gd: _step 17 (was 9)`. Consolidated repeated idle/moving ternaries into one idle target and shared gathering rate; no helper extraction or gate override.
+
+- 2026-09-05T10:51:52: During the subatomic interview startup, `ls docs/adr` returned `No such file or directory`; this project has no ADR directory yet, and domain-modeling creates it only after a qualifying decision.

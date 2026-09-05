@@ -32,7 +32,7 @@ Every consumed item contributes to goal size. Completion depends on size, not a 
 
 ## Next design review
 
-The user wants protons and neutrons to keep constant sizes. Different elements use different constituent counts, with visibly orbiting electrons in the old textbook diagram style. Loose-quark scatter is a poor fit. Other subatomic types can move at readable game speeds. Hold the particle-scene rewrite for the user's consolidated change list. Do not dismiss these consistency requirements as scientific literalism.
+The user wants protons and neutrons to keep constant sizes. Different elements use different constituent counts, with visibly orbiting electrons in the old textbook diagram style. Loose-quark scatter is a poor fit. Other subatomic types can move at readable game speeds. The user now explicitly requests a proposed subatomic system and a grill-me interview before implementation. Settle and obtain approval for the design before changing the scene. Do not dismiss these consistency requirements as scientific literalism.
 
 The desired typical duration is roughly 3–5 minutes, but human pacing and final balance remain unverified. The new movement speed changes travel time; do not reuse old completion times as evidence of current pacing.
 
@@ -46,4 +46,4 @@ The user approved the file-specific, read-only Kimi review of this game's world,
 
 ## Current review
 
-The user reviewed the September 4 ten-second clip and requested slower movement, five irregular forward anchors, control-dependent gaze, and idle melting. This revision is implemented and the native app and comparison clip are ready. The consolidated scene-change list and particle redesign remain pending. Do not assume visual acceptance.
+The user reviewed the September 4 ten-second clip and requested slower movement, five irregular forward anchors, control-dependent gaze, and idle melting. This revision is implemented and the native app and comparison clip are ready. The user called the motion/build "Pretty good" and "pretty decent", but rejected the subatomic scene’s lack of structure. The subatomic design interview is active in `plans/subatomic-system-interview.md`. The user may separately have Fable work on controls/UI; no Fable dispatch is requested.
