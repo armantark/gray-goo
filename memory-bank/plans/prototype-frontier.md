@@ -11,16 +11,18 @@ This is a running interview map, not a settled implementation plan. Ask small nu
 - WASD/arrow keys and held mouse steering share movement physics.
 - Engulf and shrink on contact without pausing movement; large bites stretch the goo, and puddles are consumed locally.
 - Top-down smooth cartoon 3D, cel shading and outlines, standalone Mac delivery.
+- Slight overhead tilt that preserves the top-down feel; player rotation and bounded zoom, with no player tilt adjustment.
+- Goal-size completion celebrates a visually striking final bite and offers Next level while continued eating remains available.
 
 ## Current independent frontier
 
-1. Edibility: visible bulk versus longest dimension for elongated objects. This unblocks threshold feedback and irregular-object tuning.
-2. Camera presentation: straight overhead versus tilted overhead, and fixed versus player-controlled orientation. This unblocks framing and occlusion choices.
-3. Completion flow: immediate scene exit versus optional continued eating after reaching goal size. This unblocks completion UI and progression flow.
+1. Edibility: decide whether shape influences a predictable eating threshold with responsive engulfing visuals, or whether physical fit can prevent an otherwise size-eligible bite. The user wants some realism but has not chosen its gameplay role.
+2. Occlusion: with a tilted, rotatable overhead camera, decide whether foreground objects automatically reveal the goo or require camera rotation to see behind them.
 
 ## Held for later rounds
 
-- Edible-target feedback depends on the edibility rule and camera presentation.
-- Occlusion treatment depends on camera presentation.
-- Scene progression controls depend on completion flow.
+- Edible-target feedback depends on the edibility rule.
+- Remaining whole accounting and object-size tuning follow the edibility decision.
+- Camera bindings, movement relative to camera rotation, and zoom limits remain open; hold these lower-priority frontier items for a later small round.
+- The final bite needs a strong visual payoff; specific effects remain open and must preserve readable play.
 - Physics implementation and performance feasibility are engineering investigations, not questions for the user.

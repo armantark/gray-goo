@@ -37,3 +37,9 @@ The user confirmed hybrid level completion on 2026-09-04: every consumed object 
 Controls confirmed on 2026-09-04: WASD and arrow keys, plus optional mouse steering while the mouse button is held. The goo moves toward the pointer. Both input methods use the same responsive steering, stopping drift, and body deformation.
 
 Eating presentation confirmed on 2026-09-04: edible objects are engulfed and shrink on contact without pausing movement; larger bites visibly stretch the goo. Puddles disappear only where touched. The user invoked grill-me and corrected the interview format: ask small rounds of independent frontier decisions, with recommendations, rather than isolated serial questions. The remaining design tree is in plans/prototype-frontier.md.
+
+Camera: preserve a top-down feel with a slight overhead tilt. Players can rotate around the goo and zoom within reasonable limits, but cannot change tilt. Exact angle, zoom bounds, and control bindings remain to be tuned.
+
+Completion presentation: reaching the goal size celebrates completion and makes Next level available while the scene remains playable. The final bite must be satisfying and visually striking. Its specific effects remain open.
+
+Edibility remains undecided: the user wants a more realistic element but is unsure whether it should affect eligibility or only swallowing presentation. Their belief that the original uses internal numerical thresholds is not a verified implementation fact. Separate eligibility, growth contribution, and engulfing presentation in the next frontier round.

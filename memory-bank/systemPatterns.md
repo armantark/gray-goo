@@ -20,3 +20,7 @@ Level entry sizing: the user confirmed on 2026-09-04 that each level starts at a
 Level completion: every consumed object contributes growth, and reaching the level goal size completes the level. Tune the food budget so the main milestone object usually supplies the growth that crosses the goal. The milestone is not a separate mandatory completion gate.
 
 Eating presentation: engulf and shrink edible objects on contact without pausing movement. Larger bites visibly stretch the goo. Local puddle consumption preserves the untouched remainder.
+
+Camera: preserve a top-down feel with a slight overhead tilt. Players can rotate around the goo and zoom within reasonable limits, but cannot change tilt. Exact angle, zoom bounds, and control bindings remain to be tuned.
+
+Completion presentation: reaching the goal size celebrates completion and makes Next level available while the scene remains playable. The final bite must be satisfying and visually striking. Its specific effects remain open.
