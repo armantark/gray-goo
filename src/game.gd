@@ -16,6 +16,7 @@ var _frame_times := PackedFloat64Array()
 var _record_performance := false
 var _last_frame_usec := 0
 var _closing := false
+var _highlighted_target: Food
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
@@ -109,6 +110,7 @@ func _physics_process(delta: float) -> void:
 			contact = pool.last_contact
 		if portion > 0.0:
 			_add_growth(portion, pool.pigment, contact)
+			hud.show_meal("Spacetime fabric" if _level == 3 else "Water", "", pool.pigment)
 	if not _revealed and world.config.jump_radius > 0.0 and goo.radius >= world.config.jump_radius:
 		_revealed = true
 		world.advance_scale()
@@ -120,6 +122,7 @@ func _eat(food: Food) -> void:
 	var portion := food.remaining_volume()
 	var color := food.meal_color()
 	var point := food.center()
+	hud.show_meal(food.title, food.model_name, color)
 	food.consume(goo)
 	_add_growth(portion, color, point)
 	_bite_particles(point, color, clampf(portion / _volume, 0.02, 1.0))
@@ -159,6 +162,12 @@ func _process(delta: float) -> void:
 			_cinematic = -1.0
 			hud.show_completion()
 	var target := world.nearest_edible(goo.global_position, goo.radius)
+	if target != _highlighted_target:
+		if is_instance_valid(_highlighted_target):
+			_highlighted_target.set_highlighted(false)
+		_highlighted_target = target
+		if is_instance_valid(_highlighted_target):
+			_highlighted_target.set_highlighted(true)
 	var target_position := Vector3.ZERO
 	var target_name := ""
 	if is_instance_valid(target):

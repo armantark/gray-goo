@@ -14,7 +14,7 @@ Open `builds/Gray Goo.app` after exporting. The game starts in the particle fiel
 | Scroll wheel | Zoom within the current scale |
 | Escape | Open or close the scene menu |
 
-Eat smaller objects to reach the goal size. A pointer shows the nearest edible object. Each scene has its own starting size. The HUD shows body diameter and goal diameter in metric units. The goal-reaching bite celebrates completion; the scene remains playable until you choose Next level.
+Eat smaller objects to reach the goal size. A pointer and yellow outline identify the nearest edible object. The bottom-left portrait shows the last consumed item. Each scene has its own starting size. The HUD shows body diameter and goal diameter in metric units. The goal-reaching bite celebrates completion; the scene remains playable until you choose Next level.
 
 Open the scene menu to adjust Movement speed from 10% to 200%. The default is 100%, and the setting applies to both keyboard and mouse steering. The game saves it between launches.
 

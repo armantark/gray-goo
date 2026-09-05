@@ -2,6 +2,7 @@ class_name GooBody
 extends Node3D
 
 # The center is the shell's mean, so adhesion and impacts move the whole organism.
+const Tendrils = preload("res://src/goo_tendrils.gd")
 const SUBSTEPS := 2
 const SOLVER_ITERATIONS := 4
 const GRAY := Color(0.57, 0.61, 0.65)
@@ -53,13 +54,7 @@ var _drive := Vector3.ZERO
 var _speed: float = 0.0
 var _food_target := Vector3.ZERO
 var _food_radius: float = -1.0
-var _reach_direction := Vector3.ZERO
-var _reach_strength: float = 0.0
-var _stride_phase: float = 0.0
-var _steps: Array[Dictionary] = [{}, {}]
-var _swing_weights := PackedFloat32Array()
-var _swing_targets := PackedVector3Array()
-var _planted_weights := PackedFloat32Array()
+var _tendrils: MeshInstance3D
 var _points := PackedVector3Array()
 var _previous := PackedVector3Array()
 var _previous_dt: float = 1.0 / (Engine.physics_ticks_per_second * SUBSTEPS)
@@ -101,6 +96,10 @@ func configure(start: Vector3, starting_radius: float, ground_height: Callable,
 	global_position.y = maxf(start.y, float(_ground_height.call(start)) + radius)
 	_build_shell()
 	_build_render_mesh()
+	_tendrils = Tendrils.new()
+	_tendrils.name = "Filaments"
+	add_child(_tendrils)
+	_tendrils.configure(self)
 	_configured = true
 	_update_surface()
 
@@ -157,9 +156,11 @@ func touches(point: Vector3, object_radius: float) -> bool:
 func _physics_process(delta: float) -> void:
 	if not _configured:
 		return
-	var dt := minf(delta, 1.0 / 30.0) / SUBSTEPS
+	var frame_dt := minf(delta, 1.0 / 30.0)
+	var substeps := clampi(ceili(_speed * _drive.length() * frame_dt / (radius * 0.25)), SUBSTEPS, 6)
+	var dt := frame_dt / substeps
 	var old_center := global_position
-	for _substep in SUBSTEPS:
+	for _substep in substeps:
 		_step(dt)
 	velocity = (global_position - old_center) / maxf(delta, 0.001)
 	_diffuse_pigment(delta)
@@ -171,13 +172,7 @@ func _step(dt: float) -> void:
 	radius = lerpf(radius, _target_radius, 1.0 - exp(-3.5 * dt))
 	var growth := radius / old_radius
 	var center := global_position
-	var to_food := _food_target - center
-	var reach := 0.0
-	if _food_radius >= 0.0 and not to_food.is_zero_approx():
-		reach = clampf((radius * 1.5 + _food_radius - to_food.length()) / (radius * 0.35), 0.0, 1.0)
-		_reach_direction = to_food.normalized()
-	_reach_strength = lerpf(_reach_strength, reach, 1.0 - exp(-9.0 * dt))
-	_prepare_steps(dt, center)
+	var traction: PackedVector3Array = _tendrils.advance(dt)
 	var solids: Array = _obstacles.call(center, radius * 2.2)
 	for i in _points.size():
 		_points[i] = center + (_points[i] - center) * growth
@@ -185,22 +180,12 @@ func _step(dt: float) -> void:
 		# Displacement belongs to the previous step, including across slow-motion changes.
 		var point_velocity := (_points[i] - _previous[i]) / _previous_dt
 		_previous[i] = _points[i]
-		var acceleration := -point_velocity * 4.0 + Vector3.DOWN * radius * 27.0
+		var acceleration := -point_velocity * 4.0 + Vector3.DOWN * radius * 27.0 + traction[i]
 		_points[i] += point_velocity * dt + acceleration * dt * dt
 	# Compliance scales with dt squared so a slow-motion step cannot release a full-speed spring.
 	var elasticity := pow(dt * Engine.physics_ticks_per_second * SUBSTEPS, 2.0)
 	for iteration in SOLVER_ITERATIONS:
 		_solve_edges(elasticity)
-		var reach_reaction := _solve_reach(center, dt)
-		for i in _points.size():
-			var strength := 1.0 - exp(-260.0 * dt / SOLVER_ITERATIONS)
-			var extension := ((_swing_targets[i] - _points[i]) * _swing_weights[i] * strength).limit_length(radius * dt * 3.0)
-			_points[i] += extension
-			reach_reaction += extension
-		# Internal reaching cannot translate a free body; planted contacts supply traction.
-		reach_reaction /= _points.size()
-		for i in _points.size():
-			_points[i] -= reach_reaction
 		_solve_volume(center, elasticity)
 		for i in _points.size():
 			_solve_contact(i, solids, dt, iteration == SOLVER_ITERATIONS - 1)
@@ -209,63 +194,6 @@ func _step(dt: float) -> void:
 		center += point
 	global_position = center / _points.size()
 	_previous_dt = dt
-
-func _prepare_steps(dt: float, center: Vector3) -> void:
-	_swing_weights.fill(0.0)
-	_planted_weights.fill(0.0)
-	if _drive.length_squared() < 0.001 or _speed <= 0.0:
-		_steps = [{}, {}]
-		_stride_phase = 0.0
-		return
-	_stride_phase += dt * _speed * _drive.length() / radius * 0.75
-	for foot in 2:
-		var phase := fposmod(_stride_phase + float(foot) * 0.5, 1.0)
-		if _steps[foot].is_empty() or phase < float(_steps[foot].phase):
-			_start_step(foot, center)
-		var step := _steps[foot]
-		step.phase = phase
-		for j in step.indices.size():
-			var i: int = step.indices[j]
-			var weight: float = step.weights[j]
-			if phase < 0.36:
-				var progress := phase / 0.36
-				var target: Vector3 = step.starts[j] + step.shift * smoothstep(0.0, 1.0, progress)
-				target.y += sin(progress * PI) * radius * 0.12
-				target.x = clampf(target.x, _field.position.x + radius * 0.02, _field.end.x - radius * 0.02)
-				target.z = clampf(target.z, _field.position.y + radius * 0.02, _field.end.y - radius * 0.02)
-				if weight > _swing_weights[i]:
-					_swing_targets[i] = target
-					_swing_weights[i] = weight
-			elif phase < 0.88:
-				_planted_weights[i] = maxf(_planted_weights[i], weight)
-
-func _start_step(foot: int, center: Vector3) -> void:
-	var forward := _drive.normalized()
-	var sideways := forward.cross(Vector3.UP)
-	var heading := (forward + sideways * (float(foot) * 2.0 - 1.0) * 0.65).normalized()
-	var cap_direction := (heading + Vector3.DOWN * 0.5).normalized()
-	var indices := PackedInt32Array()
-	var weights := PackedFloat32Array()
-	var starts := PackedVector3Array()
-	var cap_center := Vector3.ZERO
-	var total := 0.0
-	for i in _points.size():
-		var alignment := (_points[i] - center).normalized().dot(cap_direction)
-		var weight := exp((alignment - 1.0) / 0.075)
-		if weight < 0.18:
-			continue
-		indices.append(i)
-		weights.append(weight)
-		starts.append(_points[i])
-		cap_center += _points[i] * weight
-		total += weight
-	cap_center /= maxf(total, 0.001)
-	var target := center + heading * radius * 1.68
-	target.x = clampf(target.x, _field.position.x + radius * 0.02, _field.end.x - radius * 0.02)
-	target.z = clampf(target.z, _field.position.y + radius * 0.02, _field.end.y - radius * 0.02)
-	target.y = float(_ground_height.call(target)) + radius * 0.04
-	_steps[foot] = {"phase": 0.0, "indices": indices, "weights": weights,
-		"starts": starts, "shift": target - cap_center}
 
 func _solve_edges(elasticity: float) -> void:
 	var stiffness := 0.10 * elasticity / (0.8 + 0.2 * elasticity)
@@ -278,21 +206,6 @@ func _solve_edges(elasticity: float) -> void:
 		var correction := separation * ((distance - _edge_lengths[e] * radius) / distance) * stiffness
 		_points[pair.x] += correction
 		_points[pair.y] -= correction
-
-func _solve_reach(center: Vector3, dt: float) -> Vector3:
-	var reaction := Vector3.ZERO
-	if _reach_strength < 0.001:
-		return reaction
-	# A rounded cap of the same constrained shell reaches; no detached appendage or suction.
-	for i in _points.size():
-		var offset := _points[i] - center
-		var cap := exp((offset.normalized().dot(_reach_direction) - 1.0) / 0.06)
-		var extension := maxf(radius * 1.5 - offset.dot(_reach_direction), 0.0)
-		var strength := 1.0 - exp(-119.0 * dt / SOLVER_ITERATIONS)
-		var correction := (_reach_direction * extension * cap * _reach_strength * strength).limit_length(radius * dt * 3.0)
-		_points[i] += correction
-		reaction += correction
-	return reaction
 
 func _solve_volume(center: Vector3, elasticity: float) -> void:
 	var stiffness := 0.45 * elasticity / (0.55 + 0.45 * elasticity)
@@ -323,8 +236,7 @@ func _solve_contact(i: int, solids: Array, dt: float, last_iteration: bool) -> v
 	var was_below := point.y <= floor_y
 	point.y = maxf(point.y, floor_y)
 	var moving := _drive.length_squared() > 0.001 and _speed > 0.0
-	var planted := _planted_weights[i] > 0.25 and _swing_weights[i] < 0.18
-	if moving and not planted:
+	if moving:
 		_attached[i] = 0
 	elif _attached[i]:
 		var strain := Vector2(point.x - _anchors[i].x, point.z - _anchors[i].z).length()
@@ -332,7 +244,7 @@ func _solve_contact(i: int, solids: Array, dt: float, last_iteration: bool) -> v
 			_attached[i] = 0
 		else:
 			point = point.lerp(_anchors[i], 0.78)
-	elif was_below or (planted and point.y - floor_y < radius * 0.07):
+	elif was_below:
 		point.y = floor_y
 		_attached[i] = 1
 		_anchors[i] = point
@@ -430,9 +342,6 @@ func _build_shell() -> void:
 		_points.append(global_position + rest_point * radius)
 		_colors.append(GRAY)
 	_previous = _points.duplicate()
-	_swing_weights.resize(_points.size())
-	_swing_targets.resize(_points.size())
-	_planted_weights.resize(_points.size())
 	_anchors.resize(_points.size())
 	_attached.resize(_points.size())
 	_normals.resize(_points.size())
@@ -492,9 +401,8 @@ func _build_render_mesh() -> void:
 		sphere.radial_segments = 20
 		sphere.rings = 10
 		eye.mesh = sphere
-		var white := StandardMaterial3D.new()
-		white.albedo_color = Color(0.94, 0.96, 0.91)
-		white.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		var white := ShaderMaterial.new()
+		white.shader = preload("res://shaders/eye.gdshader")
 		var eye_outline := ShaderMaterial.new()
 		eye_outline.shader = contour_shader
 		eye_outline.set_shader_parameter("width", 1.5)
@@ -502,15 +410,6 @@ func _build_render_mesh() -> void:
 		eye.material_override = white
 		add_child(eye)
 		_eyes.append(eye)
-		var pupil := MeshInstance3D.new()
-		pupil.mesh = sphere
-		var ink := StandardMaterial3D.new()
-		ink.albedo_color = Color(0.025, 0.045, 0.055)
-		ink.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		pupil.material_override = ink
-		pupil.scale = Vector3(0.50, 0.57, 0.20)
-		pupil.position = Vector3(0.10 - float(_eye_index) * 0.20, 0.10, 0.93)
-		eye.add_child(pupil)
 
 func _update_surface(delta: float = 0.0) -> void:
 	_contact_radius = 0.0
@@ -544,6 +443,8 @@ func _update_surface(delta: float = 0.0) -> void:
 	_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	_material.set_shader_parameter("celebration", _celebration)
 	_update_eyes(delta)
+	if _tendrils != null:
+		_tendrils.refresh_mesh()
 
 func _update_eyes(delta: float) -> void:
 	var camera := get_viewport().get_camera_3d()
@@ -576,4 +477,4 @@ func _update_eyes(delta: float) -> void:
 			var offset := mouse_offset.limit_length(100.0) * 0.004
 			var world_direction := camera.global_basis.z + camera.global_basis.x * offset.x - camera.global_basis.y * offset.y
 			var local_direction := _eyes[e].global_basis.inverse() * world_direction
-			_eyes[e].get_child(0).position = local_direction.normalized() * 0.9
+			_eyes[e].material_override.set_shader_parameter("gaze", local_direction.normalized())

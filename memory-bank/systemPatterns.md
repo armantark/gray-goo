@@ -44,3 +44,7 @@ Asset colors: Blender material node inputs use linear RGB. Convert authored sRGB
 Metric HUD contract: world config declares `meters_per_unit`; displayed size is `2 * radius * meters_per_unit`, including the goal, and scale reveals never reset it. Current authored calibrations are Quark `1e-15`, Coral `0.01`, Skatepark `0.25`, Cosmos `1e21` metres per world unit. These calibrate the cartoon scenes, not empirical object measurements. Prefixes follow SI casing, including `fm` (femtometre) and `Zm` (zettametre); reference https://www.nist.gov/pml/owm/metric-si-prefixes .
 
 The scene menu owns a saved movement-speed preference in `user://settings.cfg`, under `controls/movement_speed`. Its 10–200% range scales both keyboard and mouse steering around the authored default speed. Scene changes retain the same preference.
+
+Target guidance reuses the existing nearest-edible lookup. Only the selected object and its surviving composite parts receive a depth-tested yellow outline; consumption clears it. The last-meal portrait uses an isolated 192-pixel SubViewport, refreshed only when the displayed item changes. Liquids display a colored puddle.
+
+Pupils are a gaze-controlled color region on each eye mesh, using `shaders/eye.gdshader`. There is no overlapping pupil geometry to clip against the eyeball. The eye whites retain independent body-driven spring motion.

@@ -21,6 +21,8 @@ var _meal_age := 0.0
 var _meal_start := Vector3.ZERO
 var _meal_scale := Vector3.ONE
 var _sway_phase := 0.0
+var _highlighted := false
+static var _target_outline: ShaderMaterial
 
 func configure(kind: String, size: float, required_size: float, food_volume: float,
 		label: String, moving: bool = false, band: int = 0) -> void:
@@ -57,6 +59,27 @@ func configure(kind: String, size: float, required_size: float, food_volume: flo
 	physics_material_override = physics_material
 	_sway_phase = randf() * TAU
 
+func set_highlighted(enabled: bool) -> void:
+	enabled = enabled and active
+	if _highlighted == enabled:
+		return
+	_highlighted = enabled
+	if enabled and _target_outline == null:
+		_target_outline = ShaderMaterial.new()
+		_target_outline.shader = Art.OUTLINE
+		_target_outline.set_shader_parameter("ink", Color("ffe05a"))
+		_target_outline.set_shader_parameter("width", 5.5)
+	_highlight_visual(visual, _target_outline if enabled else null)
+	for part in parts:
+		if is_instance_valid(part):
+			part.set_highlighted(enabled)
+
+func _highlight_visual(node: Node, material: Material) -> void:
+	if node is MeshInstance3D:
+		node.material_overlay = material
+	for child in node.get_children():
+		_highlight_visual(child, material)
+
 func remaining_volume() -> float:
 	if not active:
 		return 0.0
@@ -84,6 +107,7 @@ func center() -> Vector3:
 	return global_position + Vector3.UP * height * 0.4
 
 func consume(target: Node3D) -> void:
+	set_highlighted(false)
 	active = false
 	freeze = true
 	collision_layer = 0
@@ -99,6 +123,7 @@ func _disable_parts() -> void:
 	for part in parts:
 		if not is_instance_valid(part):
 			continue
+		part.set_highlighted(false)
 		part.active = false
 		part.collision_layer = 0
 		part.collision_mask = 0

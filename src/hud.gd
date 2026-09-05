@@ -22,6 +22,12 @@ var _hint_time := 0.0
 var _meters_per_unit: float
 var movement_speed := 1.0
 var _settings := ConfigFile.new()
+var _last_meal: PanelContainer
+var _meal_label: Label
+var _meal_view: SubViewport
+var _meal_camera: Camera3D
+var _meal_model: Node3D
+var _meal_kind := ""
 
 class FoodPointer extends Control:
 	var position_on_screen := Vector2.ZERO
@@ -79,6 +85,69 @@ func _ready() -> void:
 	hint_label.add_theme_constant_override("shadow_offset_y", 2)
 	_build_completion()
 	_build_menu()
+	_build_last_meal()
+
+func _build_last_meal() -> void:
+	_last_meal = _panel(_root)
+	_last_meal.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	_last_meal.offset_left = 28
+	_last_meal.offset_right = 420
+	_last_meal.offset_top = -208
+	_last_meal.offset_bottom = -82
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 14)
+	_last_meal.add_child(row)
+	_meal_view = SubViewport.new()
+	_meal_view.size = Vector2i(192, 192)
+	_meal_view.own_world_3d = true
+	_meal_view.transparent_bg = true
+	_meal_view.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	add_child(_meal_view)
+	var portrait := TextureRect.new()
+	portrait.texture = _meal_view.get_texture()
+	portrait.custom_minimum_size = Vector2(96, 96)
+	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	row.add_child(portrait)
+	var text := VBoxContainer.new()
+	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_child(text)
+	_label(text, "Last eaten", 17).modulate = Color("c9ddd5")
+	_meal_label = _label(text, "", 22)
+	_meal_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_meal_camera = Camera3D.new()
+	_meal_camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+	_meal_view.add_child(_meal_camera)
+	_meal_camera.position = Vector3(0, 1.5, 3)
+	_meal_camera.look_at(Vector3.ZERO)
+	var light := DirectionalLight3D.new()
+	light.rotation_degrees = Vector3(-40, -25, 0)
+	_meal_view.add_child(light)
+	_last_meal.hide()
+
+func show_meal(title: String, kind: String, color: Color) -> void:
+	if _last_meal.visible and _meal_label.text == title and _meal_kind == kind:
+		return
+	_meal_label.text = title
+	_meal_kind = kind
+	if is_instance_valid(_meal_model):
+		_meal_model.free()
+	var height := 0.3
+	if kind.is_empty():
+		var liquid := SphereMesh.new()
+		liquid.radius = 0.8
+		liquid.height = height
+		_meal_model = Art.mesh_node(liquid, color, 0.25)
+	else:
+		_meal_model = Art.model(kind, 0.8)
+		height = Art.model_height(kind, 0.8)
+	_meal_view.add_child(_meal_model)
+	_meal_model.position.y = -height * 0.5
+	_meal_model.rotation.y = 0.35
+	_meal_camera.size = maxf(2.6, height * 1.2)
+	_meal_view.render_target_update_mode = SubViewport.UPDATE_ONCE
+	_last_meal.show()
 
 func _panel(parent: Node) -> PanelContainer:
 	var panel := PanelContainer.new()
@@ -190,6 +259,7 @@ func configure(index: int, config: Dictionary) -> void:
 	_meters_per_unit = float(config.meters_per_unit)
 	size_label.tooltip_text = "Goo body diameter and the diameter needed to finish this scene."
 	title_label.text = config.title
+	_last_meal.hide()
 	completion.hide()
 	menu.hide()
 	hint_label.modulate.a = 1.0
