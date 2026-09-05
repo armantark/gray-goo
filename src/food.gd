@@ -145,6 +145,9 @@ func _disable_parts() -> void:
 		if not is_instance_valid(part):
 			continue
 		part.set_highlighted(false)
+		if not part.active:
+			part.hide()
+			part.scale = part._meal_scale
 		part.active = false
 		part.collision_layer = 0
 		part.collision_mask = 0
@@ -167,11 +170,13 @@ func _physics_process(delta: float) -> void:
 		_meal_age += delta
 		var progress := clampf(_meal_age / 0.34, 0.0, 1.0)
 		global_position = _meal_start.lerp(_meal_target.global_position, progress * progress)
-		scale = _meal_scale * maxf(0.001, 1.0 - progress)
 		if progress >= 1.0:
 			# Scene graphs keep part references for damage and motion until the level ends.
 			hide()
+			scale = _meal_scale
 			set_physics_process(false)
+		else:
+			scale = _meal_scale * maxf(0.01, 1.0 - progress)
 		return
 	if not active:
 		return
