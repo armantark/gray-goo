@@ -33,3 +33,5 @@ Status artifacts require no visual testing. The user explicitly stopped artifact
 Level entry sizing: the user confirmed on 2026-09-04 that each level starts at a size tailored to its scene, rather than carrying size over from the previous level. Growth remains continuous within each level, including across any optional camera size jumps.
 
 The user confirmed hybrid level completion on 2026-09-04: every consumed object contributes toward the goal size; the main milestone usually pushes the goo over that goal. Completion depends on size, not a separate required-object condition.
+
+Controls confirmed on 2026-09-04: WASD and arrow keys, plus optional mouse steering while the mouse button is held. The goo moves toward the pointer. Both input methods use the same responsive steering, stopping drift, and body deformation.

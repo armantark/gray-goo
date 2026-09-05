@@ -15,3 +15,5 @@ Level inspiration must come from the first Tasty Planet itself. The user rejecte
 The user wants zero, one, or two optional size jumps per level, plus emergent formations and edible part-to-whole progressions. Their examples are quarks to protons to nuclei, and coral polyps to the remaining coral. The coral example is user-supplied and is not attributed to the original game's Ocean levels.
 
 Original levels are inspiration seeds only. Do not recreate their 60-level campaign, enforce one-to-one mappings, or generate a fixed set of reskins for every original level. Use their pacing, playful arrangements, interactions, and growth payoffs to invent fresh scenes. Source references document influences, not required replicas.
+
+Player controls: WASD or arrow keys for directional movement; hold the mouse button to steer toward the pointer. Both methods share the same movement physics and deformation.
