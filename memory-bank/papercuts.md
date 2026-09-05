@@ -26,3 +26,7 @@
 2026-09-04: Candidate aggregation failed with `AssertionError: Duplicate scene titles`: IDs126and153 both used `Wetland Boardwalk`. Renamed153to `Lily Pad Culvert` to describe its distinct stream-blocking interaction; curator must avoid selecting both near-overlapping settings.
 
 2026-09-04: Auto-review rejected the Kimi selection call before execution: `This sends the project’s private 240-scene design corpus and prompt to the external Kimi API, but the user authorized curation in substance—not disclosure of that payload to that destination.` Continue through a native Codex reviewer; no Kimi retry or external transfer.
+
+2026-09-04: Artifact preflight rejected source citation hyperlinks with `FAIL A5 remote src/href asset (artifact must be self-contained)`. Replaced remote anchors with internal source references and a plain-text URL index before opening or publishing.
+
+2026-09-04: After Codex restarted, the old preview listener returned curl error `52` (empty reply) and the old PinchTab session returned `401`; a fresh task-owned preview listener and session restored access. The user then stopped status-artifact visual QA as unnecessary; added a permanent fleet rules exemption instead of repeating browser checks.

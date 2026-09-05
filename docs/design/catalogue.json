@@ -1,15 +1,17 @@
 [
   {
     "id": 1,
-    "source_id": "laboratory-1",
+    "source_id": null,
     "band": "subatomic",
     "title": "Quark Dust Ladder",
-    "setting": "Hadron cloud with loose quark flecks and slow charge streams around a dense central knot.",
-    "food": "Quark flecks, proton knots, neutron-rich nuclei.",
-    "interaction": "Opposite charges pull quarks together; goo rolls through, gathering flecks and nudging knots toward the center.",
-    "jumps": [],
-    "parts": "Goo nibbles accessible quarks, grows enough to eat intact protons, then consumes nuclei as a cartoon parts-to-whole payoff.",
-    "risk": "Binding must read without implying measured sizes."
+    "setting": "A dark particle field holds loose quark flecks beside rounded proton knots.",
+    "food": "Loose flecks, exposed bound flecks, proton knots, compact nuclei.",
+    "interaction": "Slow currents deliver loose flecks. Removing edible surface flecks reduces a knot while growing the goo. Dense nuclei remain conspicuously too large.",
+    "jumps": [
+      "Zoom out to reveal compact nuclei; retire individual fleck detail."
+    ],
+    "parts": "Eat accessible quark flecks, then the remaining proton knot once large enough.",
+    "risk": "Particle forms and sizes are declared cartoon fantasy."
   },
   {
     "id": 2,
@@ -28,14 +30,12 @@
     "source_id": null,
     "band": "subatomic",
     "title": "Photon Pair Drift",
-    "setting": "A photon cloud crosses a dark field where paired light beads form and separate along a faint energy ridge.",
-    "food": "Photon flecks, paired light beads, dense energy knots.",
-    "interaction": "An energy ripple splits and reunites pairs; goo rolls across the ridge, collecting loose photons and bending the next pair toward its wake.",
-    "jumps": [
-      "View widens to reveal the ridge's second crossing."
-    ],
+    "setting": "Glowing light beads meet across a dark energy ridge.",
+    "food": "Single light beads, paired beads, larger luminous knots.",
+    "interaction": "A gentle ripple brings beads together and separates them again. Crossing its path offers moving food; missing a pair leaves other food available.",
+    "jumps": [],
     "parts": null,
-    "risk": "Bright particle paths need readable silhouettes."
+    "risk": "Light behaves as edible fantasy matter, without scientific size claims."
   },
   {
     "id": 4,
@@ -118,12 +118,12 @@
     "source_id": null,
     "band": "atomic",
     "title": "Metal Vapor Shear",
-    "setting": "Iron-rich and copper-rich atom clouds drift through a vapor pocket, separated by a magnetic gradient.",
-    "food": "Metal atoms, paired grains, alloy clusters, metal beads.",
-    "interaction": "The gradient pulls iron-rich grains sideways while vapor carries copper across; goo settles at the boundary, collecting atoms and redirecting the alloy stream.",
+    "setting": "Two metal atom clouds drift across a broad vapor field.",
+    "food": "Individual atoms, bonded pairs, small metal clusters.",
+    "interaction": "One cloud drifts sideways while the other crosses it. Their intersection collects clusters, giving the goo a visible reason to change direction. The streams remain sparse enough to read.",
     "jumps": [],
-    "parts": "Loose atoms aggregate into soft density shells.",
-    "risk": "Metal families need distinct silhouettes."
+    "parts": null,
+    "risk": "Use authored particle paths rather than a chemistry simulation."
   },
   {
     "id": 11,
@@ -144,12 +144,12 @@
     "source_id": null,
     "band": "atomic",
     "title": "Crystal Lattice Pulse",
-    "setting": "A crystal lattice of silicon-like atoms spans a clear field, with vacant gaps and dense nodes.",
-    "food": "Loose atoms, lattice links, crystal nodes, atomic blocks.",
-    "interaction": "A heat pulse expands a gap while bonds pull shut; goo occupies it, catching displaced atoms before the lattice reforms.",
+    "setting": "A silicon-like lattice has open vacancies and loosely attached outer atoms.",
+    "food": "Loose atoms, exposed lattice atoms, small crystal fragments.",
+    "interaction": "The lattice gently flexes. Vacancies offer routes to edible outer atoms; cleared gaps remain open rather than instantly regrowing.",
     "jumps": [],
-    "parts": "Goo nibbles links, grows, then consumes the crystal node.",
-    "risk": "Lattice motion needs simple deterministic motion."
+    "parts": "Consume exposed atoms until the remaining crystal fragment fits inside the goo.",
+    "risk": "Attachment and eligibility must stay readable during lattice motion."
   },
   {
     "id": 13,
@@ -179,17 +179,15 @@
   },
   {
     "id": 15,
-    "source_id": "laboratory-3",
+    "source_id": null,
     "band": "molecular",
     "title": "Membrane Fork",
-    "setting": "A flexible lipid sheet spans a watery pocket, with vesicle beads and protein channels opening along its folds.",
-    "food": "Lipid beads, membrane patches, vesicles, folded sacs.",
-    "interaction": "Vesicles drift through open channels; goo plugs one opening, redirecting them along the membrane edge and exposing a folded patch.",
-    "jumps": [
-      "The view shifts to show the underside of the membrane fold."
-    ],
+    "setting": "A folded lipid membrane borders a shallow solvent pocket.",
+    "food": "Loose lipids, small membrane patches, vesicles, folded membrane sacs.",
+    "interaction": "Vesicles drift around a fold. The goo nudges its loose edge, changing their route through the pocket. Food remains reachable from the common play surface.",
+    "jumps": [],
     "parts": null,
-    "risk": "Thin surfaces need robust collision and camera readability."
+    "risk": "Show a membrane world without requiring underside navigation."
   },
   {
     "id": 16,
@@ -219,15 +217,15 @@
   },
   {
     "id": 18,
-    "source_id": "laboratory-2",
+    "source_id": null,
     "band": "molecular",
     "title": "Soap Film Fold",
-    "setting": "Surfactant molecules line a thin film stretched between moist folds, forming bubbles of several sizes.",
-    "food": "Surfactant beads, thin films, bubbles, foam caps.",
-    "interaction": "Air pressure inflates weak pockets and ruptures thin skins; goo presses the film, steering stable bubbles toward a lower fold without clearing the whole surface.",
+    "setting": "Surfactant beads line a film containing small bubbles and larger foam caps.",
+    "food": "Loose surfactants, tiny bubbles, larger bubbles, foam caps.",
+    "interaction": "Stable bubbles roll into shallow folds when nudged. Contact removes local film patches while the surrounding translucent film remains connected; no whole-field draining occurs.",
     "jumps": [],
     "parts": null,
-    "risk": "Bubble counts need strict caps."
+    "risk": "Film consumption must be clear without a full fluid solver."
   },
   {
     "id": 19,
@@ -245,17 +243,17 @@
   },
   {
     "id": 20,
-    "source_id": "laboratory-4",
+    "source_id": null,
     "band": "molecular",
     "title": "Peptide Knot Eddy",
-    "setting": "Amino-acid chains drift through warm solvent, folding into loops around a slow eddy.",
-    "food": "Amino-acid beads, short chains, folded knots, protein globes.",
-    "interaction": "Solvent jostles chains; goo presses one loop, closing nearby bonds and pushing the knot into its feeding path.",
+    "setting": "A slow solvent eddy carries short chains past folded proteins.",
+    "food": "Amino-acid beads, short peptide chains, folded protein globes.",
+    "interaction": "Chains flex and bunch at the eddy boundary. The goo catches loose ends and grows among the loops; nudging a chain does not automatically manufacture larger food.",
     "jumps": [
-      "Camera reveals folded globes beyond the eddy."
+      "Zoom out to expose whole protein globes; retire individual amino-acid detail."
     ],
-    "parts": "Amino-acid links fold into knots.",
-    "risk": "Folding must read without full chemistry."
+    "parts": null,
+    "risk": "Keep chain bodies short to limit physics cost."
   },
   {
     "id": 21,
@@ -311,29 +309,27 @@
   },
   {
     "id": 25,
-    "source_id": "laboratory-1",
+    "source_id": null,
     "band": "microscopic",
     "title": "Lichen Crust Window",
-    "setting": "A microscopic lichen crust on stone with clay dust, silt grains, fungal threads, and damp green patches.",
-    "food": "Clay dust, silt grains, fungal beads, lichen clumps.",
-    "interaction": "Moisture creeps through the crust and loosens grains; goo mops a damp patch, exposing fungal beads while the surrounding crust stays attached.",
+    "setting": "A damp patch of real lichen exposes grains and fungal threads on stone.",
+    "food": "Fine mineral grains, short fungal fragments, small lichen cushions.",
+    "interaction": "Moisture loosens scattered grains. Eating exposed fungal threads opens gaps in the cushion and gives room to circle its remaining mass.",
     "jumps": [],
-    "parts": null,
-    "risk": "Crust layers need clear depth cues."
+    "parts": "Consume exposed fungal threads and attached lobes, then the remaining small lichen cushion.",
+    "risk": "Avoid suggesting one uniform size for every fungal or mineral piece."
   },
   {
     "id": 26,
-    "source_id": "laboratory-2",
+    "source_id": null,
     "band": "microscopic",
     "title": "Leaf Pore Microclimate",
-    "setting": "A microscopic leaf underside with bacteria, wax ridges, pollen crumbs, and opening pores along a humid surface.",
-    "food": "Bacteria specks, pollen crumbs, pore-film beads, thick leaf cells.",
-    "interaction": "Humidity opens neighboring pores; goo covers one pore, redirecting vapor and carrying pollen toward a nearby ridge.",
-    "jumps": [
-      "The view shifts beneath the wax ridge to reveal a second pore cluster."
-    ],
+    "setting": "A leaf underside has wax ridges, bacteria, pollen fragments, and gently opening pores.",
+    "food": "Bacteria, small wax flakes, pollen fragments, whole pollen grains.",
+    "interaction": "Pores shift the nearby moisture film, carrying small fragments toward ridges. The goo follows these short trails and nudges loose grains; pores remain part of the floor.",
+    "jumps": [],
     "parts": null,
-    "risk": "Pore changes may be too small to notice."
+    "risk": "Pores are scenery and flow sources, not progression locks."
   },
   {
     "id": 27,
@@ -352,14 +348,12 @@
     "source_id": "laboratory-4",
     "band": "microscopic",
     "title": "Amoeba Silt Basin",
-    "setting": "A microscopic silt basin with algae ribbons, paramecia, and two amoeba sizes weaving through shallow clear water.",
-    "food": "Algae ribbons, paramecia, small amoebas, large amoebas.",
-    "interaction": "Ribbons sweep around a basin; goo crosses their wake, collecting algae and paramecia while amoebas redirect toward denser food.",
-    "jumps": [
-      "The camera pulls back to reveal the basin's second algae lane."
-    ],
+    "setting": "Algae and drifting single-celled organisms weave between shallow silt ridges.",
+    "food": "Small algae fragments, paramecia, small amoebas, larger amoebas.",
+    "interaction": "Organisms seek scattered nutrients and bend around ridges. They harmlessly redirect around the goo, making food concentrations move without pursuit or combat.",
+    "jumps": [],
     "parts": null,
-    "risk": "Amoeba redirection needs clear separation cues."
+    "risk": "Choose modeled organism sizes deliberately; names alone do not establish order."
   },
   {
     "id": 29,
@@ -403,17 +397,15 @@
   },
   {
     "id": 32,
-    "source_id": "outside-2",
+    "source_id": null,
     "band": "miniature",
     "title": "Seedpod Gutter",
-    "setting": "Miniature garden gutter beneath a split seedpod, with damp husk flakes, sap beads, tiny roots, and a few ants.",
-    "food": "Husk crumbs, sap beads, seed kernels, root bulbs.",
-    "interaction": "Drizzle runs along the husk and drops kernels into a root pocket; goo rolls across the wet seam, catching crumbs and opening the pocket.",
-    "jumps": [
-      "The camera dips under the seedpod to show the root pocket."
-    ],
-    "parts": null,
-    "risk": "Wet husk surfaces need forgiving collision."
+    "setting": "A split seedpod rests in damp garden soil above a shallow husk groove.",
+    "food": "Husk crumbs, small seeds, larger kernels, the remaining seedpod.",
+    "interaction": "Drizzle shifts loose kernels down the groove. The goo rolls along the husk, eating attached brittle edges until the remaining shell becomes manageable.",
+    "jumps": [],
+    "parts": "Eat attached husk flakes and exposed seeds, then the remaining pod.",
+    "risk": "Keep the husk route broad enough for a deforming body."
   },
   {
     "id": 33,
@@ -446,26 +438,24 @@
     "source_id": null,
     "band": "miniature",
     "title": "Ant Trail Mulch",
-    "setting": "Miniature mulch bed where a leaf vein forms a bridge over loose soil, with ants carrying crumbs around a fallen flower.",
-    "food": "Soil crumbs, flower bits, ant-carried seeds, leaf knots, fallen fruit.",
-    "interaction": "Ant traffic circles the flower and leaves crumbs in its wake; goo rolls into the loop, turning the moving trail into a feeding chain.",
+    "setting": "Ants carry seed fragments around a fallen flower in a real mulch bed.",
+    "food": "Soil crumbs, petal fragments, tiny ants, larger seeds, the fallen flower.",
+    "interaction": "Ants leave and retrieve crumbs along a looping trail. The goo intercepts carriers and pushes loose seeds, while larger loads briefly redirect the traffic.",
     "jumps": [],
     "parts": null,
-    "risk": "Ant carrying behavior needs simple, readable paths."
+    "risk": "Use visibly sized fragments rather than assuming all seeds exceed ants."
   },
   {
     "id": 36,
-    "source_id": "outside-5",
+    "source_id": null,
     "band": "miniature",
     "title": "Birdbath Rim Spill",
-    "setting": "Miniature birdbath rim with algae film, fruit, feather barbs, and water spilling onto soil.",
-    "food": "Algae flecks, fruit skins, feather barbs, water beads, soft soil clumps.",
-    "interaction": "The spill carries light scraps downhill while heavier clumps stay; goo rolls along the rim, mopping water and reaching fruit skin.",
-    "jumps": [
-      "The camera tilts over the rim to show the spill path below."
-    ],
+    "setting": "A birdbath lip holds algae flecks, seed husks, feather fragments, and shallow water.",
+    "food": "Algae flecks, seed fragments, feather barbs, small feathers.",
+    "interaction": "Overflow carries light food along the rim. The goo consumes the local wet edge in joined translucent sections; untouched water remains in the basin.",
+    "jumps": [],
     "parts": null,
-    "risk": "Water must stay coherent while only contacted sections disappear."
+    "risk": "Keep the rim safely wide and leave water volume visibly local."
   },
   {
     "id": 37,
@@ -496,14 +486,14 @@
   {
     "id": 39,
     "source_id": "picnictable-5",
-    "band": "miniature",
+    "band": "tabletop",
     "title": "Puzzle Postcard Workshop",
-    "setting": "A postcard workshop has a cardboard worktop, puzzle corners, paint pots, a roller, and an unfinished seascape.",
-    "food": "Paint crumbs lead to fruit leather, puzzle edges, colored blocks, and a full postcard.",
-    "interaction": "The roller shoves loose pieces into the goo; spilled glue stays one puddle while sticky contact removes only touched patches.",
+    "setting": "A craft worktop holds a partly completed puzzle postcard, paper scraps, and a slow paint roller.",
+    "food": "Paper flecks, small puzzle pieces, larger pieces, the assembled postcard.",
+    "interaction": "The roller gently shifts loose pieces across the worktop. The goo takes exposed pieces from the assembled image, gradually making the remainder small enough to swallow.",
     "jumps": [],
-    "parts": "Eating corner scraps, then edge pieces, exposes the whole postcard.",
-    "risk": "Small puzzle pieces need strong silhouettes beside the goo."
+    "parts": "Eat attached edge pieces, then the remaining assembled postcard.",
+    "risk": "Loose and assembled pieces must have clear collision ownership."
   },
   {
     "id": 40,
@@ -722,16 +712,14 @@
   {
     "id": 57,
     "source_id": "picnictable-3",
-    "band": "miniature",
+    "band": "tabletop",
     "title": "Building-Block Quarry",
-    "setting": "Block terraces hold dice rubble, domino braces, puzzle pieces, and clay.",
-    "food": "Clay leads to dice, puzzle pieces, blocks, braces, and a quarry slab.",
-    "interaction": "Dice tumble; goo pushes braces, sticks to clay, and mops a local syrup seam.",
-    "jumps": [
-      "Camera reveals the quarry sign above the terraces."
-    ],
-    "parts": "Eating puzzle scraps, then corner pieces, exposes the assembled quarry sign.",
-    "risk": "Braces may form dead ends."
+    "setting": "A child's block quarry has clay banks, dice rubble, and domino braces.",
+    "food": "Clay crumbs, small dice, larger blocks, braced block stacks.",
+    "interaction": "Pushing a brace releases a short tumble of dice. Removing edible lower blocks lets a stack settle into reachable shapes, without demanding precise demolition.",
+    "jumps": [],
+    "parts": "Eat exposed blocks from a connected stack, then its remaining assembly.",
+    "risk": "Limit stack height and settle time to avoid physics jams."
   },
   {
     "id": 58,
@@ -776,12 +764,12 @@
     "source_id": "picnictable-1",
     "band": "tabletop",
     "title": "Picnic Cloth Pulley",
-    "setting": "A folding picnic table holds a cloth, berry bowls, dice, pennies, blocks, and a clothesline pulley.",
-    "food": "Cloth crumbs lead to berries, dice, pennies, colored blocks, and the pulley.",
-    "interaction": "The pulley tugs the cloth and slides dice toward the edge; sticky goo stretches over wrinkles, pushes pennies, and mops connected lemonade patches locally.",
+    "setting": "A picnic cloth lies beneath berries, coins, dice, and a small clothesline pulley.",
+    "food": "Berry fragments, small berries, coins, dice, the pulley housing.",
+    "interaction": "The pulley draws a wrinkle through the cloth, sliding loose food into folds. The goo rolls and deforms over the wrinkle while nudging coins into open space.",
     "jumps": [],
     "parts": null,
-    "risk": "Deep cloth folds can hide small edible pieces."
+    "risk": "Flatten wrinkles enough to preserve responsive rolling."
   },
   {
     "id": 62,
@@ -826,12 +814,12 @@
     "source_id": "picnictable-6",
     "band": "tabletop",
     "title": "Cheese-and-Pen Desk",
-    "setting": "A writing desk combines pencils, pens, dice, dominoes, cheese wedges, a mouse eraser, and a milk cup.",
-    "food": "Graphite crumbs lead to dice, pens, pencils, mice, cheese, and milk.",
-    "interaction": "Rolling pens nudge the goo across the desk; its sticky edge drags cheese around dominoes, while milk forms a coherent cup spill mopped locally.",
+    "setting": "A writing desk holds cheese scraps, dice, rolling pens, pencils, and a spilled milk cup.",
+    "food": "Cheese crumbs, dice, pens, pencils, large cheese wedges, the cup.",
+    "interaction": "Pens roll into loose snacks when bumped. Milk stays a coherent shallow spill and shrinks only beneath local contact; the remaining pool still routes around desk objects.",
     "jumps": [],
     "parts": null,
-    "risk": "Thin pens and dominoes need forgiving collision widths."
+    "risk": "Set wedge and stationery dimensions explicitly rather than ordering by name."
   },
   {
     "id": 66,
@@ -850,26 +838,26 @@
     "source_id": "picnictable-7",
     "band": "tabletop",
     "title": "Army-Man Snack Fort",
-    "setting": "Blocks and domino walls surround army men, pencils, cheese, milk, an orange, and a ramp.",
-    "food": "Crumbs lead to army men, cheese, milk, orange slices, and the block fort.",
-    "interaction": "Army men wheel a cheese cart; a ramp redirects milk while goo mops each connected section.",
+    "setting": "Toy soldiers wheel cheese through a block fort around a large orange.",
+    "food": "Cheese crumbs, small soldiers, orange segments, large blocks, the fort.",
+    "interaction": "A cart rolls food down a ramp. Eating accessible wall blocks opens routes to the orange; the soldiers carry food and never fight.",
     "jumps": [
-      "Camera rises to reveal the orange beyond the wall."
+      "Zoom out to reveal the whole fort as the next edible assembly; retire crumbs."
     ],
-    "parts": "Eating orange slices, then the peel ring, exposes the whole orange.",
-    "risk": "Figures may crowd the lanes."
+    "parts": "Eat wall blocks, then consume the remaining connected fort.",
+    "risk": "Moving figures must read as harmless toys."
   },
   {
     "id": 68,
-    "source_id": "ocean-1",
+    "source_id": null,
     "band": "tabletop",
-    "title": "Bento Fish Conveyor",
-    "setting": "A lacquered bento tray has dividers, blue, gold, and orange fish foods, seaweed, and a soy cup.",
-    "food": "Rice grains lead to fish bites, seaweed rolls, larger fish, and the bento tray.",
-    "interaction": "A slow conveyor slides fish toward the goo; sticky rice slows its roll, while soy forms a coherent puddle removed only under contact.",
+    "title": "Bento Conveyor",
+    "setting": "A serving conveyor carries bento trays with rice, sliced fish, seaweed rolls, and soy cups.",
+    "food": "Rice grains, fish bites, seaweed rolls, small cups, complete bento trays.",
+    "interaction": "Trays move slowly past a stationary counter edge. The goo can board, eat, and step off naturally; scattered food remains available between passes.",
     "jumps": [],
-    "parts": null,
-    "risk": "The conveyor needs a clear visual direction at every divider."
+    "parts": "Eat the meal and removable dividers, then the remaining tray.",
+    "risk": "Boarding must not become a timing challenge or strand the goo."
   },
   {
     "id": 69,
@@ -1011,13 +999,13 @@
     "id": 80,
     "source_id": "city-6",
     "band": "tabletop",
-    "title": "Train Timetable Table",
-    "setting": "Three looping track strips pass houses, trees, a red car, a taxi, an engine, cars, and a caboose.",
-    "food": "Cardboard crumbs lead to cars, trees, houses, train parts, and the full train.",
-    "interaction": "A wind-up train shoves the goo along the tracks; sticky crumbs cling to wheels while a coffee spill remains coherent and is mopped locally.",
+    "title": "Wind-Up Railway Table",
+    "setting": "A wind-up railway circles model houses and trees on a cardboard table.",
+    "food": "Cardboard scraps, small model trees, houses, carriages, the train.",
+    "interaction": "The train nudges loose pieces along its track. Once carriages become edible, shortening the train frees space around the loop; no coffee spill is required.",
     "jumps": [],
-    "parts": "Eating engine pieces, cars, and caboose exposes the whole train.",
-    "risk": "Looping tracks can make progress direction hard to read."
+    "parts": "Eat carriages from the coupled formation, then the remaining engine and train assembly.",
+    "risk": "Keep the train slow and avoid trapping the goo against track scenery."
   },
   {
     "id": 81,
@@ -1071,15 +1059,17 @@
   },
   {
     "id": 85,
-    "source_id": "picnictable-1",
+    "source_id": null,
     "band": "human",
     "title": "Pizzeria Floor",
-    "setting": "A pizzeria floor has red tile, flour sacks, rolling pizza peels, berry jam, and a drain.",
-    "food": "Flour dust leads to berry drops, olives, pizza slices, and the oven.",
-    "interaction": "A delivery peel slides slices toward goo; sticky crust contact pulls it around the drain while tomato sauce remains coherent as mopped locally.",
-    "jumps": [],
-    "parts": "Eating dough pieces, crust, and slices exposes the whole pizza.",
-    "risk": "Sauce shine may hide the goo's flattened contact patch."
+    "setting": "Red tiles beneath a preparation counter collect olives, slices, trays, and a rolling pizza peel.",
+    "food": "Olive pieces, whole olives, pizza slices, trays, the peel, a compact oven.",
+    "interaction": "A slowly tilted peel slides slices to the floor. The goo follows the spill around table legs, then grows enough to consume the equipment that once blocked its route.",
+    "jumps": [
+      "Zoom out to reveal the compact oven; retire olive fragments."
+    ],
+    "parts": null,
+    "risk": "Choose a small oven and generous feeding mass between slices and equipment."
   },
   {
     "id": 86,
@@ -1112,12 +1102,12 @@
     "source_id": "park-3",
     "band": "human",
     "title": "Pet Adoption Room",
-    "setting": "A pet room has rubber mats, cat towers, dog beds, mice toys, food bowls, and a wash sink.",
-    "food": "Kibble leads to mice toys, cats, dogs, and the bed.",
-    "interaction": "Cats and dogs weave between towers; goo pushes beds, sticks to rubber, and locally mops a wash-water puddle.",
+    "setting": "Cats and dogs wander between beds, food bowls, and low climbing towers.",
+    "food": "Kibble clusters, small mouse toys, bowls, cats, dogs, climbing towers.",
+    "interaction": "Animals visit food bowls and reroute around shifted beds. Their movements distribute small food through the room; touching an oversized animal only nudges the goo.",
     "jumps": [],
     "parts": null,
-    "risk": "Animal paths need readable spacing around the towers."
+    "risk": "Animal scale varies; pick a clearly ordered cast and keep consumption cartoonish."
   },
   {
     "id": 89,
@@ -1248,12 +1238,12 @@
     "source_id": null,
     "band": "human",
     "title": "Grocery Cart Aisle",
-    "setting": "A grocery store has polished concrete, carts, produce crates, freezer doors, spilled juice, and a loading door.",
-    "food": "Rice spills lead to berries, cereal boxes, melons, and crate stacks.",
-    "interaction": "Carts push goo between aisles; sticky wheels drag rice while a juice puddle stays connected as contact mops it locally.",
+    "setting": "Spilled produce lies between low grocery shelves and rolling shopping carts.",
+    "food": "Berries, cereal boxes, melons, produce crates, shopping carts.",
+    "interaction": "A loose melon rolls down an aisle and bumps boxes into the goo. Carts turn when nudged, opening different routes through the same compact floor plan.",
     "jumps": [],
     "parts": null,
-    "risk": "Freezer doors need simple motion to avoid aisle dead ends."
+    "risk": "Shelf corners and cart wheels must not snag the deforming body."
   },
   {
     "id": 100,
@@ -1269,15 +1259,17 @@
   },
   {
     "id": 101,
-    "source_id": "picnictable-2",
+    "source_id": null,
     "band": "human",
     "title": "Arcade Corner",
-    "setting": "An arcade corner has glowing cabinets, dice games, domino displays, red blocks, stools, and a soda counter.",
-    "food": "Token crumbs lead to dice, blocks, dominoes, stools, and cabinets.",
-    "interaction": "Stools roll into goo and bounce away; sticky contact gathers tokens while soda remains a coherent puddle between cabinets.",
-    "jumps": [],
+    "setting": "Tokens, prize dice, stools, and bright cabinets crowd a compact arcade.",
+    "food": "Tokens, prize dice, toy blocks, stools, arcade cabinets.",
+    "interaction": "A prize chute drops a few toys as its tray rocks. Stools roll when nudged, initially redirecting the goo before becoming edible.",
+    "jumps": [
+      "Zoom out to reveal complete cabinets as food; retire individual tokens."
+    ],
     "parts": null,
-    "risk": "Screen lights can wash out the goo's outline."
+    "risk": "Keep cabinet lighting subordinate to food and goo outlines."
   },
   {
     "id": 102,
@@ -1382,16 +1374,16 @@
   {
     "id": 110,
     "source_id": "ocean-2",
-    "band": "landscape",
-    "title": "Coral Atoll",
-    "setting": "A sandy atoll surrounds fish shoals, dolphin wakes, loose coral polyps, and a tide channel.",
-    "food": "Plankton leads to fish, polyps, branching coral, and a reef ring.",
-    "interaction": "The tide gathers polyps against a sandbar; goo pushes branches and mops the channel's coherent seawater without draining untouched stretches.",
+    "band": "miniature",
+    "title": "Coral Colony Tide Pool",
+    "setting": "A real shallow tide pool holds attached living polyps on small branching coral colonies.",
+    "food": "Plankton flecks, tiny attached polyps, remaining small colonies, larger colonies.",
+    "interaction": "A gentle current carries plankton past branches. The goo eats reachable attached polyps and locally consumes shallow seawater, leaving untouched pool sections connected.",
     "jumps": [
-      "The camera rises over joined branches to reveal the reef ring."
+      "Zoom out to reveal neighboring larger colonies; retire individual plankton detail."
     ],
-    "parts": "Eating polyps and branches exposes the remaining whole reef ring.",
-    "risk": "A dense reef ring needs clear openings for steering."
+    "parts": "Eat attached polyps to grow, then consume the remaining colony; detached pieces never assemble structures.",
+    "risk": "Stylized colony sizes and accessible polyps need an early playtest."
   },
   {
     "id": 111,
@@ -1636,14 +1628,14 @@
     "source_id": "city-8",
     "band": "landscape",
     "title": "Coastal Village",
-    "setting": "A looping road passes red cars, taxis, police cars, trees, houses, apartments, and a short rail spur.",
-    "food": "Shell grit leads to cars, trees, houses, and apartment blocks.",
-    "interaction": "Traffic circles the houses while a train crosses the spur; rainwater joins curb puddles that sticky goo mops in local sections.",
+    "setting": "Houses and apartment blocks climb above a curved coastal road.",
+    "food": "Parked cars, small trees, houses, apartment blocks, neighborhood terraces.",
+    "interaction": "Cars slowly reroute when growing goo blocks the road. Earlier-sized houses become casual snacks as the larger apartment blocks enter reach. No train or forced puddle is needed.",
     "jumps": [
-      "The camera rises over the road to reveal the rail spur and apartment blocks."
+      "Zoom out to reveal apartment blocks and neighborhood terraces; retire individual road markings."
     ],
     "parts": null,
-    "risk": "Road and rail loops may compete for the player's attention."
+    "risk": "Avoid large unexplained size gaps between buildings and terrain."
   },
   {
     "id": 131,
@@ -1673,17 +1665,15 @@
   },
   {
     "id": 133,
-    "source_id": "sky-1",
-    "band": "landscape",
+    "source_id": null,
+    "band": "human",
     "title": "Rooftop Laundry Gusts",
-    "setting": "A city rooftop is strung with laundry, water tanks, vents, and gusty gaps between buildings.",
-    "food": "lint → clothespins → shirts → water tanks",
-    "interaction": "Crosswinds pull sheets along cables; the goo catches one, tugging a row of pins loose and feeding them into a corner.",
-    "jumps": [
-      "A lifted sheet reveals a lower roof section."
-    ],
+    "setting": "Laundry hangs above an accessible roof with vents and squat water tanks.",
+    "food": "Clothespins, socks, shirts, sheets, vents, water tanks.",
+    "interaction": "A gust pulls sheets along the line. The goo catches a low edge, loosening pins and dragging fabric onto the roof; larger cloth gathers against vents.",
+    "jumps": [],
     "parts": null,
-    "risk": "Cable collisions and cloth animation can dominate a small scene."
+    "risk": "Use short cloth strips and simple attachment constraints."
   },
   {
     "id": 134,
@@ -1713,15 +1703,15 @@
   },
   {
     "id": 136,
-    "source_id": "sky-1",
+    "source_id": null,
     "band": "landscape",
     "title": "Treetop Cloudbridge",
-    "setting": "Treetop islands rise through fog, joined by rope bridges and covered with broad leaves and seed pods.",
-    "food": "pollen → seed pods → branch clusters → tree crowns",
-    "interaction": "A gust sways the bridge; the goo settles on it, shaking pods onto lower branches where they roll together.",
+    "setting": "Rope bridges connect broad forest crowns above a layer of fog.",
+    "food": "Large branch clusters, bridge spans, tree crowns, groups of trees.",
+    "interaction": "A bridge sways under the goo and shakes branch clusters into neighboring crowns. The forest forms a broad connected rolling surface rather than a balance challenge.",
     "jumps": [],
-    "parts": "seeds → pods → branches → tree crowns",
-    "risk": "Canopy layers can hide edible pods beneath the overhead camera."
+    "parts": "Eat outer branch clusters, then the remaining crown.",
+    "risk": "The top-down support surface needs an unmistakable silhouette."
   },
   {
     "id": 137,
@@ -1768,24 +1758,26 @@
     "source_id": null,
     "band": "landscape",
     "title": "Sky Freight Crossing",
-    "setting": "Suspended freight docks connect airship routes with cargo parcels, cable reels, and swinging loading cranes.",
-    "food": "paper tags → parcel straps → cargo boxes → airship hulls",
-    "interaction": "Crates swing from crossing cables; the goo catches a line, pulling several parcels into a gentle chain toward the dock.",
+    "setting": "Broad suspended freight docks receive airships carrying visible cargo and cable reels.",
+    "food": "Cargo crates, loading cranes, gondolas, airship hulls, freight docks.",
+    "interaction": "Crates swing gently on cables. The goo nudges a reel to lower a load onto the dock; later it can eat the gondola and remaining airship from the same surface.",
     "jumps": [],
-    "parts": "straps → boxes → airship hull",
-    "risk": "Swinging cargo requires forgiving joints and broad collision shapes."
+    "parts": "Eat a docked airship gondola and exposed envelope panels, then its remaining hull.",
+    "risk": "A small number of cable joints should create the effect."
   },
   {
     "id": 141,
-    "source_id": "sky-1",
+    "source_id": null,
     "band": "landscape",
     "title": "Thunderhead Rain Shelf",
-    "setting": "A broad thunderhead forms layered cloud shelves, rain beads, mist pockets, and a calm blue opening.",
-    "food": "mist wisps → rain beads → cloud shelves → storm caps",
-    "interaction": "Updrafts funnel mist into rotating cells; the goo mops a cell edge, making the remaining cloud drift toward the opening.",
-    "jumps": [],
+    "setting": "A cartoon thunderhead makes broad rolling shelves above a distant landscape.",
+    "food": "Small cloud tufts, cloud banks, storm cells, whole thunderheads.",
+    "interaction": "Slow updrafts move banks toward one another. Contact consumes cloud matter locally; nearby banks keep their outlines instead of the entire storm vanishing at once.",
+    "jumps": [
+      "Zoom out to reveal whole thunderheads across the weather layer; retire individual raindrops."
+    ],
     "parts": null,
-    "risk": "Translucent cloud volumes need strong outlines to keep local removal legible."
+    "risk": "Clouds are fictional solid support here; render them as volumes rather than puddles."
   },
   {
     "id": 142,
@@ -1880,16 +1872,14 @@
   {
     "id": 149,
     "source_id": null,
-    "band": "landscape",
+    "band": "human",
     "title": "Community Garden Maze",
-    "setting": "A community garden has raised beds, watering cans, compost bins, trellises, and gravel paths.",
-    "food": "soil crumbs → seeds → pumpkins → greenhouse panels",
-    "interaction": "Sprinklers feed one bed then overflow into the next; the goo blocks a channel, pooling water around the vines.",
-    "jumps": [
-      "A flooded bed exposes a compost corner."
-    ],
-    "parts": "seeds → vines → pumpkins",
-    "risk": "Plant growth and shallow water need simple, readable geometry."
+    "setting": "Raised beds, pumpkins, compost bins, and trellises border broad garden paths.",
+    "food": "Seeds, small vegetables, pumpkins, watering cans, compost bins, trellises.",
+    "interaction": "A loose watering can tips and nudges vegetables along a bed edge. Eating pumpkins opens shortcuts between the paths; the maze never requires a specific route.",
+    "jumps": [],
+    "parts": null,
+    "risk": "Start with enough small produce outside the beds to avoid a growth lock."
   },
   {
     "id": 150,
@@ -1906,28 +1896,28 @@
   {
     "id": 151,
     "source_id": null,
-    "band": "landscape",
+    "band": "human",
     "title": "Orchard Ladder Fall",
-    "setting": "An apple orchard has ladders, crates, low branches, grass paths, and a rear tree line.",
-    "food": "blossoms → apples → crates → orchard trees",
-    "interaction": "A branch bends when the goo rolls beneath it, dropping apples onto a ladder; the ladder slides into a crate row.",
+    "setting": "Low apple branches hang above ladders, crates, and grassy orchard lanes.",
+    "food": "Apples, small crates, ladders, large crates, orchard trees.",
+    "interaction": "Bumping a low branch drops apples onto a leaning ladder. The ladder slides against crates, changing their arrangement without a scripted task.",
     "jumps": [
-      "A toppled ladder reveals a back orchard lane."
+      "Zoom out to reveal whole orchard trees as food; retire individual fallen petals."
     ],
-    "parts": "stems → apples → branch clusters",
-    "risk": "Stacking ladders and crates can snag the goo."
+    "parts": "Eat attached apples and reachable branch tips, then the remaining small tree.",
+    "risk": "Keep ladders broad and slow, with food available even if the cascade is missed."
   },
   {
     "id": 152,
     "source_id": null,
-    "band": "landscape",
+    "band": "human",
     "title": "Construction Marble Yard",
-    "setting": "A construction site has gravel piles, brick pallets, wheelbarrows, cement mixers, and ramps.",
-    "food": "gravel → bricks → wheelbarrows → cement mixers",
-    "interaction": "Wheelbarrows roll down a ramp; the goo braces at the base, turning their impact into a sideways brick spill.",
+    "setting": "Brick pallets and wheelbarrows sit below ramps near a small cement mixer.",
+    "food": "Gravel lumps, bricks, pallet stacks, wheelbarrows, cement mixers.",
+    "interaction": "A wheelbarrow coasts down a ramp. Its bump shifts bricks sideways; the goo gathers the spill and eventually eats the barrow that delivered it.",
     "jumps": [],
-    "parts": "brick chips → bricks → pallet",
-    "risk": "Rigid props need stable contacts around the ramp."
+    "parts": null,
+    "risk": "Impacts must displace rather than launch or damage the goo."
   },
   {
     "id": 153,
@@ -1982,54 +1972,52 @@
   {
     "id": 157,
     "source_id": null,
-    "band": "landscape",
+    "band": "human",
     "title": "Greenhouse Condensation",
-    "setting": "A warm greenhouse has glass panes, hanging plants, condensation beads, pots, and tile gutters.",
-    "food": "droplets → leaves → pots → glasshouse rows",
-    "interaction": "Condensation joins into rivulets; the goo mops a local puddle, and the remaining water runs toward a lower pot.",
+    "setting": "Hanging plants and terracotta pots fill a warm greenhouse with tiled gutters.",
+    "food": "Fallen leaves, small plants, pots, benches, greenhouse frames.",
+    "interaction": "Condensation joins a shallow gutter pool. The goo locally mops it and nudges pots into neighboring gaps; hanging leaves brush the rolling body.",
     "jumps": [
-      "Wiped glass reveals a rear bench of plants."
+      "Zoom out to reveal complete greenhouse frames; retire individual droplets and leaves."
     ],
-    "parts": "seeds → leaves → potted plants",
-    "risk": "Glass, water, and outlines can create distracting overdraw."
+    "parts": null,
+    "risk": "Glazing needs restrained transparency so food remains visible."
   },
   {
     "id": 158,
     "source_id": null,
-    "band": "landscape",
+    "band": "human",
     "title": "Campground Cooking Ring",
-    "setting": "A campground cooking ring sits beside tents, coolers, firewood stacks, cans, and a sloping clearing.",
-    "food": "crumbs → cans → coolers → tent frames",
-    "interaction": "Wind rolls empty cans around the ring; the goo pushes a cooler into their path, making a pile beside the tent.",
+    "setting": "An unlit cooking ring sits among cans, coolers, firewood, and tents.",
+    "food": "Food scraps, cans, firewood pieces, coolers, tent frames.",
+    "interaction": "Wind rolls empty cans around the ring. A pushed cooler catches them against a tent edge, creating a new feeding pocket without a required solution.",
     "jumps": [],
-    "parts": "tabs → cans → cooler shell",
-    "risk": "Camping clutter needs restrained prop counts to keep movement open."
+    "parts": "Eat reachable canvas sections and poles, then the remaining tent.",
+    "risk": "Tent cloth can be a few deforming panels rather than full cloth simulation."
   },
   {
     "id": 159,
     "source_id": null,
-    "band": "landscape",
+    "band": "human",
     "title": "Skatepark Bowl",
-    "setting": "A concrete skatepark has bowls, ramps, loose wheels, boards, stickers, and a drain channel.",
-    "food": "grit → wheels → skateboards → bowl ramps",
-    "interaction": "Boards roll around the bowl and shed wheels at the drain; the goo parks on the slope, redirecting them into a bank.",
-    "jumps": [
-      "A cleared drain exposes a smaller practice bowl."
-    ],
-    "parts": "wheels → deck → whole skateboard",
-    "risk": "Curved bowl collision meshes can make the goo snag."
+    "setting": "Loose wheels and skateboards roll through a low concrete practice bowl.",
+    "food": "Loose wheels, small boards, full skateboards, railings, ramp sections.",
+    "interaction": "Boards coast around curved banks and change direction when the goo nudges them. Growing wide enough to catch a whole board turns a moving obstacle into a reward.",
+    "jumps": [],
+    "parts": null,
+    "risk": "Use gentle slopes and ensure control remains direct under drift."
   },
   {
     "id": 160,
     "source_id": null,
     "band": "landscape",
     "title": "Old Rail Yard",
-    "setting": "An old rail yard has gravel, sleepers, handcarts, switch levers, and a parked engine.",
-    "food": "gravel → bolts → handcarts → train engine",
-    "interaction": "Handcarts coast down a rail; the goo nudges a switch lever, sending the cart onto a side spur where gravel gathers.",
+    "setting": "A disused rail yard holds sleepers, loaded handcarts, switches, and a parked engine.",
+    "food": "Loose sleepers, handcart loads, handcarts, engine panels, the engine.",
+    "interaction": "A rolling cart follows whichever branch its physical switch points toward. Nudging the lever changes where its loose cargo gathers. The engine remains parked throughout.",
     "jumps": [],
-    "parts": "wheels → cart body → engine",
-    "risk": "Rail crossings need forgiving switching geometry and readable routes."
+    "parts": "Eat reachable external engine panels, then the remaining locomotive.",
+    "risk": "Parts must be visibly attached and detachable, not arbitrary health chunks."
   },
   {
     "id": 161,
@@ -2050,38 +2038,40 @@
     "source_id": null,
     "band": "landscape",
     "title": "Windbreak Farm",
-    "setting": "A windbreak farm has corn husks, hay bales, scarecrows, field lanes, and a round silo.",
-    "food": "husks → corn cobs → hay bales → silo",
-    "interaction": "Crosswind rolls hay along the lanes; the goo braces beside a scarecrow, turning the roll into a pile at the silo.",
-    "jumps": [],
-    "parts": "kernels → cob → corn sheaf",
-    "risk": "Hay piles need stable stacking and clear silhouette separation."
+    "setting": "Corn rows and field lanes surround hay bales, scarecrows, and a round silo.",
+    "food": "Corn bundles, scarecrows, hay bales, silo panels, the silo.",
+    "interaction": "Crosswinds roll loose bales along wide lanes. The goo nudges a scarecrow support to change where husks and bales gather, then feeds around the silo.",
+    "jumps": [
+      "Zoom out to reveal the whole silo and nearby farm structures; retire individual husks."
+    ],
+    "parts": "Eat attached outer silo panels, then its remaining structure.",
+    "risk": "Use clear toy-like panel seams without turning the farm into a model."
   },
   {
     "id": 163,
     "source_id": null,
     "band": "landscape",
     "title": "Quarry Conveyor",
-    "setting": "A stone quarry has chippings, conveyor belts, ore carts, crusher mouths, and stepped rock faces.",
-    "food": "stone chips → ore carts → crusher plates → quarry faces",
-    "interaction": "A conveyor carries chips toward the crusher; the goo blocks its return edge, spilling a belt-wide heap beside the cart.",
+    "setting": "A working quarry carries rock along belts above carts, crusher plates, and stepped faces.",
+    "food": "Rock heaps, loaded ore carts, crusher plates, rock ledges, quarry faces.",
+    "interaction": "The goo nudges a movable chute, spilling a short rock stream beside a cart. Belts and crushers only push; all machinery remains harmless and food persists.",
     "jumps": [
-      "The diverted heap reveals a lower quarry shelf."
+      "Zoom out to reveal whole stepped quarry faces; retire small chippings."
     ],
-    "parts": "chips → slab → rock face",
-    "risk": "Conveyor motion and loose piles can overuse physics bodies."
+    "parts": null,
+    "risk": "Use bounded emitted rocks and simplified machinery to control body count."
   },
   {
     "id": 164,
     "source_id": null,
-    "band": "landscape",
+    "band": "human",
     "title": "City Plaza Fountain",
-    "setting": "A city plaza fountain has coins, petals, pigeons, basin ledges, benches, and drain channels.",
-    "food": "petals → coins → pigeons → fountain basin",
-    "interaction": "Jets carry petals around the basin; the goo mops a local section, leaving the rest coherent as it curls toward a drain.",
+    "setting": "Coins and petals circle a low fountain beside pigeons and benches.",
+    "food": "Small coins, petals, pigeons, benches, the fountain basin.",
+    "interaction": "Jets move floating food around the rim. Local contact removes connected patches of basin water, while the untouched pool continues carrying petals. Pigeons wander toward food on the paving.",
     "jumps": [],
-    "parts": "feathers → pigeon → flock",
-    "risk": "Reflective water and dense benches can reduce goo readability."
+    "parts": null,
+    "risk": "Do not imply the whole basin drains when one patch is eaten."
   },
   {
     "id": 165,
@@ -2114,40 +2104,36 @@
     "source_id": null,
     "band": "landscape",
     "title": "Lighthouse Causeway",
-    "setting": "A lighthouse causeway has shells, rope coils, buoys, rowboats, and a stone tower above the tide.",
-    "food": "foam → shells → buoys → rowboats → lighthouse base",
-    "interaction": "The tide pulls boats on ropes; the goo anchors a coil, bunching boats against the causeway.",
-    "jumps": [
-      "A shifted boat reveals the tower's lower steps."
-    ],
-    "parts": "rope strands → coil → boat hull",
-    "risk": "Boat buoyancy and rope tension need a simple shared model."
+    "setting": "Rope coils connect buoys and rowboats beside a stone lighthouse causeway.",
+    "food": "Buoys, rowboats, pier sections, lighthouse blocks, the lighthouse.",
+    "interaction": "The tide pulls boats against their ropes. Nudging a coil shifts where boats gather; later, eating their pier supports frees them into a slow drift.",
+    "jumps": [],
+    "parts": "Eat exposed outer lighthouse blocks, then the remaining tower.",
+    "risk": "Rope constraints must release cleanly when connected objects are eaten."
   },
   {
     "id": 168,
     "source_id": null,
-    "band": "landscape",
+    "band": "human",
     "title": "Desert Rest Stop",
-    "setting": "A desert rest stop has sand drifts, bottles, tires, shade canopies, and a parked bus.",
-    "food": "sand grains → bottles → tires → bus",
-    "interaction": "Wind rolls tires across the lot; the goo braces at the canopy, making bottles collect behind each tire.",
+    "setting": "A dry roadside stop has discarded bottles, loose tires, shade canopies, and a parked bus.",
+    "food": "Bottles, tires, canopy posts, shade frames, the bus.",
+    "interaction": "Wind rolls tires across the lot. The goo nudges a tire toward scattered bottles, gathering them against a canopy base before becoming large enough to eat the bus.",
     "jumps": [],
-    "parts": "caps → bottle → tire",
-    "risk": "Open desert needs landmarks so the scene does not feel empty."
+    "parts": null,
+    "risk": "Keep the dry lot compact; empty traversals should not dominate."
   },
   {
     "id": 169,
-    "source_id": "orbit-10",
+    "source_id": null,
     "band": "planetary",
     "title": "Moon Crater Switchback",
-    "setting": "A moon crater has stepped switchbacks, regolith drifts, ice pockets, rover tracks, and a deep central bowl.",
-    "food": "dust → ice beads → rover parts → crater shelves",
-    "interaction": "Low gravity sends a pushed rover part coasting down switchbacks; the goo catches it against a shelf, building a feeder pile.",
-    "jumps": [
-      "A cleared shelf reveals the crater's far bowl."
-    ],
+    "setting": "Broad crater terraces contain abandoned rovers, ice outcrops, and loose lunar slabs.",
+    "food": "Rovers, ice outcrops, crater ledges, neighboring crater masses.",
+    "interaction": "Loose slabs coast farther after a nudge. The goo catches them against terraces and grows across the crater, while low gravity remains a gentle motion flavor.",
+    "jumps": [],
     "parts": null,
-    "risk": "Coasting props need wide boundaries and forgiving resets."
+    "risk": "Coasting cannot make steering sluggish or turn the level into platforming."
   },
   {
     "id": 170,
@@ -2166,14 +2152,14 @@
     "source_id": null,
     "band": "planetary",
     "title": "Europa Brine Canyons",
-    "setting": "An icy moon is cut by brine canyons, salt shelves, ice rafts, and blue fracture pools.",
-    "food": "salt grains → brine beads → ice rafts → canyon shelves",
-    "interaction": "Brine flows through cracks; the goo mops a local section, and the coherent remainder curls around an ice raft.",
+    "setting": "Blue brine winds through wide fractures between Europa's broken ice plates.",
+    "food": "Small ice rafts, larger ice plates, canyon shelves, broad crust sections.",
+    "interaction": "A slow current carries rafts around shelf edges. The goo consumes local brine patches and pushes reachable rafts; connected untouched water remains visible.",
     "jumps": [
-      "A drained pool reveals a lower salt shelf."
+      "Zoom out to reveal broad crust sections beyond the canyon; retire fine salt detail."
     ],
-    "parts": null,
-    "risk": "A partial brine surface needs convincing edges and depth."
+    "parts": "Eat attached edge plates, then the remaining selected crust section.",
+    "risk": "Bound liquid to shallow fracture regions instead of simulating an ocean."
   },
   {
     "id": 172,
@@ -2206,12 +2192,12 @@
     "source_id": null,
     "band": "planetary",
     "title": "Io Ash Vent Terrace",
-    "setting": "A sulfur terrace surrounds cartoon vents, ash fans, lava crust, and yellow mineral lumps.",
-    "food": "ash flecks → sulfur pellets → lava lumps → vent terraces",
-    "interaction": "Vents pulse pellets across the terrace; the goo blocks a vent rim, pushing the pile into a neighboring ash fan.",
+    "setting": "Yellow sulfur terraces surround broad cartoon vents and dark lava crust.",
+    "food": "Crust lumps, mineral ridges, vent terraces, volcanic plateaus.",
+    "interaction": "Vents gently toss crust lumps onto the play surface. A nudged rim changes their landing pocket; there is no heat damage, eruption deadline, or precision blocking requirement.",
     "jumps": [],
-    "parts": "grains → pellets → vent mound",
-    "risk": "Vent pulses must read as gentle pushing rather than harm."
+    "parts": null,
+    "risk": "Treat vent motion as an authored dispenser, not a volcanic simulation."
   },
   {
     "id": 175,
@@ -2231,27 +2217,30 @@
     "id": 176,
     "source_id": null,
     "band": "planetary",
-    "title": "Saturn Ring Shepherd Yard",
-    "setting": "A ring gap contains ice grains, chunky ring clumps, shepherd moonlets, and a dark rocky moon below.",
-    "food": "ice dust → ring chips → boulders → moonlet rims",
-    "interaction": "Moonlets herd chunks around a curved gap; the goo blocks one lane, making a temporary bank against its edge.",
-    "jumps": [],
-    "parts": "shards → chunks → ring clump",
-    "risk": "Curved traffic needs a stable orientation cue."
+    "title": "Saturn Ring Shepherds",
+    "setting": "Saturn's ring gap contains ice mountains, shepherd moonlets, and larger moons.",
+    "food": "Ring boulders, ice mountains, shepherd moonlets, larger moons, Saturn.",
+    "interaction": "Moonlets gently shepherd debris into curved lanes. The goo rolls through a stylized orbital plane and nudges reachable clumps; later the shepherds become food.",
+    "jumps": [
+      "Zoom out to reveal larger moons; retire fine ring debris.",
+      "Zoom out to reveal Saturn as the final edible body; retire individual ring boulders."
+    ],
+    "parts": null,
+    "risk": "The large scale span needs mass calibration and must remain clearly cartoonish."
   },
   {
     "id": 177,
     "source_id": null,
     "band": "planetary",
     "title": "Comet Cavern",
-    "setting": "A comet's cutaway cavern has frost shelves, volatile pits, crumbly walls, and tailward dust.",
-    "food": "frost specks → ice chips → crust blocks → cavern walls",
-    "interaction": "Tailward flow slides chips toward pits; the goo braces in a notch, redirecting them into a cool side chamber.",
+    "setting": "A cutaway comet holds crumbly ice walls and a broad tailward passage.",
+    "food": "Ice blocks, cavern walls, comet lobes, the remaining comet.",
+    "interaction": "A gentle outflow carries loose blocks toward the opening. Eating side walls exposes the comet silhouette and grows the goo toward the whole body.",
     "jumps": [
-      "The side chamber reveals a buried crust bridge."
+      "Zoom out to reveal the complete comet and its lobes; retire individual frost detail."
     ],
-    "parts": null,
-    "risk": "Cutaway depth and moving dust can fight the overhead camera."
+    "parts": "Eat attached crust blocks and lobes, then the remaining comet.",
+    "risk": "Retain a clear rolling support plane as the cutaway disappears."
   },
   {
     "id": 178,
@@ -2374,26 +2363,26 @@
     "source_id": null,
     "band": "stellar",
     "title": "Protoplanet Nursery",
-    "setting": "A young star's nursery is a shallow orbital bowl with dust lanes, ice pebbles, embryo clumps, and shepherd arcs.",
-    "food": "dust → ice pebbles → embryo clumps → proto-worlds",
-    "interaction": "Orbiting pebbles collide and stick to clumps; the goo wedges into a lane, redirecting the growing queue toward a larger embryo.",
-    "jumps": [],
-    "parts": "pebbles → clump crust → proto-world shell",
-    "risk": "Too many orbiting bodies can cost performance."
+    "setting": "A young star's broad disk holds growing planetary embryos and dusty orbital arcs.",
+    "food": "Small embryo clumps, protoplanets, large proto-worlds, the young star.",
+    "interaction": "Smaller clumps gently collide with larger embryos. The goo intercepts their paths, gradually becoming able to consume the bodies that gathered its earlier food.",
+    "jumps": [
+      "Zoom out to reveal the young star as food; retire fine disk grains."
+    ],
+    "parts": null,
+    "risk": "Accretion is staged movement and merging, not an orbital simulation."
   },
   {
     "id": 188,
     "source_id": null,
     "band": "stellar",
     "title": "Binary Star Figure-Eight",
-    "setting": "Two cartoon suns share a figure-eight field of dust ribbons, rocky clumps, and drifting orbit buoys.",
-    "food": "dust → rocks → clumps → star shells",
-    "interaction": "The paired wells exchange clumps at their crossing; the goo nudges a buoy, turning the crossing stream toward a quiet outer loop.",
-    "jumps": [
-      "The outer loop reveals a second sunlit feeder."
-    ],
-    "parts": "grains → clump → star shell",
-    "risk": "Crossing paths need clear lanes and slow forces."
+    "setting": "Two cartoon suns share broad curved paths dotted with smaller stellar companions.",
+    "food": "Small stellar companions, the smaller sun, the larger sun.",
+    "interaction": "The paired wells exchange loose luminous clumps across their crossing. The goo gathers them on a wide orbital surface and eventually eats each sun; crossings never require timed entry.",
+    "jumps": [],
+    "parts": null,
+    "risk": "Sizes and shared paths are visual fantasy rather than binary-system claims."
   },
   {
     "id": 189,
@@ -2450,12 +2439,12 @@
     "source_id": null,
     "band": "stellar",
     "title": "Supernova Debris Carousel",
-    "setting": "An expanding shell of gas petals surrounds a nova core, with dust knots and broken star chunks.",
-    "food": "dust flecks → gas knots → star chunks → shell petals",
-    "interaction": "Outward flow carries chunks around the shell; the goo plugs a gap and funnels them into a sheltered pocket.",
+    "setting": "A glowing remnant core sits within broad separated shell petals and stellar debris.",
+    "food": "Small debris knots, large ejecta clumps, shell petals, the remaining remnant.",
+    "interaction": "Slow outward drift opens gaps between petals. The goo follows their edges and eats reachable material; the expansion cannot carry essential food permanently away.",
     "jumps": [],
-    "parts": "dust → knot → shell petal",
-    "risk": "A moving shell needs a compact proxy instead of many particles."
+    "parts": "Consume attached shell petals, then the remaining remnant structure.",
+    "risk": "The remnant is a bounded cartoon formation, not a measured explosion model."
   },
   {
     "id": 194,
@@ -2537,15 +2526,15 @@
     "id": 200,
     "source_id": null,
     "band": "stellar",
-    "title": "Stellar Nursery Pillar Gate",
-    "setting": "A gas nursery has translucent pillars, star-forming knots, dust lanes, and a narrow gate between clouds.",
-    "food": "dust grains → gas beads → dense knots → pillar roots",
-    "interaction": "Pressure currents slide gas around pillars; the goo blocks the gate, forcing knots into a broad feeder pocket.",
+    "title": "Stellar Nursery Pillars",
+    "setting": "Translucent gas pillars contain bright star-forming knots and newborn stars.",
+    "food": "Newborn stars, compact stellar groups, pillar sections, whole nursery pillars.",
+    "interaction": "Gas drifts around the pillar bases. Removing edible knots opens routes between the remaining formations; the goo can work along either side.",
     "jumps": [
-      "The feeder pocket reveals the pillars' far side."
+      "Zoom out to reveal whole nursery pillars; retire small dust motes."
     ],
-    "parts": null,
-    "risk": "Translucent gas needs restrained layers and strong outlines."
+    "parts": "Eat exposed dense knots and attached pillar sections, then the remaining pillar.",
+    "risk": "Keep gas silhouettes clear with opaque cores and restrained translucency."
   },
   {
     "id": 201,
@@ -2655,13 +2644,15 @@
     "id": 209,
     "source_id": null,
     "band": "galactic",
-    "title": "Galaxy Collision Tidal Zipline",
-    "setting": "Two stylized galaxies overlap around a bright tidal zipline of stars, dust knots, and arm fragments.",
-    "food": "dust → star knots → arm clumps → bridge arcs",
-    "interaction": "The discs pull bridge clumps in opposite directions; the goo braces on the line and shifts a clump toward the nearer disc.",
-    "jumps": [],
-    "parts": "dust → knot → bridge arc",
-    "risk": "Two rotations can be costly and visually busy."
+    "title": "Galaxy Collision Tidal Bridge",
+    "setting": "Two stylized galaxies overlap beside a long, luminous bridge of stars.",
+    "food": "Stellar groups, tidal knots, arm fragments, smaller galaxy, larger galaxy.",
+    "interaction": "The discs slowly draw bridge knots in opposing directions. The goo gathers along the bridge, then widens its route as whole galaxy bodies become edible.",
+    "jumps": [
+      "Zoom out to reveal both entire galaxies; retire individual stars."
+    ],
+    "parts": "Eat attached arm fragments, then the remaining galaxy disc.",
+    "risk": "Galaxy deformation should use a few broad pieces rather than many simulated stars."
   },
   {
     "id": 210,
@@ -2719,39 +2710,37 @@
     "id": 214,
     "source_id": "cosmos-8",
     "band": "galactic",
-    "title": "Galaxy Group Caravanserai",
-    "setting": "A galaxy group forms a caravanserai of moving galaxy islands, cluster beads, crossing lanes, and shared dust pools.",
-    "food": "dust → galaxy beads → group clumps → cluster rim",
-    "interaction": "Neighboring gravity lanes exchange galaxy beads; the goo blocks one crossing and makes a stream circle a dust pool.",
-    "jumps": [
-      "The circling stream reveals a quiet inner lane."
-    ],
+    "title": "Galaxy Group Crossing",
+    "setting": "Several distinct galaxies drift through a compact group with broad shared paths.",
+    "food": "Small galaxies, larger galaxies, paired galaxies, the remaining group.",
+    "interaction": "Neighboring paths carry galaxies across a common crossing. The goo can intercept or circle outward; no stream must be blocked and no mandatory route controls progress.",
+    "jumps": [],
     "parts": null,
-    "risk": "Several galaxy silhouettes need enough separation for steering."
+    "risk": "Use true galaxy-sized silhouettes rather than tiny beads labeled as galaxies."
   },
   {
     "id": 215,
     "source_id": null,
     "band": "galactic",
     "title": "Globular Cluster Pinwheel",
-    "setting": "A dense globular cluster turns like a pinwheel of star balls, dust pockets, orbit lanes, and central gaps.",
-    "food": "dust motes → star beads → star balls → cluster core",
-    "interaction": "Close lanes bump star balls outward; the goo parks in a gap, redirecting them toward a slower inner lane.",
+    "setting": "A round star cluster turns slowly through broad lanes around a bright core.",
+    "food": "Small star groups, larger groups, outer cluster sectors, the remaining cluster.",
+    "interaction": "Loose groups drift between lanes after gentle collisions. The goo crosses gaps freely, eating peripheral groups until the central formation becomes manageable.",
     "jumps": [],
-    "parts": "dust → bead → star ball",
-    "risk": "High object density can hide the goo at lane crossings."
+    "parts": "Eat member groups from the cluster outskirts, then its remaining core and members.",
+    "risk": "Cluster membership must stay visually legible as groups disappear."
   },
   {
     "id": 216,
     "source_id": null,
     "band": "galactic",
-    "title": "Void Island Ferry",
-    "setting": "A sparse void has isolated galaxy islands, drifting intergalactic clumps, faint lanes, and a broad empty ferry route.",
-    "food": "dust → gas clumps → galaxy beads → island rims",
-    "interaction": "Gravity lanes pull clumps between islands; the goo pushes one off-lane, sweeping a fresh arc of dust.",
+    "title": "Void Islands",
+    "setting": "Sparse galaxy groups sit between broad filaments and dark, open voids.",
+    "food": "Small galaxy groups, larger groups, filament sections, connected supercluster regions.",
+    "interaction": "Slow drift brings neighboring groups along visible filaments. The goo follows these broad food trails, while short links prevent empty travel across the void.",
     "jumps": [],
     "parts": null,
-    "risk": "Sparse scenery needs distinct islands and route landmarks."
+    "risk": "Cosmic distances are heavily compressed; test travel time before retaining the layout."
   },
   {
     "id": 217,
@@ -2835,27 +2824,25 @@
     "id": 223,
     "source_id": null,
     "band": "spacetime",
-    "title": "Elastic Trampoline Universe",
-    "setting": "A broad elastic sheet stretches between star knots, with bead pockets, slack edges, and a central bounce basin.",
-    "food": "spark flecks → matter beads → pocket knots → sheet fabric",
-    "interaction": "The sheet rebounds under moving beads; the goo settles on a crest, sending nearby beads into a new pocket.",
-    "jumps": [
-      "A sagging corner reveals a quiet underside."
-    ],
-    "parts": "threads → patch → sheet",
-    "risk": "Mesh deformation needs a simple stable implementation."
+    "title": "Elastic Universe",
+    "setting": "A broad spacetime sheet dips beneath galaxy knots and rises into soft crests.",
+    "food": "Galaxy knots, small spacetime patches, large folds, the remaining local sheet.",
+    "interaction": "Moving knots gently deform the sheet and slide neighboring food into troughs. The goo rolls over broad crests; no bouncing or jumping ability is introduced.",
+    "jumps": [],
+    "parts": "Eat attached edge patches, then the remaining local sheet.",
+    "risk": "Use a few mesh deformations; the sheet is explicit fantasy matter."
   },
   {
     "id": 224,
     "source_id": null,
     "band": "spacetime",
     "title": "Wormhole Pantry",
-    "setting": "Two wormhole mouths open in a soft spacetime pantry of shelves, matter crates, orbiting knots, and folded floor.",
-    "food": "spark flecks → matter beads → pantry crates → mouth rims",
-    "interaction": "A pushed crate enters one mouth and emerges from the other; mopping a rim makes the paired exit wobble and spill beads.",
+    "setting": "Two rounded wormhole mouths sit in folded spacetime beside stored matter clumps.",
+    "food": "Matter clumps, attached rim pieces, whole wormhole mouths, surrounding folds.",
+    "interaction": "A nudged clump rolls into one mouth and emerges from its partner. The goo still steers normally across the floor; object transport is the scene's single unusual behavior.",
     "jumps": [],
-    "parts": "handles → crate panels → pantry shelf",
-    "risk": "Paired transfers need consistent entry and exit feedback."
+    "parts": "Eat attached rim pieces, then the remaining paired-mouth structure.",
+    "risk": "Portal behavior needs a bounded implementation with clear exit and consumption ownership."
   },
   {
     "id": 225,
@@ -2980,12 +2967,12 @@
     "source_id": null,
     "band": "spacetime",
     "title": "Gravitational Wave Sheet",
-    "setting": "A thin spacetime sheet carries broad traveling ripples, matter beads, flexible anchors, and quiet troughs.",
-    "food": "spark flecks → matter beads → ripple knots → sheet anchors",
-    "interaction": "A ripple lifts beads along its crest; the goo settles across the crest and leaves the beads in a new trough.",
+    "setting": "Broad traveling ripples cross a spacetime sheet carrying galaxy knots.",
+    "food": "Galaxy knots, small ripple folds, large wavefront sections, the local sheet.",
+    "interaction": "A ripple gently shifts knots into neighboring troughs. The goo rolls across it and eats reachable folds; wave motion never imposes a deadline or flings the player.",
     "jumps": [],
-    "parts": "threads → ripple patch → sheet anchor",
-    "risk": "A traveling mesh wave must remain stable and affordable."
+    "parts": "Eat attached wavefront sections, then the remaining local sheet.",
+    "risk": "Use authored deformation and keep player collision smoother than the visible ripple."
   },
   {
     "id": 235,
@@ -3032,12 +3019,12 @@
     "source_id": null,
     "band": "spacetime",
     "title": "Metric Seam Quilt",
-    "setting": "A continuous spacetime cloth has stitched seams that bend headings, with matter beads, slack folds, and loose hems.",
-    "food": "spark flecks → matter beads → seam knots → cloth folds",
-    "interaction": "Crossing a seam turns an object's travel direction; the goo pushes a seam knot and redirects a bead stream.",
+    "setting": "A continuous spacetime cloth has a few broad seams, loose hems, and dense matter knots.",
+    "food": "Matter knots, exposed hems, seam sections, large cloth folds.",
+    "interaction": "Crossing a seam bends drifting objects onto a new direction. The goo nudges edible seam knots, changing nearby food paths while movement remains directly controlled.",
     "jumps": [],
-    "parts": "threads → seam patch → cloth fold",
-    "risk": "Seams need visible heading shifts to feel causal."
+    "parts": "Eat attached hems and seam sections, then the remaining fold.",
+    "risk": "Directional seams must not secretly alter the player's steering input."
   },
   {
     "id": 239,
@@ -3058,13 +3045,13 @@
     "source_id": "cosmos-10",
     "band": "spacetime",
     "title": "Tablecloth of Everything",
-    "setting": "A translucent tablecloth spans a void, with stitched folds, star knots, causal currents, and a loose edible hem.",
-    "food": "spark crumbs → star beads → stitched hems → spacetime fabric",
-    "interaction": "Currents tug knots along folds; the goo mops each contacted section, and the remaining cloth draws together until regions disappear.",
+    "setting": "The last continuous spacetime fabric spans the void, carrying remaining galaxy knots and a loose hem.",
+    "food": "Galaxy knots, attached hems, vast fabric regions, all remaining spacetime.",
+    "interaction": "Slow currents draw the cloth together as the goo eats contacted regions. The uneaten fabric stays continuous until only one final edible remainder survives.",
     "jumps": [
-      "Eating the hem reveals the void beneath."
+      "Zoom out to reveal the full remaining spacetime sheet; retire individual galaxy detail."
     ],
-    "parts": "threads → patches → whole tablecloth",
-    "risk": "The finale needs a readable local-consumption shader and a bounded end state."
+    "parts": "Eat the attached hems and fabric regions, then consume the entire remaining spacetime sheet.",
+    "risk": "The last bite needs a deliberate support and camera transition into the ending."
   }
 ]

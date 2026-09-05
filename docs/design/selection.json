@@ -1,0 +1,993 @@
+{
+  "summary": "This proposed campaign selects 60 distinct scenes, beginning with quark flecks and ending with the last remaining spacetime sheet. The original supplies playful eat-and-grow pacing rather than a level template. The gray goo rolls, sticks, peels, and deforms with responsive steering in smooth cartoon 3D with cel outlines. Play stays untimed, with no player damage, combat, quests, dialogue, or new player abilities. Most scenes use shared moving props, attachments, and occasional local liquid. Scenes without camera jumps remain central. The four-scene sampler tests the widest useful range before any campaign production commitment.",
+  "campaign": [
+    {
+      "scene_id": 1,
+      "reason": "A clear opening teaches eating, size gates, and parts before adding environmental complexity.",
+      "scene": {
+        "source_id": null,
+        "band": "subatomic",
+        "title": "Quark Dust Ladder",
+        "setting": "A dark particle field holds loose quark flecks beside rounded proton knots.",
+        "food": "Loose flecks, exposed bound flecks, proton knots, compact nuclei.",
+        "interaction": "Slow currents deliver loose flecks. Removing edible surface flecks reduces a knot while growing the goo. Dense nuclei remain conspicuously too large.",
+        "jumps": [
+          "Zoom out to reveal compact nuclei; retire individual fleck detail."
+        ],
+        "parts": "Eat accessible quark flecks, then the remaining proton knot once large enough.",
+        "risk": "Particle forms and sizes are declared cartoon fantasy."
+      }
+    },
+    {
+      "scene_id": 3,
+      "reason": "A bright, spacious second scene changes the feel without introducing another control.",
+      "scene": {
+        "source_id": null,
+        "band": "subatomic",
+        "title": "Photon Pair Drift",
+        "setting": "Glowing light beads meet across a dark energy ridge.",
+        "food": "Single light beads, paired beads, larger luminous knots.",
+        "interaction": "A gentle ripple brings beads together and separates them again. Crossing its path offers moving food; missing a pair leaves other food available.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Light behaves as edible fantasy matter, without scientific size claims."
+      }
+    },
+    {
+      "scene_id": 10,
+      "reason": "Different crossing directions make gathering engaging with a small shared movement system.",
+      "scene": {
+        "source_id": null,
+        "band": "atomic",
+        "title": "Metal Vapor Shear",
+        "setting": "Two metal atom clouds drift across a broad vapor field.",
+        "food": "Individual atoms, bonded pairs, small metal clusters.",
+        "interaction": "One cloud drifts sideways while the other crosses it. Their intersection collects clusters, giving the goo a visible reason to change direction. The streams remain sparse enough to read.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Use authored particle paths rather than a chemistry simulation."
+      }
+    },
+    {
+      "scene_id": 12,
+      "reason": "Turns the opening parts lesson into a concrete formation with a satisfying remaining whole.",
+      "scene": {
+        "source_id": null,
+        "band": "atomic",
+        "title": "Crystal Lattice Pulse",
+        "setting": "A silicon-like lattice has open vacancies and loosely attached outer atoms.",
+        "food": "Loose atoms, exposed lattice atoms, small crystal fragments.",
+        "interaction": "The lattice gently flexes. Vacancies offer routes to edible outer atoms; cleared gaps remain open rather than instantly regrowing.",
+        "jumps": [],
+        "parts": "Consume exposed atoms until the remaining crystal fragment fits inside the goo.",
+        "risk": "Attachment and eligibility must stay readable during lattice motion."
+      }
+    },
+    {
+      "scene_id": 15,
+      "reason": "A soft organic surface gives the early campaign tactile variety.",
+      "scene": {
+        "source_id": null,
+        "band": "molecular",
+        "title": "Membrane Fork",
+        "setting": "A folded lipid membrane borders a shallow solvent pocket.",
+        "food": "Loose lipids, small membrane patches, vesicles, folded membrane sacs.",
+        "interaction": "Vesicles drift around a fold. The goo nudges its loose edge, changing their route through the pocket. Food remains reachable from the common play surface.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Show a membrane world without requiring underside navigation."
+      }
+    },
+    {
+      "scene_id": 20,
+      "reason": "Offers a distinct flexible shape and a useful first molecular scale reveal.",
+      "scene": {
+        "source_id": null,
+        "band": "molecular",
+        "title": "Peptide Knot Eddy",
+        "setting": "A slow solvent eddy carries short chains past folded proteins.",
+        "food": "Amino-acid beads, short peptide chains, folded protein globes.",
+        "interaction": "Chains flex and bunch at the eddy boundary. The goo catches loose ends and grows among the loops; nudging a chain does not automatically manufacture larger food.",
+        "jumps": [
+          "Zoom out to expose whole protein globes; retire individual amino-acid detail."
+        ],
+        "parts": null,
+        "risk": "Keep chain bodies short to limit physics cost."
+      }
+    },
+    {
+      "scene_id": 18,
+      "reason": "Makes local translucent matter the focus of one early scene.",
+      "scene": {
+        "source_id": null,
+        "band": "molecular",
+        "title": "Soap Film Fold",
+        "setting": "Surfactant beads line a film containing small bubbles and larger foam caps.",
+        "food": "Loose surfactants, tiny bubbles, larger bubbles, foam caps.",
+        "interaction": "Stable bubbles roll into shallow folds when nudged. Contact removes local film patches while the surrounding translucent film remains connected; no whole-field draining occurs.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Film consumption must be clear without a full fluid solver."
+      }
+    },
+    {
+      "scene_id": 25,
+      "reason": "Connects abstract microstructure to a recognizable living surface.",
+      "scene": {
+        "source_id": null,
+        "band": "microscopic",
+        "title": "Lichen Crust Window",
+        "setting": "A damp patch of real lichen exposes grains and fungal threads on stone.",
+        "food": "Fine mineral grains, short fungal fragments, small lichen cushions.",
+        "interaction": "Moisture loosens scattered grains. Eating exposed fungal threads opens gaps in the cushion and gives room to circle its remaining mass.",
+        "jumps": [],
+        "parts": "Consume exposed fungal threads and attached lobes, then the remaining small lichen cushion.",
+        "risk": "Avoid suggesting one uniform size for every fungal or mineral piece."
+      }
+    },
+    {
+      "scene_id": 26,
+      "reason": "Distinct green geometry and small food trails avoid another generic pond scene.",
+      "scene": {
+        "source_id": null,
+        "band": "microscopic",
+        "title": "Leaf Pore Microclimate",
+        "setting": "A leaf underside has wax ridges, bacteria, pollen fragments, and gently opening pores.",
+        "food": "Bacteria, small wax flakes, pollen fragments, whole pollen grains.",
+        "interaction": "Pores shift the nearby moisture film, carrying small fragments toward ridges. The goo follows these short trails and nudges loose grains; pores remain part of the floor.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Pores are scenery and flow sources, not progression locks."
+      }
+    },
+    {
+      "scene_id": 28,
+      "reason": "Keeps the original playful microscopic life while changing the layout and behavior.",
+      "scene": {
+        "source_id": "laboratory-4",
+        "band": "microscopic",
+        "title": "Amoeba Silt Basin",
+        "setting": "Algae and drifting single-celled organisms weave between shallow silt ridges.",
+        "food": "Small algae fragments, paramecia, small amoebas, larger amoebas.",
+        "interaction": "Organisms seek scattered nutrients and bend around ridges. They harmlessly redirect around the goo, making food concentrations move without pursuit or combat.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Choose modeled organism sizes deliberately; names alone do not establish order."
+      }
+    },
+    {
+      "scene_id": 32,
+      "reason": "A familiar natural container gives small-scale growth an immediate payoff.",
+      "scene": {
+        "source_id": null,
+        "band": "miniature",
+        "title": "Seedpod Gutter",
+        "setting": "A split seedpod rests in damp garden soil above a shallow husk groove.",
+        "food": "Husk crumbs, small seeds, larger kernels, the remaining seedpod.",
+        "interaction": "Drizzle shifts loose kernels down the groove. The goo rolls along the husk, eating attached brittle edges until the remaining shell becomes manageable.",
+        "jumps": [],
+        "parts": "Eat attached husk flakes and exposed seeds, then the remaining pod.",
+        "risk": "Keep the husk route broad enough for a deforming body."
+      }
+    },
+    {
+      "scene_id": 35,
+      "reason": "Carried food creates a comic causal loop without adding a task or clock.",
+      "scene": {
+        "source_id": null,
+        "band": "miniature",
+        "title": "Ant Trail Mulch",
+        "setting": "Ants carry seed fragments around a fallen flower in a real mulch bed.",
+        "food": "Soil crumbs, petal fragments, tiny ants, larger seeds, the fallen flower.",
+        "interaction": "Ants leave and retrieve crumbs along a looping trail. The goo intercepts carriers and pushes loose seeds, while larger loads briefly redirect the traffic.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Use visibly sized fragments rather than assuming all seeds exceed ants."
+      }
+    },
+    {
+      "scene_id": 36,
+      "reason": "Introduces a small real water setting with drifting food and strong surface contrast.",
+      "scene": {
+        "source_id": null,
+        "band": "miniature",
+        "title": "Birdbath Rim Spill",
+        "setting": "A birdbath lip holds algae flecks, seed husks, feather fragments, and shallow water.",
+        "food": "Algae flecks, seed fragments, feather barbs, small feathers.",
+        "interaction": "Overflow carries light food along the rim. The goo consumes the local wet edge in joined translucent sections; untouched water remains in the basin.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Keep the rim safely wide and leave water volume visibly local."
+      }
+    },
+    {
+      "scene_id": 110,
+      "reason": "The clearest natural parts-to-whole example also tests local water without a forced miniature tray.",
+      "scene": {
+        "source_id": "ocean-2",
+        "band": "miniature",
+        "title": "Coral Colony Tide Pool",
+        "setting": "A real shallow tide pool holds attached living polyps on small branching coral colonies.",
+        "food": "Plankton flecks, tiny attached polyps, remaining small colonies, larger colonies.",
+        "interaction": "A gentle current carries plankton past branches. The goo eats reachable attached polyps and locally consumes shallow seawater, leaving untouched pool sections connected.",
+        "jumps": [
+          "Zoom out to reveal neighboring larger colonies; retire individual plankton detail."
+        ],
+        "parts": "Eat attached polyps to grow, then consume the remaining colony; detached pieces never assemble structures.",
+        "risk": "Stylized colony sizes and accessible polyps need an early playtest."
+      }
+    },
+    {
+      "scene_id": 39,
+      "reason": "Makes a charming readable formation from ordinary craft materials.",
+      "scene": {
+        "source_id": "picnictable-5",
+        "band": "tabletop",
+        "title": "Puzzle Postcard Workshop",
+        "setting": "A craft worktop holds a partly completed puzzle postcard, paper scraps, and a slow paint roller.",
+        "food": "Paper flecks, small puzzle pieces, larger pieces, the assembled postcard.",
+        "interaction": "The roller gently shifts loose pieces across the worktop. The goo takes exposed pieces from the assembled image, gradually making the remainder small enough to swallow.",
+        "jumps": [],
+        "parts": "Eat attached edge pieces, then the remaining assembled postcard.",
+        "risk": "Loose and assembled pieces must have clear collision ownership."
+      }
+    },
+    {
+      "scene_id": 57,
+      "reason": "A genuine toy scene earns its place through support and tumbling, not a reskinned landscape.",
+      "scene": {
+        "source_id": "picnictable-3",
+        "band": "tabletop",
+        "title": "Building-Block Quarry",
+        "setting": "A child's block quarry has clay banks, dice rubble, and domino braces.",
+        "food": "Clay crumbs, small dice, larger blocks, braced block stacks.",
+        "interaction": "Pushing a brace releases a short tumble of dice. Removing edible lower blocks lets a stack settle into reachable shapes, without demanding precise demolition.",
+        "jumps": [],
+        "parts": "Eat exposed blocks from a connected stack, then its remaining assembly.",
+        "risk": "Limit stack height and settle time to avoid physics jams."
+      }
+    },
+    {
+      "scene_id": 61,
+      "reason": "Moving fabric makes an everyday gathering scene feel physically distinctive.",
+      "scene": {
+        "source_id": "picnictable-1",
+        "band": "tabletop",
+        "title": "Picnic Cloth Pulley",
+        "setting": "A picnic cloth lies beneath berries, coins, dice, and a small clothesline pulley.",
+        "food": "Berry fragments, small berries, coins, dice, the pulley housing.",
+        "interaction": "The pulley draws a wrinkle through the cloth, sliding loose food into folds. The goo rolls and deforms over the wrinkle while nudging coins into open space.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Flatten wrinkles enough to preserve responsive rolling."
+      }
+    },
+    {
+      "scene_id": 65,
+      "reason": "Brings familiar stationery and food together in a playful physical space.",
+      "scene": {
+        "source_id": "picnictable-6",
+        "band": "tabletop",
+        "title": "Cheese-and-Pen Desk",
+        "setting": "A writing desk holds cheese scraps, dice, rolling pens, pencils, and a spilled milk cup.",
+        "food": "Cheese crumbs, dice, pens, pencils, large cheese wedges, the cup.",
+        "interaction": "Pens roll into loose snacks when bumped. Milk stays a coherent shallow spill and shrinks only beneath local contact; the remaining pool still routes around desk objects.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Set wedge and stationery dimensions explicitly rather than ordering by name."
+      }
+    },
+    {
+      "scene_id": 67,
+      "reason": "Preserves toy-scale humor while giving wall pieces a real growth payoff.",
+      "scene": {
+        "source_id": "picnictable-7",
+        "band": "tabletop",
+        "title": "Army-Man Snack Fort",
+        "setting": "Toy soldiers wheel cheese through a block fort around a large orange.",
+        "food": "Cheese crumbs, small soldiers, orange segments, large blocks, the fort.",
+        "interaction": "A cart rolls food down a ramp. Eating accessible wall blocks opens routes to the orange; the soldiers carry food and never fight.",
+        "jumps": [
+          "Zoom out to reveal the whole fort as the next edible assembly; retire crumbs."
+        ],
+        "parts": "Eat wall blocks, then consume the remaining connected fort.",
+        "risk": "Moving figures must read as harmless toys."
+      }
+    },
+    {
+      "scene_id": 68,
+      "reason": "A compact food setting gives motion variety without another market reskin.",
+      "scene": {
+        "source_id": null,
+        "band": "tabletop",
+        "title": "Bento Conveyor",
+        "setting": "A serving conveyor carries bento trays with rice, sliced fish, seaweed rolls, and soy cups.",
+        "food": "Rice grains, fish bites, seaweed rolls, small cups, complete bento trays.",
+        "interaction": "Trays move slowly past a stationary counter edge. The goo can board, eat, and step off naturally; scattered food remains available between passes.",
+        "jumps": [],
+        "parts": "Eat the meal and removable dividers, then the remaining tray.",
+        "risk": "Boarding must not become a timing challenge or strand the goo."
+      }
+    },
+    {
+      "scene_id": 80,
+      "reason": "One honest train set earns the toy railway fantasy without repeating it across many bands.",
+      "scene": {
+        "source_id": "city-6",
+        "band": "tabletop",
+        "title": "Wind-Up Railway Table",
+        "setting": "A wind-up railway circles model houses and trees on a cardboard table.",
+        "food": "Cardboard scraps, small model trees, houses, carriages, the train.",
+        "interaction": "The train nudges loose pieces along its track. Once carriages become edible, shortening the train frees space around the loop; no coffee spill is required.",
+        "jumps": [],
+        "parts": "Eat carriages from the coupled formation, then the remaining engine and train assembly.",
+        "risk": "Keep the train slow and avoid trapping the goo against track scenery."
+      }
+    },
+    {
+      "scene_id": 85,
+      "reason": "A recognizable kitchen delivers a strong obstacle-to-food reversal.",
+      "scene": {
+        "source_id": null,
+        "band": "human",
+        "title": "Pizzeria Floor",
+        "setting": "Red tiles beneath a preparation counter collect olives, slices, trays, and a rolling pizza peel.",
+        "food": "Olive pieces, whole olives, pizza slices, trays, the peel, a compact oven.",
+        "interaction": "A slowly tilted peel slides slices to the floor. The goo follows the spill around table legs, then grows enough to consume the equipment that once blocked its route.",
+        "jumps": [
+          "Zoom out to reveal the compact oven; retire olive fragments."
+        ],
+        "parts": null,
+        "risk": "Choose a small oven and generous feeding mass between slices and equipment."
+      }
+    },
+    {
+      "scene_id": 99,
+      "reason": "Different object shapes make simple eating satisfying in an instantly legible place.",
+      "scene": {
+        "source_id": null,
+        "band": "human",
+        "title": "Grocery Cart Aisle",
+        "setting": "Spilled produce lies between low grocery shelves and rolling shopping carts.",
+        "food": "Berries, cereal boxes, melons, produce crates, shopping carts.",
+        "interaction": "A loose melon rolls down an aisle and bumps boxes into the goo. Carts turn when nudged, opening different routes through the same compact floor plan.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Shelf corners and cart wheels must not snag the deforming body."
+      }
+    },
+    {
+      "scene_id": 101,
+      "reason": "A comic jump from tiny rewards to the machines themselves is easy to understand.",
+      "scene": {
+        "source_id": null,
+        "band": "human",
+        "title": "Arcade Corner",
+        "setting": "Tokens, prize dice, stools, and bright cabinets crowd a compact arcade.",
+        "food": "Tokens, prize dice, toy blocks, stools, arcade cabinets.",
+        "interaction": "A prize chute drops a few toys as its tray rocks. Stools roll when nudged, initially redirecting the goo before becoming edible.",
+        "jumps": [
+          "Zoom out to reveal complete cabinets as food; retire individual tokens."
+        ],
+        "parts": null,
+        "risk": "Keep cabinet lighting subordinate to food and goo outlines."
+      }
+    },
+    {
+      "scene_id": 88,
+      "reason": "Provides warm, moving subjects after several object-led rooms.",
+      "scene": {
+        "source_id": "park-3",
+        "band": "human",
+        "title": "Pet Adoption Room",
+        "setting": "Cats and dogs wander between beds, food bowls, and low climbing towers.",
+        "food": "Kibble clusters, small mouse toys, bowls, cats, dogs, climbing towers.",
+        "interaction": "Animals visit food bowls and reroute around shifted beds. Their movements distribute small food through the room; touching an oversized animal only nudges the goo.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Animal scale varies; pick a clearly ordered cast and keep consumption cartoonish."
+      }
+    },
+    {
+      "scene_id": 164,
+      "reason": "An open public setting combines familiar animals with purposeful local liquid.",
+      "scene": {
+        "source_id": null,
+        "band": "human",
+        "title": "City Plaza Fountain",
+        "setting": "Coins and petals circle a low fountain beside pigeons and benches.",
+        "food": "Small coins, petals, pigeons, benches, the fountain basin.",
+        "interaction": "Jets move floating food around the rim. Local contact removes connected patches of basin water, while the untouched pool continues carrying petals. Pigeons wander toward food on the paving.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Do not imply the whole basin drains when one patch is eaten."
+      }
+    },
+    {
+      "scene_id": 133,
+      "reason": "Gives a strong cloth-and-support scene while removing arbitrary miniature scale.",
+      "scene": {
+        "source_id": null,
+        "band": "human",
+        "title": "Rooftop Laundry Gusts",
+        "setting": "Laundry hangs above an accessible roof with vents and squat water tanks.",
+        "food": "Clothespins, socks, shirts, sheets, vents, water tanks.",
+        "interaction": "A gust pulls sheets along the line. The goo catches a low edge, loosening pins and dragging fabric onto the roof; larger cloth gathers against vents.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Use short cloth strips and simple attachment constraints."
+      }
+    },
+    {
+      "scene_id": 157,
+      "reason": "A distinct enclosed garden offers useful reuse of pots, plants, and local water.",
+      "scene": {
+        "source_id": null,
+        "band": "human",
+        "title": "Greenhouse Condensation",
+        "setting": "Hanging plants and terracotta pots fill a warm greenhouse with tiled gutters.",
+        "food": "Fallen leaves, small plants, pots, benches, greenhouse frames.",
+        "interaction": "Condensation joins a shallow gutter pool. The goo locally mops it and nudges pots into neighboring gaps; hanging leaves brush the rolling body.",
+        "jumps": [
+          "Zoom out to reveal complete greenhouse frames; retire individual droplets and leaves."
+        ],
+        "parts": null,
+        "risk": "Glazing needs restrained transparency so food remains visible."
+      }
+    },
+    {
+      "scene_id": 149,
+      "reason": "A grounded garden rewards route choice and growing past familiar obstacles.",
+      "scene": {
+        "source_id": null,
+        "band": "human",
+        "title": "Community Garden Maze",
+        "setting": "Raised beds, pumpkins, compost bins, and trellises border broad garden paths.",
+        "food": "Seeds, small vegetables, pumpkins, watering cans, compost bins, trellises.",
+        "interaction": "A loose watering can tips and nudges vegetables along a bed edge. Eating pumpkins opens shortcuts between the paths; the maze never requires a specific route.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Start with enough small produce outside the beds to avoid a growth lock."
+      }
+    },
+    {
+      "scene_id": 151,
+      "reason": "A visible chain of falling fruit and shifting supports makes growth feel earned.",
+      "scene": {
+        "source_id": null,
+        "band": "human",
+        "title": "Orchard Ladder Fall",
+        "setting": "Low apple branches hang above ladders, crates, and grassy orchard lanes.",
+        "food": "Apples, small crates, ladders, large crates, orchard trees.",
+        "interaction": "Bumping a low branch drops apples onto a leaning ladder. The ladder slides against crates, changing their arrangement without a scripted task.",
+        "jumps": [
+          "Zoom out to reveal whole orchard trees as food; retire individual fallen petals."
+        ],
+        "parts": "Eat attached apples and reachable branch tips, then the remaining small tree.",
+        "risk": "Keep ladders broad and slow, with food available even if the cascade is missed."
+      }
+    },
+    {
+      "scene_id": 158,
+      "reason": "A calm dry outdoor scene changes the material palette and supports simple comic interactions.",
+      "scene": {
+        "source_id": null,
+        "band": "human",
+        "title": "Campground Cooking Ring",
+        "setting": "An unlit cooking ring sits among cans, coolers, firewood, and tents.",
+        "food": "Food scraps, cans, firewood pieces, coolers, tent frames.",
+        "interaction": "Wind rolls empty cans around the ring. A pushed cooler catches them against a tent edge, creating a new feeding pocket without a required solution.",
+        "jumps": [],
+        "parts": "Eat reachable canvas sections and poles, then the remaining tent.",
+        "risk": "Tent cloth can be a few deforming panels rather than full cloth simulation."
+      }
+    },
+    {
+      "scene_id": 159,
+      "reason": "The surface itself creates motion, making this a valuable movement test.",
+      "scene": {
+        "source_id": null,
+        "band": "human",
+        "title": "Skatepark Bowl",
+        "setting": "Loose wheels and skateboards roll through a low concrete practice bowl.",
+        "food": "Loose wheels, small boards, full skateboards, railings, ramp sections.",
+        "interaction": "Boards coast around curved banks and change direction when the goo nudges them. Growing wide enough to catch a whole board turns a moving obstacle into a reward.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Use gentle slopes and ensure control remains direct under drift."
+      }
+    },
+    {
+      "scene_id": 152,
+      "reason": "Strong concrete props and a clear causal spill avoid toy tanks and combat imagery.",
+      "scene": {
+        "source_id": null,
+        "band": "human",
+        "title": "Construction Marble Yard",
+        "setting": "Brick pallets and wheelbarrows sit below ramps near a small cement mixer.",
+        "food": "Gravel lumps, bricks, pallet stacks, wheelbarrows, cement mixers.",
+        "interaction": "A wheelbarrow coasts down a ramp. Its bump shifts bricks sideways; the goo gathers the spill and eventually eats the barrow that delivered it.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Impacts must displace rather than launch or damage the goo."
+      }
+    },
+    {
+      "scene_id": 168,
+      "reason": "A dry, sparse environment offers a welcome contrast and a familiar large payoff.",
+      "scene": {
+        "source_id": null,
+        "band": "human",
+        "title": "Desert Rest Stop",
+        "setting": "A dry roadside stop has discarded bottles, loose tires, shade canopies, and a parked bus.",
+        "food": "Bottles, tires, canopy posts, shade frames, the bus.",
+        "interaction": "Wind rolls tires across the lot. The goo nudges a tire toward scattered bottles, gathering them against a canopy base before becoming large enough to eat the bus.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Keep the dry lot compact; empty traversals should not dominate."
+      }
+    },
+    {
+      "scene_id": 160,
+      "reason": "One full-size railway complements the toy set through cargo and a stationary final whole.",
+      "scene": {
+        "source_id": null,
+        "band": "landscape",
+        "title": "Old Rail Yard",
+        "setting": "A disused rail yard holds sleepers, loaded handcarts, switches, and a parked engine.",
+        "food": "Loose sleepers, handcart loads, handcarts, engine panels, the engine.",
+        "interaction": "A rolling cart follows whichever branch its physical switch points toward. Nudging the lever changes where its loose cargo gathers. The engine remains parked throughout.",
+        "jumps": [],
+        "parts": "Eat reachable external engine panels, then the remaining locomotive.",
+        "risk": "Parts must be visibly attached and detachable, not arbitrary health chunks."
+      }
+    },
+    {
+      "scene_id": 162,
+      "reason": "Broad wind-driven food and a tall familiar landmark provide a rural growth payoff.",
+      "scene": {
+        "source_id": null,
+        "band": "landscape",
+        "title": "Windbreak Farm",
+        "setting": "Corn rows and field lanes surround hay bales, scarecrows, and a round silo.",
+        "food": "Corn bundles, scarecrows, hay bales, silo panels, the silo.",
+        "interaction": "Crosswinds roll loose bales along wide lanes. The goo nudges a scarecrow support to change where husks and bales gather, then feeds around the silo.",
+        "jumps": [
+          "Zoom out to reveal the whole silo and nearby farm structures; retire individual husks."
+        ],
+        "parts": "Eat attached outer silo panels, then its remaining structure.",
+        "risk": "Use clear toy-like panel seams without turning the farm into a model."
+      }
+    },
+    {
+      "scene_id": 163,
+      "reason": "Rock mass naturally bridges vehicles and landscape-sized food.",
+      "scene": {
+        "source_id": null,
+        "band": "landscape",
+        "title": "Quarry Conveyor",
+        "setting": "A working quarry carries rock along belts above carts, crusher plates, and stepped faces.",
+        "food": "Rock heaps, loaded ore carts, crusher plates, rock ledges, quarry faces.",
+        "interaction": "The goo nudges a movable chute, spilling a short rock stream beside a cart. Belts and crushers only push; all machinery remains harmless and food persists.",
+        "jumps": [
+          "Zoom out to reveal whole stepped quarry faces; retire small chippings."
+        ],
+        "parts": null,
+        "risk": "Use bounded emitted rocks and simplified machinery to control body count."
+      }
+    },
+    {
+      "scene_id": 167,
+      "reason": "A clear coastal silhouette supports both tether motion and a recognizable remaining whole.",
+      "scene": {
+        "source_id": null,
+        "band": "landscape",
+        "title": "Lighthouse Causeway",
+        "setting": "Rope coils connect buoys and rowboats beside a stone lighthouse causeway.",
+        "food": "Buoys, rowboats, pier sections, lighthouse blocks, the lighthouse.",
+        "interaction": "The tide pulls boats against their ropes. Nudging a coil shifts where boats gather; later, eating their pier supports frees them into a slow drift.",
+        "jumps": [],
+        "parts": "Eat exposed outer lighthouse blocks, then the remaining tower.",
+        "risk": "Rope constraints must release cleanly when connected objects are eaten."
+      }
+    },
+    {
+      "scene_id": 130,
+      "reason": "Retains the joyful city sweep while pruning repeated crossing and rail motifs.",
+      "scene": {
+        "source_id": "city-8",
+        "band": "landscape",
+        "title": "Coastal Village",
+        "setting": "Houses and apartment blocks climb above a curved coastal road.",
+        "food": "Parked cars, small trees, houses, apartment blocks, neighborhood terraces.",
+        "interaction": "Cars slowly reroute when growing goo blocks the road. Earlier-sized houses become casual snacks as the larger apartment blocks enter reach. No train or forced puddle is needed.",
+        "jumps": [
+          "Zoom out to reveal apartment blocks and neighborhood terraces; retire individual road markings."
+        ],
+        "parts": null,
+        "risk": "Avoid large unexplained size gaps between buildings and terrain."
+      }
+    },
+    {
+      "scene_id": 136,
+      "reason": "Raises the campaign into the canopy while keeping solid plants as food.",
+      "scene": {
+        "source_id": null,
+        "band": "landscape",
+        "title": "Treetop Cloudbridge",
+        "setting": "Rope bridges connect broad forest crowns above a layer of fog.",
+        "food": "Large branch clusters, bridge spans, tree crowns, groups of trees.",
+        "interaction": "A bridge sways under the goo and shakes branch clusters into neighboring crowns. The forest forms a broad connected rolling surface rather than a balance challenge.",
+        "jumps": [],
+        "parts": "Eat outer branch clusters, then the remaining crown.",
+        "risk": "The top-down support surface needs an unmistakable silhouette."
+      }
+    },
+    {
+      "scene_id": 140,
+      "reason": "The strongest sky machinery candidate offers recognizable balloons and physical cargo.",
+      "scene": {
+        "source_id": null,
+        "band": "landscape",
+        "title": "Sky Freight Crossing",
+        "setting": "Broad suspended freight docks receive airships carrying visible cargo and cable reels.",
+        "food": "Cargo crates, loading cranes, gondolas, airship hulls, freight docks.",
+        "interaction": "Crates swing gently on cables. The goo nudges a reel to lower a load onto the dock; later it can eat the gondola and remaining airship from the same surface.",
+        "jumps": [],
+        "parts": "Eat a docked airship gondola and exposed envelope panels, then its remaining hull.",
+        "risk": "A small number of cable joints should create the effect."
+      }
+    },
+    {
+      "scene_id": 141,
+      "reason": "A simple cloud feast connects terrestrial scenes to the widening cosmic campaign.",
+      "scene": {
+        "source_id": null,
+        "band": "landscape",
+        "title": "Thunderhead Rain Shelf",
+        "setting": "A cartoon thunderhead makes broad rolling shelves above a distant landscape.",
+        "food": "Small cloud tufts, cloud banks, storm cells, whole thunderheads.",
+        "interaction": "Slow updrafts move banks toward one another. Contact consumes cloud matter locally; nearby banks keep their outlines instead of the entire storm vanishing at once.",
+        "jumps": [
+          "Zoom out to reveal whole thunderheads across the weather layer; retire individual raindrops."
+        ],
+        "parts": null,
+        "risk": "Clouds are fictional solid support here; render them as volumes rather than puddles."
+      }
+    },
+    {
+      "scene_id": 177,
+      "reason": "A concrete icy body makes the first cosmic parts-to-whole payoff easy to grasp.",
+      "scene": {
+        "source_id": null,
+        "band": "planetary",
+        "title": "Comet Cavern",
+        "setting": "A cutaway comet holds crumbly ice walls and a broad tailward passage.",
+        "food": "Ice blocks, cavern walls, comet lobes, the remaining comet.",
+        "interaction": "A gentle outflow carries loose blocks toward the opening. Eating side walls exposes the comet silhouette and grows the goo toward the whole body.",
+        "jumps": [
+          "Zoom out to reveal the complete comet and its lobes; retire individual frost detail."
+        ],
+        "parts": "Eat attached crust blocks and lobes, then the remaining comet.",
+        "risk": "Retain a clear rolling support plane as the cutaway disappears."
+      }
+    },
+    {
+      "scene_id": 169,
+      "reason": "A familiar moon surface gives cosmic scale a tangible physical foothold.",
+      "scene": {
+        "source_id": null,
+        "band": "planetary",
+        "title": "Moon Crater Switchback",
+        "setting": "Broad crater terraces contain abandoned rovers, ice outcrops, and loose lunar slabs.",
+        "food": "Rovers, ice outcrops, crater ledges, neighboring crater masses.",
+        "interaction": "Loose slabs coast farther after a nudge. The goo catches them against terraces and grows across the crater, while low gravity remains a gentle motion flavor.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Coasting cannot make steering sluggish or turn the level into platforming."
+      }
+    },
+    {
+      "scene_id": 171,
+      "reason": "A strong icy formation reuses local liquid at a visibly larger scale.",
+      "scene": {
+        "source_id": null,
+        "band": "planetary",
+        "title": "Europa Brine Canyons",
+        "setting": "Blue brine winds through wide fractures between Europa's broken ice plates.",
+        "food": "Small ice rafts, larger ice plates, canyon shelves, broad crust sections.",
+        "interaction": "A slow current carries rafts around shelf edges. The goo consumes local brine patches and pushes reachable rafts; connected untouched water remains visible.",
+        "jumps": [
+          "Zoom out to reveal broad crust sections beyond the canyon; retire fine salt detail."
+        ],
+        "parts": "Eat attached edge plates, then the remaining selected crust section.",
+        "risk": "Bound liquid to shallow fracture regions instead of simulating an ocean."
+      }
+    },
+    {
+      "scene_id": 174,
+      "reason": "Bright volcanic solids provide cosmic variety without another orbiting stream.",
+      "scene": {
+        "source_id": null,
+        "band": "planetary",
+        "title": "Io Ash Vent Terrace",
+        "setting": "Yellow sulfur terraces surround broad cartoon vents and dark lava crust.",
+        "food": "Crust lumps, mineral ridges, vent terraces, volcanic plateaus.",
+        "interaction": "Vents gently toss crust lumps onto the play surface. A nudged rim changes their landing pocket; there is no heat damage, eruption deadline, or precision blocking requirement.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Treat vent motion as an authored dispenser, not a volcanic simulation."
+      }
+    },
+    {
+      "scene_id": 176,
+      "reason": "A ring-to-planet feast earns two real reveals and finally lets the player eat a planet.",
+      "scene": {
+        "source_id": null,
+        "band": "planetary",
+        "title": "Saturn Ring Shepherds",
+        "setting": "Saturn's ring gap contains ice mountains, shepherd moonlets, and larger moons.",
+        "food": "Ring boulders, ice mountains, shepherd moonlets, larger moons, Saturn.",
+        "interaction": "Moonlets gently shepherd debris into curved lanes. The goo rolls through a stylized orbital plane and nudges reachable clumps; later the shepherds become food.",
+        "jumps": [
+          "Zoom out to reveal larger moons; retire fine ring debris.",
+          "Zoom out to reveal Saturn as the final edible body; retire individual ring boulders."
+        ],
+        "parts": null,
+        "risk": "The large scale span needs mass calibration and must remain clearly cartoonish."
+      }
+    },
+    {
+      "scene_id": 187,
+      "reason": "Carries planetary appetite into the first stellar whole using one understandable relationship.",
+      "scene": {
+        "source_id": null,
+        "band": "stellar",
+        "title": "Protoplanet Nursery",
+        "setting": "A young star's broad disk holds growing planetary embryos and dusty orbital arcs.",
+        "food": "Small embryo clumps, protoplanets, large proto-worlds, the young star.",
+        "interaction": "Smaller clumps gently collide with larger embryos. The goo intercepts their paths, gradually becoming able to consume the bodies that gathered its earlier food.",
+        "jumps": [
+          "Zoom out to reveal the young star as food; retire fine disk grains."
+        ],
+        "parts": null,
+        "risk": "Accretion is staged movement and merging, not an orbital simulation."
+      }
+    },
+    {
+      "scene_id": 188,
+      "reason": "A simple two-star composition offers a readable scale contrast without extra machinery.",
+      "scene": {
+        "source_id": null,
+        "band": "stellar",
+        "title": "Binary Star Figure-Eight",
+        "setting": "Two cartoon suns share broad curved paths dotted with smaller stellar companions.",
+        "food": "Small stellar companions, the smaller sun, the larger sun.",
+        "interaction": "The paired wells exchange loose luminous clumps across their crossing. The goo gathers them on a wide orbital surface and eventually eats each sun; crossings never require timed entry.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Sizes and shared paths are visual fantasy rather than binary-system claims."
+      }
+    },
+    {
+      "scene_id": 193,
+      "reason": "A broken star provides a vivid formation after intact suns.",
+      "scene": {
+        "source_id": null,
+        "band": "stellar",
+        "title": "Supernova Debris Carousel",
+        "setting": "A glowing remnant core sits within broad separated shell petals and stellar debris.",
+        "food": "Small debris knots, large ejecta clumps, shell petals, the remaining remnant.",
+        "interaction": "Slow outward drift opens gaps between petals. The goo follows their edges and eats reachable material; the expansion cannot carry essential food permanently away.",
+        "jumps": [],
+        "parts": "Consume attached shell petals, then the remaining remnant structure.",
+        "risk": "The remnant is a bounded cartoon formation, not a measured explosion model."
+      }
+    },
+    {
+      "scene_id": 200,
+      "reason": "A famous-looking cosmic form ends the stellar band with larger structural food.",
+      "scene": {
+        "source_id": null,
+        "band": "stellar",
+        "title": "Stellar Nursery Pillars",
+        "setting": "Translucent gas pillars contain bright star-forming knots and newborn stars.",
+        "food": "Newborn stars, compact stellar groups, pillar sections, whole nursery pillars.",
+        "interaction": "Gas drifts around the pillar bases. Removing edible knots opens routes between the remaining formations; the goo can work along either side.",
+        "jumps": [
+          "Zoom out to reveal whole nursery pillars; retire small dust motes."
+        ],
+        "parts": "Eat exposed dense knots and attached pillar sections, then the remaining pillar.",
+        "risk": "Keep gas silhouettes clear with opaque cores and restrained translucency."
+      }
+    },
+    {
+      "scene_id": 215,
+      "reason": "A coherent spherical formation bridges individual stars and galactic structures.",
+      "scene": {
+        "source_id": null,
+        "band": "galactic",
+        "title": "Globular Cluster Pinwheel",
+        "setting": "A round star cluster turns slowly through broad lanes around a bright core.",
+        "food": "Small star groups, larger groups, outer cluster sectors, the remaining cluster.",
+        "interaction": "Loose groups drift between lanes after gentle collisions. The goo crosses gaps freely, eating peripheral groups until the central formation becomes manageable.",
+        "jumps": [],
+        "parts": "Eat member groups from the cluster outskirts, then its remaining core and members.",
+        "risk": "Cluster membership must stay visually legible as groups disappear."
+      }
+    },
+    {
+      "scene_id": 209,
+      "reason": "The collision supplies striking composition and a causal bridge of food.",
+      "scene": {
+        "source_id": null,
+        "band": "galactic",
+        "title": "Galaxy Collision Tidal Bridge",
+        "setting": "Two stylized galaxies overlap beside a long, luminous bridge of stars.",
+        "food": "Stellar groups, tidal knots, arm fragments, smaller galaxy, larger galaxy.",
+        "interaction": "The discs slowly draw bridge knots in opposing directions. The goo gathers along the bridge, then widens its route as whole galaxy bodies become edible.",
+        "jumps": [
+          "Zoom out to reveal both entire galaxies; retire individual stars."
+        ],
+        "parts": "Eat attached arm fragments, then the remaining galaxy disc.",
+        "risk": "Galaxy deformation should use a few broad pieces rather than many simulated stars."
+      }
+    },
+    {
+      "scene_id": 214,
+      "reason": "A plain group feast avoids the draft's invented marketplace while keeping its moving composition.",
+      "scene": {
+        "source_id": "cosmos-8",
+        "band": "galactic",
+        "title": "Galaxy Group Crossing",
+        "setting": "Several distinct galaxies drift through a compact group with broad shared paths.",
+        "food": "Small galaxies, larger galaxies, paired galaxies, the remaining group.",
+        "interaction": "Neighboring paths carry galaxies across a common crossing. The goo can intercept or circle outward; no stream must be blocked and no mandatory route controls progress.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Use true galaxy-sized silhouettes rather than tiny beads labeled as galaxies."
+      }
+    },
+    {
+      "scene_id": 216,
+      "reason": "A quieter wide scene gives the campaign room before spacetime itself becomes edible.",
+      "scene": {
+        "source_id": null,
+        "band": "galactic",
+        "title": "Void Islands",
+        "setting": "Sparse galaxy groups sit between broad filaments and dark, open voids.",
+        "food": "Small galaxy groups, larger groups, filament sections, connected supercluster regions.",
+        "interaction": "Slow drift brings neighboring groups along visible filaments. The goo follows these broad food trails, while short links prevent empty travel across the void.",
+        "jumps": [],
+        "parts": null,
+        "risk": "Cosmic distances are heavily compressed; test travel time before retaining the layout."
+      }
+    },
+    {
+      "scene_id": 223,
+      "reason": "Introduces edible spacetime through familiar weight and surface response.",
+      "scene": {
+        "source_id": null,
+        "band": "spacetime",
+        "title": "Elastic Universe",
+        "setting": "A broad spacetime sheet dips beneath galaxy knots and rises into soft crests.",
+        "food": "Galaxy knots, small spacetime patches, large folds, the remaining local sheet.",
+        "interaction": "Moving knots gently deform the sheet and slide neighboring food into troughs. The goo rolls over broad crests; no bouncing or jumping ability is introduced.",
+        "jumps": [],
+        "parts": "Eat attached edge patches, then the remaining local sheet.",
+        "risk": "Use a few mesh deformations; the sheet is explicit fantasy matter."
+      }
+    },
+    {
+      "scene_id": 224,
+      "reason": "One focused transport toy gives late-game novelty without a new player ability.",
+      "scene": {
+        "source_id": null,
+        "band": "spacetime",
+        "title": "Wormhole Pantry",
+        "setting": "Two rounded wormhole mouths sit in folded spacetime beside stored matter clumps.",
+        "food": "Matter clumps, attached rim pieces, whole wormhole mouths, surrounding folds.",
+        "interaction": "A nudged clump rolls into one mouth and emerges from its partner. The goo still steers normally across the floor; object transport is the scene's single unusual behavior.",
+        "jumps": [],
+        "parts": "Eat attached rim pieces, then the remaining paired-mouth structure.",
+        "risk": "Portal behavior needs a bounded implementation with clear exit and consumption ownership."
+      }
+    },
+    {
+      "scene_id": 234,
+      "reason": "A rhythmic physical surface develops spacetime without symbolic factories or quests.",
+      "scene": {
+        "source_id": null,
+        "band": "spacetime",
+        "title": "Gravitational Wave Sheet",
+        "setting": "Broad traveling ripples cross a spacetime sheet carrying galaxy knots.",
+        "food": "Galaxy knots, small ripple folds, large wavefront sections, the local sheet.",
+        "interaction": "A ripple gently shifts knots into neighboring troughs. The goo rolls across it and eats reachable folds; wave motion never imposes a deadline or flings the player.",
+        "jumps": [],
+        "parts": "Eat attached wavefront sections, then the remaining local sheet.",
+        "risk": "Use authored deformation and keep player collision smoother than the visible ripple."
+      }
+    },
+    {
+      "scene_id": 238,
+      "reason": "The seam idea offers a final spatial toy while keeping food and rolling central.",
+      "scene": {
+        "source_id": null,
+        "band": "spacetime",
+        "title": "Metric Seam Quilt",
+        "setting": "A continuous spacetime cloth has a few broad seams, loose hems, and dense matter knots.",
+        "food": "Matter knots, exposed hems, seam sections, large cloth folds.",
+        "interaction": "Crossing a seam bends drifting objects onto a new direction. The goo nudges edible seam knots, changing nearby food paths while movement remains directly controlled.",
+        "jumps": [],
+        "parts": "Eat attached hems and seam sections, then the remaining fold.",
+        "risk": "Directional seams must not secretly alter the player's steering input."
+      }
+    },
+    {
+      "scene_id": 240,
+      "reason": "A literal final whole fulfills the campaign promise with one comprehensible comic image.",
+      "scene": {
+        "source_id": "cosmos-10",
+        "band": "spacetime",
+        "title": "Tablecloth of Everything",
+        "setting": "The last continuous spacetime fabric spans the void, carrying remaining galaxy knots and a loose hem.",
+        "food": "Galaxy knots, attached hems, vast fabric regions, all remaining spacetime.",
+        "interaction": "Slow currents draw the cloth together as the goo eats contacted regions. The uneaten fabric stays continuous until only one final edible remainder survives.",
+        "jumps": [
+          "Zoom out to reveal the full remaining spacetime sheet; retire individual galaxy detail."
+        ],
+        "parts": "Eat the attached hems and fabric regions, then consume the entire remaining spacetime sheet.",
+        "risk": "The last bite needs a deliberate support and camera transition into the ending."
+      }
+    }
+  ],
+  "prototype": [
+    {
+      "scene_id": 1,
+      "reason": "Tests the opening size gate, readable attached parts, and deformation against simple particle geometry. The science is openly cartoon fantasy."
+    },
+    {
+      "scene_id": 110,
+      "reason": "Tests attached living polyps growing the goo toward the remaining colony, plus local coherent seawater. This is the highest-priority interaction and readability check."
+    },
+    {
+      "scene_id": 159,
+      "reason": "Tests responsive rolling, drift, body lag, and harmless collisions on a recognizable curved physical surface. It deliberately needs no camera jump."
+    },
+    {
+      "scene_id": 240,
+      "reason": "Tests the cosmic endpoint, a real scale reveal, removal of obsolete detail, local consumption of a remaining whole, and the final support transition."
+    }
+  ],
+  "risks": [
+    "This is a design proposal, not approval to build 60 levels. Target level duration is roughly 3–5 minutes; no duration, difficulty, or food mass budget has been measured.",
+    "Godot standalone on the user's Mac at 1080p and 60 fps is an unverified target. Deformation, outlines, transparent liquid, and physics must be profiled together in the sampler.",
+    "Band order expresses coarse growth and setting progression. Exact carryover size, mass gain, food dimensions, and camera thresholds remain design work; some neighboring scenes may need size resets or adjusted starting food, a campaign rule not yet chosen.",
+    "Keep movement and object eligibility readable before increasing body lag or stickiness. Terrain undulation, cloth, water edges, and camera transitions must not interrupt direct steering.",
+    "Attached parts require a shared rule for remaining mass, collider updates, and whole eligibility. Removing one part must never double-count its mass when the remainder is eaten.",
+    "Local liquid needs a finite spatial representation that preserves untouched connected regions. Cloud and spacetime scenes may reuse local removal bookkeeping but should not pretend to be ordinary puddles.",
+    "Wormhole transport, deforming spacetime, and the final bite are the least routine scenes. Keep their behavior bounded; do not turn each cosmic scene into a new simulation subsystem.",
+    "Every scene needs enough accessible food after harmless collisions or missed moving props. No essential food may disappear off-map or require timing, combat, or a specific puzzle solution.",
+    "The sampler trades a conventional kitchen or street for the skatepark because curved ground directly tests the goo. It does not yet verify dense animals, coupled trains, cloth constraints, or full city rendering.",
+    "Source IDs identify closest inspiration only. Original XML entity and controller labels are evidence; all selected layouts, interactions, growth chains, and camera behavior are new proposals."
+  ],
+  "corrections": [
+    "110: Replace loose polyps, dolphin wakes, and fish-before-polyps ordering with a real tide pool of attached polyps. Eat polyps to grow into the remaining colony; no resin tray, assembled dock, or magically connected fragments. Reassign the scene to miniature.",
+    "1 and 12: Make parts genuinely attached to edible remainders. Particle and atomic imagery is fantasy; binding and size relationships are not scientific claims.",
+    "3, 15, 20, 26, 28, 32, and 36: Remove false camera jumps to another ridge, membrane underside, pore group, algae lane, seed pocket, or spill path. Only 20 keeps a replacement reveal of a larger protein tier.",
+    "39 and 57: Use actual craft and toy materials, move to tabletop, and define attached puzzle pieces or blocks leading to a remaining whole. Clear the quarry-sign camera note.",
+    "61 and 65: Correct coin, dice, stationery, and cheese progression using explicit modeled dimensions. Remove unrelated crumbs and ensure cheese wedges follow smaller stationery only when actually larger.",
+    "67: Keep harmless carrying toy soldiers, make fort blocks a real edible formation, and replace the orange-location camera note with a larger whole-fort reveal.",
+    "68: Keep actual bento food and trays rather than live fish or differently colored fish tiers. Carrier motion must never become a boarding deadline.",
+    "80 and 160: Retain one toy railway and one distinct full-size cargo yard. Remove gratuitous liquid, parked-house/car ordering, and scenery that made the toy train a copied street level.",
+    "85, 99, 101, 88, and 164: Use food native to each real setting and forward size ordering. Remove unrelated berry jam, cabinet domino displays, forced wash spills, and routine drain hazards.",
+    "133, 149, 151, 152, 157, 158, 159, 164, and 168: Reassign to human because their main food is household, garden, sporting, or vehicle sized. Preserve the real settings instead of constructing miniature models.",
+    "133, 149, 151, 157, and 159: Clear object-reveal notes masquerading as jumps. Only 151 and 157 receive new zoom-outs revealing whole trees or greenhouse frames.",
+    "163, 167, and 130: Replace revealed shelves, steps, and rail spurs with either no camera jump or an actual larger edible tier. Remove the repeated train from 130.",
+    "136, 140, and 141: Keep a broad readable rolling support surface. Airborne scenery does not grant flight, jumping, balance challenges, or weather damage.",
+    "169, 171, 174, 177, and 176: Replace repeated dust-to-machine starts with larger food appropriate to this campaign segment. No whole-pool draining on Europa; whole comet and Saturn are explicit final growth rewards.",
+    "187, 188, 193, 200, 215, 209, 214, and 216: Remove dust-level resets, invented cargo fixtures, and automatic assembly described as parts-to-whole. Larger celestial objects lead to their actual remaining formations or larger bodies.",
+    "223, 224, 234, 238, and 240: Remove pantry crates and other generic metaphor props, duplicate spark-bead ladders, and new player powers. Keep each core spacetime surface behavior concrete. Only 240 reveals the complete final sheet.",
+    "240: Eating a hem must lead to the entire remaining spacetime fabric becoming edible. Revealing an empty void alone is not a size jump or a campaign completion payoff."
+  ]
+}
