@@ -12,3 +12,5 @@ Sources:
 - https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html
 - https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html
 - https://docs.godotengine.org/en/stable/tutorials/physics/large_world_coordinates.html
+
+Optional scale transitions: each level declares zero to two size jumps, with ordinary growth inside each camera view. A jump reveals larger types and retires tiny detail. Edible parts and emergent formations are independent of camera transitions. Candidate data stores jumps as a bounded array rather than three mandatory phases.

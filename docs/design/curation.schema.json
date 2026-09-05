@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["summary", "campaign", "prototype", "risks", "corrections"],
+  "properties": {
+    "summary": {"type": "string"},
+    "campaign": {
+      "type": "array", "minItems": 60, "maxItems": 60,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["scene_id", "reason"],
+        "properties": {"scene_id": {"type": "integer", "minimum": 1, "maximum": 240}, "reason": {"type": "string"}}
+      }
+    },
+    "prototype": {
+      "type": "array", "minItems": 4, "maxItems": 4,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["scene_id", "reason"],
+        "properties": {"scene_id": {"type": "integer", "minimum": 1, "maximum": 240}, "reason": {"type": "string"}}
+      }
+    },
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "corrections": {"type": "array", "items": {"type": "string"}}
+  }
+}

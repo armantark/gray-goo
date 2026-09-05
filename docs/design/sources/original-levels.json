@@ -1,0 +1,1688 @@
+[
+  {
+    "id": "laboratory-1",
+    "chapter": "laboratory",
+    "level": 1,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/soil.xml",
+    "sha256": "44d0451a57368a60d60d9c33ac1bd89d4e2755dab8acea0dabb09b346008170f",
+    "entities": [
+      "clay",
+      "silt"
+    ],
+    "controllers": [
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "laboratory-2",
+    "chapter": "laboratory",
+    "level": 2,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/bacteria.xml",
+    "sha256": "ae16ae5cd1dcf703947f37744a3e894e15324cbcec05abd48a49b5c1c8ec7bb6",
+    "entities": [
+      "bacteria1",
+      "bacteria2",
+      "bacteria3"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "leavelevel",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "laboratory-3",
+    "chapter": "laboratory",
+    "level": 3,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/blood.xml",
+    "sha256": "22dac3f9c9223c76321b6c0a69d503371124def4e760e5b075686f98068e80f7",
+    "entities": [
+      "bacteria2",
+      "redblood",
+      "whiteblood"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "leavelevel",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "laboratory-4",
+    "chapter": "laboratory",
+    "level": 4,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/amoeba.xml",
+    "sha256": "cae8edf591fab949d16865bb839da8d4ae388c8c38793049ade35e1554ae0929",
+    "entities": [
+      "algea",
+      "amoeba1",
+      "amoeba2",
+      "paramecium"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "leavelevel",
+      "movedirection",
+      "pathfollow"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "outside-1",
+    "chapter": "outside",
+    "level": 1,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/bugs1.xml",
+    "sha256": "2713e7761c17c27310cab40d14114617a4ba1c3beb3dafb9bc0cfe7f86fae4cc",
+    "entities": [
+      "aphid",
+      "bonsaileaf",
+      "dirt",
+      "dirtbig",
+      "ladybug"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "outside-2",
+    "chapter": "outside",
+    "level": 2,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/bugs2.xml",
+    "sha256": "5fa5883f8aea7343b7d5aa72b5384f8784627eca9afbe0b945c086c38c765346",
+    "entities": [
+      "aphid",
+      "bonsaileaf",
+      "fly",
+      "ladybug",
+      "pineneedle",
+      "seed"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "outside-3",
+    "chapter": "outside",
+    "level": 3,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/bugs3.xml",
+    "sha256": "215d1904e323c4e03ea623fcac00027545f0db7032196cf7e4c526d4fd937393",
+    "entities": [
+      "aphid",
+      "bonsaileaf",
+      "dirtbig"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "outside-4",
+    "chapter": "outside",
+    "level": 4,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/bugs4.xml",
+    "sha256": "123de071284fa4c690d2b6d04d1aad5bda241f8498f8ca425bddb6bc574d3ae4",
+    "entities": [
+      "acorn",
+      "fly",
+      "golfball",
+      "ladybug",
+      "penny",
+      "twig"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "outside-5",
+    "chapter": "outside",
+    "level": 5,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/bugs5.xml",
+    "sha256": "53628dc16a31f47ce5bce2c629a127ccf2f1baad65586536ba9aab268242f8ec",
+    "entities": [
+      "baseball",
+      "blueberry",
+      "fly",
+      "golfball",
+      "grape",
+      "huckleberry",
+      "leaf"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "picnictable-1",
+    "chapter": "picnictable",
+    "level": 1,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/table1.xml",
+    "sha256": "c7314807edf7556ae9b9353c39d90f9371d30899bef41a84385983e21e98f0b7",
+    "entities": [
+      "blueberry",
+      "blueblock",
+      "die1",
+      "die2",
+      "die3",
+      "fly",
+      "huckleberry",
+      "penny",
+      "redblock",
+      "yellowblock"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "picnictable-2",
+    "chapter": "picnictable",
+    "level": 2,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/table2.xml",
+    "sha256": "fc1a973d649d2186796a24ee11ec464aa9904e063ab9b6cd5ca91bbdf5d9c64b",
+    "entities": [
+      "die1",
+      "die2",
+      "die3",
+      "domino1",
+      "domino2",
+      "redblock"
+    ],
+    "controllers": [
+      "stationary"
+    ],
+    "placements": [
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "picnictable-3",
+    "chapter": "picnictable",
+    "level": 3,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/table3.xml",
+    "sha256": "1be3733102584f1cd7f4c5a0e454667d2c0cc7fce63c2cf0c8029f5e0caf7cf7",
+    "entities": [
+      "blueblock",
+      "die1",
+      "die2",
+      "die3",
+      "domino1",
+      "domino2",
+      "puzzle1",
+      "puzzle21",
+      "puzzle25",
+      "puzzle5",
+      "redblock",
+      "yellowblock"
+    ],
+    "controllers": [
+      "stationary"
+    ],
+    "placements": [
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "picnictable-4",
+    "chapter": "picnictable",
+    "level": 4,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/table4.xml",
+    "sha256": "b99e9ca4554320e3827170b4cf6b7ffeb99df9943e75dcb77a0a248328111399",
+    "entities": [
+      "blueberry",
+      "blueblock",
+      "die1",
+      "die2",
+      "die3",
+      "domino1",
+      "domino2",
+      "huckleberry",
+      "mouse",
+      "redblock",
+      "yellowblock"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "picnictable-5",
+    "chapter": "picnictable",
+    "level": 5,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/table5.xml",
+    "sha256": "1f3afe5ec262b24865433866ca22f4eeb2e98e2c0926e79d964439a212e81d75",
+    "entities": [
+      "acorn",
+      "blueblock",
+      "die1",
+      "domino1",
+      "domino2",
+      "grape",
+      "penny",
+      "puzzle1",
+      "puzzle10",
+      "puzzle11",
+      "puzzle12",
+      "puzzle13",
+      "puzzle14",
+      "puzzle15",
+      "puzzle16",
+      "puzzle17",
+      "puzzle18",
+      "puzzle19",
+      "puzzle2",
+      "puzzle20",
+      "puzzle21",
+      "puzzle22",
+      "puzzle23",
+      "puzzle24",
+      "puzzle25",
+      "puzzle3",
+      "puzzle4",
+      "puzzle5",
+      "puzzle6",
+      "puzzle7",
+      "puzzle8",
+      "puzzle9",
+      "redblock",
+      "yellowblock"
+    ],
+    "controllers": [
+      "stationary"
+    ],
+    "placements": [
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "picnictable-6",
+    "chapter": "picnictable",
+    "level": 6,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/table6.xml",
+    "sha256": "053e609e7f47ddd32037c50564e1eb3d8bfdb1dfb9b6338872382b0964d5cbb5",
+    "entities": [
+      "blueblock",
+      "cheese",
+      "die1",
+      "die2",
+      "die3",
+      "domino1",
+      "domino2",
+      "mouse",
+      "pen",
+      "pencil",
+      "redblock",
+      "yellowblock"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "picnictable-7",
+    "chapter": "picnictable",
+    "level": 7,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/table7.xml",
+    "sha256": "2fbd03160b7b3cc5130587469e6b38f0858b1890adbd6bf9bb9368a20dab298c",
+    "entities": [
+      "armyman1",
+      "armyman2",
+      "blueblock",
+      "cheese",
+      "die1",
+      "die2",
+      "die3",
+      "domino1",
+      "domino2",
+      "grapefruit",
+      "milk",
+      "mouse",
+      "pen",
+      "pencil",
+      "rat",
+      "redblock",
+      "yellowblock"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "ocean-1",
+    "chapter": "ocean",
+    "level": 1,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/fish1.xml",
+    "sha256": "63914496560a9001d5f92fa2a922d73fc520ea591c13184ef199b96df9143bea",
+    "entities": [
+      "bluefish",
+      "orangefish",
+      "yellowfish"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "ocean-2",
+    "chapter": "ocean",
+    "level": 2,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/fish2.xml",
+    "sha256": "5a1db92ca18fe63befa113405dda1908a312e1fcb12843932290a35da5904cda",
+    "entities": [
+      "bluefish",
+      "dolphin",
+      "orangefish",
+      "yellowfish"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "ocean-3",
+    "chapter": "ocean",
+    "level": 3,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/fish3.xml",
+    "sha256": "99ec62bfdd8564323c05a6d6495a72d1a5c554e3f662ff84b3b649e27976d5aa",
+    "entities": [
+      "bluefish",
+      "dolphin",
+      "orangefish",
+      "shark",
+      "yellowfish"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "park-1",
+    "chapter": "park",
+    "level": 1,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/grass1.xml",
+    "sha256": "d321617178dddb132a79c2d08edcbd2ea45fdeb9a07d910692a05b97d8b7c062",
+    "entities": [
+      "baseball",
+      "golfball",
+      "leaf",
+      "mouse",
+      "rat"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "park-2",
+    "chapter": "park",
+    "level": 2,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/grass2.xml",
+    "sha256": "91ae5ab4be71aa9e78a63a475feeba9405e5a6c59cb1c4677867ce9063569029",
+    "entities": [
+      "cat",
+      "mouse",
+      "rat"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "park-3",
+    "chapter": "park",
+    "level": 3,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/grass3.xml",
+    "sha256": "7dcf072a8082849ccc3d1871cbc46ca131c6b2e29e5ffda7bdd4b043189f9d74",
+    "entities": [
+      "cat",
+      "dog",
+      "mouse",
+      "rat"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "park-4",
+    "chapter": "park",
+    "level": 4,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/grass4.xml",
+    "sha256": "f4b6e69aef48798a2c143d6dadab472055728b4f24c6a76a057730228381c97e",
+    "entities": [
+      "cat"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "park-5",
+    "chapter": "park",
+    "level": 5,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/grass5.xml",
+    "sha256": "d92095ff54798a3c73885a368431397593047d863438f181d82f628251d526e5",
+    "entities": [
+      "cat",
+      "dog",
+      "person",
+      "tree2",
+      "woman"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "park-6",
+    "chapter": "park",
+    "level": 6,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/grass6.xml",
+    "sha256": "eb021cf07e99b09d98a064c7e6c6e5d15581c080fcb37042092643d6055e4461",
+    "entities": [
+      "bullet",
+      "dog",
+      "person",
+      "police",
+      "tree2",
+      "woman"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "shot",
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "city-1",
+    "chapter": "city",
+    "level": 1,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/city1.xml",
+    "sha256": "839c93844548925adb4b1f8c20ca93e8b1a927a8698fa3d8001c3893a63ed092",
+    "entities": [
+      "bullet",
+      "person",
+      "police",
+      "redcar",
+      "stopsign",
+      "taxi",
+      "tree1",
+      "tree2",
+      "woman"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "pathfollow",
+      "stationary"
+    ],
+    "placements": [
+      "shot",
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "city-2",
+    "chapter": "city",
+    "level": 2,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/city2.xml",
+    "sha256": "47cbfed1d2c785f451d5ae639065fffdf3f76098019fbef8d9d5d8d7996c47d5",
+    "entities": [
+      "horse",
+      "person",
+      "policecar",
+      "redcar",
+      "stopsign",
+      "taxi",
+      "tree1",
+      "tree2",
+      "woman"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "pathfollow",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "city-3",
+    "chapter": "city",
+    "level": 3,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/city3.xml",
+    "sha256": "3231ecf507ce6a654f6bc3eb8da219ad2203d5de4c317a6bc40dd0222beb7e89",
+    "entities": [
+      "bullet",
+      "horse",
+      "police",
+      "policecar",
+      "tree1",
+      "tree2"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "pathfollow",
+      "stationary"
+    ],
+    "placements": [
+      "shot",
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "city-4",
+    "chapter": "city",
+    "level": 4,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/city4.xml",
+    "sha256": "d1d17a89193d2d223143db74204ca9efda22755685cb3aa0b4f480560c380d7f",
+    "entities": [
+      "bullet",
+      "horse",
+      "person",
+      "police",
+      "tank",
+      "tankbullet",
+      "tree1",
+      "tree2",
+      "woman"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "shot",
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "city-5",
+    "chapter": "city",
+    "level": 5,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/city5.xml",
+    "sha256": "98d62ddedc47d8e55b6870da904ca2914a3d7e525062e0e0f7275bb9484cf2d9",
+    "entities": [
+      "building2",
+      "bullet",
+      "horse",
+      "house",
+      "person",
+      "police",
+      "policecar",
+      "redcar",
+      "stopsign",
+      "taxi",
+      "tree1",
+      "tree2",
+      "woman"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "pathfollow",
+      "stationary"
+    ],
+    "placements": [
+      "shot",
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "city-6",
+    "chapter": "city",
+    "level": 6,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/city6.xml",
+    "sha256": "b193fc62eef5977a1ba2b801c51617242760314d0e184005518fb95bdcae3c9a",
+    "entities": [
+      "building2",
+      "caboose",
+      "house",
+      "redcar",
+      "taxi",
+      "traincar",
+      "trainengine",
+      "tree1",
+      "tree2"
+    ],
+    "controllers": [
+      "avoid",
+      "evade",
+      "movedirection",
+      "pathfollow",
+      "stationary"
+    ],
+    "placements": [
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "city-7",
+    "chapter": "city",
+    "level": 7,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/city7.xml",
+    "sha256": "9b89714b409e0ee1f1df2a187123d2de54663aca184e89640cd6e9f0c31c8eb6",
+    "entities": [
+      "building1",
+      "building2",
+      "house",
+      "policecar",
+      "redcar",
+      "tank",
+      "tankbullet",
+      "taxi",
+      "tree1",
+      "tree2"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "pathfollow",
+      "stationary"
+    ],
+    "placements": [
+      "shot",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "city-8",
+    "chapter": "city",
+    "level": 8,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/city8.xml",
+    "sha256": "cda0241037e678249da720cb5c0901b5c5ff8ed6b4e097b010a0227ec2c08fee",
+    "entities": [
+      "building1",
+      "caboose",
+      "house",
+      "policecar",
+      "redcar",
+      "taxi",
+      "traincar",
+      "trainengine",
+      "tree1",
+      "tree2"
+    ],
+    "controllers": [
+      "avoid",
+      "evade",
+      "movedirection",
+      "pathfollow",
+      "stationary"
+    ],
+    "placements": [
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "sky-1",
+    "chapter": "sky",
+    "level": 1,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/sky1.xml",
+    "sha256": "3792868f464afb211265f8d086b5fdedb0091cea41390547af6076fa7442467e",
+    "entities": [
+      "cloud0",
+      "cloud1",
+      "cloud2",
+      "cloud3",
+      "cloud4"
+    ],
+    "controllers": [
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "sky-2",
+    "chapter": "sky",
+    "level": 2,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/sky2.xml",
+    "sha256": "b17fe0fe876bf850d83339b4d5a0b93bbc32146f3b4735162f528f7ab732baae",
+    "entities": [
+      "bird",
+      "cloud0",
+      "cloud1",
+      "cloud2",
+      "cloud3",
+      "cloud4",
+      "kite"
+    ],
+    "controllers": [
+      "avoid",
+      "evade",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "sky-3",
+    "chapter": "sky",
+    "level": 3,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/sky3.xml",
+    "sha256": "632e379f6d53d4e64f4abeb3137394bf4e0c619a4f9207049a97c3d21ce45093",
+    "entities": [
+      "biplane",
+      "bird",
+      "cloud0",
+      "cloud1",
+      "cloud2",
+      "cloud3",
+      "cloud4",
+      "kite"
+    ],
+    "controllers": [
+      "avoid",
+      "evade",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "sky-4",
+    "chapter": "sky",
+    "level": 4,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/sky4.xml",
+    "sha256": "5021ac58eaa613f78953c6363bb16ff00b4c6c6e0aa2efbed95aa1cefb926cce",
+    "entities": [
+      "balloon",
+      "biplane",
+      "cloud0",
+      "cloud1",
+      "cloud2",
+      "cloud3",
+      "cloud4",
+      "kite"
+    ],
+    "controllers": [
+      "avoid",
+      "evade",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "sky-5",
+    "chapter": "sky",
+    "level": 5,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/sky5.xml",
+    "sha256": "08e5e484f194a78e374adc37c8f6ae8beb044cbf1b11c54782c2bfbad1c47828",
+    "entities": [
+      "balloon",
+      "biplane",
+      "bullet",
+      "cloud0",
+      "cloud1",
+      "cloud2",
+      "cloud3",
+      "cloud4",
+      "jet"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection"
+    ],
+    "placements": [
+      "shot",
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "sky-6",
+    "chapter": "sky",
+    "level": 6,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/sky6.xml",
+    "sha256": "f7cf709324f89845ec293ae479303fa3250ec864b5e70535e3056bd18cc8a655",
+    "entities": [
+      "balloon",
+      "biplane",
+      "blimp",
+      "bullet",
+      "cloud0",
+      "cloud1",
+      "cloud2",
+      "cloud3",
+      "cloud4",
+      "jet"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection"
+    ],
+    "placements": [
+      "shot",
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "sky-7",
+    "chapter": "sky",
+    "level": 7,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/sky7.xml",
+    "sha256": "2b171a3828def6ba953564cc80ef6bc8a73232e143e27c8940c23051170ce8a7",
+    "entities": [
+      "balloon",
+      "blimp",
+      "bullet",
+      "cloud0",
+      "cloud1",
+      "cloud2",
+      "cloud3",
+      "cloud4",
+      "jet",
+      "jetplane"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "movedirection"
+    ],
+    "placements": [
+      "shot",
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "orbit-1",
+    "chapter": "orbit",
+    "level": 1,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space1.xml",
+    "sha256": "394eabb255a74bc03cc97c1e77ce081d3b821b1b69507cb84f50024db3700435",
+    "entities": [
+      "meteoroid1",
+      "meteoroid2",
+      "sputnik"
+    ],
+    "controllers": [
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "orbit-2",
+    "chapter": "orbit",
+    "level": 2,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space2.xml",
+    "sha256": "bb3b9334704407c1c557b1cb5a0233013b08fb1e26dea7310d6cfbaaf5bd10b9",
+    "entities": [
+      "astronaut",
+      "meteoroid1",
+      "meteoroid2",
+      "satellite"
+    ],
+    "controllers": [
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "orbit-3",
+    "chapter": "orbit",
+    "level": 3,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space3.xml",
+    "sha256": "828e5d549b9a74784f66dfff52896046d3d7d7dc7cee33d916f75417f1dcc3a9",
+    "entities": [
+      "astronaut",
+      "capsule",
+      "meteoroid1",
+      "meteoroid2",
+      "satellite"
+    ],
+    "controllers": [
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "orbit-4",
+    "chapter": "orbit",
+    "level": 4,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space4.xml",
+    "sha256": "0c9a13753baa0a34ad802304b7fac6528a1b6cbcb224b935797748fa46331fd2",
+    "entities": [
+      "energy1",
+      "meteoroid1",
+      "meteoroid2"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "leavelevel",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "orbit-5",
+    "chapter": "orbit",
+    "level": 5,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space5.xml",
+    "sha256": "9e7d1a82b56c97b4ca92db4aba58fa3aad2b4091c0b31a4b1a01dd3598024a63",
+    "entities": [
+      "capsule",
+      "energy1",
+      "meteoroid1",
+      "meteoroid2",
+      "satellite",
+      "shuttle"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "leavelevel",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "orbit-6",
+    "chapter": "orbit",
+    "level": 6,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space6.xml",
+    "sha256": "f766d3a8d9b8880d0dd33eb1bf511c924eeda868fe40bfaa7152f5460725c6ff",
+    "entities": [
+      "attackshuttle",
+      "capsule",
+      "laser",
+      "meteoroid1",
+      "meteoroid2"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "movedirection"
+    ],
+    "placements": [
+      "shot",
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "orbit-7",
+    "chapter": "orbit",
+    "level": 7,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space7.xml",
+    "sha256": "25cc810ac4f098e4a3fa8c1387c7456716e3fbabab3b662878f626bc60137399",
+    "entities": [
+      "capsule",
+      "energy1",
+      "meteoroid1",
+      "meteoroid2",
+      "shuttle",
+      "spacestation"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "leavelevel",
+      "movedirection",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "orbit-8",
+    "chapter": "orbit",
+    "level": 8,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space8.xml",
+    "sha256": "6406ef82956d014dc8f6ba7af7b30fe1749f25ac2243472c6147e3a0b3d54fd8",
+    "entities": [
+      "alien",
+      "asteroid1",
+      "asteroid2",
+      "laser"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection"
+    ],
+    "placements": [
+      "shot",
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "orbit-9",
+    "chapter": "orbit",
+    "level": 9,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space9.xml",
+    "sha256": "72caa82e13b67ee6a6d8b2fad3ca526b5d52776aac73d727b149700769a818cf",
+    "entities": [
+      "asteroid1",
+      "asteroid2",
+      "energy2"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "leavelevel",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "orbit-10",
+    "chapter": "orbit",
+    "level": 10,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space10.xml",
+    "sha256": "b1ba146535e2f7bb15f5df8e98408fe83158ae3262e42a3172b19df161c75031",
+    "entities": [
+      "asteroid1",
+      "asteroid2",
+      "earth",
+      "moon"
+    ],
+    "controllers": [
+      "movedirection",
+      "pathfollow",
+      "stationary"
+    ],
+    "placements": [
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "cosmos-1",
+    "chapter": "cosmos",
+    "level": 1,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space11.xml",
+    "sha256": "caa54a5b0325273646032a0711c0034482456fa9d41b49077b1b1fab1a79eb74",
+    "entities": [
+      "alienmother",
+      "asteroid1",
+      "asteroid2",
+      "earth",
+      "jupiter",
+      "laser",
+      "mars",
+      "mercury",
+      "neptune",
+      "pluto",
+      "saturn",
+      "sun",
+      "uranus",
+      "venus"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "movedirection",
+      "pathfollow",
+      "stationary"
+    ],
+    "placements": [
+      "shot",
+      "side",
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "cosmos-2",
+    "chapter": "cosmos",
+    "level": 2,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space12.xml",
+    "sha256": "1545760c57378004d869c136cf13d82c4e30094c5e539b799a188bbaf9392a1a",
+    "entities": [
+      "alphacentauria",
+      "alphacentaurib",
+      "bernardsstar",
+      "epsiloneridani",
+      "lalande",
+      "proximacentauri",
+      "ross154",
+      "ross248",
+      "siriusa",
+      "siriusb",
+      "sol",
+      "tauceti",
+      "wolf359"
+    ],
+    "controllers": [
+      "stationary"
+    ],
+    "placements": [
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "cosmos-3",
+    "chapter": "cosmos",
+    "level": 3,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space13.xml",
+    "sha256": "29e812689b5e315888aefa81db2cdceef7d3bda3beb450d795bf1bff7ff17502",
+    "entities": [
+      "redgiant",
+      "starblue",
+      "starred",
+      "starwhite",
+      "staryellow"
+    ],
+    "controllers": [
+      "stationary"
+    ],
+    "placements": [
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "cosmos-4",
+    "chapter": "cosmos",
+    "level": 4,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space14.xml",
+    "sha256": "eb83102780ea90dc22427b374281e90aa73200bd896c2620fca1a75e38a972c7",
+    "entities": [
+      "blackhole",
+      "starblue",
+      "starred",
+      "starwhite",
+      "staryellow"
+    ],
+    "controllers": [
+      "pathfollow",
+      "stationary"
+    ],
+    "placements": [
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "cosmos-5",
+    "chapter": "cosmos",
+    "level": 5,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space15.xml",
+    "sha256": "504159859d3c9decb2e49d79ee7dfc027cf0261832245da5665b83d668a954cc",
+    "entities": [
+      "nebula1",
+      "nebula2",
+      "nebula3",
+      "starcluster"
+    ],
+    "controllers": [
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "cosmos-6",
+    "chapter": "cosmos",
+    "level": 6,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space16.xml",
+    "sha256": "b0230a6bc910fd117419ee82219fec7b45cf90bde79b34c3d821b49b86d443db",
+    "entities": [
+      "bulge",
+      "galaxydust",
+      "nebula1",
+      "nebula2",
+      "nebula3",
+      "starcluster"
+    ],
+    "controllers": [
+      "stationary"
+    ],
+    "placements": [
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "cosmos-7",
+    "chapter": "cosmos",
+    "level": 7,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space17.xml",
+    "sha256": "97304848da378636b6d0bcaccace04230e9b0975dae2b07b3dd64c8b6d45c219",
+    "entities": [
+      "galaxy1",
+      "galaxy2",
+      "galaxy3"
+    ],
+    "controllers": [
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "cosmos-8",
+    "chapter": "cosmos",
+    "level": 8,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space18.xml",
+    "sha256": "35a88af0a4c6a303d52c82538e3cf39717ca1e75b866e51178d8e5f680411394",
+    "entities": [
+      "galaxycluster",
+      "galaxygroup"
+    ],
+    "controllers": [
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "cosmos-9",
+    "chapter": "cosmos",
+    "level": 9,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/space19.xml",
+    "sha256": "d4b918fd6c723cc5e94d28cb81d24db725ea533ddc5207ba417fc21a6343749e",
+    "entities": [
+      "amoebagiant",
+      "supercluster"
+    ],
+    "controllers": [
+      "attack",
+      "avoid",
+      "evade",
+      "leavelevel",
+      "movedirection"
+    ],
+    "placements": [
+      "side"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  },
+  {
+    "id": "cosmos-10",
+    "chapter": "cosmos",
+    "level": 10,
+    "source": "https://www.dingogames.com/tastyplanet/downloadmac.htm",
+    "edition": "Official first-game Mac demo 1.4.1; not verified identical to 2006 release",
+    "filename": "assets/levels/end.xml",
+    "sha256": "e43705487e67f8385a7988b2c49cd270289596de70215224ce8e4805cf11170d",
+    "entities": [
+      "fabric",
+      "time"
+    ],
+    "controllers": [
+      "stationary"
+    ],
+    "placements": [
+      "spot"
+    ],
+    "limits": "Entity and controller labels are extracted from supplied XML. Their runtime behavior and physical sizes are not verified."
+  }
+]

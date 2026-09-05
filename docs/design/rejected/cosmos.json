@@ -1,0 +1,802 @@
+[
+  {
+    "id": 161,
+    "band": "planetary",
+    "title": "Lunar Mare Crater",
+    "setting": "A powdery moon crater has black basalt shelves, ice beads, and regolith ramps.",
+    "food": "dust motes → ice beads → rover stones → crater-rim slabs",
+    "interaction": "Low gravity lets pushed stones coast into shelves, causing slow avalanches that expose routes.",
+    "reveal": "Growth lets the goo mop ice pockets and swallow the basalt lip.",
+    "risk": "Coasting needs broad boundaries and a steady overhead camera."
+  },
+  {
+    "id": 162,
+    "band": "planetary",
+    "title": "Dust Devil Basin",
+    "setting": "A rust-red basin holds soft dust, ribbed dunes, and survey flags.",
+    "food": "iron grains → pebbles → flag posts → dune hummocks",
+    "interaction": "A dust column carries grains around the bowl; the goo blocks its edge and diverts the stream into piles.",
+    "reveal": "Growth makes dune hearts and flag bases edible.",
+    "risk": "Wind needs a readable loop and stable props."
+  },
+  {
+    "id": 163,
+    "band": "planetary",
+    "title": "Europa Fracture Shelf",
+    "setting": "A blue-white ice shelf has cracks, salt ridges, and translucent brine pockets.",
+    "food": "salt grains → ice chips → brine beads → fracture bridges",
+    "interaction": "Pushing an ice chip opens a crack; brine flows through and gathers against the goo.",
+    "reveal": "Growth lets the goo eat ice rafts and sealed vents below.",
+    "risk": "Brine needs local removal that still reads as one surface."
+  },
+  {
+    "id": 164,
+    "band": "planetary",
+    "title": "Titan Methane Shore",
+    "setting": "An amber methane shore has hydrocarbon stones, black dunes, and shallow channels.",
+    "food": "sand grains → hydrocarbon pebbles → buoyant stones → dune islands",
+    "interaction": "Floating stones follow the current; the goo piles them against a bank to bridge a channel.",
+    "reveal": "Growth makes the bank edible and lets the goo mop the lake edge.",
+    "risk": "Buoyancy and grounded goo contact need separate collision tuning."
+  },
+  {
+    "id": 165,
+    "band": "planetary",
+    "title": "Venus Cloud Deck",
+    "setting": "A golden cloud deck has puffy layers, mineral balloons, and floating rock shelves.",
+    "food": "cloud wisps → mineral beads → balloon rocks → cloud islands",
+    "interaction": "Sliding cloud bands catch beads on shelves and redirect them into slow eddies.",
+    "reveal": "Growth lets the goo mop cloud banks and swallow their support shelves.",
+    "risk": "Translucent layers must stay readable from above."
+  },
+  {
+    "id": 166,
+    "band": "planetary",
+    "title": "Io Sulfur Plain",
+    "setting": "A yellow sulfur plain has dark lava islands, bubbling vents, and ash channels.",
+    "food": "ash flecks → sulfur pellets → lava pebbles → vent mounds",
+    "interaction": "Vents pulse pellets outward; a goo wall catches them and pushes the pile into a channel.",
+    "reveal": "Growth makes vent collars and lava islands edible.",
+    "risk": "Pulses must read as gentle forces rather than damage."
+  },
+  {
+    "id": 167,
+    "band": "planetary",
+    "title": "Mercury Terminator Ridge",
+    "setting": "A sharp terminator ridge has gray regolith, iron flakes, and tilted crater plates.",
+    "food": "iron flakes → metal pebbles → crater plates → ridge buttresses",
+    "interaction": "Pushing a plate tips it downhill, sweeping flakes into a basin for collection.",
+    "reveal": "Growth lets the goo eat the basin wall and bright iron seams.",
+    "risk": "Tilted surfaces need collision meshes that let plates slide."
+  },
+  {
+    "id": 168,
+    "band": "planetary",
+    "title": "Ceres Salt Mine",
+    "setting": "A chalky Ceres quarry has dark terraces, salt crystals, and briny shafts.",
+    "food": "regolith grains → salt shards → rubble blocks → mine terraces",
+    "interaction": "Rubble plugs a shaft; the goo pushes one free, releasing brine that wets nearby crystals.",
+    "reveal": "Growth makes shaft rims and compacted quarry floor edible.",
+    "risk": "Use a simple fluid proxy instead of full liquid simulation."
+  },
+  {
+    "id": 169,
+    "band": "planetary",
+    "title": "Enceladus Plume Fields",
+    "setting": "A pale ice field sits beneath geysers, snow fans, frozen ridges, and plume beads.",
+    "food": "frost specks → plume beads → ice fans → geyser collars",
+    "interaction": "Jets lift beads; the goo nudges their bases, leaning columns that spill frost across the floor.",
+    "reveal": "Growth lets the goo mop snow fans and eat collar ice.",
+    "risk": "Several jets can clutter the camera without strong color separation."
+  },
+  {
+    "id": 170,
+    "band": "planetary",
+    "title": "Neptune Ice Plateau",
+    "setting": "A cobalt plateau has methane-ice ridges, blue boulders, and gust channels.",
+    "food": "ice dust → blue pebbles → boulders → plateau shelves",
+    "interaction": "A crosswind accelerates boulders along channels; the goo parks against a ridge and makes a feeding queue.",
+    "reveal": "Growth lets the goo eat the ridge cap and hidden shelves.",
+    "risk": "Wind traffic needs forgiving resets when boulders miss channels."
+  },
+  {
+    "id": 171,
+    "band": "planetary",
+    "title": "Pluto Nitrogen Glacier",
+    "setting": "A peach nitrogen glacier has soft flow lines, blue islands, and slow shelves.",
+    "food": "frost grains → blue chips → glacier blocks → valley shelves",
+    "interaction": "The glacier creeps around islands; the goo wedges into a flow line and redirects a slab toward chips.",
+    "reveal": "Growth makes island bases and deep glacier shelves edible.",
+    "risk": "Slow terrain needs visible accumulation so it does not feel static."
+  },
+  {
+    "id": 172,
+    "band": "planetary",
+    "title": "Ganymede Magnetic Grooves",
+    "setting": "A striped ice-rock plain has metallic grains, curved grooves, and magnetic arches.",
+    "food": "metal filings → iron beads → stone magnets → groove arches",
+    "interaction": "Magnetic grooves pull beads along curves; the goo blocks one and spills them into a neighboring loop.",
+    "reveal": "Growth lets the goo eat iron arches and their stone anchors.",
+    "risk": "Moving trails must show the otherwise invisible attraction."
+  },
+  {
+    "id": 173,
+    "band": "planetary",
+    "title": "Asteroid Rubble Courtyard",
+    "setting": "A small asteroid courtyard holds loose rubble, anchored boulders, and dust bowls.",
+    "food": "dust motes → rubble chips → loose boulders → courtyard shelves",
+    "interaction": "A pushed boulder bumps neighbors into a chain reaction; the cluster rolls into a bowl and gathers debris.",
+    "reveal": "Growth lets the goo eat the bowl rim and parent rock.",
+    "risk": "Sparse piles and broad faces prevent rigid-body jitter."
+  },
+  {
+    "id": 174,
+    "band": "planetary",
+    "title": "Saturn Ring Gap",
+    "setting": "A top-down Saturn ring slice has ice chunks, dark gaps, and shepherd moons.",
+    "food": "ice dust → ring chips → ice boulders → moonlet crumbs",
+    "interaction": "Shepherd moons nudge chunks into curved lanes; the goo blocks one and builds a debris bank.",
+    "reveal": "Growth lets the goo mop the bank and eat shaping moonlet surfaces.",
+    "risk": "Circular motion needs a strong orientation cue."
+  },
+  {
+    "id": 175,
+    "band": "planetary",
+    "title": "Ocean Planet Archipelago",
+    "setting": "A calm ocean planet has shallow water, coral-like islands, and floating ice rafts.",
+    "food": "foam beads → shell pebbles → ice rafts → island shelves",
+    "interaction": "A current carries rafts between islands; the goo pushes one sideways to bridge a channel and collect foam.",
+    "reveal": "Growth makes the raft bed and low island shelves edible.",
+    "risk": "Depth, buoyancy, and goo contact need clear overhead layering."
+  },
+  {
+    "id": 176,
+    "band": "planetary",
+    "title": "Super-Earth Canopy Basin",
+    "setting": "A dense alien canopy has broad leaves, seed pods, mossy soil, and root bridges.",
+    "food": "pollen flecks → seed pods → fallen leaves → root bridges",
+    "interaction": "Leaves bend under the goo and spring back, shaking pods onto soil; roots carry them downhill.",
+    "reveal": "Growth lets the goo mop moss mats and swallow thick roots.",
+    "risk": "Sparse canopy art prevents leaves from hiding edible objects."
+  },
+  {
+    "id": 177,
+    "band": "planetary",
+    "title": "Lunar Lava Tube",
+    "setting": "A basalt lava tube has ceiling openings, stalactite rubble, black pools, and low arches.",
+    "food": "basalt grains → rubble chips → stalactites → arch segments",
+    "interaction": "Rolling stones strike arches and shed chips; the goo presses under an opening and redirects rubble into a pool.",
+    "reveal": "Growth lets the goo eat the pool edge and arch segments.",
+    "risk": "Cutaway roofs may be needed to keep the player visible."
+  },
+  {
+    "id": 178,
+    "band": "planetary",
+    "title": "Comet Crust Landing",
+    "setting": "A lumpy comet crust has frost, crumbly pits, dark stones, and tailward breeze.",
+    "food": "frost specks → crust chips → dark boulders → pit rims",
+    "interaction": "Tailward airflow slides chips toward pits; the goo braces on a ridge and turns the flow into a collection line.",
+    "reveal": "Growth makes pit rims and solid crust bridges edible.",
+    "risk": "Ridge contact must give purchase against the tailward force."
+  },
+  {
+    "id": 179,
+    "band": "planetary",
+    "title": "Tidal Ocean Shelves",
+    "setting": "A shallow alien sea floor has sandstone shelves, tide pools, shells, and kelp mats.",
+    "food": "foam flecks → shell clumps → kelp mats → sandstone shelves",
+    "interaction": "A tide pulse fills and drains pools; the goo blocks a channel, leaving shell piles on one bank.",
+    "reveal": "Growth lets the goo mop pool edges and eat shelf lips.",
+    "risk": "Tides need a calm rhythm, not a timed challenge."
+  },
+  {
+    "id": 180,
+    "band": "planetary",
+    "title": "Ice Giant Polar Vortex",
+    "setting": "A turquoise polar vortex has nested cloud rings, ice chunks, and dark storm eyes.",
+    "food": "cloud wisps → ice grains → storm chunks → vortex shelves",
+    "interaction": "Concentric winds carry chunks around the eye; the goo slows one ring and bunches chunks against its bank.",
+    "reveal": "Growth makes the inner storm wall and dense cloud shelves edible.",
+    "risk": "Distinct wind speeds and transfer points prevent circular repetition."
+  },
+  {
+    "id": 181,
+    "band": "stellar",
+    "title": "Stellar Nursery Pillars",
+    "setting": "A pink stellar nursery of towering dust pillars, glowing gas knots, and loose star-forming clumps.",
+    "food": "dust grains → gas beads → dense clumps → pillar roots",
+    "interaction": "Gas knots pull nearby beads into slow spirals; the goo nudges a knot aside and makes its gathered trail spill into a pocket.",
+    "reveal": "Growth lets the goo consume pillar roots and the dense clumps hidden behind them.",
+    "risk": "Soft gas forces need clear particle proxies so ordinary meshes still feel causally connected."
+  },
+  {
+    "id": 182,
+    "band": "stellar",
+    "title": "Protoplanetary Disk",
+    "setting": "A young star's flat disk with dusty orbital lanes, ice pebbles, and growing rocky clumps.",
+    "food": "dust specks → ice pebbles → rock clumps → proto-worlds",
+    "interaction": "Orbital lanes carry pebbles around the star; the goo blocks a lane and makes a slow traffic jam that feeds neighboring clumps.",
+    "reveal": "Growth lets the goo eat the lane ridges and the largest proto-world cores.",
+    "risk": "Many orbiting objects need capped counts and predictable paths to preserve smooth performance."
+  },
+  {
+    "id": 183,
+    "band": "stellar",
+    "title": "Binary Star Braid",
+    "setting": "Two cartoon suns form a bright figure-eight arena with dust ribbons, rock beads, and shared orbit wells.",
+    "food": "dust flecks → rock beads → clumps → companion-star crumbs",
+    "interaction": "The two wells braid nearby trajectories; pushing a clump across the crossing swaps its loop and sends smaller beads outward.",
+    "reveal": "Growth makes the braided dust ribbons and the outer shells of both suns edible.",
+    "risk": "The figure-eight flow must remain readable when both stars and the goo overlap at the crossing."
+  },
+  {
+    "id": 184,
+    "band": "stellar",
+    "title": "Red Giant Convection Sea",
+    "setting": "A red giant surface abstracted as broad orange convection cells, bright bubbles, and dark sinking lanes.",
+    "food": "glowing grains → plasma bubbles → dark cells → surface arcs",
+    "interaction": "Convection cells lift bubbles and sink heavier chunks; the goo sits across a cell boundary and redirects the rising stream.",
+    "reveal": "Growth lets the goo mop whole cell surfaces and swallow the arcs separating them.",
+    "risk": "Animated cell flow can become visually noisy unless each current has a simple broad shape."
+  },
+  {
+    "id": 185,
+    "band": "stellar",
+    "title": "White Dwarf Crystal Crust",
+    "setting": "A compact white dwarf crust of pale crystal plates, dense beads, and radial pressure seams.",
+    "food": "crystal dust → dense beads → plates → pressure ridges",
+    "interaction": "A pushed plate compresses its neighbors and ejects beads along a seam; the goo catches the beads and redirects their line.",
+    "reveal": "Growth makes the pressure ridges and the thick plates between seams edible.",
+    "risk": "The dense material should feel weighty without making every collision slow or hard to tune."
+  },
+  {
+    "id": 186,
+    "band": "stellar",
+    "title": "Neutron Star Magnetosphere",
+    "setting": "A dark neutron star surrounded by luminous magnetic arcs, charged grains, and looping field ribbons.",
+    "food": "charged dust → metal grains → arc beads → field knots",
+    "interaction": "Field ribbons pull charged grains along loops; the goo crosses a ribbon and diverts the grains into a neighboring arc.",
+    "reveal": "Growth lets the goo eat field knots and the compact star crust beneath the arcs.",
+    "risk": "Magnetic paths need persistent arrows or trails so their invisible cause stays understandable."
+  },
+  {
+    "id": 187,
+    "band": "stellar",
+    "title": "Pulsar Lighthouse",
+    "setting": "A rotating pulsar at the center of a dark arena, with sweeping light blades, rings, and dust beads.",
+    "food": "dust motes → light beads → orbit rings → lighthouse shells",
+    "interaction": "Each sweeping light blade pushes beads sideways; the goo parks beside a ring and catches a moving wave of them.",
+    "reveal": "Growth lets the goo consume complete rings and the pulsar's bright outer shell.",
+    "risk": "Rotation must be continuous and gentle so the scene does not become a reflex timing challenge."
+  },
+  {
+    "id": 188,
+    "band": "stellar",
+    "title": "Supernova Remnant Shell",
+    "setting": "An expanding supernova shell made of colorful gas arcs, dust knots, and scattered stellar debris.",
+    "food": "dust flecks → gas knots → debris stones → shell arcs",
+    "interaction": "The shell's broad outward flow carries knots toward its rim; the goo plugs a gap and funnels them into a collecting pocket.",
+    "reveal": "Growth makes the shell arcs and dense debris islands edible.",
+    "risk": "Expansion should use a compact ring proxy rather than many expensive moving particles."
+  },
+  {
+    "id": 189,
+    "band": "stellar",
+    "title": "Corona Streamer Garden",
+    "setting": "A stylized stellar corona of looping streamers, plasma beads, and bright magnetic bridge knots.",
+    "food": "plasma specks → hot beads → streamer knots → bridge loops",
+    "interaction": "Streamer currents carry beads along magnetic loops; the goo mops a local section, causing the remaining loop to bow toward a bridge.",
+    "reveal": "Growth lets the goo swallow bridge loops and the dense streamer roots below.",
+    "risk": "A translucent loop that disappears locally needs clean end caps and stable joins."
+  },
+  {
+    "id": 190,
+    "band": "stellar",
+    "title": "Brown Dwarf Storm Bands",
+    "setting": "A brown dwarf top surface of chocolate-colored cloud bands, pale vortices, and floating mineral pellets.",
+    "food": "cloud flecks → mineral pellets → storm knots → band shelves",
+    "interaction": "Neighboring bands shear past each other; the goo bridges two bands and transfers pellets from the faster current to the slower one.",
+    "reveal": "Growth makes the vortex rims and broad band shelves edible.",
+    "risk": "Shearing bands require careful seam art so the player sees where transfer can happen."
+  },
+  {
+    "id": 191,
+    "band": "stellar",
+    "title": "Solar Slingshot Yard",
+    "setting": "A small star system with a bright sun, looping flyby lanes, icy comets, and rocky moons.",
+    "food": "frost grains → comet chips → moonlets → orbital shelves",
+    "interaction": "A close pass around the sun bends a comet's route; the goo nudges its tail, sending the comet through a waiting line of chips.",
+    "reveal": "Growth lets the goo consume moonlet crusts and the broad orbital shelves.",
+    "risk": "Flyby trajectories need bounded paths so a missed comet remains recoverable and playable."
+  },
+  {
+    "id": 192,
+    "band": "stellar",
+    "title": "Trojan Cloud Exchange",
+    "setting": "A star and planet share a broad orbit with two Trojan dust clouds, rocky beads, and stable-looking pockets.",
+    "food": "dust specks → rock beads → cloud clumps → planet crumbs",
+    "interaction": "The two pockets trade loose beads along curved lanes; the goo blocks one exit and makes a cloud spill into the opposite pocket.",
+    "reveal": "Growth lets the goo eat the pocket rims and the planet's exposed outer crust.",
+    "risk": "The two exchange lanes need distinct shapes or the pockets will look like duplicate piles."
+  },
+  {
+    "id": 193,
+    "band": "stellar",
+    "title": "Young Star Accretion Ring",
+    "setting": "A luminous young star inside a thick accretion ring of dust swirls, gas eddies, and dark clumps.",
+    "food": "dust grains → gas beads → dark clumps → ring banks",
+    "interaction": "Viscous-looking eddies pull clumps inward; the goo settles across an eddy and makes its outer stream peel into a side pool.",
+    "reveal": "Growth lets the goo mop the side pool and consume the ring banks around it.",
+    "risk": "The flow can seem decorative unless every eddy visibly moves edible clumps toward the goo."
+  },
+  {
+    "id": 194,
+    "band": "stellar",
+    "title": "Starspot Archipelago",
+    "setting": "A glowing star surface dotted with dark magnetic starspots, bright bridges, and convection beads.",
+    "food": "plasma specks → convection beads → starspot chips → bridge islands",
+    "interaction": "Surface currents route beads around starspots; the goo blocks a bridge and makes the current pile beads along the dark edge.",
+    "reveal": "Growth lets the goo eat starspot islands and the luminous bridges connecting them.",
+    "risk": "The bright surface needs restrained bloom so dark edible spots remain visible."
+  },
+  {
+    "id": 195,
+    "band": "stellar",
+    "title": "Solar Sail Meadow",
+    "setting": "A calm orbital meadow of reflective sails, dust beads, tethered rocks, and broad sunlight lanes.",
+    "food": "dust motes → sail scraps → tethered rocks → sail platforms",
+    "interaction": "Light pressure nudges loose sails across the arena; the goo catches one against a rock, redirecting the sail and its attached scraps.",
+    "reveal": "Growth lets the goo swallow platform cloth and the rocks anchoring the tethers.",
+    "risk": "Sail motion needs simple flat collision shapes to avoid snagging on tether geometry."
+  },
+  {
+    "id": 196,
+    "band": "stellar",
+    "title": "Stellar Wind River",
+    "setting": "A star's wind portrayed as a wide glowing river with side channels, gas pebbles, and drift banks.",
+    "food": "wind flecks → gas pebbles → drift clumps → channel banks",
+    "interaction": "The river carries clumps downstream; the goo plugs a side channel and floods a bank with loose pebbles for collection.",
+    "reveal": "Growth lets the goo mop the coherent bank and consume the channel walls beneath it.",
+    "risk": "A one-way current can reduce exploration unless side channels offer multiple readable entry points."
+  },
+  {
+    "id": 197,
+    "band": "stellar",
+    "title": "Heliospheric Bow Shock",
+    "setting": "A curved stellar-wind boundary with layered gas fronts, dust knots, and a quiet protected pocket.",
+    "food": "gas wisps → dust knots → front clumps → shock arcs",
+    "interaction": "Incoming wind compresses knots against the curved front; the goo opens a notch, letting the knots roll into the sheltered pocket.",
+    "reveal": "Growth lets the goo eat thick shock arcs and the dense pocket wall.",
+    "risk": "The boundary needs a clear thickness model so opening a notch feels physical rather than scripted."
+  },
+  {
+    "id": 198,
+    "band": "stellar",
+    "title": "Collapsing Gas Globes",
+    "setting": "Several colorful gas globes drift in a stellar nursery, each layered with dust shells and dense cores.",
+    "food": "dust flecks → gas beads → shell clumps → globe cores",
+    "interaction": "Neighboring globes tug together; the goo pushes one shell into another, merging their outer gas and exposing a larger shared core.",
+    "reveal": "Growth lets the goo consume merged shells and the dense cores at their contact seam.",
+    "risk": "Merging volumes need a convincing visual blend without requiring expensive volumetric rendering."
+  },
+  {
+    "id": 199,
+    "band": "stellar",
+    "title": "Triple-Star Pinwheel",
+    "setting": "Three small cartoon stars form a pinwheel of orbital lanes, dust petals, and wandering rock clumps.",
+    "food": "dust grains → rock clumps → orbit petals → star shells",
+    "interaction": "The three wells exchange clumps between curved lanes; the goo blocks one petal and sends its traffic into the next star's loop.",
+    "reveal": "Growth lets the goo eat the petal lanes and the outer shells of all three stars.",
+    "risk": "Three gravity centers can overwhelm the player unless each lane has a distinct width and color cue."
+  },
+  {
+    "id": 200,
+    "band": "stellar",
+    "title": "Nova Shell Garden",
+    "setting": "A fresh nova surrounded by concentric ejecta shells, colorful gas petals, and slowly drifting stellar beads.",
+    "food": "gas flecks → stellar beads → shell petals → nova rim",
+    "interaction": "Radial streams carry beads through gaps in each shell; the goo blocks one gap and diverts the stream around a petal.",
+    "reveal": "Growth lets the goo mop entire shell petals and consume the nova's outer rim.",
+    "risk": "Concentric shells need asymmetric landmarks so navigation does not collapse into repeated circles."
+  },
+  {
+    "id": 201,
+    "band": "galactic",
+    "title": "Spiral Arm Dust Highway",
+    "setting": "A top-down spiral arm built from luminous dust lanes, gas clumps, and scattered young stars.",
+    "food": "dust specks → gas clumps → star knots → arm shelves",
+    "interaction": "The arm's broad flow carries clumps along curved lanes; the goo parks across one lane and builds a feeding bank.",
+    "reveal": "Growth lets the goo eat the lane edges and the star shelves hidden behind them.",
+    "risk": "The spiral needs a local play boundary so its scale does not make the goal feel distant."
+  },
+  {
+    "id": 202,
+    "band": "galactic",
+    "title": "Barred Galaxy Crossroads",
+    "setting": "A barred galaxy reduced to a bright central bar, crossing dust lanes, star beads, and outer arms.",
+    "food": "dust grains → star beads → lane clumps → bar segments",
+    "interaction": "The bar funnels clumps toward each end; the goo blocks a junction and redirects the stream into a side arm.",
+    "reveal": "Growth lets the goo consume the bar ends and the dense lane segments around the junction.",
+    "risk": "Crossing flows need strong arrows and spacing to avoid looking like random background motion."
+  },
+  {
+    "id": 203,
+    "band": "galactic",
+    "title": "Globular Cluster Orchard",
+    "setting": "A dense spherical star cluster shown as layered golden orbits, star balls, and dark dust pockets.",
+    "food": "dust motes → star beads → small stars → cluster giants",
+    "interaction": "Close orbits make star balls bump and exchange lanes; the goo wedges into a gap and catches the displaced outer stars.",
+    "reveal": "Growth lets the goo eat dense orbit bands and the largest cluster stars.",
+    "risk": "High object density can obscure the goo, requiring a sparse local slice of the cluster."
+  },
+  {
+    "id": 204,
+    "band": "galactic",
+    "title": "Nebula Pillar Maze",
+    "setting": "A colorful nebula of gas pillars, translucent cloud pools, dust shelves, and bright ionized knots.",
+    "food": "gas wisps → dust knots → cloud shelves → pillar roots",
+    "interaction": "A broad ionized wind pushes cloud pools around pillar bases; the goo mops one pool section and the remainder curls into a side channel.",
+    "reveal": "Growth lets the goo consume pillar roots and the dense shelves behind the clouds.",
+    "risk": "Cloud transparency and local removal need careful layering to preserve readable corridors."
+  },
+  {
+    "id": 205,
+    "band": "galactic",
+    "title": "Tidal Bridge Collision",
+    "setting": "Two stylized spiral galaxies overlap, joined by a bright tidal bridge of stars and dust.",
+    "food": "dust flecks → star knots → arm clumps → bridge segments",
+    "interaction": "The rotating discs pull bridge clumps in opposite directions; the goo braces on the bridge and shifts a clump toward the nearer disc.",
+    "reveal": "Growth lets the goo eat bridge segments and the outer arm shelves of each disc.",
+    "risk": "Two overlapping rotations can be expensive and visually confusing without limited object counts."
+  },
+  {
+    "id": 206,
+    "band": "galactic",
+    "title": "Dwarf Galaxy Satellite",
+    "setting": "A small dwarf galaxy circles a larger glowing host, connected by a thin stream of stars.",
+    "food": "dust beads → dwarf stars → stream knots → satellite shelves",
+    "interaction": "The host's pull stretches the satellite stream; the goo catches a knot and drags it sideways, thickening a nearby feeder pocket.",
+    "reveal": "Growth lets the goo consume the satellite's outer shelf and the stream's dense knots.",
+    "risk": "The large host must remain a clear backdrop rather than an unreachable destination."
+  },
+  {
+    "id": 207,
+    "band": "galactic",
+    "title": "Dark Halo Tracer Hills",
+    "setting": "A galaxy halo shown by glowing tracer beads rolling over invisible gravity hills around a dim disc.",
+    "food": "tracer specks → halo beads → star clumps → disc rim",
+    "interaction": "Gravity-inspired slopes bend tracer paths around the disc; the goo blocks a low pass and sends beads up a neighboring hill.",
+    "reveal": "Growth lets the goo mop the tracer field and swallow the disc's outer rim.",
+    "risk": "Invisible terrain needs visible contour ribbons or the cause of each bend will be unclear."
+  },
+  {
+    "id": 208,
+    "band": "galactic",
+    "title": "Quasar Jet Canyon",
+    "setting": "A brilliant galactic nucleus sends twin cartoon jets through a canyon of gas knots and star clumps.",
+    "food": "gas flecks → gas knots → star clumps → jet collars",
+    "interaction": "The twin jets push clumps down opposite channels; the goo bridges one channel and spills its traffic into the other.",
+    "reveal": "Growth lets the goo consume jet collars and the canyon shelves surrounding the nucleus.",
+    "risk": "Twin flows must stay gentle and collectible so they feel like moving terrain rather than hazards."
+  },
+  {
+    "id": 209,
+    "band": "galactic",
+    "title": "Active Nucleus Accretion",
+    "setting": "A barred galactic nucleus surrounded by a thick accretion ring, star beads, and gas eddies.",
+    "food": "dust grains → gas beads → star knots → ring banks",
+    "interaction": "Eddies pull beads toward the center; the goo settles across one eddy and makes its outer stream peel into a feeder pool.",
+    "reveal": "Growth lets the goo mop the pool and eat the ring banks that frame it.",
+    "risk": "The central glow needs restrained bloom so edible material remains visible near the core."
+  },
+  {
+    "id": 210,
+    "band": "galactic",
+    "title": "Warped Galactic Disc",
+    "setting": "A galaxy disc bends upward into a stylized saddle, with dust lanes, star beads, and raised rim shelves.",
+    "food": "dust specks → star beads → lane clumps → warped shelves",
+    "interaction": "The disc's slope sends beads downhill across the warp; the goo rests on a crease and redirects them along the raised rim.",
+    "reveal": "Growth lets the goo consume the crease and the outer shelves holding the disc's bend.",
+    "risk": "A three-dimensional warp must read from the top camera without relying on hidden depth."
+  },
+  {
+    "id": 211,
+    "band": "galactic",
+    "title": "Filament Web Junction",
+    "setting": "Three thick cosmic filaments meet at a glowing knot, carrying galaxies, dust beads, and gas clumps.",
+    "food": "dust flecks → gas clumps → galaxy beads → filament knots",
+    "interaction": "Matter streams along each filament and collides at the knot; the goo blocks one branch and diverts its stream into a quieter branch.",
+    "reveal": "Growth lets the goo eat knot walls and the broad filament sections around the junction.",
+    "risk": "The streams need slow speeds and large pieces to avoid becoming unreadable particle effects."
+  },
+  {
+    "id": 212,
+    "band": "galactic",
+    "title": "Supercluster Foam",
+    "setting": "A supercluster abstracted as giant translucent bubble walls, galaxy beads, and slow-moving void pockets.",
+    "food": "dust motes → galaxy beads → wall knots → bubble walls",
+    "interaction": "Galaxy beads drift along bubble walls; the goo mops a local wall section and the remaining membrane bows toward a neighboring pocket.",
+    "reveal": "Growth lets the goo consume whole wall knots and open a broad view into the quiet void.",
+    "risk": "Membrane deformation needs a simple ring mesh or it may become a costly simulation."
+  },
+  {
+    "id": 213,
+    "band": "galactic",
+    "title": "Galactic Ring Reservoir",
+    "setting": "A barred galaxy's outer ring filled with dust reservoirs, star clumps, feeder gaps, and shepherd clusters.",
+    "food": "dust grains → star beads → reservoir clumps → ring arcs",
+    "interaction": "Shepherd clusters herd clumps around the ring; the goo blocks a feeder gap and diverts the herd into a side reservoir.",
+    "reveal": "Growth lets the goo mop the reservoir and consume the ring arcs that form its banks.",
+    "risk": "A closed ring can feel like a track unless feeder gaps create visible alternate routes."
+  },
+  {
+    "id": 214,
+    "band": "galactic",
+    "title": "Satellite Matter Stream",
+    "setting": "A long ribbon of torn satellite matter crosses a sparse galactic backdrop, carrying stars and dust knots.",
+    "food": "dust specks → star beads → stream knots → satellite cores",
+    "interaction": "The stream bends around the host galaxy; the goo anchors on a bend and turns passing knots into a broad local pile.",
+    "reveal": "Growth lets the goo eat the stream's thick core and the satellite chunks at its far end.",
+    "risk": "A long ribbon needs a compact camera boundary and visible landmarks to avoid feeling empty."
+  },
+  {
+    "id": 215,
+    "band": "galactic",
+    "title": "Binary Black Hole Garden",
+    "setting": "Two dark galactic wells orbit inside a garden of glowing accretion beads, dust arcs, and star clumps.",
+    "food": "dust flecks → accretion beads → star clumps → orbit arcs",
+    "interaction": "The binary wells twist nearby arcs; the goo nudges a clump across the midpoint, changing which well gathers its trailing beads.",
+    "reveal": "Growth lets the goo consume orbit arcs and the bright rims around both wells.",
+    "risk": "The wells must be framed as cartoon gravity sinks without implying a lethal obstacle."
+  },
+  {
+    "id": 216,
+    "band": "galactic",
+    "title": "Radio Lobe Caverns",
+    "setting": "Twin radio lobes form soft purple caverns filled with pressure bubbles, gas beads, and central dust knots.",
+    "food": "gas wisps → pressure bubbles → dust knots → lobe walls",
+    "interaction": "Bubble pressure pushes beads toward each lobe rim; the goo mops one bubble cluster and the remaining bubbles expand into its space.",
+    "reveal": "Growth lets the goo eat lobe walls and the thick central bridge between them.",
+    "risk": "Bubble expansion needs visible contact boundaries so local consumption remains believable."
+  },
+  {
+    "id": 217,
+    "band": "galactic",
+    "title": "Galactic Fountain",
+    "setting": "A galaxy disc sends colorful gas columns upward into a halo, where droplets arc back toward the rim.",
+    "food": "gas droplets → halo beads → returning clumps → fountain roots",
+    "interaction": "Rising columns lift droplets and returning arcs drop them elsewhere; the goo nudges a root sideways and changes the landing pile.",
+    "reveal": "Growth lets the goo consume the fountain roots and the thick landing shelves.",
+    "risk": "Vertical motion must be conveyed with scale and shadows while remaining playable from above."
+  },
+  {
+    "id": 218,
+    "band": "galactic",
+    "title": "Void Edge Caravan",
+    "setting": "A sparse void edge with isolated galaxy islands, faint gravity lanes, and drifting intergalactic clumps.",
+    "food": "dust motes → gas clumps → galaxy beads → island rims",
+    "interaction": "Gravity lanes pull clumps from one island toward the next; the goo pushes a clump off-lane, making it sweep a new arc of dust.",
+    "reveal": "Growth lets the goo eat island rims and the dense material connecting them.",
+    "risk": "Sparse scenery can feel unfinished unless each island has a distinct silhouette and route purpose."
+  },
+  {
+    "id": 219,
+    "band": "galactic",
+    "title": "Stellar Graveyard",
+    "setting": "A dim galactic graveyard of neutron-star beads, white-dwarf chunks, dust drifts, and quiet orbit lanes.",
+    "food": "dust flecks → dwarf chunks → neutron beads → graveyard shelves",
+    "interaction": "Dense remnants tug drifting dust into slow pairings; the goo wedges between two remnants and redirects their shared dust wake.",
+    "reveal": "Growth lets the goo consume the orbit shelves and the crust around the largest remnants.",
+    "risk": "The subdued palette needs luminous outlines so small food remains visible in the dark scene."
+  },
+  {
+    "id": 220,
+    "band": "galactic",
+    "title": "Cosmic Ray Snowfield",
+    "setting": "A broad galactic magnetic field drawn as sweeping arcs, charged snow-like grains, and starry islands.",
+    "food": "charged specks → ray beads → island clumps → magnetic arches",
+    "interaction": "Field arcs carry grains in looping paths; the goo crosses an arc and transfers the grains into a neighboring loop.",
+    "reveal": "Growth lets the goo mop the arc surfaces and swallow the island clumps anchoring them.",
+    "risk": "Arc crossings need different heights or line styles to prevent route ambiguity from above."
+  },
+  {
+    "id": 221,
+    "band": "spacetime",
+    "title": "Folded Ribbon Valley",
+    "setting": "A translucent spacetime ribbon folds over itself, making two distant valleys touch at a bright seam.",
+    "food": "spark flecks → matter beads → ribbon knots → valley fabric",
+    "interaction": "The goo crosses the seam and exits at the folded valley; eating one local ribbon section pulls the two endpoints farther apart.",
+    "reveal": "Growth lets the goo consume thick folds and the fabric bridges holding the shortcut open.",
+    "risk": "The seam needs unmistakable entry and exit markers so players understand the spatial shortcut."
+  },
+  {
+    "id": 222,
+    "band": "spacetime",
+    "title": "Causal Cone Courtyard",
+    "setting": "A courtyard of translucent cone-shaped terraces, drifting matter beads, and broad causal ramps.",
+    "food": "spark motes → matter beads → cone steps → causal rims",
+    "interaction": "Pushing a bead down one cone face sends a visible wake toward its widening rim; the goo intercepts the wake and collects the bead trail.",
+    "reveal": "Growth lets the goo mop cone faces and eat the thick rims connecting adjacent terraces.",
+    "risk": "Cone geometry must stay simple enough for reliable top-down steering and ordinary collision meshes."
+  },
+  {
+    "id": 223,
+    "band": "spacetime",
+    "title": "Gravitational Lens Arcade",
+    "setting": "A massive central lens bends luminous food lanes around it, hiding distant islands behind curved paths.",
+    "food": "light specks → matter beads → curved arcs → hidden island rims",
+    "interaction": "The lens bends each moving bead's route; the goo nudges a bead across an arc and reveals a newly reachable lane behind the lens.",
+    "reveal": "Growth lets the goo consume the lens arcs and the distant island rims they expose.",
+    "risk": "The hidden-route reveal needs strong silhouettes or the lens will read as decoration."
+  },
+  {
+    "id": 224,
+    "band": "spacetime",
+    "title": "Wormhole Mouth Orchard",
+    "setting": "Two glowing wormhole mouths sit in a soft spacetime floor, connected by edible matter and orbiting knots.",
+    "food": "spark flecks → matter beads → orbit knots → mouth rims",
+    "interaction": "Pushing a bead into one mouth makes it emerge from the other; mopping one rim locally makes the paired exit wobble and spill beads.",
+    "reveal": "Growth lets the goo eat both mouth rims and the connected floor between them.",
+    "risk": "Paired portals need consistent object transfer and clear entry feedback to avoid feeling random."
+  },
+  {
+    "id": 225,
+    "band": "spacetime",
+    "title": "Event Horizon Foam",
+    "setting": "A black circular horizon is covered by translucent foam, stretched matter beads, and a calm central well.",
+    "food": "foam bubbles → stretched beads → horizon knots → horizon membrane",
+    "interaction": "Matter sliding across the horizon elongates into tails; the goo mops a local rim and the remaining foam recoils toward the well.",
+    "reveal": "Growth lets the goo consume the horizon membrane and the fabric directly around the well.",
+    "risk": "The horizon must feel traversable and edible without turning the central well into a damage hazard."
+  },
+  {
+    "id": 226,
+    "band": "spacetime",
+    "title": "Time-Lag Reservoir",
+    "setting": "A translucent reservoir holds matter beads, mirrored motion trails, and soft causal banks.",
+    "food": "spark flecks → matter beads → trail knots → reservoir banks",
+    "interaction": "Every pushed bead leaves a world-made echo that repeats its route later; the goo can collect the original and the echo as they converge.",
+    "reveal": "Growth lets the goo mop the reservoir and eat the causal banks shaping the echoes.",
+    "risk": "Delayed echoes can confuse players unless each trail has a distinct tint and short readable path."
+  },
+  {
+    "id": 227,
+    "band": "spacetime",
+    "title": "Block-Universe Stair",
+    "setting": "Stacked translucent slabs represent adjacent moments, each carrying matter beads, footprints, and connecting ramps.",
+    "food": "spark flecks → matter beads → slab chunks → stair landings",
+    "interaction": "A bead pushed on one slab appears farther along the matching ramp on the next; the goo crosses slabs and gathers both positions.",
+    "reveal": "Growth lets the goo eat slab edges and the ramps that bind the sequence together.",
+    "risk": "Stacked layers need strong height shading so the player does not confuse overlap with duplication."
+  },
+  {
+    "id": 228,
+    "band": "spacetime",
+    "title": "Light-Cone Canal",
+    "setting": "Angled translucent canals carry glowing beads through a broad spacetime basin with one-way junctions.",
+    "food": "light motes → matter beads → canal knots → canal walls",
+    "interaction": "Each canal only carries objects toward its widening end; the goo pushes a wall section and diverts the current into a neighboring outlet.",
+    "reveal": "Growth lets the goo mop canal interiors and consume the thick walls at their junctions.",
+    "risk": "One-way flow needs persistent arrows and gentle speeds so it never feels like a timed gate."
+  },
+  {
+    "id": 229,
+    "band": "spacetime",
+    "title": "Geodesic Bowl",
+    "setting": "A curved spacetime bowl slopes toward a central mass, with orbiting beads, ridged paths, and low shelves.",
+    "food": "spark grains → matter beads → orbit clumps → bowl shelves",
+    "interaction": "Objects roll along curved geodesics and circle the mass; the goo sits on a ridge and reroutes a clump into a slower orbit.",
+    "reveal": "Growth lets the goo consume the ridge and the bowl shelves that hold the orbits apart.",
+    "risk": "The 3D bowl needs collision tuning that preserves smooth goo contact on steep slopes."
+  },
+  {
+    "id": 230,
+    "band": "spacetime",
+    "title": "Expanding Metric Meadow",
+    "setting": "A translucent elastic meadow stretches between fixed star knots, carrying beads on slowly widening lanes.",
+    "food": "spark flecks → matter beads → lane knots → elastic fabric",
+    "interaction": "The fabric expands beneath objects and separates them; the goo anchors beside a knot, bunching nearby beads against its stretched edge.",
+    "reveal": "Growth lets the goo mop the elastic surface and consume the star knots holding it open.",
+    "risk": "Expansion must stay visible and gentle so it reads as world motion instead of an invisible timer."
+  },
+  {
+    "id": 231,
+    "band": "spacetime",
+    "title": "Contracting Metric Basin",
+    "setting": "A soft spacetime basin contracts toward a bright center, carrying beads past flexible translucent banks.",
+    "food": "spark motes → matter beads → bank knots → basin fabric",
+    "interaction": "The shrinking surface pulls beads inward; the goo presses against a bank and makes the incoming stream curl around its body.",
+    "reveal": "Growth lets the goo eat the banks and the contracting fabric around the center.",
+    "risk": "Contraction needs a bounded center so objects do not vanish beyond the playable floor."
+  },
+  {
+    "id": 232,
+    "band": "spacetime",
+    "title": "Möbius World Loop",
+    "setting": "A broad one-sided spacetime band twists once, carrying matter beads across an upside-down-looking return path.",
+    "food": "spark flecks → matter beads → loop knots → band shelves",
+    "interaction": "Objects crossing the twist return from the opposite side of the band; eating a local segment shortens the loop and shifts its exit.",
+    "reveal": "Growth lets the goo consume twist supports and the remaining band shelves.",
+    "risk": "The orientation trick needs landmarks that remain recognizable after the band turns."
+  },
+  {
+    "id": 233,
+    "band": "spacetime",
+    "title": "Causal Diamond Nursery",
+    "setting": "Overlapping diamond-shaped spacetime cells hold paired matter beads, sloped floors, and glowing corner knots.",
+    "food": "spark flecks → matter beads → corner knots → diamond walls",
+    "interaction": "Pushing a bead into one corner sends its paired bead toward the opposite corner; the goo blocks a diagonal and gathers both paths.",
+    "reveal": "Growth lets the goo mop diamond floors and eat the corner knots linking neighboring cells.",
+    "risk": "Paired motion needs clear visual links so cause and consequence do not seem arbitrary."
+  },
+  {
+    "id": 234,
+    "band": "spacetime",
+    "title": "Gravitational Wave Sheet",
+    "setting": "A thin spacetime sheet carries broad traveling ripples, matter beads, and flexible edge anchors.",
+    "food": "spark flecks → matter beads → ripple knots → sheet anchors",
+    "interaction": "A ripple lifts beads along its crest; the goo settles across the crest and dampens that local wave, leaving beads in a new trough.",
+    "reveal": "Growth lets the goo mop ripple sections and swallow the anchors stretching the sheet.",
+    "risk": "The wave must be a simple traveling mesh deformation to stay stable and affordable."
+  },
+  {
+    "id": 235,
+    "band": "spacetime",
+    "title": "Quantum Foam Shore",
+    "setting": "A dark shore of bubbling spacetime foam has paired holes, glowing beads, and soft connected rims.",
+    "food": "spark bubbles → matter beads → foam knots → hole rims",
+    "interaction": "Each bubble opens a temporary shortcut to its paired hole; the goo mops one rim and the partner hole spills beads onto the shore.",
+    "reveal": "Growth lets the goo consume foam knots and the connected shore fabric around each pair.",
+    "risk": "Hole pairing must be visually explicit so shortcuts feel causal rather than random teleportation."
+  },
+  {
+    "id": 236,
+    "band": "spacetime",
+    "title": "Branching Timeline Grove",
+    "setting": "A translucent grove of branching spacetime limbs carries repeated matter beads and shared root knots.",
+    "food": "spark flecks → matter beads → branch knots → timeline limbs",
+    "interaction": "A bead crossing a fork leaves matching beads on both limbs; the goo mops one limb and the remaining branch pulls the pair together.",
+    "reveal": "Growth lets the goo consume fork roots and the timeline limbs connecting the grove.",
+    "risk": "Repeated objects need subtle differences or the branches will look like duplicated props."
+  },
+  {
+    "id": 237,
+    "band": "spacetime",
+    "title": "Singularity Funnel",
+    "setting": "A wide elastic funnel narrows toward a dark point, with spiral matter streams and raised fabric banks.",
+    "food": "spark flecks → matter beads → stream clumps → funnel banks",
+    "interaction": "Spiral streams carry clumps downward; the goo blocks an outer bank and peels a stream into a slower neighboring spiral.",
+    "reveal": "Growth lets the goo eat the funnel banks and the fabric circling the singular point.",
+    "risk": "The center needs a clear stopping boundary so the player never loses control at the narrow end."
+  },
+  {
+    "id": 238,
+    "band": "spacetime",
+    "title": "Metric Seam Quilt",
+    "setting": "A continuous spacetime cloth has stitched seams that bend headings, with beads, folds, and slack edges.",
+    "food": "spark flecks → matter beads → seam knots → cloth folds",
+    "interaction": "Crossing a seam turns an object's travel direction; the goo pushes a seam knot and redirects a whole bead stream across the cloth.",
+    "reveal": "Growth lets the goo mop cloth folds and consume the stitched edges joining them.",
+    "risk": "Seams can resemble ordinary level borders unless their heading shift is immediate and visible."
+  },
+  {
+    "id": 239,
+    "band": "spacetime",
+    "title": "Universe Horizon Dome",
+    "setting": "A curved translucent dome holds distant star beads along its rim and a slowly receding central floor.",
+    "food": "spark motes → star beads → horizon knots → dome fabric",
+    "interaction": "Expansion slides rim beads inward along the dome; the goo braces on a fold and gathers beads as their paths curve toward it.",
+    "reveal": "Growth lets the goo consume horizon knots and the dome fabric, opening a starry void beneath.",
+    "risk": "The curved horizon needs an overhead camera angle that shows depth without shrinking edible targets."
+  },
+  {
+    "id": 240,
+    "band": "spacetime",
+    "title": "The Last Fabric",
+    "setting": "A giant translucent spacetime sheet has elastic folds, causal currents, star knots, and a dissolving edge.",
+    "food": "spark flecks → matter beads → star knots → spacetime fabric",
+    "interaction": "Currents carry knots across connected folds; the goo mops each contacted section, and the remaining sheet pulls together until whole regions disappear.",
+    "reveal": "Growth finally makes the fabric itself edible, exposing the quiet void beyond the last fold.",
+    "risk": "The finale needs a readable local-consumption shader and a bounded end state rather than an empty screen."
+  }
+]

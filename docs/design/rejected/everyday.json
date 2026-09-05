@@ -1,0 +1,802 @@
+[
+  {
+    "id": 81,
+    "band": "miniature",
+    "title": "Dollhouse Kitchen",
+    "setting": "A dollhouse kitchen has glazed tile, wooden counters, and a porcelain sink.",
+    "food": "Sugar crystals lead to cereal crumbs, jam, peas, and sponge cake.",
+    "interaction": "The goo rolls over grout, sticks to tile, and mops jam puddles locally; a hinged door shoves loose crumbs into its path.",
+    "reveal": "Growth makes the dinner plate, cake wedge, and jam pool edible.",
+    "risk": "Tiny hinges and puddle surfaces need careful collision tuning."
+  },
+  {
+    "id": 82,
+    "band": "miniature",
+    "title": "Model Railway",
+    "setting": "A model railway winds through cork hills, ballast, painted wood, and a station.",
+    "food": "Poppy seeds become cracker chips, cheese cubes, sausage links, and a pie.",
+    "interaction": "Rolling goo climbs cork grades; a motorized train pushes it sideways while spilled gravy remains one coherent puddle under local mopping.",
+    "reveal": "Growth opens the station buffet, freight crate, and whole pie.",
+    "risk": "Train timing and goo collisions can consume disproportionate setup."
+  },
+  {
+    "id": 83,
+    "band": "miniature",
+    "title": "Toy Repair Bench",
+    "setting": "A repair bench holds felt mats, brass screws, cardboard boxes, and a rubber conveyor.",
+    "food": "Cereal dust grows into gummy beads, marshmallow blocks, fruit chews, and a frosted bun.",
+    "interaction": "Sticky goo peels from felt, catches on rubber, and nudges a hand-cranked tray feeding objects into its edge.",
+    "reveal": "Growth makes the tray, snack prop, and frosting puddle edible.",
+    "risk": "Felt friction and moving belts need custom materials."
+  },
+  {
+    "id": 84,
+    "band": "miniature",
+    "title": "Aquarium Diorama",
+    "setting": "An aquarium diorama combines blue resin water, gravel, plastic reeds, and a glass rim.",
+    "food": "Fish flakes lead to pellets, jelly pearls, seaweed wraps, and a gelatin reef.",
+    "interaction": "The goo mops a syrupy water patch; an air pump circulates bubbles and pushes flakes toward it.",
+    "reveal": "Growth makes the filter sponge, jelly reef, and full pellet scoop edible.",
+    "risk": "Transparent surfaces can obscure the remaining puddle."
+  },
+  {
+    "id": 85,
+    "band": "miniature",
+    "title": "Dollhouse Bathroom",
+    "setting": "A dollhouse bathroom has checkerboard ceramic, a tub, chrome taps, and a drain.",
+    "food": "Salt grains grow into sugar cubes, jelly drops, fruit slices, and pudding.",
+    "interaction": "Sticky goo spreads across ceramic and peels from the tub; a dripping tap builds a pudding puddle that vanishes beneath contact.",
+    "reveal": "Growth makes the tub rim, fruit bowl, and pudding basin edible.",
+    "risk": "Wet ceramic reflections may require simplified shading."
+  },
+  {
+    "id": 86,
+    "band": "miniature",
+    "title": "Model Farm",
+    "setting": "A farm model uses painted soil, straw fences, wooden barns, and a windmill.",
+    "food": "Grain specks lead to berries, corn cobs, apples, and a pumpkin.",
+    "interaction": "The goo rolls through straw and soil, while windmill blades scatter grain and a cart pushes apples into a translucent puddle.",
+    "reveal": "Growth makes fences, hay bales, and the pumpkin cart edible.",
+    "risk": "Scattered grain needs pooling so it remains readable."
+  },
+  {
+    "id": 87,
+    "band": "miniature",
+    "title": "Mini Carnival",
+    "setting": "A miniature carnival uses plywood rides, rubber mats, striped tents, and a spinning carousel.",
+    "food": "Salt grains become popcorn, candy beads, pretzel loops, and cotton candy.",
+    "interaction": "Carousel arms sweep popcorn into the goo; sticky contact drags candy, and a soda puddle stays connected as sections are mopped.",
+    "reveal": "Growth makes the carousel platform, pretzel arch, and cotton-candy cart edible.",
+    "risk": "Rotating arms need generous clearance around the goo."
+  },
+  {
+    "id": 88,
+    "band": "miniature",
+    "title": "Snow Globe Village",
+    "setting": "A snow globe village contains clear glass, resin snow, tiny houses, and a pond.",
+    "food": "Sugar snow leads to cookie crumbs, gumdrops, fruit jellies, and a gelatin snowman.",
+    "interaction": "Shaking sends flakes downhill; the goo grips the glass base and locally consumes a jelly puddle without deleting the rest.",
+    "reveal": "Growth makes houses, pond chunks, and the snowman’s gelatin body edible.",
+    "risk": "Glass refraction can complicate camera readability."
+  },
+  {
+    "id": 89,
+    "band": "miniature",
+    "title": "Board-Game City",
+    "setting": "A board-game city sits on cardboard, with wooden streets, felt parks, and plastic bridges.",
+    "food": "Cracker dust grows into cereal tiles, cheese cubes, pretzel roads, and a wafer tower.",
+    "interaction": "Dice tumble through streets and push the goo; sticky underside catches wafer crumbs while cheese sauce remains coherent between tiles.",
+    "reveal": "Growth makes bridges, park slabs, and wafer tower edible.",
+    "risk": "Many loose tokens can clutter navigation and physics."
+  },
+  {
+    "id": 90,
+    "band": "miniature",
+    "title": "Toy Train Station",
+    "setting": "A station has tin platforms, cork ballast, wooden benches, and a locomotive.",
+    "food": "Rice grains lead to biscuit chunks, fruit leather, sandwiches, and a cake.",
+    "interaction": "The locomotive noses into the goo and carries a sandwich briefly; sticky rolling leaves a smear that mops a juice puddle locally.",
+    "reveal": "Growth makes the locomotive cargo, benches, and cake display edible.",
+    "risk": "Carried-food attachment may need a simple break threshold."
+  },
+  {
+    "id": 91,
+    "band": "miniature",
+    "title": "Dollhouse Greenhouse",
+    "setting": "A dollhouse greenhouse uses clear panes, terracotta pots, dark soil, and brass watering pipes.",
+    "food": "Pollen dust grows into seeds, strawberries, tomato clusters, and a melon.",
+    "interaction": "A misting pipe makes connected water patches; the goo crawls over soil, sticks to terracotta, and removes only contacted sections.",
+    "reveal": "Growth makes planter boxes, trellis vines, and the melon bed edible.",
+    "risk": "Clear panes and irrigation effects compete for visual contrast."
+  },
+  {
+    "id": 92,
+    "band": "miniature",
+    "title": "Craft Diorama Canyon",
+    "setting": "A craft canyon uses cork cliffs, painted foam, toothpick bridges, and resin stream.",
+    "food": "Chocolate crumbs lead to gummy worms, wafer planks, nougat rocks, and fudge slab.",
+    "interaction": "The goo stretches across cork gaps; a current drags fudge syrup while sticky mass pushes wafer debris into an edible pool.",
+    "reveal": "Growth makes bridges, ledges, and the fudge slab edible.",
+    "risk": "Foam edges may look soft beside rigid props."
+  },
+  {
+    "id": 93,
+    "band": "miniature",
+    "title": "Miniature Bakery Display",
+    "setting": "A miniature bakery display has glass shelves, brass trays, tiled flooring, and a narrow conveyor.",
+    "food": "Flour grains grow into sprinkles, buns, pastries, and a layered cake.",
+    "interaction": "The conveyor feeds buns toward the goo; sticky contact pulls icing, and the goo mops a connected glaze puddle beneath the trays.",
+    "reveal": "Growth makes trays, shelves, and the full cake display edible.",
+    "risk": "Icing puddle translucency needs distinct depth cues."
+  },
+  {
+    "id": 94,
+    "band": "miniature",
+    "title": "Toy Boat Harbor",
+    "setting": "A toy harbor uses wood docks, resin water, rope, and a lighthouse.",
+    "food": "Cracker crumbs lead to fish biscuits, rice balls, jelly boats, and seaweed roll.",
+    "interaction": "A wind-up boat bumps goo along the dock; sticky rolling traps crumbs, while a jelly puddle stays connected as touched area vanishes.",
+    "reveal": "Growth makes docks, lighthouse pieces, and the seaweed roll edible.",
+    "risk": "Boat buoyancy is expensive to fake convincingly."
+  },
+  {
+    "id": 95,
+    "band": "miniature",
+    "title": "Model Construction Site",
+    "setting": "A model construction site combines cork dirt, wooden beams, candy bricks, and a crane.",
+    "food": "Cereal gravel grows into biscuit boards, candy bricks, nougat beams, and fudge foundation.",
+    "interaction": "The crane drops nougat loads that shove the goo; sticky roll gathers gravel, and a chocolate puddle is mopped around barriers.",
+    "reveal": "Growth makes the crane hook, scaffold, and foundation edible.",
+    "risk": "Crane loads need predictable landing points."
+  },
+  {
+    "id": 96,
+    "band": "miniature",
+    "title": "Figurine Campsite",
+    "setting": "A figurine campsite sits on felt beside a resin stream, canvas tents, and firewood.",
+    "food": "Trail-mix crumbs lead to berries, sausage pieces, marshmallows, and a s’more stack.",
+    "interaction": "A toy canoe pushes through the goo; sticky contact catches marshmallow, while streamside syrup remains a coherent puddle under local consumption.",
+    "reveal": "Growth makes logs, tent bundles, and the s’more stack edible.",
+    "risk": "Felt fibers can snag the goo silhouette."
+  },
+  {
+    "id": 97,
+    "band": "miniature",
+    "title": "Dollhouse Library",
+    "setting": "A dollhouse library has varnished shelves, paper books, brass lamps, and a rolling ladder.",
+    "food": "Sugar dust grows into cookie pages, fruit leather, wafer bookmarks, and cake.",
+    "interaction": "The ladder rolls into the goo and scatters wafer strips; sticky contact pulls a milk puddle into a locally consumed smear.",
+    "reveal": "Growth makes shelves, ladder rails, and the cake cart edible.",
+    "risk": "Paper props need simplified geometry to avoid clutter."
+  },
+  {
+    "id": 98,
+    "band": "miniature",
+    "title": "Mini Soccer Pitch",
+    "setting": "A miniature soccer pitch uses felt turf, foam bleachers, wooden goals, and a sideline.",
+    "food": "Sesame seeds lead to popcorn, cheese cubes, pretzel hoops, and a nacho tray.",
+    "interaction": "A wind-up ball ricochets off the goo, pushing it toward cheese sauce; the goo mops connected patches between turf seams.",
+    "reveal": "Growth makes goals, bleachers, and the nacho tray edible.",
+    "risk": "Fast ball rebounds can make steering noisy."
+  },
+  {
+    "id": 99,
+    "band": "miniature",
+    "title": "Toy Doctor’s Office",
+    "setting": "A toy clinic has vinyl flooring, plastic chairs, a rolling stool, and cardboard table.",
+    "food": "Candy beads lead to crackers, gummy strips, sandwiches, and a pudding cup.",
+    "interaction": "The stool bumps goo around chair legs; sticky contact pulls gummies, while a tipped cup leaves a coherent pudding patch.",
+    "reveal": "Growth makes stool, exam table, and pudding cup edible.",
+    "risk": "Chair-leg collisions may trap a small goo."
+  },
+  {
+    "id": 100,
+    "band": "miniature",
+    "title": "Scale Rainforest",
+    "setting": "A rainforest diorama uses resin mud, plastic leaves, cork roots, and a clear mist tube.",
+    "food": "Cacao nibs grow into fruit beads, banana slices, jelly vines, and a coconut.",
+    "interaction": "Mist forms connected syrupy puddles; the goo adheres to cork roots, rolls through leaf litter, and locally removes each contacted patch.",
+    "reveal": "Growth makes roots, canopy fruit, and the coconut edible.",
+    "risk": "Dense foliage can hide the goo’s deformation."
+  },
+  {
+    "id": 101,
+    "band": "tabletop",
+    "title": "Breakfast Table",
+    "setting": "A breakfast table has varnished oak, ceramic plates, linen runners, and a lazy Susan.",
+    "food": "Oat flakes lead to berries, toast fingers, pancakes, and a waffle stack.",
+    "interaction": "The goo rolls over crumbs and sticks to syrup; rotating plates redirect it while a connected syrup puddle is mopped locally.",
+    "reveal": "Growth makes plates, serving bowls, and the waffle stack edible.",
+    "risk": "Syrup sheen can mask the sticky contact edge."
+  },
+  {
+    "id": 102,
+    "band": "tabletop",
+    "title": "Pizza Prep Board",
+    "setting": "A pizza board uses flour-dusted marble, a wooden peel, cutters, and a drain groove.",
+    "food": "Herb flecks lead to olives, cheese chunks, pizza, and dough round.",
+    "interaction": "The peel shoves slices into the goo; sticky rolling stretches through flour, and tomato sauce stays coherent as touched portions disappear.",
+    "reveal": "Growth makes the cutter, peel, and whole dough round edible.",
+    "risk": "Circular dough may read as scenery before feeding."
+  },
+  {
+    "id": 103,
+    "band": "tabletop",
+    "title": "Sushi Counter",
+    "setting": "A sushi counter combines lacquered wood, chilled stone, bamboo mats, and a belt.",
+    "food": "Sesame seeds grow into roe beads, maki, salmon slabs, and a rice platter.",
+    "interaction": "The belt carries maki into goo; sticky rice clings during turns, while soy puddles are consumed locally around mats.",
+    "reveal": "Growth makes the belt, platter, and salmon board edible.",
+    "risk": "Small cylindrical rolls need clear silhouettes at 1080p."
+  },
+  {
+    "id": 104,
+    "band": "tabletop",
+    "title": "Picnic Blanket",
+    "setting": "A picnic blanket lies on a tabletop meadow beside wicker baskets, cups, and a napkin.",
+    "food": "Crumbs lead to grapes, cheese wedges, sandwiches, and a melon half.",
+    "interaction": "A desk fan lifts the napkin and nudges grapes toward goo; sticky underside mops a lemonade puddle without removing the rest.",
+    "reveal": "Growth makes baskets, cups, and the melon half edible.",
+    "risk": "Fan airflow needs visible but restrained motion."
+  },
+  {
+    "id": 105,
+    "band": "tabletop",
+    "title": "Craft Desk",
+    "setting": "A craft desk holds cork tiles, paper scraps, rulers, glue pots, and snacks.",
+    "food": "Sugar dust grows into gummy beads, granola chunks, cookies, and a tart.",
+    "interaction": "A ruler slides under goo and launches crumbs; sticky contact stretches around glue rims while glaze disappears section by section.",
+    "reveal": "Growth makes the ruler, glue pot, and tart edible.",
+    "risk": "Paper clutter can overwhelm the feeding route."
+  },
+  {
+    "id": 106,
+    "band": "tabletop",
+    "title": "High-Chair Tray",
+    "setting": "A high-chair tray uses molded plastic, silicone cups, a rubber bib, and a stainless spoon.",
+    "food": "Peas lead to banana coins, pasta spirals, waffle strips, and mashed potatoes.",
+    "interaction": "The spoon drags puree into a coherent puddle; the goo crawls over the tray, sticks to silicone, and mops only its contacted area.",
+    "reveal": "Growth makes cups, spoon, and the waffle stack edible.",
+    "risk": "Puree needs readable boundaries against plastic."
+  },
+  {
+    "id": 107,
+    "band": "tabletop",
+    "title": "Board-Game Night",
+    "setting": "A game-night table uses felt, cardboard tiles, wooden pawns, snack bowls, and a spill mat.",
+    "food": "Cracker dust grows into candy tokens, popcorn clusters, pretzel sticks, and nachos.",
+    "interaction": "Dice and pawns shove goo through lanes; sticky rolling gathers crumbs while cheese dip remains coherent between tiles.",
+    "reveal": "Growth makes pawns, tile bridges, and nacho bowl edible.",
+    "risk": "Rules text may need blank surfaces."
+  },
+  {
+    "id": 108,
+    "band": "tabletop",
+    "title": "Coffee Shop Table",
+    "setting": "A coffee table has dark laminate, ceramic saucers, chrome chairs, and a sugar caddy.",
+    "food": "Sugar grains lead to biscotti, pastry twists, croissants, and cake.",
+    "interaction": "A sliding saucer redirects goo; sticky contact pulls pastry flakes, and latte foam stays connected during local mopping.",
+    "reveal": "Growth makes saucers, caddy, and the cake plate edible.",
+    "risk": "Foam animation could cost more than its gameplay value."
+  },
+  {
+    "id": 109,
+    "band": "tabletop",
+    "title": "Potting Bench",
+    "setting": "A potting bench uses rough cedar, terracotta pots, compost trays, seed packets, and a watering can.",
+    "food": "Seeds lead to berry clusters, carrot sticks, tomato vines, and a pumpkin.",
+    "interaction": "Watering creates connected compost puddles; the goo grips cedar, pushes pots, and removes only the wet sections beneath its rolling body.",
+    "reveal": "Growth makes trays, pots, trellis pieces, and pumpkin edible.",
+    "risk": "Loose compost needs a simplified particle budget."
+  },
+  {
+    "id": 110,
+    "band": "tabletop",
+    "title": "Barbecue Side Table",
+    "setting": "A barbecue table has brushed steel, a wooden board, tongs, skewers, and grease tray.",
+    "food": "Corn kernels grow into chips, sausage links, burger halves, and rib rack.",
+    "interaction": "Tongs flip food into goo; sticky grease pulls it sideways, while sauce stays coherent during local mopping.",
+    "reveal": "Growth makes tongs, skewers, and the rib rack edible.",
+    "risk": "Grease sliding must feel sticky without immobilizing the goo."
+  },
+  {
+    "id": 111,
+    "band": "tabletop",
+    "title": "Bakery Worktable",
+    "setting": "A bakery worktable combines cool marble, flour bins, wooden scrapers, cooling racks, and parchment.",
+    "food": "Flour specks lead to dough balls, rolls, pastries, and a layered cake.",
+    "interaction": "A scraper pushes dough toward the goo; sticky contact stretches through flour, and icing puddles remain connected while touched sections are consumed.",
+    "reveal": "Growth makes racks, bins, and the layered cake edible.",
+    "risk": "Flour dust can obscure deformation unless kept sparse."
+  },
+  {
+    "id": 112,
+    "band": "tabletop",
+    "title": "School Lunch Tray",
+    "setting": "A school lunch tray uses plastic compartments, a metal table, cartons, and a service rail.",
+    "food": "Rice grains grow into peas, chicken nuggets, sandwiches, and a fruit cup.",
+    "interaction": "The rail moves trays into goo; a tipped carton forms a coherent juice puddle, leaving the rest intact.",
+    "reveal": "Growth makes compartments, rail, and fruit cup edible.",
+    "risk": "Repeated tray motion may dominate the small play area."
+  },
+  {
+    "id": 113,
+    "band": "tabletop",
+    "title": "Birthday Party Table",
+    "setting": "A birthday table has a paper cloth, plastic cups, balloon strings, candles, and a frosted centerpiece.",
+    "food": "Sprinkles lead to candies, cupcakes, jelly slices, and a sheet cake.",
+    "interaction": "Balloon strings tug cups across the goo; sticky contact catches frosting, while a spilled punch puddle stays coherent under section-by-section mopping.",
+    "reveal": "Growth makes cups, candles, and the sheet cake edible.",
+    "risk": "String simulation needs limits to avoid tangled clutter."
+  },
+  {
+    "id": 114,
+    "band": "tabletop",
+    "title": "Cheese Board",
+    "setting": "A cheese board rests on slate with walnut handles, ramekins, knives, and a linen mat.",
+    "food": "Nut crumbs lead to crackers, cheese cubes, grapes, and a full cheese wheel.",
+    "interaction": "A knife nudges wedges into the rolling goo; sticky rind contact slows it, and honey puddles remain connected as touched patches vanish.",
+    "reveal": "Growth makes ramekins, knives, and the cheese wheel edible.",
+    "risk": "Sharp-looking knives need friendly rounded presentation."
+  },
+  {
+    "id": 115,
+    "band": "tabletop",
+    "title": "Breakfast Buffet",
+    "setting": "A breakfast buffet spans granite, steel chafing trays, tongs, and tiled backsplash.",
+    "food": "Cereal flakes lead to pancakes, bacon strips, waffles, and a roast ham.",
+    "interaction": "Tongs and sliding trays feed food toward goo; syrup catches its underside, while gravy is mopped around tray feet.",
+    "reveal": "Growth makes chafers, tongs, and the ham platter edible.",
+    "risk": "Multiple serving tools can create noisy simultaneous motion."
+  },
+  {
+    "id": 116,
+    "band": "tabletop",
+    "title": "Tabletop Fountain",
+    "setting": "A tabletop fountain has resin stone, a shallow basin, copper channels, and a hidden pump.",
+    "food": "Fruit pearls lead to jelly cubes, syrup buns, gelatin rings, and aspic basin.",
+    "interaction": "The pump circulates sweet liquid; goo sticks to resin, mops the basin puddle locally, and redirects floating jelly.",
+    "reveal": "Growth makes channels, stones, and aspic basin edible.",
+    "risk": "Fluid circulation needs a readable loop at low height."
+  },
+  {
+    "id": 117,
+    "band": "tabletop",
+    "title": "Science Fair Edible Model",
+    "setting": "An edible volcano model uses cardboard terrain, clear tubes, a folding table, and a pump.",
+    "food": "Sugar crystals lead to gummy pebbles, wafer plates, fudge rocks, and gelatin crater.",
+    "interaction": "The pump sends syrup through channels; sticky goo pushes wafer debris and consumes contacted sections while the rest stays connected.",
+    "reveal": "Growth makes tubes, terrain slabs, and the gelatin crater edible.",
+    "risk": "Tubing and syrup can hide routes beneath terrain."
+  },
+  {
+    "id": 118,
+    "band": "tabletop",
+    "title": "Tea Ceremony Table",
+    "setting": "A tea table uses bamboo, glazed cups, woven mats, a teapot, and a catch tray.",
+    "food": "Tea leaves lead to sesame crackers, mochi, rice cakes, and red-bean pastry.",
+    "interaction": "The teapot pours a coherent tea puddle; goo rolls across mats, peels from bamboo, and mops contact liquid.",
+    "reveal": "Growth makes cups, teapot, mats, and the pastry edible.",
+    "risk": "Dark tea needs contrast against the wood surface."
+  },
+  {
+    "id": 119,
+    "band": "tabletop",
+    "title": "Sewing Table Snack",
+    "setting": "A sewing table has painted wood, felt squares, a spinning bobbin, spools, and a cookie tin.",
+    "food": "Poppy seeds grow into cookie buttons, fruit-leather strips, wafer rolls, and a tart.",
+    "interaction": "The bobbin rolls into goo and carries a wafer; sticky felt pulls crumbs, while jam remains a coherent puddle.",
+    "reveal": "Growth makes spools, bobbin, tin, and tart edible.",
+    "risk": "Thread strands need collision-free visual proxies."
+  },
+  {
+    "id": 120,
+    "band": "tabletop",
+    "title": "Fish-Market Prep Table",
+    "setting": "A fish-market table uses stainless steel, crushed-ice trays, wooden crates, hoses, and a drain.",
+    "food": "Fish flakes lead to shrimp, fillets, sushi rolls, and a tuna slab.",
+    "interaction": "A hose spreads a connected seawater puddle; goo sticks to steel, pushes crates, and mops water without collapsing the pool.",
+    "reveal": "Growth makes crates, trays, and the tuna slab edible.",
+    "risk": "Ice and water may require costly translucency and reflections."
+  },
+  {
+    "id": 121,
+    "band": "human",
+    "title": "Kitchen Floor After Cooking",
+    "setting": "A home kitchen floor uses stone tile, oak cabinets, a rolling island, and a leaking stockpot.",
+    "food": "Breadcrumbs lead to peas, pasta curls, casserole chunks, and a roast.",
+    "interaction": "The rolling island nudges the goo around cabinet corners; sticky contact gathers pasta, while stock broth remains a coherent puddle consumed section by section.",
+    "reveal": "Growth makes the island, cabinets, and roast pan edible.",
+    "risk": "Cabinet collisions can create tight dead ends."
+  },
+  {
+    "id": 122,
+    "band": "human",
+    "title": "Grocery Aisle",
+    "setting": "A grocery aisle has polished concrete, metal shelving, cardboard cartons, and a refrigerated produce case.",
+    "food": "Rice spills lead to berries, cereal boxes, melons, and a cheese wheel.",
+    "interaction": "A shopping cart pushes the goo down the aisle; sticky floor contact collects rice, while a broken juice carton leaves a coherent puddle for local mopping.",
+    "reveal": "Growth makes shelves, carts, and the cheese wheel edible.",
+    "risk": "Long sightlines require enough landmarks for orientation."
+  },
+  {
+    "id": 123,
+    "band": "human",
+    "title": "Diner Counter",
+    "setting": "A diner counter combines red vinyl stools, chrome trim, laminate, plates, and a pass-through window.",
+    "food": "Salt grains lead to fries, pickles, burgers, and a pie.",
+    "interaction": "Sliding plates bump the goo between stools; ketchup puddles stay coherent as it mops touched sections, and sticky contact drags fries from the pass.",
+    "reveal": "Growth makes stools, counter rails, and the pie stand edible.",
+    "risk": "Narrow stool gaps may frustrate larger goo."
+  },
+  {
+    "id": 124,
+    "band": "human",
+    "title": "Balcony Planter",
+    "setting": "An apartment balcony has concrete slabs, metal rails, cedar planters, potting soil, and a hose bib.",
+    "food": "Birdseed leads to berries, tomatoes, carrots, and a pumpkin crate.",
+    "interaction": "The hose forms connected muddy puddles; wind pushes loose leaves into the goo, whose sticky roll climbs planters and locally consumes wet soil patches.",
+    "reveal": "Growth makes planters, rail baskets, and the pumpkin crate edible.",
+    "risk": "Railings can make a fall read as a collision bug."
+  },
+  {
+    "id": 125,
+    "band": "human",
+    "title": "Laundromat Vending Corner",
+    "setting": "A laundromat corner uses rubber flooring, steel washers, vending machines, carts, and a floor drain.",
+    "food": "Cracker crumbs lead to candy bars, chips, sandwiches, and a vending pastry.",
+    "interaction": "A laundry cart bumps the goo between machines; sticky rubber catches crumbs, while a spilled soda puddle stays connected as contact mops its sections.",
+    "reveal": "Growth makes carts, washers, and the pastry machine edible.",
+    "risk": "Round machines can dominate the camera silhouette."
+  },
+  {
+    "id": 126,
+    "band": "human",
+    "title": "Office Break Room",
+    "setting": "An office break room has vinyl tile, laminate counters, a microwave, rolling chairs, and a refrigerator.",
+    "food": "Cookie crumbs lead to fruit, donuts, sandwiches, and a pizza box.",
+    "interaction": "Rolling chairs herd the goo around counter legs; sticky contact gathers crumbs, and a coffee puddle remains coherent while its touched area disappears.",
+    "reveal": "Growth makes chairs, counters, and the pizza box edible.",
+    "risk": "Office props are visually plain without strong color accents."
+  },
+  {
+    "id": 127,
+    "band": "human",
+    "title": "Street-Food Cart Sidewalk",
+    "setting": "A street-food cart stands on concrete pavers beside a curb, steel griddle, awning, and drain channel.",
+    "food": "Sesame seeds lead to fries, tacos, burritos, and a stacked sandwich.",
+    "interaction": "Cart wheels roll into the goo and shift its route; grease forms a connected puddle that sticky contact mops locally around the curb.",
+    "reveal": "Growth makes the cart, griddle, and sandwich stack edible.",
+    "risk": "Wheel motion and grease need simple, stable contact rules."
+  },
+  {
+    "id": 128,
+    "band": "human",
+    "title": "Playground Picnic",
+    "setting": "A playground picnic zone has rubber surfacing, timber benches, plastic slides, baskets, and a shaded table.",
+    "food": "Cracker crumbs lead to fruit cups, hotdogs, sandwiches, and a birthday cake.",
+    "interaction": "A loose ball shoves the goo under benches; sticky contact catches crumbs, while spilled lemonade remains a coherent puddle between rubber tiles.",
+    "reveal": "Growth makes benches, slides, and the cake carrier edible.",
+    "risk": "Playground structures can block the camera at grown sizes."
+  },
+  {
+    "id": 129,
+    "band": "human",
+    "title": "Pet Shop",
+    "setting": "A pet shop aisle uses sealed concrete, glass tanks, wooden shelves, food bins, and rolling display racks.",
+    "food": "Fish flakes lead to kibble, jerky strips, hay bundles, and a feed sack.",
+    "interaction": "An aquarium pump circulates water into local puddles; the goo sticks to concrete, pushes racks, and mops only contacted water around bowls.",
+    "reveal": "Growth makes tanks, shelves, and the feed sack edible.",
+    "risk": "Glass tanks need readable contents without visual noise."
+  },
+  {
+    "id": 130,
+    "band": "human",
+    "title": "Farmers Market Stall",
+    "setting": "A farmers market stall has wooden pallets, canvas awnings, wicker crates, dirt, and a folding cart.",
+    "food": "Grain specks lead to berries, squash, corn bundles, and a watermelon.",
+    "interaction": "The cart rolls into the goo and spills grain; rainwater forms a coherent puddle that sticky contact consumes in patches beside the pallets.",
+    "reveal": "Growth makes pallets, crates, awning poles, and watermelon edible.",
+    "risk": "Canvas sway can distract from edible movement."
+  },
+  {
+    "id": 131,
+    "band": "human",
+    "title": "Bakery Storefront Sidewalk",
+    "setting": "A bakery storefront uses brick paving, a glass door, wooden racks, paper bags, and a delivery dolly.",
+    "food": "Crumbs lead to baguette pieces, pastries, frosted buns, and a wedding cake.",
+    "interaction": "The dolly pushes the goo along the storefront; sticky contact drags crumbs, while icing runoff remains a connected puddle under local mopping.",
+    "reveal": "Growth makes racks, dolly, and the wedding cake edible.",
+    "risk": "Street props need a clear boundary around the play space."
+  },
+  {
+    "id": 132,
+    "band": "human",
+    "title": "Train Station Concourse",
+    "setting": "A station concourse has terrazzo flooring, steel benches, ticket gates, luggage wheels, and snack kiosks.",
+    "food": "Popcorn leads to pretzels, sandwiches, pizza slices, and a catering tray.",
+    "interaction": "Luggage rolls into the goo and redirects it through gates; a soda spill stays coherent while sticky contact mops sections between moving wheels.",
+    "reveal": "Growth makes benches, gates, and the catering tray edible.",
+    "risk": "Crowded gate geometry may slow pathfinding and navigation."
+  },
+  {
+    "id": 133,
+    "band": "human",
+    "title": "Food-Truck Crosswalk",
+    "setting": "A food truck occupies a painted crosswalk beside asphalt, curb drains, folding tables, and a serving hatch.",
+    "food": "Sesame seeds lead to fries, tacos, burgers, and a burrito tray.",
+    "interaction": "A delivery handcart pushes the goo across lane markings; oil puddles remain coherent while local contact mops them, and the sticky body gathers fries.",
+    "reveal": "Growth makes tables, truck steps, and the burrito tray edible.",
+    "risk": "Crosswalk stripes can flatten depth perception."
+  },
+  {
+    "id": 134,
+    "band": "human",
+    "title": "Museum Cafe",
+    "setting": "A museum cafe has polished terrazzo, glass display cases, brass stanchions, marble tables, and a coffee bar.",
+    "food": "Sugar grains lead to cookies, fruit tarts, sandwiches, and a cake pedestal.",
+    "interaction": "Stanchion ropes guide the goo into loops; sticky contact pulls crumbs, while a cream puddle remains connected as it is consumed by contact.",
+    "reveal": "Growth makes cases, tables, and the cake pedestal edible.",
+    "risk": "Reflective floors can reduce visibility of deformation."
+  },
+  {
+    "id": 135,
+    "band": "human",
+    "title": "Public Pool Snack Deck",
+    "setting": "A pool snack deck uses textured concrete, blue tile, plastic loungers, drains, and a kiosk.",
+    "food": "Chips lead to fruit cups, hotdogs, pizza slices, and a pretzel basket.",
+    "interaction": "Pool runoff creates connected puddles; loungers slide into the goo, whose sticky body peels from tile and mops only contacted water.",
+    "reveal": "Growth makes loungers, drains, kiosk shelves, and the pretzel basket edible.",
+    "risk": "Water reflections can compete with the translucent puddle."
+  },
+  {
+    "id": 136,
+    "band": "human",
+    "title": "School Cafeteria",
+    "setting": "A school cafeteria has sealed tile, long tables, stackable chairs, serving rails, and colored recycling bins.",
+    "food": "Rice grains lead to peas, pizza squares, pasta trays, and a lasagna pan.",
+    "interaction": "Chairs scrape the goo into lanes; sticky contact gathers rice, while a spilled juice puddle remains coherent between table legs during local mopping.",
+    "reveal": "Growth makes rails, tables, bins, and the lasagna pan edible.",
+    "risk": "Many identical tables need distinct landmark props."
+  },
+  {
+    "id": 137,
+    "band": "human",
+    "title": "Living Room Movie Night",
+    "setting": "A living room uses carpet, a low wooden table, fabric sofas, a television stand, and a robot vacuum.",
+    "food": "Popcorn crumbs lead to candy, nachos, pizza slices, and a cake box.",
+    "interaction": "The robot vacuum nudges the goo across carpet; sticky contact peels slowly, and cheese dip remains a coherent puddle as the goo mops it locally.",
+    "reveal": "Growth makes sofas, table, vacuum, and cake box edible.",
+    "risk": "Carpet drag can make rolling feel sluggish."
+  },
+  {
+    "id": 138,
+    "band": "human",
+    "title": "Rooftop Lunch",
+    "setting": "An apartment rooftop has concrete, gravel beds, metal vents, picnic tables, and a wind screen.",
+    "food": "Crumbs lead to grapes, wraps, salad bowls, and a sheet cake.",
+    "interaction": "Wind pushes napkins and nudges loose grapes toward the goo; sticky contact grips gravel, while dressing puddles stay connected during local mopping.",
+    "reveal": "Growth makes vents, tables, and the sheet cake edible.",
+    "risk": "Wind effects need restraint so steering stays responsive."
+  },
+  {
+    "id": 139,
+    "band": "human",
+    "title": "Arcade Snack Aisle",
+    "setting": "An arcade snack aisle combines rubber flooring, glowing cabinets, coin trays, stools, and a popcorn counter.",
+    "food": "Sugar grains lead to popcorn, fries, pizza bites, and a giant pretzel.",
+    "interaction": "Stools roll into the goo and bounce away; sticky contact gathers popcorn, while soda puddles remain coherent between cabinets as touched sections vanish.",
+    "reveal": "Growth makes cabinets, stools, and the giant pretzel edible.",
+    "risk": "Screen lights can wash out the goo outline."
+  },
+  {
+    "id": 140,
+    "band": "human",
+    "title": "Hotel Banquet Kitchen",
+    "setting": "A hotel banquet kitchen has stainless counters, tiled floors, rolling racks, warming carts, and a floor drain.",
+    "food": "Herb flecks lead to dinner rolls, roast slices, casseroles, and a gelatin centerpiece.",
+    "interaction": "Racks roll around the goo and carry trays; sticky contact drags gravy, while the connected puddle is mopped only under the goo’s footprint.",
+    "reveal": "Growth makes racks, carts, and the gelatin centerpiece edible.",
+    "risk": "Large rolling props need generous turning space."
+  },
+  {
+    "id": 141,
+    "band": "landscape",
+    "title": "Marina Dock at Low Tide",
+    "setting": "A marina dock stretches over tidal mud, cedar planks, rope coils, bait crates, and shallow seawater.",
+    "food": "Plankton flakes lead to mussels, fish fillets, crab clusters, and a tuna crate.",
+    "interaction": "Tidewater flows around the goo; sticky contact grips wet planks, pushes bait crates, and mops connected seawater patches between pilings.",
+    "reveal": "Growth makes pilings, boatside crates, and tuna crate edible.",
+    "risk": "Tidal motion needs simplified loops to preserve readable routes."
+  },
+  {
+    "id": 142,
+    "band": "landscape",
+    "title": "Community Garden Path",
+    "setting": "A community garden spans soil beds, gravel paths, timber borders, hoses, and compost bays.",
+    "food": "Seeds lead to strawberries, carrots, squash, and a pumpkin mound.",
+    "interaction": "A hose lays connected muddy puddles across paths; the goo rolls over gravel, sticks to timber, and locally consumes wet sections while pushing empty pots.",
+    "reveal": "Growth makes beds, borders, and pumpkin mounds edible.",
+    "risk": "Dense crops can hide the goo at larger size."
+  },
+  {
+    "id": 143,
+    "band": "landscape",
+    "title": "Orchard Rows",
+    "setting": "An orchard has grassy rows, apple trees, irrigation channels, wooden ladders, and fallen fruit.",
+    "food": "Pollen dust leads to berries, apples, pears, and a cider barrel.",
+    "interaction": "Irrigation water joins into coherent puddles; the goo peels between roots, pushes ladders, and mops water locally while collecting fallen fruit.",
+    "reveal": "Growth makes trunks, ladders, and cider barrels edible.",
+    "risk": "Tree spacing must allow larger goo to turn."
+  },
+  {
+    "id": 144,
+    "band": "landscape",
+    "title": "Suburban Creek",
+    "setting": "A suburban creek runs through concrete banks, pebbles, reeds, footbridges, and storm-drain outlets.",
+    "food": "Seeds lead to berries, fish bites, sandwiches, and a picnic basket.",
+    "interaction": "Storm runoff forms connected puddles along the bank; the goo grips pebbles, pushes driftwood, and mops only contacted water before it reaches the bridge.",
+    "reveal": "Growth makes footbridges, reeds, and the picnic basket edible.",
+    "risk": "Water boundaries need clear depth cues around concrete."
+  },
+  {
+    "id": 145,
+    "band": "landscape",
+    "title": "Beach Boardwalk",
+    "setting": "A beach boardwalk crosses warm sand, weathered planks, beach towels, coolers, and shallow tide pools.",
+    "food": "Salt grains lead to crackers, fruit, sandwiches, and a watermelon.",
+    "interaction": "Waves feed coherent tide puddles; the goo sticks to wet sand, pushes coolers, and locally mops each contacted pool section.",
+    "reveal": "Growth makes towels, planks, coolers, and watermelon edible.",
+    "risk": "Sand friction and wave flow may be costly together."
+  },
+  {
+    "id": 146,
+    "band": "landscape",
+    "title": "Pine Forest Campsite",
+    "setting": "A pine campsite has needle-covered soil, granite stones, canvas tents, a stream, and a picnic table.",
+    "food": "Pine nuts lead to berries, trail mix, sausages, and a marshmallow log.",
+    "interaction": "A stream curves around the goo; sticky contact gathers needles, pushes firewood, and mops syrup puddles locally while the remaining water stays coherent.",
+    "reveal": "Growth makes stones, tents, tables, and marshmallow log edible.",
+    "risk": "Needle litter needs batching to avoid excessive particles."
+  },
+  {
+    "id": 147,
+    "band": "landscape",
+    "title": "Cornfield Irrigation",
+    "setting": "A cornfield follows muddy tractor lanes, tall stalks, irrigation pipes, grain bins, and a windbreak.",
+    "food": "Corn kernels lead to cobs, bread loaves, tortillas, and a grain sack.",
+    "interaction": "Irrigation leaks connect muddy puddles; the goo rolls between stalks, sticks to soil, and pushes pipe sections that redirect loose kernels.",
+    "reveal": "Growth makes pipes, bins, and the grain sack edible.",
+    "risk": "Tall stalks can occlude the goo and camera."
+  },
+  {
+    "id": 148,
+    "band": "landscape",
+    "title": "Desert Oasis Picnic",
+    "setting": "A desert oasis combines rippled sand, sandstone shelves, date palms, a spring, and woven mats.",
+    "food": "Date crumbs lead to nuts, flatbread, melon slices, and a fruit basket.",
+    "interaction": "The spring spreads a coherent shallow puddle; sticky goo climbs sandstone, pushes mats, and mops contacted water while collecting windblown crumbs.",
+    "reveal": "Growth makes palm trunks, shelves, and fruit baskets edible.",
+    "risk": "Heat haze effects could reduce silhouette clarity."
+  },
+  {
+    "id": 149,
+    "band": "landscape",
+    "title": "Mountain Meadow",
+    "setting": "A mountain meadow has short grass, granite boulders, alpine flowers, a wooden footbridge, and a runoff stream.",
+    "food": "Pollen specks lead to berries, mushrooms, cheese wedges, and a picnic hamper.",
+    "interaction": "Snowmelt forms linked puddles along the slope; the goo grips grass, pushes boulders downhill, and mops only contacted runoff.",
+    "reveal": "Growth makes boulders, bridge rails, and the hamper edible.",
+    "risk": "Slope physics needs limits to keep objects on-screen."
+  },
+  {
+    "id": 150,
+    "band": "landscape",
+    "title": "Wetland Boardwalk",
+    "setting": "A wetland boardwalk crosses reeds, dark mud, shallow pools, timber rails, and floating lily pads.",
+    "food": "Seeds lead to berries, fish bites, rice cakes, and a reed-basket meal.",
+    "interaction": "Water channels join into coherent pools; sticky goo peels from mud, pushes lily pads, and locally consumes puddle sections around the boardwalk.",
+    "reveal": "Growth makes rails, lily pads, and the reed basket edible.",
+    "risk": "Reed density can hide routes and puddle edges."
+  },
+  {
+    "id": 151,
+    "band": "landscape",
+    "title": "River Floodplain",
+    "setting": "A river floodplain contains silt banks, driftwood, grass islands, sandbars, and a stranded picnic raft.",
+    "food": "Grain specks lead to berries, fish fillets, bread, and a picnic crate.",
+    "interaction": "The river pushes the goo around sandbars; sticky contact catches silt, shifts driftwood, and mops connected eddies section by section.",
+    "reveal": "Growth makes raft pieces, driftwood, and the picnic crate edible.",
+    "risk": "Flowing water and deformable goo need stable contact."
+  },
+  {
+    "id": 152,
+    "band": "landscape",
+    "title": "Rocky Coast Tide Pool",
+    "setting": "A rocky coast exposes basalt shelves, tide pools, seaweed, shells, and a weathered bait hut.",
+    "food": "Seaweed flecks lead to mussels, crab pieces, fish cakes, and a clam basket.",
+    "interaction": "Surge fills coherent tide pools; the goo sticks to basalt, pushes shells, and mops only contacted pool sections before the next wave connects them.",
+    "reveal": "Growth makes shelves, hut boards, and the clam basket edible.",
+    "risk": "Wave timing can obscure local puddle removal."
+  },
+  {
+    "id": 153,
+    "band": "landscape",
+    "title": "Vineyard Hillside",
+    "setting": "A vineyard hillside has terraced soil, grape vines, stone retaining walls, barrels, and irrigation channels.",
+    "food": "Grape skins lead to grapes, cheese chunks, bread loaves, and a wine cask.",
+    "interaction": "Irrigation links puddles along terraces; the goo grips soil, pushes barrels, and mops touched liquid while vine rows funnel loose grapes.",
+    "reveal": "Growth makes retaining walls, barrels, and wine cask edible.",
+    "risk": "Terraces need camera framing that shows vertical height."
+  },
+  {
+    "id": 154,
+    "band": "landscape",
+    "title": "Urban Park Lake",
+    "setting": "An urban park surrounds a lake with grass, stone paths, benches, fountains, and food carts.",
+    "food": "Crumbs lead to fruit, pretzels, sandwiches, and a picnic hamper.",
+    "interaction": "Fountains create connected lake-edge puddles; the goo sticks to stone, pushes carts, and locally mops water while paths redirect rolling food.",
+    "reveal": "Growth makes benches, carts, and the hamper edible.",
+    "risk": "Lake scale may make the goo hard to track."
+  },
+  {
+    "id": 155,
+    "band": "landscape",
+    "title": "Snowy Lodge Clearing",
+    "setting": "A snowy lodge clearing has packed snow, timber cabins, sleds, pine trees, and a thawing meltwater channel.",
+    "food": "Sugar snow leads to berries, cookies, sausages, and a hot-cocoa urn.",
+    "interaction": "Meltwater forms coherent icy puddles; sticky goo peels across snow, pushes sleds, and mops contacted meltwater without erasing the rest.",
+    "reveal": "Growth makes cabins, sleds, and the cocoa urn edible.",
+    "risk": "Snow glare can flatten outlines and hide deformation."
+  },
+  {
+    "id": 156,
+    "band": "landscape",
+    "title": "Canyon Trail",
+    "setting": "A canyon trail winds between red rock walls, dusty ledges, rope bridges, seep pools, and supply crates.",
+    "food": "Dusty grain leads to nuts, jerky, flatbread, and a food barrel.",
+    "interaction": "Seep water collects in connected pockets; the goo sticks to ledges, pushes supply crates, and mops each contacted pocket while rolling around bridge ropes.",
+    "reveal": "Growth makes bridge planks, ledges, and the food barrel edible.",
+    "risk": "Narrow ledges can trap the larger goo."
+  },
+  {
+    "id": 157,
+    "band": "landscape",
+    "title": "Mangrove Inlet",
+    "setting": "A mangrove inlet has tangled roots, brackish channels, mud flats, shells, and a small fishing skiff.",
+    "food": "Plankton flakes lead to shrimp, fish pieces, rice cakes, and a catch basket.",
+    "interaction": "Tidal channels move coherent puddles through roots; sticky goo crawls across mud, pushes the skiff, and mops contacted water while roots redirect it.",
+    "reveal": "Growth makes roots, skiff boards, and the catch basket edible.",
+    "risk": "Root tangles demand careful collision simplification."
+  },
+  {
+    "id": 158,
+    "band": "landscape",
+    "title": "Prairie Windbreak",
+    "setting": "A prairie windbreak surrounds a grassy field with fence posts, grain rows, water troughs, and a farm wagon.",
+    "food": "Grain dust leads to berries, corn cobs, bread, and a hay-bale sandwich.",
+    "interaction": "Wind pushes the wagon and scatters grain toward the goo; trough water remains a coherent puddle as sticky contact mops it around fence posts.",
+    "reveal": "Growth makes posts, troughs, wagon, and hay-bale sandwich edible.",
+    "risk": "Wind and broad grass can make causal motion subtle."
+  },
+  {
+    "id": 159,
+    "band": "landscape",
+    "title": "Limestone Quarry Picnic",
+    "setting": "A limestone quarry has pale terraces, gravel ramps, puddle basins, conveyor belts, and a lunch truck.",
+    "food": "Gravel dust leads to crackers, fruit, sandwiches, and a lunch crate.",
+    "interaction": "A conveyor carries loose food toward the goo; rain fills connected basins, and sticky contact mops local puddle sections while pushing gravel piles.",
+    "reveal": "Growth makes belts, ramps, and the lunch crate edible.",
+    "risk": "Quarry terraces need simplified depth for safe movement."
+  },
+  {
+    "id": 160,
+    "band": "landscape",
+    "title": "Volcanic Island Shore",
+    "setting": "A volcanic island shore combines black sand, basalt ridges, warm springs, palms, and a stranded supply raft.",
+    "food": "Coconut flakes lead to fruit, fish strips, rice bundles, and a supply crate.",
+    "interaction": "Warm springs join into coherent translucent pools; the goo sticks to basalt, pushes the raft, and mops contacted water while beach currents move food.",
+    "reveal": "Growth makes ridges, palms, raft, and supply crate edible.",
+    "risk": "Dark terrain and translucent water need strong outline separation."
+  }
+]

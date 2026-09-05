@@ -1,0 +1,802 @@
+[
+  {
+    "id": 1,
+    "band": "subatomic",
+    "title": "Quark Charge Drift",
+    "setting": "Within a cartoon hadron field, quark sparks cluster around shifting charge wells.",
+    "food": "Quark sparks lead to proton knots, neutron clusters, and dense nuclei.",
+    "interaction": "Charged beads arc toward opposite field patches; the goo crosses a patch, shifting the composite paths.",
+    "reveal": "Growth lets it swallow proton knots and bridge the inner field.",
+    "risk": "Field-driven motion needs readable lanes and gentle physics tuning."
+  },
+  {
+    "id": 2,
+    "band": "subatomic",
+    "title": "Bubble Track Swirl",
+    "setting": "A translucent particle cloud holds curving collision tracks and expanding bubble clusters.",
+    "food": "Track bubbles lead to particle knots, then bright collision cores.",
+    "interaction": "Passing waves bend the tracks; the goo displaces the cloud, causing nearby bubbles to merge into edible chains.",
+    "reveal": "Growth reveals dense cores hidden inside overlapping tracks.",
+    "risk": "Track density can become visually noisy."
+  },
+  {
+    "id": 3,
+    "band": "subatomic",
+    "title": "Plasma Pinch Spiral",
+    "setting": "A narrow plasma ribbon coils through a bright field, with ion sparks caught along its edge.",
+    "food": "Ion sparks lead to charge beads, then hot plasma clumps.",
+    "interaction": "The charged field draws sparks inward; the goo crosses the ribbon, gathering sparks and redirecting them along a neighboring arc.",
+    "reveal": "Growth reaches plasma clumps beyond the tightest spiral.",
+    "risk": "Continuous arcs need readable, stable collision rules."
+  },
+  {
+    "id": 4,
+    "band": "subatomic",
+    "title": "Nuclear Lattice Drift",
+    "setting": "Glowing seed nuclei sit in a loose lattice joined by trembling neutron bridges.",
+    "food": "Seed nuclei lead to linked nuclei and heavy lattice blossoms.",
+    "interaction": "The goo presses one lattice edge; displaced nuclei pull bridges apart and tumble into a neighboring pocket.",
+    "reveal": "Growth makes heavy blossoms edible at the lattice center.",
+    "risk": "Many small links may stress ordinary physics."
+  },
+  {
+    "id": 5,
+    "band": "subatomic",
+    "title": "Matter-Antimatter Boundary",
+    "setting": "A mirrored cloud of opposite beads meets along a luminous cancellation seam.",
+    "food": "Opposite beads lead to flash crumbs, paired knots, and stable cores.",
+    "interaction": "Opposite beads flow along the seam; the goo interrupts one lane, causing a local flash that ejects stable cores.",
+    "reveal": "Growth opens the core cloud beyond the cancellation seam.",
+    "risk": "Flashes could obscure the goo during rapid chain reactions."
+  },
+  {
+    "id": 6,
+    "band": "subatomic",
+    "title": "Photon Prism Flow",
+    "setting": "Bouncing photon ribbons cross a transparent crystal field, splitting into colored paths.",
+    "food": "Light motes lead to photon bundles, then glowing energy knots.",
+    "interaction": "The goo touches a crystal edge, changing the local angle so ribbons converge on a nearby energy knot.",
+    "reveal": "Growth reaches energy knots beyond the crystal split.",
+    "risk": "Light paths need strong contrast against the background."
+  },
+  {
+    "id": 7,
+    "band": "subatomic",
+    "title": "Orbiting Composite Swirl",
+    "setting": "Composite beads loop through a broad particle stream around a dense central field.",
+    "food": "Orbit beads lead to paired particles, composite knots, and heavy rings.",
+    "interaction": "The goo leaves a sticky wake in the stream; orbiting beads shed into a slow outer eddy.",
+    "reveal": "Growth lets it eat heavy rings beyond the outer eddy.",
+    "risk": "Fast circular motion may feel slippery to steer."
+  },
+  {
+    "id": 8,
+    "band": "subatomic",
+    "title": "Vacuum Pair Ripple",
+    "setting": "A quiet vacuum field flickers with virtual pairs beside shallow pressure ripples.",
+    "food": "Virtual pairs lead to bubble pairs, pressure pearls, and compact wells.",
+    "interaction": "Pressure ripples spread when the goo settles nearby, pushing pairs toward a lower-energy pocket.",
+    "reveal": "Growth uncovers compact wells beneath the fading ripples.",
+    "risk": "Pop timing must stay predictable for untimed play."
+  },
+  {
+    "id": 9,
+    "band": "subatomic",
+    "title": "Nuclear Soup Eddy",
+    "setting": "Dense nucleus droplets float in a translucent nuclear soup crossed by slow current bands.",
+    "food": "Soup droplets lead to nucleus beads, isotope clusters, and thick soup islands.",
+    "interaction": "The goo occupies an eddy, slowing it; nearby droplets gather along the sticky wake.",
+    "reveal": "Growth makes thick nucleus islands edible.",
+    "risk": "Fluid motion needs a simple, readable approximation."
+  },
+  {
+    "id": 10,
+    "band": "subatomic",
+    "title": "Quark Color Knot",
+    "setting": "Red, green, and blue quark beads drift through a tangled color field.",
+    "food": "Colored quarks lead to trios, baryon beads, and chained composite blocks.",
+    "interaction": "Color attraction pulls three beads together; the goo nudges the knot, sending the completed trio down a widening stream.",
+    "reveal": "Growth reaches baryon beads beyond the color knot.",
+    "risk": "Color matching may read like a puzzle layer."
+  },
+  {
+    "id": 11,
+    "band": "subatomic",
+    "title": "Wavefunction Cloud",
+    "setting": "Probability clouds overlap in a soft field above two branching particle currents.",
+    "food": "Cloud puffs lead to localized beads, paired states, and bright nodes.",
+    "interaction": "The goo crosses one cloud, concentrating it locally and making a bright bead emerge from one branch.",
+    "reveal": "Growth reveals bright nodes inside the branching currents.",
+    "risk": "Ghost branches need inexpensive effects and clear feedback."
+  },
+  {
+    "id": 12,
+    "band": "subatomic",
+    "title": "Oscillating Particle Field",
+    "setting": "A rhythmic particle field ripples through tick-like rings and soft standing waves.",
+    "food": "Tick sparks lead to frequency beads, synchronized pairs, and dense clock hearts.",
+    "interaction": "The goo dampens one ripple; particles collect there while another wave opens a path through the field.",
+    "reveal": "Growth reaches clock hearts beyond the standing waves.",
+    "risk": "Oscillation must never trap a slow-moving player."
+  },
+  {
+    "id": 13,
+    "band": "subatomic",
+    "title": "Splitting Nucleus Drift",
+    "setting": "Heavy seed nuclei float among fragment trails and bright binding fields.",
+    "food": "Heavy seeds lead to split fragments, paired cores, and bright chain seeds.",
+    "interaction": "The goo nudges one seed; it divides into fragments that follow separate currents and reunite in a dense knot.",
+    "reveal": "Growth makes chain seeds edible after the split.",
+    "risk": "Chain reactions need capped, deterministic object counts."
+  },
+  {
+    "id": 14,
+    "band": "subatomic",
+    "title": "Cosmic-Ray Foam Cloud",
+    "setting": "A foam-like particle cloud hangs beneath streaking cosmic rays and translucent field bands.",
+    "food": "Ray streaks lead to ion crumbs, charged clusters, and shielded cores.",
+    "interaction": "Ray impacts dislodge ion crumbs; the goo catches falling crumbs and alters the cloud’s lower current.",
+    "reveal": "Growth uncovers shielded cores above the cloud.",
+    "risk": "Vertical layering raises camera and navigation costs."
+  },
+  {
+    "id": 15,
+    "band": "subatomic",
+    "title": "Muon Rain Current",
+    "setting": "Blue heavy-particle streaks descend through a transparent cloud of charge trails.",
+    "food": "Passing streaks lead to track beads, charge drums, and dense detector caps.",
+    "interaction": "Streaks pass through and drag charge beads; the goo’s surface gathers them into a slower band.",
+    "reveal": "Growth reaches detector caps above the slow band.",
+    "risk": "Continuous rain can distract from edible targets."
+  },
+  {
+    "id": 16,
+    "band": "subatomic",
+    "title": "Spin-Field Whirl",
+    "setting": "Half-spin tokens orbit two counter-rotating particle whirlpools linked by a luminous bridge.",
+    "food": "Spin tokens lead to paired spins, linked discs, and heavy angular wheels.",
+    "interaction": "The goo touches one whirlpool, slowing its spin and aligning the bridge with the denser stream.",
+    "reveal": "Growth lets it consume angular wheels at the center.",
+    "risk": "Contact-based slowing needs careful tuning."
+  },
+  {
+    "id": 17,
+    "band": "subatomic",
+    "title": "Hadron Drift Basin",
+    "setting": "Composite hadron beads float through a broad particle basin with colored marker beads and current bands.",
+    "food": "Quark markers lead to hadron pebbles, composite clusters, and packed particle cores.",
+    "interaction": "Current bands push composite beads; the goo settles at a flow mouth, rerouting them into a side eddy.",
+    "reveal": "Growth opens packed cores beyond the side eddy.",
+    "risk": "Composite beads require readable buoyancy and collision behavior."
+  },
+  {
+    "id": 18,
+    "band": "subatomic",
+    "title": "Superposition Split Flow",
+    "setting": "Mirrored particle currents overlap across a translucent field with ghost layers.",
+    "food": "Ghost motes lead to paired states, collapsed beads, and stable route nodes.",
+    "interaction": "The goo crosses a split region; one current condenses under its weight while the other remains a ghost flow.",
+    "reveal": "Growth reaches stable nodes in the condensed flow.",
+    "risk": "Mirrored geometry can confuse orientation."
+  },
+  {
+    "id": 19,
+    "band": "subatomic",
+    "title": "Scintillating Crystal Field",
+    "setting": "Vibrating crystal slabs release light motes into pockets within a dark particle field.",
+    "food": "Crystal flashes lead to trapped motes, scintillator chunks, and core prisms.",
+    "interaction": "The goo presses a slab edge, tilting its lattice so motes roll into a neighboring pocket.",
+    "reveal": "Growth makes core prisms edible behind the tilted lattice.",
+    "risk": "Crystal tilt needs robust physics contacts."
+  },
+  {
+    "id": 20,
+    "band": "subatomic",
+    "title": "String Lattice Tangle",
+    "setting": "Vibrating strings cross a loose lattice of knot nodes and suspended mass points.",
+    "food": "Thread sparks lead to tension knots, linked loops, and heavy lattice hearts.",
+    "interaction": "The goo slips under a loop, changing its tension and dropping knots into the sticky wake.",
+    "reveal": "Growth lets it eat lattice hearts beyond the tangle.",
+    "risk": "Thread intersections could be expensive to represent."
+  },
+  {
+    "id": 21,
+    "band": "atomic",
+    "title": "Hydrogen Balloon Lab",
+    "setting": "Hydrogen balloon lab with gas jars, rubber tubes, and wheeled pumps.",
+    "food": "Hydrogen beads lead to paired gas bubbles, water droplets, and dense vapor bladders.",
+    "interaction": "Pumps inflate balloons and drag jars; the goo leans against a valve, diverting gas into a side rack.",
+    "reveal": "Growth reaches vapor bladders hanging above the rack.",
+    "risk": "Flexible tubes need simple collision proxies."
+  },
+  {
+    "id": 22,
+    "band": "atomic",
+    "title": "Helium Blimp Shelf",
+    "setting": "Helium blimp shelf above a quiet laboratory, with tethers, fans, and atom crates.",
+    "food": "Helium beads lead to floating blimplets, buoyant tanks, and tethered airships.",
+    "interaction": "Fans push blimps along the shelf; the goo bumps a tether anchor, lowering one blimp for feeding.",
+    "reveal": "Growth lets it reach airships near the ceiling.",
+    "risk": "Vertical targets can expose camera framing limits."
+  },
+  {
+    "id": 23,
+    "band": "atomic",
+    "title": "Neon Sign Alley",
+    "setting": "Neon sign alley with gas tubes, current contacts, loose letters, and service ladders.",
+    "food": "Neon atoms lead to glowing tubes, letter segments, and bright sign caps.",
+    "interaction": "Current travels through connected tubes; the goo presses a contact, lighting a letter and dropping loose segments.",
+    "reveal": "Growth reaches sign caps behind the lit letters.",
+    "risk": "Glowing surfaces may wash out feeding cues."
+  },
+  {
+    "id": 24,
+    "band": "atomic",
+    "title": "Cartoon Saltworks",
+    "setting": "Cartoon saltworks with sodium trays, chlorine tanks, brine gutters, and crank gates.",
+    "food": "Sodium and chlorine beads lead to salt grains, crystal slabs, and brine pearls.",
+    "interaction": "Brine flows through gutters; the goo blocks a drain, raising a tray until salt slabs slide into reach.",
+    "reveal": "Growth uncovers brine pearls under the crystal beds.",
+    "risk": "Rising water needs predictable containment."
+  },
+  {
+    "id": 25,
+    "band": "atomic",
+    "title": "Carbon Allotrope Quarry",
+    "setting": "Carbon allotrope quarry with graphite shelves, diamond cages, conveyor belts, and lifts.",
+    "food": "Carbon beads lead to graphite flakes, carbon chains, and faceted crystal blocks.",
+    "interaction": "Conveyors shear flakes from shelves; the goo jams a belt, piling flakes against a lift that carries food upward.",
+    "reveal": "Growth makes faceted blocks edible inside the cages.",
+    "risk": "Material differences need art assets beyond simple spheres."
+  },
+  {
+    "id": 26,
+    "band": "atomic",
+    "title": "Silicon Wafer Greenhouse",
+    "setting": "Silicon wafer greenhouse with circuit beds, dopant beads, heat lamps, and sliding contacts.",
+    "food": "Silicon atoms lead to wafer chips, conductive paths, and branching circuit tiles.",
+    "interaction": "Heat lamps expand contact rails; the goo presses a cool plate, rerouting a circuit and opening a side bed.",
+    "reveal": "Growth reaches branching tiles under the lamps.",
+    "risk": "Circuit routing can feel abstract without clear arrows."
+  },
+  {
+    "id": 27,
+    "band": "atomic",
+    "title": "Atomic Metal Forge",
+    "setting": "Atomic metal forge with iron, copper, and zinc ingots, cranes, and induction coils.",
+    "food": "Metal atoms lead to soft ingots, alloy chunks, and dense forged plates.",
+    "interaction": "Induction coils pull selected ingots; the goo nudges a crane hook, dropping copper across a bridge and making a ramp.",
+    "reveal": "Growth can eat forged plates beyond the ramp.",
+    "risk": "Crane timing needs a safe, untimed rhythm."
+  },
+  {
+    "id": 28,
+    "band": "atomic",
+    "title": "Halogen Tidepool",
+    "setting": "Halogen tidepool with fluorine bubbles, chlorine reeds, salt rocks, and sluice gates.",
+    "food": "Halogen atoms lead to paired bubbles, reactive pellets, and salt-rock clusters.",
+    "interaction": "Sluices flush bubbles between pools; the goo plugs one sluice, raising water until pellets wash onto a shelf.",
+    "reveal": "Growth reaches salt-rock clusters above the pool.",
+    "risk": "Reactive styling must avoid implying player damage."
+  },
+  {
+    "id": 29,
+    "band": "atomic",
+    "title": "Alkali Mineral Cave",
+    "setting": "Alkali mineral cave with lithium slabs, potassium pebbles, wet channels, and fizzing vents.",
+    "food": "Alkali atoms lead to mineral pebbles, foaming clumps, and bright metal nodules.",
+    "interaction": "Water activates vents and lifts pebbles; the goo diverts a trickle, changing which shelf receives the foam.",
+    "reveal": "Growth lets it consume nodules behind the wet shelf.",
+    "risk": "Foam and water effects may need a lightweight approximation."
+  },
+  {
+    "id": 30,
+    "band": "atomic",
+    "title": "Atomic Clock Tower",
+    "setting": "Atomic clock tower with pendulum cages, tick lamps, gear bridges, and brass wells.",
+    "food": "Clock atoms lead to tick sparks, oscillator beads, and heavy time-wheel hubs.",
+    "interaction": "Pendulums swing bridges into alignment; the goo presses a counterweight, holding a bridge steady long enough to cross.",
+    "reveal": "Growth reaches time-wheel hubs near the top.",
+    "risk": "Repeated timing must never become a reflex test."
+  },
+  {
+    "id": 31,
+    "band": "atomic",
+    "title": "Gas Giant Sample Jar",
+    "setting": "Gas giant sample jar with layered hydrogen clouds, helium pockets, pressure pistons, and vents.",
+    "food": "Gas atoms lead to cloud puffs, compressed bubbles, and dense metallic droplets.",
+    "interaction": "Pistons squeeze clouds between layers; the goo blocks a vent, forcing a pocket sideways into a collection bowl.",
+    "reveal": "Growth makes metallic droplets edible at the bottom.",
+    "risk": "Layered gas needs readable cartoon depth."
+  },
+  {
+    "id": 32,
+    "band": "atomic",
+    "title": "Electron Shell Carnival",
+    "setting": "Electron shell carnival with orbit hoops, atom booths, ticket rails, and shell gates.",
+    "food": "Electron dots lead to shell rings, complete atom tokens, and glowing element badges.",
+    "interaction": "Ticket rails spin orbit hoops; the goo bumps a gate, dropping outer-shell tokens into a central chute.",
+    "reveal": "Growth reaches complete atom tokens behind the booths.",
+    "risk": "Orbit motion may resemble the subatomic band."
+  },
+  {
+    "id": 33,
+    "band": "atomic",
+    "title": "Isotope Greenhouse",
+    "setting": "Isotope greenhouse with nucleus terrariums, decay lamps, isotope crates, and seed conveyors.",
+    "food": "Isotope beads lead to stable nuclei, daughter clusters, and heavy terrarium seeds.",
+    "interaction": "Decay lamps split selected seeds into daughter clusters; the goo redirects a conveyor, collecting them before they roll away.",
+    "reveal": "Growth reaches heavy seeds in sealed terrariums.",
+    "risk": "Decay visuals need clear edible versus decorative states."
+  },
+  {
+    "id": 34,
+    "band": "atomic",
+    "title": "Periodic-Table Market",
+    "setting": "Periodic-table market with element stalls, magnetic carts, buoyant crates, and spark counters.",
+    "food": "Element beads lead to marked atom crates, reactive stacks, and mixed alloy baskets.",
+    "interaction": "Carts respond differently to magnets and fans; the goo parks beside a stall, redirecting carts into a shared loading lane.",
+    "reveal": "Growth unlocks alloy baskets at the market center.",
+    "risk": "Many material behaviors can expand tutorial demands."
+  },
+  {
+    "id": 35,
+    "band": "atomic",
+    "title": "Crystal Nucleus Greenhouse",
+    "setting": "Crystal nucleus greenhouse with atom seeds, drip lines, glass beds, and growing lattice flowers.",
+    "food": "Atom seeds lead to crystal petals, lattice blooms, and dense crystal hearts.",
+    "interaction": "Drip lines grow flowers along wet beds; the goo blocks a line, sending water to a dry bed and exposing blooms.",
+    "reveal": "Growth lets it eat crystal hearts in the back row.",
+    "risk": "Growth state changes need readable plant silhouettes."
+  },
+  {
+    "id": 36,
+    "band": "atomic",
+    "title": "Atomic Welding Booth",
+    "setting": "Atomic welding booth with metal beads, arc lamps, clamps, and unfinished rail pieces.",
+    "food": "Metal atoms lead to weld sparks, joined plates, and thick rail knots.",
+    "interaction": "Arc lamps join plates when clamps touch; the goo pushes a clamp, completing a rail that rolls food into its lane.",
+    "reveal": "Growth reaches thick knots behind the finished rail.",
+    "risk": "Arc flashes need restrained effects for visibility."
+  },
+  {
+    "id": 37,
+    "band": "atomic",
+    "title": "Aerosol Cleanroom",
+    "setting": "Aerosol cleanroom with gas clouds, fan banks, lint screens, and collection domes.",
+    "food": "Gas atoms lead to suspended motes, aerosol pearls, and dense collection domes.",
+    "interaction": "Fans sweep motes toward screens; the goo blocks one intake, reversing a local swirl and gathering pearls beside a dome.",
+    "reveal": "Growth opens domes at the far end.",
+    "risk": "Airflow must show direction without arrows everywhere."
+  },
+  {
+    "id": 38,
+    "band": "atomic",
+    "title": "Isolated Atom Rail Yard",
+    "setting": "Isolated atom rail yard with vacuum tubes, bumper stops, atom cars, and transfer gates.",
+    "food": "Single atoms lead to paired cars, linked atom chains, and loaded rail capsules.",
+    "interaction": "Bumper stops transfer cars between tubes; the goo wedges a stop, lining up a chain for direct feeding.",
+    "reveal": "Growth reaches loaded capsules behind the transfer gates.",
+    "risk": "Tube occlusion may hide the player."
+  },
+  {
+    "id": 39,
+    "band": "atomic",
+    "title": "Comet-Dust Observatory",
+    "setting": "Comet-dust observatory with lamp beams, atomic dust tails, mirror arms, and icy sample bowls.",
+    "food": "Dust atoms lead to glowing grains, compact dust knots, and icy atom cores.",
+    "interaction": "Mirror arms sweep lamp beams across tails; the goo braces an arm, lighting a side bowl and releasing dust.",
+    "reveal": "Growth lets it consume icy cores under the bowl.",
+    "risk": "Beam-driven reveals need simple, reliable triggers."
+  },
+  {
+    "id": 40,
+    "band": "atomic",
+    "title": "Noble-Gas Lantern Caves",
+    "setting": "Noble-gas lantern caves with argon jars, colored bulbs, air vents, and stone shelves.",
+    "food": "Noble gas atoms lead to lantern motes, glowing bulbs, and heavy light jars.",
+    "interaction": "Air vents roll jars toward lit shelves; the goo blocks a vent, changing the flow and exposing bulbs.",
+    "reveal": "Growth reaches heavy jars behind the shelves.",
+    "risk": "Similar glow colors may reduce material readability."
+  },
+  {
+    "id": 41,
+    "band": "microscopic",
+    "title": "Petri Dish Colony",
+    "setting": "Petri dish research bench with agar islands, sugar beads, bacterial mats, and a hinged lid.",
+    "food": "Sugar crumbs lead to bacterial beads, colony mats, and enzyme blobs.",
+    "interaction": "Moisture spreads through agar; the goo mops one patch, opening a dry channel that pushes mats toward it.",
+    "reveal": "Growth uncovers enzyme blobs in colony centers.",
+    "risk": "Colony growth can look repetitive without varied silhouettes."
+  },
+  {
+    "id": 42,
+    "band": "microscopic",
+    "title": "Pond Droplet",
+    "setting": "Microscopic pond droplet with algae strands, plankton, cilia currents, and a meniscus wall.",
+    "food": "Algae flecks lead to plankton grains, protozoa blobs, and nutrient clumps.",
+    "interaction": "Cilia sweep the droplet in loops; the goo blocks a current pocket, causing plankton to collect against its edge.",
+    "reveal": "Growth reaches nutrient clumps behind algae strands.",
+    "risk": "Tiny swimming motions need readable silhouettes."
+  },
+  {
+    "id": 43,
+    "band": "microscopic",
+    "title": "Leaf Stomata Underside",
+    "setting": "Leaf underside close-up with stomata pores, pollen grains, wax ridges, and humid chambers.",
+    "food": "Pollen dust leads to pollen tubes, cell sugar beads, and thick leaf cells.",
+    "interaction": "Humidity opens and closes pores; the goo covers a pore, redirecting vapor and loosening pollen along a ridge.",
+    "reveal": "Growth exposes sugar beads inside the leaf cells.",
+    "risk": "Pore states require strong visual feedback."
+  },
+  {
+    "id": 44,
+    "band": "microscopic",
+    "title": "Bread Crumb Mold Canyon",
+    "setting": "Microscopic bread crumb canyon with toasted pores, mold threads, spores, and butter pockets.",
+    "food": "Flour crumbs lead to mold spores, hyphae mats, and butter droplets.",
+    "interaction": "Moisture wakes mold threads; the goo presses a crumb wall, squeezing a butter pocket and releasing spores onto its path.",
+    "reveal": "Growth lets it eat hyphae mats beneath the crust.",
+    "risk": "Organic textures can become noisy at camera distance."
+  },
+  {
+    "id": 45,
+    "band": "microscopic",
+    "title": "Blood-Vessel Slide",
+    "setting": "Cartoon blood-vessel slide with red cells, platelets, sugar motes, and branching capillaries.",
+    "food": "Sugar motes lead to platelets, red-cell clusters, and thick plasma pearls.",
+    "interaction": "Flowing plasma carries cells around bends; the goo settles at a fork, splitting the current and collecting a slower branch.",
+    "reveal": "Growth reaches plasma pearls beyond narrow capillaries.",
+    "risk": "Avoiding medical implications needs abstract presentation."
+  },
+  {
+    "id": 46,
+    "band": "microscopic",
+    "title": "Soil Microfauna Cross-Section",
+    "setting": "Microscopic soil cross-section with clay crumbs, root hairs, nematodes, and water films.",
+    "food": "Clay dust leads to bacteria beads, nematode knots, and root-fiber clusters.",
+    "interaction": "Water films pull nematodes through pores; the goo fills one gap, redirecting a worm trail toward exposed root fibers.",
+    "reveal": "Growth uncovers root-fiber clusters in deeper clay.",
+    "risk": "Burrowing creatures require simple pathing."
+  },
+  {
+    "id": 47,
+    "band": "microscopic",
+    "title": "Kitchen Sponge Microcanyon",
+    "setting": "Kitchen sponge microcanyon with soap films, crumb islands, pores, and trapped water.",
+    "food": "Crumb dust leads to soap bubbles, grease beads, and wet sponge pearls.",
+    "interaction": "Squeezed pores push water between chambers; the goo plugs one pore, forcing grease beads through a neighboring opening.",
+    "reveal": "Growth reaches wet pearls inside the sponge.",
+    "risk": "Pore networks can be hard to communicate in 3D."
+  },
+  {
+    "id": 48,
+    "band": "microscopic",
+    "title": "Fabric Fiber Valley",
+    "setting": "Fabric fiber valley with woven threads, lint balls, pollen dust, and static sparks.",
+    "food": "Lint fibers lead to pollen grains, dust mites, and compact fiber nests.",
+    "interaction": "Static jumps between threads; the goo presses a thread bundle, grounding the spark and shaking lint into a trough.",
+    "reveal": "Growth lets it consume fiber nests below the weave.",
+    "risk": "Thread geometry may need low-cost instancing."
+  },
+  {
+    "id": 49,
+    "band": "microscopic",
+    "title": "Rock Biofilm",
+    "setting": "Freshwater rock close-up with slick biofilm, algae ribbons, rotifers, and bubble pockets.",
+    "food": "Algae flecks lead to biofilm sheets, rotifer beads, and mineralized mats.",
+    "interaction": "A shallow current peels film from the rock; the goo anchors on a ridge, catching the peeled sheet as it curls.",
+    "reveal": "Growth uncovers mineralized mats beneath the film.",
+    "risk": "Peeling surfaces must remain coherent, not pop away."
+  },
+  {
+    "id": 50,
+    "band": "microscopic",
+    "title": "Compost Microheap",
+    "setting": "Compost microheap with husk fragments, fungal threads, springtails, moisture pockets, and warm vents.",
+    "food": "Husk crumbs lead to fungal knots, springtail clusters, and nutrient clods.",
+    "interaction": "Warm vents dry one side while moisture spreads on another; the goo blocks a vent, keeping a nutrient pocket wet and edible.",
+    "reveal": "Growth reaches nutrient clods under the husks.",
+    "risk": "Several creature types raise animation scope."
+  },
+  {
+    "id": 51,
+    "band": "microscopic",
+    "title": "Bee-Hair Pollen Canyon",
+    "setting": "Bee-hair pollen canyon with sticky hairs, pollen grains, nectar films, and flower dust.",
+    "food": "Pollen crumbs lead to nectar beads, pollen tubes, and sticky grain clusters.",
+    "interaction": "Hairlike bristles sweep pollen toward nectar films; the goo pushes a bristle, diverting grains into a shallow feeding basin.",
+    "reveal": "Growth makes sticky clusters edible around the flower fold.",
+    "risk": "Dense bristles may hide collision edges."
+  },
+  {
+    "id": 52,
+    "band": "microscopic",
+    "title": "Snow-Crystal Microcanyon",
+    "setting": "Snow-crystal microcanyon with ice needles, trapped dust, meltwater threads, and hollow flakes.",
+    "food": "Dust specks lead to ice crumbs, meltwater beads, and frozen crystal cores.",
+    "interaction": "A warm lamp melts channels through the snow; the goo blocks one channel, sending water around a ridge and freeing dust.",
+    "reveal": "Growth reaches frozen cores inside thick flakes.",
+    "risk": "Melt effects need a simple state model."
+  },
+  {
+    "id": 53,
+    "band": "microscopic",
+    "title": "Aquarium Filter Close-Up",
+    "setting": "Aquarium filter close-up with floss fibers, algae clumps, detritus beads, and pump currents.",
+    "food": "Detritus crumbs lead to algae clumps, microcrustaceans, and filter pearls.",
+    "interaction": "A pump pulls water through floss; the goo covers an intake patch, diverting the current and rolling detritus into a pocket.",
+    "reveal": "Growth uncovers filter pearls behind dense floss.",
+    "risk": "Constant suction can pull the goo unpredictably."
+  },
+  {
+    "id": 54,
+    "band": "microscopic",
+    "title": "Seed Cross-Section Microgarden",
+    "setting": "Seed cross-section microgarden with starch granules, cell walls, sap channels, and a forming root.",
+    "food": "Starch grains lead to cell sugar beads, sap pearls, and root-cell clusters.",
+    "interaction": "Sap pressure opens channels from the seed; the goo blocks a wall gap, routing sap toward a side root.",
+    "reveal": "Growth reaches root-cell clusters beneath the seed coat.",
+    "risk": "Internal anatomy may need strong color coding."
+  },
+  {
+    "id": 55,
+    "band": "microscopic",
+    "title": "Mushroom Gill Microforest",
+    "setting": "Mushroom gill microforest with hyphae paths, spore shelves, dew beads, and cap shadows.",
+    "food": "Dew drops lead to spores, hyphae knots, and nutrient caps.",
+    "interaction": "Dew rolls down gills and carries spores; the goo wedges between ridges, catching a stream and exposing a side shelf.",
+    "reveal": "Growth lets it consume nutrient caps under the shelves.",
+    "risk": "Parallel gills can feel like repeated corridors."
+  },
+  {
+    "id": 56,
+    "band": "microscopic",
+    "title": "Pond-Ice Underside",
+    "setting": "Pond-ice underside with trapped bacteria, air bubbles, algae threads, and melt cracks.",
+    "food": "Bacteria specks lead to algae knots, air pearls, and thawed nutrient lumps.",
+    "interaction": "Sunlight widens melt cracks; the goo rests over a crack, redirecting water until trapped bubbles roll free.",
+    "reveal": "Growth reaches thawed lumps beneath the ice.",
+    "risk": "Crack growth can be costly to simulate."
+  },
+  {
+    "id": 57,
+    "band": "microscopic",
+    "title": "Cheese-Rind Microtown",
+    "setting": "Cheese-rind microtown with salt crystals, culture colonies, fat droplets, and rind tunnels.",
+    "food": "Salt grains lead to culture beads, fat pearls, and dense rind chunks.",
+    "interaction": "Fermentation bubbles inflate rind tunnels; the goo blocks a tunnel mouth, pushing fat pearls toward a side chamber.",
+    "reveal": "Growth uncovers dense chunks inside the rind.",
+    "risk": "Food textures may invite a narrower audience."
+  },
+  {
+    "id": 58,
+    "band": "microscopic",
+    "title": "Fermentation Vat Microview",
+    "setting": "Fermentation vat microview with yeast clusters, sugar droplets, foam bubbles, and curved tank walls.",
+    "food": "Sugar drops lead to yeast beads, carbon bubbles, and foam islands.",
+    "interaction": "Yeast converts sugar and releases bubbles; the goo presses a wall pocket, guiding rising foam into a reachable shelf.",
+    "reveal": "Growth lets it eat foam islands near the surface.",
+    "risk": "Bubble counts need strict caps for performance."
+  },
+  {
+    "id": 59,
+    "band": "microscopic",
+    "title": "Microplastic Tidepool",
+    "setting": "Microplastic tidepool with fiber shards, plankton specks, sand grains, and wave pulses.",
+    "food": "Sand crumbs lead to plankton beads, algae flakes, and compact drift clumps.",
+    "interaction": "Wave pulses roll fibers across the sand; the goo sits in a shallow groove, trapping drift clumps as the wave recedes.",
+    "reveal": "Growth uncovers algae flakes beneath the drift.",
+    "risk": "Pollution theme needs a light, non-preachy presentation."
+  },
+  {
+    "id": 60,
+    "band": "microscopic",
+    "title": "Coral-Polyp Slide",
+    "setting": "Coral-polyp microscope slide with mucus threads, plankton motes, symbiotic cells, and calcium cups.",
+    "food": "Plankton flecks lead to symbiotic beads, mucus blobs, and coral-cell clusters.",
+    "interaction": "Water currents sweep plankton around cups; the goo blocks one channel, gathering motes against a mucus thread.",
+    "reveal": "Growth reaches coral-cell clusters inside the cups.",
+    "risk": "Polyp detail can exceed ordinary asset budgets."
+  },
+  {
+    "id": 61,
+    "band": "molecular",
+    "title": "Water-Molecule Canal",
+    "setting": "Water-molecule canal with capillary grooves, surface-tension bridges, and droplet gates.",
+    "food": "Water beads lead to linked droplets, rain strings, and coherent puddle domes.",
+    "interaction": "Capillary grooves pull droplets toward junctions; the goo blocks one groove, merging two streams into a reachable basin.",
+    "reveal": "Growth reaches puddle domes behind the droplet gates.",
+    "risk": "Continuous water surfaces need a convincing low-cost model."
+  },
+  {
+    "id": 62,
+    "band": "molecular",
+    "title": "Soap Bubble Workshop",
+    "setting": "Soap bubble workshop with surfactant vats, wire hoops, foam trays, and sliding nozzles.",
+    "food": "Surfactant beads lead to thin films, bubbles, and layered foam caps.",
+    "interaction": "Nozzles inflate hoops while vents pop weak bubbles; the goo covers a vent, directing stable bubbles toward a tray.",
+    "reveal": "Growth lets it consume foam caps above the vats.",
+    "risk": "Bubble popping can overwhelm object counts."
+  },
+  {
+    "id": 63,
+    "band": "molecular",
+    "title": "Sugar Crystal Bakery",
+    "setting": "Sugar crystal bakery with syrup pans, cooling shelves, candy molds, and stirring paddles.",
+    "food": "Sugar molecules lead to syrup beads, crystal shards, and caramel clusters.",
+    "interaction": "Cooling shelves crystallize syrup; the goo nudges a paddle, sweeping shards from a pan into an open mold.",
+    "reveal": "Growth reaches caramel clusters inside the molds.",
+    "risk": "Sticky syrup needs clear collision surfaces."
+  },
+  {
+    "id": 64,
+    "band": "molecular",
+    "title": "Molecular Zipper Lab",
+    "setting": "Molecular zipper lab with nucleotide trays, pairing rails, coiled strands, and clamp arms.",
+    "food": "Nucleotide beads lead to base pairs, strand sections, and coiled molecular ladders.",
+    "interaction": "Clamp arms pull paired rails together; the goo pushes a clamp, unzipping one strand and exposing beads along a side path.",
+    "reveal": "Growth reaches coiled ladders behind the clamps.",
+    "risk": "Strand animation may be expensive to author."
+  },
+  {
+    "id": 65,
+    "band": "molecular",
+    "title": "Protein Folding Table",
+    "setting": "Protein folding table with amino-acid beads, spring loops, chaperone cages, and shaker plates.",
+    "food": "Amino-acid beads lead to short chains, folded knots, and protein globes.",
+    "interaction": "Shaker plates jostle chains while cages guide loops; the goo bumps a cage, folding one chain into an edible knot.",
+    "reveal": "Growth uncovers protein globes under the table.",
+    "risk": "Folding must read without simulating real chemistry."
+  },
+  {
+    "id": 66,
+    "band": "molecular",
+    "title": "Polymer Spaghetti Kitchen",
+    "setting": "Polymer spaghetti kitchen with monomer bins, noodle extruders, rollers, and tangled baskets.",
+    "food": "Monomer beads lead to short chains, polymer noodles, and bundled coils.",
+    "interaction": "Extruders feed chains through rollers; the goo jams a roller, piling noodles beside a basket and opening the next lane.",
+    "reveal": "Growth makes bundled coils edible inside the baskets.",
+    "risk": "Long chain meshes can hurt performance."
+  },
+  {
+    "id": 67,
+    "band": "molecular",
+    "title": "Oil-Water Emulsion Cafe",
+    "setting": "Oil-water emulsion cafe with droplet bowls, whisk paddles, separator walls, and cream jars.",
+    "food": "Oil and water droplets lead to surfactant shells, cream beads, and dense emulsion blobs.",
+    "interaction": "Whisks split droplets while separator walls collect them; the goo blocks a whisk, letting oil droplets merge into a side bowl.",
+    "reveal": "Growth reaches dense blobs behind the separator.",
+    "risk": "Many translucent materials can reduce readability."
+  },
+  {
+    "id": 68,
+    "band": "molecular",
+    "title": "Carbonated Soda Line",
+    "setting": "Carbonated soda line with syrup tanks, CO2 pockets, bottle rails, and fizz nozzles.",
+    "food": "CO2 molecules lead to bubbles, syrup droplets, and foamy soda caps.",
+    "interaction": "Nozzles inject gas into bottles; the goo covers one nozzle, redirecting fizz through a side rail and spilling caps.",
+    "reveal": "Growth consumes soda caps above the bottle line.",
+    "risk": "Foam flow needs bounded particle counts."
+  },
+  {
+    "id": 69,
+    "band": "molecular",
+    "title": "Ice-Molecule Freezer",
+    "setting": "Ice-molecule freezer with crystal trays, heater coils, frost bridges, and melt gutters.",
+    "food": "Water molecules lead to ice facets, frost ribbons, and clear crystal blocks.",
+    "interaction": "Heater coils melt gutters through the trays; the goo blocks a gutter, routing meltwater around a bridge and loosening frost.",
+    "reveal": "Growth reaches crystal blocks beneath the frost.",
+    "risk": "Melt and refreeze states may need simplification."
+  },
+  {
+    "id": 70,
+    "band": "molecular",
+    "title": "Starch Gel Pantry",
+    "setting": "Starch gel pantry with granule jars, boiling pipes, gel slabs, and pressing rollers.",
+    "food": "Starch chains lead to swollen granules, gel beads, and elastic pantry slabs.",
+    "interaction": "Boiling pipes swell granules while rollers shape gel; the goo leans on a pipe, sending hot water toward a dry jar.",
+    "reveal": "Growth opens elastic slabs behind the pressing rollers.",
+    "risk": "Gel deformation needs an inexpensive visual trick."
+  },
+  {
+    "id": 71,
+    "band": "molecular",
+    "title": "Lipid Membrane Ferry",
+    "setting": "Lipid membrane ferry with lipid rafts, protein channels, vesicle carts, and fluid barriers.",
+    "food": "Lipid molecules lead to membrane patches, vesicle beads, and folded cell sacs.",
+    "interaction": "Vesicle carts drift through protein channels; the goo plugs one channel, redirecting carts along a membrane edge.",
+    "reveal": "Growth reaches folded sacs behind the fluid barrier.",
+    "risk": "Membrane topology may be hard to navigate."
+  },
+  {
+    "id": 72,
+    "band": "molecular",
+    "title": "Molecular Paint Mixer",
+    "setting": "Molecular paint mixer with pigment beads, binder chains, rotating drums, and color troughs.",
+    "food": "Pigment molecules lead to color droplets, binder ribbons, and thick paint blobs.",
+    "interaction": "Drums blend pigments while troughs drain excess; the goo jams a drum, sending an unmixed color stream into a side trough.",
+    "reveal": "Growth consumes thick blobs beneath the drums.",
+    "risk": "Color mixing can look decorative rather than causal."
+  },
+  {
+    "id": 73,
+    "band": "molecular",
+    "title": "Adhesive Resin Bench",
+    "setting": "Adhesive resin bench with resin beads, activator cups, tacky bridges, and tool clamps.",
+    "food": "Resin molecules lead to sticky beads, curing strands, and solid adhesive lumps.",
+    "interaction": "Activator drips cure strands between clamps; the goo nudges a cup, curing a bridge that catches loose lumps.",
+    "reveal": "Growth reaches solid lumps beyond the bridge.",
+    "risk": "Tacky surfaces may slow movement too much."
+  },
+  {
+    "id": 74,
+    "band": "molecular",
+    "title": "Vinegar-Fizz Table",
+    "setting": "Vinegar-fizz table with acid droplets, base crystals, mixing cups, foam gutters, and trays.",
+    "food": "Acid and base molecules lead to gas bubbles, foam beads, and fizzing slabs.",
+    "interaction": "Mixing cups release gas into gutters; the goo tips a cup, routing foam toward an empty tray.",
+    "reveal": "Growth lets it eat fizzing slabs on the tray.",
+    "risk": "Reaction effects need a clear, harmless cartoon language."
+  },
+  {
+    "id": 75,
+    "band": "molecular",
+    "title": "Perfume Atomizer Room",
+    "setting": "Perfume atomizer room with aroma droplets, carrier mist, nozzle pumps, and scent ribbons.",
+    "food": "Aroma molecules lead to mist beads, fragrance droplets, and dense scent clouds.",
+    "interaction": "Pumps push mist through nozzles; the goo covers one nozzle, sending a ribbon into a side collector.",
+    "reveal": "Growth reaches dense scent clouds above the collector.",
+    "risk": "Invisible scent needs strong visual proxies."
+  },
+  {
+    "id": 76,
+    "band": "molecular",
+    "title": "Cellulose Paper Mill",
+    "setting": "Cellulose paper mill with glucose beads, fiber vats, pulp currents, and drying rollers.",
+    "food": "Glucose molecules lead to cellulose chains, pulp clumps, and paper-fiber bundles.",
+    "interaction": "Pulp currents carry chains toward rollers; the goo blocks a channel, diverting clumps onto a low drying shelf.",
+    "reveal": "Growth consumes fiber bundles beyond the shelf.",
+    "risk": "Paper fibers need varied silhouettes to avoid repetition."
+  },
+  {
+    "id": 77,
+    "band": "molecular",
+    "title": "Chlorophyll Leaf Lab",
+    "setting": "Chlorophyll leaf lab with pigment rings, lamp banks, CO2 bubbles, and sugar channels.",
+    "food": "Pigment molecules lead to light-catching rings, sugar beads, and leaf-energy globes.",
+    "interaction": "Lamp banks feed pigment rings while channels carry sugar; the goo shades one lamp, routing light toward a neglected bed.",
+    "reveal": "Growth reaches energy globes inside the bed.",
+    "risk": "Plant chemistry must stay visually understandable."
+  },
+  {
+    "id": 78,
+    "band": "molecular",
+    "title": "Molecular Magnet Dock",
+    "setting": "Molecular magnet dock with polar chains, magnetic rafts, mooring posts, and cargo locks.",
+    "food": "Polar molecules lead to chain beads, magnetic rafts, and dense molecular anchors.",
+    "interaction": "Mooring magnets pull rafts between posts; the goo bumps a post, swinging one raft into an open cargo lock.",
+    "reveal": "Growth opens anchors inside the locked raft.",
+    "risk": "Magnetic behavior can resemble earlier subatomic scenes."
+  },
+  {
+    "id": 79,
+    "band": "molecular",
+    "title": "Crystallization Cooling Pan",
+    "setting": "Crystallization cooling pan with dissolved molecules, seed crystals, scraper arms, and chilled rails.",
+    "food": "Dissolved molecules lead to crystal seeds, branching lattices, and faceted growths.",
+    "interaction": "Chilled rails grow crystals while scraper arms clear the pan; the goo stalls a scraper, building a bridge toward a side shelf.",
+    "reveal": "Growth makes faceted growths edible behind the bridge.",
+    "risk": "Crystal growth needs staged visuals instead of full simulation."
+  },
+  {
+    "id": 80,
+    "band": "molecular",
+    "title": "Molecular Assembly Conveyor",
+    "setting": "Molecular assembly conveyor with amino-acid bins, monomer feeders, joint presses, and storage drums.",
+    "food": "Small molecules lead to linked parts, finished polymers, and large edible assemblies.",
+    "interaction": "Feeders drop parts into presses; the goo nudges one feeder, sending a completed assembly down an open conveyor.",
+    "reveal": "Growth reaches storage drums at the end of the line.",
+    "risk": "Assembly logic could become too machine-like for this scale."
+  }
+]

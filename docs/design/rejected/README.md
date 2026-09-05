@@ -1,0 +1,1 @@
+These unsourced scene drafts were rejected by the user. They are retained only as discarded work and must not enter the proposed campaign. Use original Tasty Planet levels as seeds for the replacement catalogue.
