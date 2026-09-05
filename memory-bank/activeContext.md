@@ -16,7 +16,7 @@ Liquid consumption means mopping a puddle locally, section by section. The remai
 
 The goo must be a rounded rolling, deformable mass with sticky-looking floor contact and physics. The user accepted responsive steering with some stopping drift and body lag/stretch/settling. The REST/ROLL/RELEASE image is generally acceptable as a loose reference, but image generation is limited; judge the actual goo in motion. Do not spend more turns refining generated reference pictures instead of the actual model.
 
-Delegated scene generation and independent native curation are complete. The accepted pool contains 240 candidates, with 60 refined campaign selections and four prototype recommendations in docs/design/selection.json. The original game supplied research and inspiration, not a required campaign mapping. Raw alternatives remain drafts. This does not authorize a 60-level implementation. Exact size continuity and food budgets remain uncalibrated.
+Delegated scene generation and independent native curation are complete. The accepted pool contains 240 candidates, with 60 refined campaign selections and four prototype recommendations in docs/design/selection.json. The original game supplied research and inspiration, not a required campaign mapping. Raw alternatives remain drafts. This does not authorize a 60-level implementation. Each level starts at a size chosen for its scene; size does not carry over between levels. Food budgets remain uncalibrated.
 
 The user accepted Godot standalone and said browser access is not important because the game is mostly for personal play. Target their local Mac first. Browser delivery is outside the proof of concept. Godot has not been installed and no game implementation has started.
 
@@ -29,3 +29,5 @@ Include emergent formations and edible parts that let the goo grow large enough 
 Original levels are inspiration seeds only. Do not recreate their 60-level campaign, enforce one-to-one mappings, or generate a fixed set of reskins for every original level. Use their pacing, playful arrangements, interactions, and growth payoffs to invent fresh scenes. Source references document influences, not required replicas.
 
 Status artifacts require no visual testing. The user explicitly stopped artifact screenshot and viewport checks on 2026-09-04; mechanical preflight, the required Zen opening, and hosting still apply. This exemption is also recorded in the canonical fleet Codex rules. The game itself retains its single final visual/performance pass.
+
+Level entry sizing: the user confirmed on 2026-09-04 that each level starts at a size tailored to its scene, rather than carrying size over from the previous level. Growth remains continuous within each level, including across any optional camera size jumps.

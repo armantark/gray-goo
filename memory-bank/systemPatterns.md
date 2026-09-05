@@ -14,3 +14,5 @@ Sources:
 - https://docs.godotengine.org/en/stable/tutorials/physics/large_world_coordinates.html
 
 Optional scale transitions: each level declares zero to two size jumps, with ordinary growth inside each camera view. A jump reveals larger types and retires tiny detail. Edible parts and emergent formations are independent of camera transitions. Candidate data stores jumps as a bounded array rather than three mandatory phases.
+
+Level entry sizing: the user confirmed on 2026-09-04 that each level starts at a size tailored to its scene, rather than carrying size over from the previous level. Growth remains continuous within each level, including across any optional camera size jumps.
