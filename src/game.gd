@@ -87,7 +87,7 @@ func _physics_process(delta: float) -> void:
 	if not is_instance_valid(world):
 		return
 	world.player_radius = goo.radius
-	goo.set_drive(rig.movement_direction(), (2.8 + goo.radius * 0.8) * 10.0 * hud.movement_speed)
+	goo.set_drive(rig.movement_direction(), (2.8 + goo.radius * 0.8) * 3.7 * hud.movement_speed)
 	var eaten := 0
 	for food in world.foods:
 		if not is_instance_valid(food) or not food.active or food.threshold > goo.radius:
@@ -179,6 +179,10 @@ func _process(delta: float) -> void:
 				target_position = pool.closest_point(goo.global_position)
 				target_name = "Spacetime fabric" if _level == 3 else "Water"
 				break
+	if rig.mouse_steering:
+		goo.gaze_screen_position = get_viewport().get_mouse_position()
+	else:
+		goo.gaze_screen_position = rig.camera.unproject_position(target_position if not target_name.is_empty() else goo.global_position)
 	hud.update_game(pow(_volume, 1.0 / 3.0), world.config.initial_radius,
 		world.config.goal_radius, rig.camera, goo.global_position, target_position, target_name)
 

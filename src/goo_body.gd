@@ -44,6 +44,7 @@ var radius: float = 0.6
 var velocity := Vector3.ZERO
 var tint := GRAY
 var render_mesh: MeshInstance3D
+var gaze_screen_position := Vector2.ZERO
 
 var _target_radius: float
 var _ground_height: Callable
@@ -64,6 +65,14 @@ var _anchors := PackedVector3Array()
 var _attached := PackedByteArray()
 var _anchor_age := PackedFloat32Array()
 var _release_time := PackedFloat32Array()
+var _steps: Array[Dictionary] = [{}, {}, {}, {}, {}]
+var _step_random := RandomNumberGenerator.new()
+var _swing_targets := PackedVector3Array()
+var _swing_weights := PackedFloat32Array()
+var _planted_weights := PackedFloat32Array()
+var _idle_flatten := 1.0
+var _ooze_phases := Vector3.ZERO
+var _ooze_amounts := Vector3.ZERO
 var _colors := PackedColorArray()
 var _normals := PackedVector3Array()
 var _gradients := PackedVector3Array()
@@ -94,6 +103,8 @@ func configure(start: Vector3, starting_radius: float, ground_height: Callable,
 	_field = field
 	global_position = start
 	global_position.y = maxf(start.y, float(_ground_height.call(start)) + radius)
+	_step_random.randomize()
+	_ooze_phases = Vector3(_step_random.randf_range(0.0, TAU), _step_random.randf_range(0.0, TAU), _step_random.randf_range(0.0, TAU))
 	_build_shell()
 	_build_render_mesh()
 	_configured = true
@@ -172,6 +183,13 @@ func _step(dt: float) -> void:
 	if (center.z <= _field.position.y + radius and _flow_drive.z < 0.0) or (center.z >= _field.end.y - radius and _flow_drive.z > 0.0):
 		_flow_drive.z = 0.0
 	var desired := _flow_drive
+	var moving := _drive.length_squared() > 0.001 and _speed > 0.0
+	var idle_target := 0.0 if moving else 1.0
+	var gather_rate := 4.0 * (1.0 - idle_target)
+	_idle_flatten = lerpf(_idle_flatten, 1.0 - idle_target * 0.70, 1.0 - exp(-maxf(gather_rate, 0.55) * dt))
+	for lobe in 3:
+		_ooze_amounts[lobe] = lerpf(_ooze_amounts[lobe], idle_target, 1.0 - exp(-maxf(gather_rate, 0.32 + float(lobe) * 0.19) * dt))
+	_prepare_steps(dt, center)
 	var travel_rate := desired.length() / radius
 	var turn := Basis.IDENTITY
 	if not desired.is_zero_approx():
@@ -191,11 +209,21 @@ func _step(dt: float) -> void:
 		_points[i] += flow + residual_velocity * dt
 		_release_time[i] = maxf(0.0, _release_time[i] - dt)
 		if _attached[i]:
-			_anchor_age[i] += dt * travel_rate
+			_anchor_age[i] += dt * (travel_rate if moving else 0.35)
 	# Compliance scales with dt squared so a slow-motion step cannot release a full-speed spring.
 	var elasticity := pow(dt * Engine.physics_ticks_per_second * SUBSTEPS, 2.0)
 	for iteration in SOLVER_ITERATIONS:
 		_solve_edges(elasticity)
+		var reach_reaction := Vector3.ZERO
+		var reach_strength := 1.0 - exp(-maxf(80.0, travel_rate * 18.0) * dt / SOLVER_ITERATIONS)
+		for i in _points.size():
+			var extension := ((_swing_targets[i] - _points[i]) * _swing_weights[i] * reach_strength).limit_length(radius * maxf(3.0, travel_rate * 1.8) * dt / SOLVER_ITERATIONS)
+			_points[i] += extension
+			reach_reaction += extension
+		# Reaching deforms the same shell; only its floor bonds supply a net pull.
+		reach_reaction /= _points.size()
+		for i in _points.size():
+			_points[i] -= reach_reaction
 		_solve_volume(center, elasticity)
 		for i in _points.size():
 			_solve_contact(i, solids, dt, iteration == SOLVER_ITERATIONS - 1)
@@ -205,6 +233,63 @@ func _step(dt: float) -> void:
 	global_position = center / _points.size()
 	_previous_dt = dt
 
+func _prepare_steps(dt: float, center: Vector3) -> void:
+	_swing_weights.fill(0.0)
+	_planted_weights.fill(0.0)
+	if _drive.length_squared() < 0.001 or _flow_drive.length() < radius * 0.1:
+		_steps = [{}, {}, {}, {}, {}]
+		return
+	var rate := maxf(_flow_drive.length() / radius, 1.0)
+	for foot in _steps.size():
+		if _steps[foot].is_empty():
+			_start_step(foot, center)
+		var step := _steps[foot]
+		step.phase += dt * rate / float(step.stride)
+		if step.phase >= 1.0 or step.heading.dot(_drive.normalized()) < -0.1:
+			_start_step(foot, center)
+			step = _steps[foot]
+		if step.phase < 0.0 or step.phase > 0.84:
+			continue
+		for j in step.indices.size():
+			var i: int = step.indices[j]
+			var weight: float = step.weights[j]
+			if step.phase < 0.46:
+				var progress := float(step.phase) / 0.46
+				var target: Vector3 = step.starts[j] + step.shift * smoothstep(0.0, 1.0, progress)
+				target.y += sin(progress * PI) * radius * 0.10
+				target.y = maxf(target.y, float(_ground_height.call(target)) + radius * 0.018)
+				if weight > _swing_weights[i]:
+					_swing_targets[i] = target
+					_swing_weights[i] = weight
+			else:
+				_planted_weights[i] = maxf(_planted_weights[i], weight)
+
+func _start_step(foot: int, center: Vector3) -> void:
+	var heading := _drive.normalized().rotated(Vector3.UP, (float(foot) - 2.0) * 0.45 + _step_random.randf_range(-0.18, 0.18))
+	var cap_direction := (heading + Vector3.DOWN * 0.50).normalized()
+	var indices := PackedInt32Array()
+	var weights := PackedFloat32Array()
+	var starts := PackedVector3Array()
+	var cap_center := Vector3.ZERO
+	var total := 0.0
+	for i in _points.size():
+		var alignment := (_points[i] - center).normalized().dot(cap_direction)
+		var weight := exp((alignment - 1.0) / 0.045)
+		if weight < 0.15:
+			continue
+		indices.append(i)
+		weights.append(weight)
+		starts.append(_points[i])
+		cap_center += _points[i] * weight
+		total += weight
+	cap_center /= maxf(total, 0.001)
+	var target := center + heading * radius * _step_random.randf_range(1.55, 1.90)
+	target.x = clampf(target.x, _field.position.x + radius * 0.02, _field.end.x - radius * 0.02)
+	target.z = clampf(target.z, _field.position.y + radius * 0.02, _field.end.y - radius * 0.02)
+	target.y = float(_ground_height.call(target)) + radius * 0.018
+	_steps[foot] = {"phase": -_step_random.randf_range(0.0, 0.20), "stride": _step_random.randf_range(2.6, 4.0),
+		"heading": heading, "indices": indices, "weights": weights, "starts": starts, "shift": target - cap_center}
+
 func _solve_edges(elasticity: float) -> void:
 	var stiffness := 0.10 * elasticity / (0.8 + 0.2 * elasticity)
 	for e in _edges.size():
@@ -213,7 +298,16 @@ func _solve_edges(elasticity: float) -> void:
 		var distance := separation.length()
 		if distance < 0.00001:
 			continue
-		var correction := separation * ((distance - _edge_lengths[e] * radius) / distance) * stiffness
+		# An anisotropic rest metric changes the physical shell while keeping its target volume.
+		var midpoint := (_points[pair.x] + _points[pair.y]) * 0.5 - global_position
+		var angle := atan2(midpoint.z, midpoint.x)
+		var lobes := Vector3(sin(angle * 3.0 + _ooze_phases.x), sin(angle * 2.0 + _ooze_phases.y), sin(angle + _ooze_phases.z))
+		var amplitudes := _ooze_amounts * Vector3(0.46, 0.24, 0.12)
+		var outline := (1.0 + lobes.dot(amplitudes)) / sqrt(1.0 + amplitudes.length_squared() * 0.5)
+		var spread := outline / sqrt(_idle_flatten)
+		var rest_distance := Vector3(separation.x / spread, separation.y / _idle_flatten, separation.z / spread).length()
+		var gradient := Vector3(separation.x / (spread * spread), separation.y / (_idle_flatten * _idle_flatten), separation.z / (spread * spread)) / rest_distance
+		var correction := gradient * ((rest_distance - _edge_lengths[e] * radius) / gradient.length_squared()) * stiffness
 		_points[pair.x] += correction
 		_points[pair.y] -= correction
 
@@ -245,17 +339,20 @@ func _solve_contact(i: int, solids: Array, dt: float, last_iteration: bool) -> v
 	var floor_y := float(_ground_height.call(point)) + skin
 	var was_below := point.y <= floor_y
 	point.y = maxf(point.y, floor_y)
+	var planted := _planted_weights[i] > 0.25 and _swing_weights[i] < 0.18
+	if _swing_weights[i] > 0.35:
+		_attached[i] = 0
 	if _attached[i]:
 		var strain := Vector2(point.x - _anchors[i].x, point.z - _anchors[i].z).length()
 		var trailing := clampf(-(_anchors[i] - global_position).dot(_drive) / radius, 0.0, 1.0)
-		var tear_distance := radius * lerpf(0.3, 1.15, trailing)
-		var bond_life := lerpf(0.3, 1.7, trailing) + float(i % 11) * 0.03
+		var tear_distance := radius * maxf(0.85 if planted else 0.0, lerpf(0.3, 1.15, trailing))
+		var bond_life := maxf(1.3 if planted else 0.0, lerpf(0.3, 1.7, trailing)) + float(i % 11) * 0.03
 		if strain > tear_distance or point.y - _anchors[i].y > radius * 0.45 or _anchor_age[i] > bond_life:
 			_attached[i] = 0
 			_release_time[i] = radius * 0.25 / maxf(_drive.length() * _speed, radius)
 		else:
 			point = point.lerp(_anchors[i], 0.68)
-	elif was_below and _release_time[i] <= 0.0:
+	elif _swing_weights[i] < 0.35 and (was_below or (planted and point.y - floor_y < radius * 0.12)) and (planted or _release_time[i] <= 0.0):
 		point.y = floor_y
 		_attached[i] = 1
 		_anchors[i] = point
@@ -355,6 +452,9 @@ func _build_shell() -> void:
 		_colors.append(GRAY)
 	_previous = _points.duplicate()
 	_previous_flow.resize(_points.size())
+	_swing_targets.resize(_points.size())
+	_swing_weights.resize(_points.size())
+	_planted_weights.resize(_points.size())
 	_anchors.resize(_points.size())
 	_attached.resize(_points.size())
 	_anchor_age.resize(_points.size())
@@ -486,7 +586,7 @@ func _update_eyes(delta: float) -> void:
 		var gaze := (Vector3.UP * 0.9 + _facing * 0.3).normalized()
 		_eyes[e].basis = Basis(side, gaze.cross(side).normalized(), gaze).scaled(Vector3(0.23, 0.265, 0.23) * radius)
 		if camera != null:
-			var mouse_offset := get_viewport().get_mouse_position() - camera.unproject_position(_eyes[e].global_position)
+			var mouse_offset := gaze_screen_position - camera.unproject_position(_eyes[e].global_position)
 			var offset := mouse_offset.limit_length(100.0) * 0.004
 			var world_direction := camera.global_basis.z + camera.global_basis.x * offset.x - camera.global_basis.y * offset.y
 			var local_direction := _eyes[e].global_basis.inverse() * world_direction

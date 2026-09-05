@@ -43,7 +43,7 @@ The editable Blender library stays in `assets/source`; Godot imports the exporte
 
 ## Manual verification
 
-Play each scene from its starting size through completion. Check keyboard and mouse steering, camera rotation and limits, object engulfing, retained food color, attached parts, and the nearest-food pointer. Watch the body roll and flow while its ground contacts stretch and peel, then release the controls and check that the body and eyes settle. Move the cursor around the goo and check that both pupils follow it. After a colored bite, check that the contact patch blends slowly and leaves a lasting tint. In the tide pool, cross the water and check that only local sections disappear. In the skatepark, nudge moving boards and cross the curved ground. In spacetime, consume the final fabric and keep moving in the void. After each goal, verify continued play and Next level.
+Play each scene from its starting size through completion. Check keyboard and mouse steering, camera rotation and limits, object engulfing, retained food color, attached parts, and the nearest-food pointer. Watch the body reach and grip with uneven forward lobes while rear contacts stretch and peel. Release the controls for several seconds and check that it spreads into an irregular shallow puddle with unequal, slowly spreading lobes; move again and check that it gathers into a rolling mass. During keyboard steering, check that the pupils look toward the highlighted target. Hold the left mouse button to switch to cursor-following eyes, and confirm that the chosen gaze mode persists after release. After a colored bite, check that the contact patch blends slowly and leaves a lasting tint. In the tide pool, cross the water and check that only local sections disappear. In the skatepark, nudge moving boards and cross the curved ground. In spacetime, consume the final fabric and keep moving in the void. After each goal, verify continued play and Next level.
 
 Change Movement speed in the scene menu, resume play, and check that steering responds at the selected rate. Restart the app and check that the setting remains selected.
 
@@ -51,9 +51,9 @@ The project follows the requested basic launch checks and one final visual/perfo
 
 ## Record a motion clip
 
-The recording driver uses ordinary directional input in the tide-pool scene, including turns and release. Godot's movie mode records fixed simulation frames; use the live game for performance measurements.
+The recording driver uses ordinary directional input in the tide-pool scene, including turns, seven seconds of idle melting, and resumed movement. Godot's movie mode records fixed simulation frames; use the live game for performance measurements.
 
 ```sh
-/Applications/Godot.app/Contents/MacOS/Godot --path . --script res://scripts/record_motion.gd --write-movie builds/motion-capture.avi --fixed-fps 60 --quit-after 780 --disable-vsync
-ffmpeg -ss 2 -i builds/motion-capture.avi -t 10 -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -movflags +faststart builds/motion-preview.mp4
+/Applications/Godot.app/Contents/MacOS/Godot --path . --script res://scripts/record_motion.gd --write-movie builds/motion-capture.avi --fixed-fps 60 --quit-after 1020 --disable-vsync
+ffmpeg -ss 2 -i builds/motion-capture.avi -t 15 -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -movflags +faststart builds/motion-preview.mp4
 ```

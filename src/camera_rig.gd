@@ -7,6 +7,7 @@ var field: Rect2
 var subject: Node3D
 var yaw := 0.0
 var zoom := 1.0
+var mouse_steering := false
 var _view_size := 10.0
 var _target_view := 10.0
 var _focus := Vector3.ZERO
@@ -80,8 +81,10 @@ func movement_direction() -> Vector3:
 	up.y = 0.0
 	var direction := right.normalized() * input.x - up.normalized() * input.y
 	if direction.length_squared() > 0.001:
+		mouse_steering = false
 		return direction.limit_length(1.0)
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and not Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+		mouse_steering = true
 		var destination := mouse_ground_position()
 		var offset := destination - subject.global_position
 		offset.y = 0.0

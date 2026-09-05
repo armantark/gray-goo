@@ -101,3 +101,13 @@
 - 2026-09-04: The first continuous-rolling motor circulated material but failed the independent speed-64/radius-0.55 canary: maximum shell extent `7035.628995` radii and stop drift `801.1463` units, while volume stayed near its target. A finite rotation chord blended with retained tangential velocity still injected expansion. Separated exact prescribed material flow from residual deformation velocity instead of hiding the failure behind a volume-only check.
 
 - 2026-09-04: The first exact-advection slow-motion probe remained finite but ended at `(99.72793, 34.63086, 0.000739)` against the +100 field edge. Volume and finite-position checks missed boundary climbing. Blocked outward propulsion at the invisible boundary and added center-height/extent assertions to the existing root canary; the final center stayed at Y `0.823191`.
+
+- 2026-09-05T10:17:41: During motion documentation lookup, rg reported `memory-bank/GLOSSARY.md: No such file or directory (os error 2)`; glossary is at repository root `GLOSSARY.md`.
+
+- 2026-09-05T10:22:06: The headless control canary asserted at `/tmp/tasty-root-controls-check.gd:17` before simulated mouse input had been flushed; call `Input.flush_buffered_events()` before reading input state. Godot assertions leave SceneTree probes running, so interrupt failed probe sessions explicitly.
+
+- 2026-09-05T10:22:56: Loading a historical Godot script from `/tmp/tasty-root-before-quarter.gd` failed with `Class "GooBody" hides a global script class.` Remove only the copied script’s class_name declaration for side-by-side behavior probes.
+
+- 2026-09-05T10:34:06: A second CUA screenshot of the 22-second native canary returned `Computer Use server error -10005: cgWindowNotFound` because the probe had already exited normally; use recorded frames for exact idle/resume phases.
+
+- 2026-09-05T10:39:32: Commit rejected by `slop-gate: cyclomatic complexity above 15 was introduced: src/goo_body.gd: _step 17 (was 9)`. Consolidated repeated idle/moving ternaries into one idle target and shared gathering rate; no helper extraction or gate override.

@@ -50,3 +50,7 @@ Target guidance reuses the existing nearest-edible lookup. Only the selected obj
 Pupils are a gaze-controlled color region on each eye mesh, using `shaders/eye.gdshader`. There is no overlapping pupil geometry to clip against the eyeball. The eye whites retain independent body-driven spring motion.
 
 Continuous rolling uses exact rotation of the shell material plus forward flow. Each particle stores its previous prescribed flow separately from its residual deformation velocity; do not mix retained tangential inertia into a partially relaxed rotation target. Adhesive floor bonds age with normalized travel and release asymmetrically. At the invisible field boundary, block outward propulsion so the body cannot roll up that edge.
+
+Keyboard and mouse gaze share the movement mode owned by `GooCamera.mouse_steering`. Keyboard input wins when both are active; idle retains the most recent mode. `game.gd` projects its existing edible target for keyboard gaze or supplies the cursor for mouse gaze through `GooBody.gaze_screen_position`; the eye shader remains responsible for clipping-free pupils.
+
+Five irregular forward caps share the continuous shell and feed its existing adhesive contacts. At idle, a volume-preserving anisotropic rest metric flattens and spreads the shell; three fixed randomized angular phases with distinct smoothing rates make the footprint uneven. Slow idle bond aging permits spreading. Resume restores the rolling metric and clears the idle shape smoothly.

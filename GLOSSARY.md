@@ -5,7 +5,7 @@ Language for the game's growth journey and level variety.
 ## Language
 
 **Gray goo**:
-The player-controlled, rounded mass that rolls and flows across the ground, consumes matter, and grows. Temporary extensions are stretches of the same continuous body; sticky ground contacts stretch and peel.
+The player-controlled, rounded mass that rolls and flows across the ground, consumes matter, and grows. Temporary extensions are stretches of the same continuous body; sticky ground contacts stretch and peel. At rest it gradually spreads into an irregular puddle, with uneven lobes that gather back up when movement resumes.
 
 **Scale band**:
 A range of physical sizes within the growth journey. Several settings can share a scale band.
