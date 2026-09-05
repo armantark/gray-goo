@@ -106,3 +106,7 @@ The final 20-second Sugar Water native canary measured `7.30575653765586 average
 ## Organic patterns: research reference
 
 The user asked whether https://pub.sakana.ai/asal/ and https://en.wikipedia.org/wiki/Artificial_life could help generate more organic patterns. ASAL searches artificial-life simulation parameters with visual-model evaluation. Candidate uses are local interaction rules for plankton or particles and Lenia-like surface behavior. This is a research direction, not approval to install ASAL or change the four levels. Prefer offline selection with cheap runtime rules, and preserve visible wholes, reachability, and performance.
+
+The final macOS release export from commit `08c4638` completed successfully. The exported `builds/Gray Goo.app` opened Sugar Water in the native window, showed the new scene without observed text truncation, and closed cleanly. Export and release-start logs contain no engine warnings or errors. The local evidence bundle is `builds/level-verification/`. The results artifact is `memory-bank/status-updates/level-rebuild-results-2026-09-05.html`; the plan artifact remains unchanged.
+
+The results artifact passed its mechanical checks, opened once in Zen, and is hosted at https://2c8gwk9dw7m5.postplan.dev . The checkout is ready for the authorized handoff to Fable in the T3 Code thread `Coherent Four-Level Redesign`. Fable retains ownership of the dirty `memory-bank/activeContext.md` and untracked `memory-bank/plans/goo-body-brief.md`; Astra leaves both unchanged.

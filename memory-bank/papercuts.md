@@ -141,3 +141,7 @@
 - 2026-09-05: Seed439 Skate route moved for several minutes without growth while chasing a wheel beneath a moving board. The route driver now detects growth stagnation as well as stationary movement; the same seed completes in468.899999999902simulation seconds.
 
 - 2026-09-05: Final native movement canary exposed `7.30575653765586 average_fps` in Sugar Water although the staged final view exceeded 60 FPS; staged-view performance is insufficient evidence for live dense contact.
+
+- 2026-09-05: Native release inspection called unsupported `App.getState()` after context recovery; use the documented `getAXState()` and `getScreenshot()` methods.
+
+- 2026-09-05: Results artifact preflight rejects an ordinary navigation link as `FAIL A5 remote src/href asset (artifact must be self-contained)`; retained the approved plan address as text.
