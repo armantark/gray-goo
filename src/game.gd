@@ -26,6 +26,7 @@ func _ready() -> void:
 	add_child(hud)
 	hud.scene_requested.connect(start_level)
 	hud.pause_requested.connect(_set_paused)
+	hud.body_requested.connect(_switch_body)
 	_bite_sound = AudioStreamPlayer.new()
 	_bite_sound.stream = load("res://assets/audio/bite.wav")
 	_bite_sound.volume_db = -13.0
@@ -72,7 +73,7 @@ func start_level(index: int) -> void:
 	world = GameWorld.new()
 	add_child(world)
 	world.build(index)
-	goo = GooBody.new()
+	goo = GooProcedural.new() if hud.body_kind == "procedural" else GooBody.new()
 	add_child(goo)
 	goo.configure(world.config.start_position, world.config.initial_radius,
 		world.get_ground_height, world.get_obstacles, world.field)
@@ -83,6 +84,35 @@ func start_level(index: int) -> void:
 	rig.configure(world.field, world.config.jumps[0].view_size, goo, world.get_ground_height)
 	hud.configure(index, world.config)
 	print("LEVEL_READY ", index, " ", world.config.title)
+
+func _switch_body(kind: String) -> void:
+	var old := goo
+	var at := old.global_position
+	var size := old.radius
+	var pigment := old.tint
+	goo = GooProcedural.new() if kind == "procedural" else GooBody.new()
+	add_child(goo)
+	goo.configure(at, size, world.get_ground_height, world.get_obstacles, world.field)
+	var shift := at - goo.global_position
+	goo.global_position = at
+	# The shell stores pigment and geometry in world-space samples. Preserve the
+	# shared state without changing its solver or adding another shell interface.
+	for i in goo._points.size():
+		goo._points[i] += shift
+		goo._previous[i] += shift
+	goo._colors = old._colors.duplicate()
+	goo._facing = old._facing
+	goo.tint = pigment
+	goo.grow_to(maxf(old._target_radius, pow(_volume, 1.0 / 3.0)))
+	goo.gaze_screen_position = old.gaze_screen_position
+	goo._celebration = old._celebration
+	goo._update_surface()
+	rig.subject = goo
+	for food in world.foods:
+		if food._meal_target == old:
+			food._meal_target = goo
+	hud.body_kind = kind
+	old.free()
 
 func _physics_process(delta: float) -> void:
 	if not is_instance_valid(world):

@@ -146,3 +146,9 @@
 
 - 2026-09-05: Results artifact preflight rejects an ordinary navigation link as `FAIL A5 remote src/href asset (artifact must be self-contained)`; retained the approved plan address as text.
 - 2026-09-05T14:55: `scripts/check_obstacles.gd` compared obstacle arrays with order-sensitive equality, so a correct grid query failed the check until the comparison sorted both sides. The handoff attributed the Sugar Water slowdown to body contact; the real cost was the full-food scans in `get_obstacles` and `_consume_foods` plus physics catch-up. Profile before trusting a handoff's attribution.
+
+- 2026-09-05: The second-body verification leaf looked for `scripts/check_goo.gd`; that file does not exist. Existing shell canaries are scratch scripts referenced by `progress.md`, including `/tmp/tasty-root-five-ooze-check.gd`.
+- 2026-09-05: Impeccable context recognizes only web, ios, android, and adaptive; it reports the accurate `macos` platform in PRODUCT.md as unrecognized. Native Godot verification remains the applicable workflow.
+
+- 2026-09-05: The body recorder commit was rejected with `scripts/record_motion.gd: _process 16 (was 7)` by slop-gate; replaced the route branch chain with a phase table.
+- 2026-09-05: CUA actions on the source Godot window did not visibly change the menu; the native scripted HUD capture worked. Calling app AX inspection after closing Godot auto-launched its Project Manager.
