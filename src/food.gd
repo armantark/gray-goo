@@ -1,0 +1,134 @@
+class_name Food
+extends RigidBody3D
+
+var title: String
+var model_name: String
+var radius: float
+var height: float
+var threshold: float
+var volume: float
+var pigment: Color
+var tier: int
+var active := true
+var milestone := false
+var parts: Array[Food] = []
+var parent_food: Food
+var visual: Node3D
+var collider_radius: float
+var drift := Vector3.ZERO
+var _meal_target: Node3D
+var _meal_age := 0.0
+var _meal_start := Vector3.ZERO
+var _meal_scale := Vector3.ONE
+var _sway_phase := 0.0
+
+func configure(kind: String, size: float, required_size: float, food_volume: float,
+		label: String, moving: bool = false, band: int = 0) -> void:
+	model_name = kind
+	title = label
+	radius = size
+	height = Art.model_height(kind, size)
+	threshold = required_size
+	volume = food_volume
+	pigment = Art.food_color(kind)
+	tier = band
+	collider_radius = radius
+	if kind in ["coral_branch", "coral_fan", "rail"]:
+		collider_radius *= 0.48
+	visual = Art.model(kind, size)
+	add_child(visual)
+	var shape := CollisionShape3D.new()
+	var cylinder := CylinderShape3D.new()
+	cylinder.radius = maxf(collider_radius, 0.025)
+	cylinder.height = maxf(height * 0.72, 0.04)
+	shape.shape = cylinder
+	shape.position.y = cylinder.height * 0.5
+	add_child(shape)
+	collision_layer = 2
+	collision_mask = 3
+	freeze = not moving
+	freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
+	mass = clampf(food_volume * 3.0, 0.08, 30.0)
+	linear_damp = 0.65
+	angular_damp = 1.8
+	var physics_material := PhysicsMaterial.new()
+	physics_material.friction = 0.38
+	physics_material.bounce = 0.12
+	physics_material_override = physics_material
+	_sway_phase = randf() * TAU
+
+func remaining_volume() -> float:
+	if not active:
+		return 0.0
+	var result := volume
+	for part in parts:
+		if is_instance_valid(part):
+			result += part.remaining_volume()
+	return result
+
+func meal_color() -> Color:
+	var total := volume
+	var combined := Vector3(pigment.r, pigment.g, pigment.b) * volume
+	for part in parts:
+		if is_instance_valid(part) and part.active:
+			var portion := part.remaining_volume()
+			var color := part.meal_color()
+			combined += Vector3(color.r, color.g, color.b) * portion
+			total += portion
+	if total <= 0.0:
+		return pigment
+	combined /= total
+	return Color(combined.x, combined.y, combined.z)
+
+func center() -> Vector3:
+	return global_position + Vector3.UP * height * 0.4
+
+func consume(target: Node3D) -> void:
+	active = false
+	freeze = true
+	collision_layer = 0
+	collision_mask = 0
+	_disable_parts()
+	_meal_target = target
+	_meal_start = global_position
+	_meal_scale = scale
+	if model_name == "board":
+		_snap_board()
+
+func _disable_parts() -> void:
+	for part in parts:
+		if not is_instance_valid(part):
+			continue
+		part.active = false
+		part.collision_layer = 0
+		part.collision_mask = 0
+		part.freeze = true
+		part.set_physics_process(false)
+		part._disable_parts()
+
+func _snap_board() -> void:
+	var half := visual.duplicate() as Node3D
+	add_child(half)
+	Art.clip_model(visual, 1.0)
+	Art.clip_model(half, -1.0)
+	var tween := create_tween().set_parallel()
+	tween.tween_property(visual, "rotation:z", 0.55, 0.25)
+	tween.tween_property(half, "rotation:z", -0.55, 0.25)
+	tween.tween_property(visual, "position:y", radius * 0.2, 0.25)
+
+func _physics_process(delta: float) -> void:
+	if is_instance_valid(_meal_target):
+		_meal_age += delta
+		var progress := clampf(_meal_age / 0.34, 0.0, 1.0)
+		global_position = _meal_start.lerp(_meal_target.global_position, progress * progress)
+		scale = _meal_scale * maxf(0.001, 1.0 - progress)
+		if progress >= 1.0:
+			queue_free()
+		return
+	if not active:
+		return
+	if not freeze and drift.length_squared() > 0.0:
+		apply_central_force((drift - linear_velocity) * mass * 0.7)
+	if model_name in ["polyp", "plankton"]:
+		_sway_phase += delta * 1.5
+		visual.rotation.z = sin(_sway_phase) * 0.08

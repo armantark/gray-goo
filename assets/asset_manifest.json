@@ -1,0 +1,98 @@
+{
+  "quark": {
+    "path": "res://assets/models/quark.glb",
+    "radius": 0.858441,
+    "height": 1.28,
+    "color": "#F2C94C"
+  },
+  "proton": {
+    "path": "res://assets/models/proton.glb",
+    "radius": 1.09,
+    "height": 1.42,
+    "color": "#D96672"
+  },
+  "nucleus": {
+    "path": "res://assets/models/nucleus.glb",
+    "radius": 1.06,
+    "height": 1.66,
+    "color": "#A95D72"
+  },
+  "plankton": {
+    "path": "res://assets/models/plankton.glb",
+    "radius": 1.388242,
+    "height": 0.92,
+    "color": "#65D6C1"
+  },
+  "polyp": {
+    "path": "res://assets/models/polyp.glb",
+    "radius": 1.11,
+    "height": 1.682863,
+    "color": "#F58CA8"
+  },
+  "coral_branch": {
+    "path": "res://assets/models/coral_branch.glb",
+    "radius": 1.55,
+    "height": 3.38,
+    "color": "#E66F7F"
+  },
+  "coral_fan": {
+    "path": "res://assets/models/coral_fan.glb",
+    "radius": 2.48649,
+    "height": 3.65,
+    "color": "#CB5D87"
+  },
+  "rock": {
+    "path": "res://assets/models/rock.glb",
+    "radius": 1.204563,
+    "height": 1.424492,
+    "color": "#77828C"
+  },
+  "shell": {
+    "path": "res://assets/models/shell.glb",
+    "radius": 1.703627,
+    "height": 0.472824,
+    "color": "#F2B27D"
+  },
+  "wheel": {
+    "path": "res://assets/models/wheel.glb",
+    "radius": 0.52,
+    "height": 1.04,
+    "color": "#F2B43A"
+  },
+  "board": {
+    "path": "res://assets/models/board.glb",
+    "radius": 2.45,
+    "height": 0.454095,
+    "color": "#43AFA3"
+  },
+  "skateboard": {
+    "path": "res://assets/models/skateboard.glb",
+    "radius": 2.45,
+    "height": 1.094096,
+    "color": "#E85D4A"
+  },
+  "rail": {
+    "path": "res://assets/models/rail.glb",
+    "radius": 2.3,
+    "height": 1.34,
+    "color": "#A8B4BE"
+  },
+  "ramp": {
+    "path": "res://assets/models/ramp.glb",
+    "radius": 2.46,
+    "height": 2.63,
+    "color": "#5AA8D8"
+  },
+  "galaxy": {
+    "path": "res://assets/models/galaxy.glb",
+    "radius": 3.022677,
+    "height": 0.581629,
+    "color": "#796DE2"
+  },
+  "knot": {
+    "path": "res://assets/models/knot.glb",
+    "radius": 2.077828,
+    "height": 2.292075,
+    "color": "#EAA4FF"
+  }
+}

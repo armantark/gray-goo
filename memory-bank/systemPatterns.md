@@ -1,12 +1,12 @@
 # System patterns
 
-Godot 4 is the selected engine, targeting standalone macOS first for personal play. The user proposed a representative four-level sampler; exact levels remain open. Rendering architecture and detailed growth/interaction rules remain to be resolved. Play is untimed and damage is deferred.
+Godot 4.7.2 uses the Mobile renderer for the four approved standalone Mac scenes. Runtime files under src separate the game loop, world construction, food, goo, camera, and HUD. Play is untimed and damage is deferred.
 
-Liquid behavior contract: coherent translucent surface, local consumption, remaining mass persists. Connected fluid points are the user's suggested representation; choose the simplest implementation that delivers the actual behavior and allows the remaining liquid to form separate pools if cut through. The protagonist needs deformation coupled to motion and contact. Godot SoftBody3D with built-in Jolt is a candidate to inspect before inventing a custom solver, but adhesion and goo flow are not assumed to come for free. No liquid or soft-body implementation is selected yet.
+Liquid behavior contract: coherent translucent surface, local consumption, remaining mass persists. Connected fluid points are the user's suggested representation; choose the simplest implementation that delivers the actual behavior and allows the remaining liquid to form separate pools if cut through. The protagonist needs deformation coupled to motion and contact. The goo uses a constrained particle shell because a Godot 4.7.2 Jolt canary and source inspection showed live body scaling is discarded. Actual floor/obstacle contact and adhesion constrain shell particles and therefore move its center. Native Jolt simulates loose world objects. LocalPool uses a bounded density grid and a continuous contour mesh for water and spacetime; the grid is not rendered as pellets.
 
 Recommended scale representation: keep documented physical sizes separate from the convenient coordinate units used to render and simulate each active scale band; preserve meaningful size ratios within a scene. This avoids treating the entire growth journey as one simultaneously simulated universe. Cartoon representations at subatomic scales are accepted; do not impose scientific literalism on their appearance.
 
-Source checks on 2026-09-04: Godot spatial shaders provide diffuse_toon and specular_toon modes. Web exports require Compatibility rendering and WebGL 2.0; Forward+/Mobile and C# web exports are not supported by the retrieved stable documentation. Browser delivery is outside the accepted proof of concept, so do not impose those web constraints on the desktop renderer. No renderer, language, or performance outcome is selected or verified yet.
+Source checks on 2026-09-04: Godot spatial shaders provide diffuse_toon and specular_toon modes. Web exports require Compatibility rendering and WebGL 2.0; Forward+/Mobile and C# web exports are not supported by the retrieved stable documentation. Browser delivery is outside the accepted proof of concept, so do not impose those web constraints on the desktop renderer. The native build uses GDScript and the Mobile renderer; rendered performance still requires the final pass.
 
 Sources:
 - https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html
@@ -23,7 +23,7 @@ Eating presentation: engulf and shrink edible objects on contact without pausing
 
 Camera: preserve a top-down feel with a slight overhead tilt. Players can rotate around the goo and zoom within reasonable limits, but cannot change tilt. Exact angle, zoom bounds, and control bindings remain to be tuned.
 
-Completion presentation: reaching the goal size celebrates completion and makes Next level available while the scene remains playable. The final bite must be satisfying and visually striking. Its specific effects remain open.
+Completion presentation: reaching the goal size celebrates completion and makes Next level available while the scene remains playable. The final bite uses brief slow motion, exaggerated body deformation, a color pulse, and a short sound.
 
 Edibility: use predictable thresholds informed by object shape and bulk. Engulfing responds visually to shape without requiring precise alignment to eat an eligible object. Suitable thin objects may snap during engulfing; this optional animation does not introduce a separate breaking action or extra growth reward.
 

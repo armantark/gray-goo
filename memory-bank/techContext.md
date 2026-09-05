@@ -1,6 +1,6 @@
 # Technical context
 
-The workspace is /Users/ArmanTarkhanian1/Desktop/tasty planet clone. It contains a Git repository and design documents, with no application code.
+The workspace is /Users/ArmanTarkhanian1/Desktop/tasty planet clone. It contains the Godot project at project.godot, runtime GDScript under src, shaders under shaders, and original generated assets under assets.
 
 Use `/Applications/Blender.app/Contents/MacOS/Blender` directly; no PATH alias or separate CLI package is needed. On 2026-09-04, the user authorized updating the installed Blender 3.1.0 x86_64 build to Blender 5.2.1 LTS arm64 on an Apple M1 Max Mac Studio with 32 GB RAM.
 
@@ -11,3 +11,7 @@ The installed app passed a factory-startup headless Python check that saved a .b
 The user selected Blender CLI over MCP. No add-on, server, or MCP configuration was installed. Performance must be checked in the running game at 1920 × 1080; the local Mac Studio is the proposed baseline device. Headless Blender success is not render or game performance evidence.
 
 Blender CLI can run Python for asset creation, materials, rendering, and export. The third-party ahujasid/blender-mcp adds a live-session bridge and external asset-service integrations; those conveniences are not bundled CLI features.
+
+Godot 4.7.2 standard universal is installed at /Applications/Godot.app. Its official archive passed SHA512 verification, codesign verification, spctl assessment (`accepted`, `source=Notarized Developer ID`), and headless version execution (`4.7.2.stable.official.ed1daf0bf`). The existing /Applications/Godot_mono.app is untouched. Only macos.zip from the verified official export templates is installed under ~/Library/Application Support/Godot/export_templates/4.7.2.stable.
+
+Regenerate models with Blender using scripts/build_assets.py and --python-exit-code 1. assets/source/.gdignore prevents Godot from trying to import the editable .blend source; the runtime uses the exported GLBs and committed .import settings. Regenerate the original short sounds with python3 scripts/build_audio.py.

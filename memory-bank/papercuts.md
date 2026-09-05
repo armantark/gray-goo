@@ -30,3 +30,29 @@
 2026-09-04: Artifact preflight rejected source citation hyperlinks with `FAIL A5 remote src/href asset (artifact must be self-contained)`. Replaced remote anchors with internal source references and a plain-text URL index before opening or publishing.
 
 2026-09-04: After Codex restarted, the old preview listener returned curl error `52` (empty reply) and the old PinchTab session returned `401`; a fresh task-owned preview listener and session restored access. The user then stopped status-artifact visual QA as unnecessary; added a permanent fleet rules exemption instead of repeating browser checks.
+
+2026-09-04: Engine research found /Applications/Godot_mono.app 4.4.1, but its sandbox `--version` invocation exited `134` with no output. The verified official 4.7.2 standard engine ran `--headless --version` successfully under reviewed execution.
+
+2026-09-04: Native goo canary found that `SoftBody3D.scale = Vector3.ONE * 1.7` at tick 90 was reset to `(1, 1, 1)` by tick 100 on Godot `4.7.2.stable.official.ed1daf0bf` with Jolt. Current source discards scaling because it cannot update edge rest lengths; use evidence from this canary when choosing the growing-body solver.
+
+2026-09-04: Goo leaf's temporary headless canary hit editor settings access outside the sandbox without a project; an absolute `custom_user_dir_name` was appended under Application Support. Use an explicit project and `--log-file /tmp/...` for headless checks. Its first driver also set `global_position` before `add_child`, causing `!is_inside_tree()`; attach nodes before assigning global transforms.
+
+2026-09-04: Asset leaf's sandboxed Blender exited `139` in `blender::gpu::supports_barycentric_whitelist` / `MTLBackend::metal_is_supported`; reviewed headless execution succeeded. Blender 5.2.1 rejected `BLENDER_EEVEE_NEXT` with `enum "BLENDER_EEVEE_NEXT" not found in ('BLENDER_EEVEE', 'BLENDER_WORKBENCH', 'CYCLES')`; use `BLENDER_EEVEE`.
+
+2026-09-04: Blender returned exit `0` despite a generator Python exception unless invoked with `--python-exit-code 1`. The generator's documented invocation now includes that switch. `export_apply=True` also mutated a selected source transform during sequential GLB export; omit it to preserve the source transforms.
+
+2026-09-04: Blender curve control bounds differed from exported plankton geometry by `0.04` units. Convert curves to meshes before measuring export bounds. Blender additionally emits `DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0`; the final generator still runs successfully.
+
+2026-09-04: Goo leaf's first movement canary exposed an adhesion defect: center X advanced only `0.118` after `2 s` of +X input. A generic success label did not assert travel; the leaf added a travel assertion and is repairing traction-driven anchor release before returning.
+
+2026-09-04: Asset review found bounding-box corner measurements overestimated rotated geometry; the rock base was at least `0.22078745425148416` above ground. Use transformed evaluated vertices for bounds. The shell outline signed area was `-5.371682980870516`, producing inward faces; reverse its outline before extrusion. Root regenerated all assets successfully.
+
+2026-09-04: Initial Godot import stalled on the editable .blend with `Blender path is invalid or not set, check your Editor Settings. Cannot configure blender path in headless mode.` Added assets/source/.gdignore; the production GLB import then completed.
+
+2026-09-04: Game integration sampled pool.closest_point after consume_whole, yielding `Vector3(INF, INF, INF)`. Capture the contact before removal and use it for localized pigment.
+
+2026-09-04: Headless shutdown leaked `AudioStreamWAV` and `AudioStreamPlaybackWAV` for `res://assets/audio/bite.wav` while a bite sound was active. Added explicit audio stop/stream release on game exit; verification follows.
+
+2026-09-04: First game commit rejected by slop-gate: `scripts/build_assets.py: verify_exported_glbs 23 (new)` cyclomatic and `verify_exported_glbs 30 (new)` cognitive. Separate geometry/material verification from bounds verification and import orchestration before retrying; no amend.
+
+2026-09-04: macOS export rejected: `Cannot export for universal or arm64 if ETC2 ASTC texture format is disabled. Enable it in the Project Settings (Rendering > Textures > VRAM Compression > Import ETC2 ASTC).` Enabled `textures/vram_compression/import_etc2_astc=true`.
