@@ -591,6 +591,7 @@ def export_collection(collection: bpy.types.Collection, model_name: str) -> dict
         export_format="GLB",
         use_selection=True,
         export_yup=True,
+        export_vertex_color="ACTIVE",
         export_cameras=False,
         export_lights=False,
     )

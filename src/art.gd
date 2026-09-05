@@ -3,6 +3,8 @@ extends RefCounted
 
 const TOON = preload("res://shaders/toon.gdshader")
 const OUTLINE = preload("res://shaders/outline.gdshader")
+const GAS_MODELS := ["nebula", "galaxy_arm", "galaxy_bulge", "galaxy", "elliptical_galaxy", "dwarf_galaxy", "galaxy_group", "knot"]
+const STAR_MODELS := ["red_dwarf", "yellow_star", "blue_giant"]
 static var _manifest: Dictionary = {}
 static var _models: Dictionary = {}
 static var _materials: Dictionary = {}
@@ -46,10 +48,12 @@ static func model(model_name: String, target_radius: float) -> Node3D:
 		_models[model_name] = load(info["path"])
 	var instance: Node3D = _models[model_name].instantiate()
 	instance.scale = Vector3.ONE * target_radius / float(info["radius"])
-	_style(instance)
+	_style(instance, model_name)
+	if model_name in STAR_MODELS:
+		_star_halo(instance, info)
 	return instance
 
-static func _style(node: Node) -> void:
+static func _style(node: Node, model_name: String) -> void:
 	if node is MeshInstance3D:
 		for surface in node.mesh.get_surface_count():
 			var original: Material = node.get_active_material(surface)
@@ -58,9 +62,44 @@ static func _style(node: Node) -> void:
 			if original is StandardMaterial3D:
 				color = original.albedo_color
 				texture = original.albedo_texture
-			node.set_surface_override_material(surface, material(color, 0.0, texture))
+			var mat: ShaderMaterial
+			if model_name in GAS_MODELS:
+				mat = gas_material(color, texture)
+				if model_name == "galaxy_bulge":
+					mat.set_shader_parameter("core_radius", float(manifest()[model_name].radius))
+			else:
+				var luminous: bool = model_name in STAR_MODELS or model_name == "black_hole"
+				mat = material(color, 1.4 if luminous else 0.0, texture)
+				if luminous:
+					mat.next_pass = null
+			node.set_surface_override_material(surface, mat)
+		if model_name in GAS_MODELS or model_name in STAR_MODELS:
+			node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	for child in node.get_children():
-		_style(child)
+		_style(child, model_name)
+
+static func gas_material(color: Color, texture: Texture2D) -> ShaderMaterial:
+	var key := "gas:" + color.to_html() + ":" + str(texture.get_instance_id())
+	if not _materials.has(key):
+		var mat := ShaderMaterial.new()
+		mat.shader = preload("res://shaders/gas.gdshader")
+		mat.set_shader_parameter("base_color", color)
+		mat.set_shader_parameter("albedo", texture)
+		_materials[key] = mat
+	return _materials[key]
+
+static func _star_halo(model_root: Node3D, info: Dictionary) -> void:
+	var halo := MeshInstance3D.new()
+	var plane := PlaneMesh.new()
+	plane.size = Vector2.ONE * float(info.radius) * 5.0
+	halo.mesh = plane
+	var mat := ShaderMaterial.new()
+	mat.shader = preload("res://shaders/star_halo.gdshader")
+	mat.set_shader_parameter("color", Color(info.color))
+	halo.material_override = mat
+	halo.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	model_root.add_child(halo)
+	halo.position.y = float(info.height) * 0.5
 
 static func food_color(model_name: String) -> Color:
 	return Color(manifest()[model_name]["color"])

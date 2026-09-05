@@ -139,15 +139,31 @@ def bake_atlas(collection, name: str, output_dir: Path, surface: str | None = No
     return obj
 
 
+def connected_images(socket):
+    pending = [link.from_node for link in socket.links]
+    visited = set()
+    images = []
+    while pending:
+        node = pending.pop()
+        if node in visited:
+            continue
+        visited.add(node)
+        if node.type == "TEX_IMAGE":
+            images.append(node.image)
+        for input_socket in node.inputs:
+            pending.extend(link.from_node for link in input_socket.links)
+    return images
+
+
 def verify_texture(name, meshes):
     if any(not obj.data.uv_layers for obj in meshes):
         raise RuntimeError(f"Round-trip lost UVs for {name}")
     for obj in meshes:
         for mat in obj.data.materials:
             bsdf = mat.node_tree.nodes.get("Principled BSDF")
-            links = bsdf.inputs["Base Color"].links
-            if not links or links[0].from_node.type != "TEX_IMAGE":
+            images = connected_images(bsdf.inputs["Base Color"])
+            if len(images) != 1:
                 raise RuntimeError(f"Round-trip lost albedo connection for {name}")
-            image = links[0].from_node.image
+            image = images[0]
             if tuple(image.size) != (512, 512):
                 raise RuntimeError(f"Round-trip texture is not 512x512 for {name}")

@@ -24,12 +24,12 @@ void fragment() {
 	float glint = pow(max(0.0, ripple), 18.0);
 	vec3 color = pigment.rgb;
 	if (fabric) {
-		color = texture(albedo, surface_point.xz / 12.0).rgb;
+		color = texture(albedo, surface_point.xz / 48.0).rgb * 0.035;
 		glint = 0.0;
 		EMISSION = color * 0.1;
 	}
 	ALBEDO = color + glint * 0.075;
 	ROUGHNESS = fabric ? 0.58 : 0.18;
-	METALLIC = 0.08;
+	METALLIC = fabric ? 0.0 : 0.08;
 	ALPHA = pigment.a * smoothstep(mask_threshold, 0.08, fill);
 }
