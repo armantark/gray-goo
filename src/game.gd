@@ -86,7 +86,7 @@ func _physics_process(delta: float) -> void:
 	if not is_instance_valid(world):
 		return
 	world.player_radius = goo.radius
-	goo.set_drive(rig.movement_direction(), 2.8 + goo.radius * 0.8)
+	goo.set_drive(rig.movement_direction(), (2.8 + goo.radius * 0.8) * 10.0 * hud.movement_speed)
 	var eaten := 0
 	for food in world.foods:
 		if not is_instance_valid(food) or not food.active or food.threshold > goo.radius:

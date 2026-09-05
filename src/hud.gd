@@ -20,6 +20,8 @@ var _root: Control
 var _scene_index := 0
 var _hint_time := 0.0
 var _meters_per_unit: float
+var movement_speed := 1.0
+var _settings := ConfigFile.new()
 
 class FoodPointer extends Control:
 	var position_on_screen := Vector2.ZERO
@@ -144,12 +146,16 @@ func _build_completion() -> void:
 	completion.hide()
 
 func _build_menu() -> void:
+	var error := _settings.load("user://settings.cfg")
+	if error != OK and error != ERR_FILE_NOT_FOUND:
+		push_error("Could not load movement settings: %s" % error_string(error))
+	movement_speed = clampf(float(_settings.get_value("controls", "movement_speed", 1.0)), 0.1, 2.0)
 	menu = _panel(_root)
 	menu.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	menu.offset_left = -260
 	menu.offset_right = 260
-	menu.offset_top = -235
-	menu.offset_bottom = 235
+	menu.offset_top = -280
+	menu.offset_bottom = 280
 	var column := _column(menu)
 	_label(column, "Gray Goo", 34)
 	var titles := ["Quark Dust Ladder", "Coral Colony Tide Pool", "Skatepark Bowl", "Tablecloth of Everything"]
@@ -159,6 +165,22 @@ func _build_menu() -> void:
 			menu.hide()
 			pause_requested.emit(false)
 			scene_requested.emit(index))
+	var speed_label := _label(column, "Movement speed · %d%%" % roundi(movement_speed * 100.0), 22)
+	var speed_slider := HSlider.new()
+	speed_slider.min_value = 10.0
+	speed_slider.max_value = 200.0
+	speed_slider.step = 5.0
+	speed_slider.value = movement_speed * 100.0
+	speed_slider.custom_minimum_size.y = 30
+	speed_slider.tooltip_text = "Adjust movement speed for both keyboard and mouse steering."
+	column.add_child(speed_slider)
+	speed_slider.value_changed.connect(func(value: float):
+		movement_speed = value / 100.0
+		speed_label.text = "Movement speed · %d%%" % roundi(value)
+		_settings.set_value("controls", "movement_speed", movement_speed)
+		var save_error := _settings.save("user://settings.cfg")
+		if save_error != OK:
+			push_error("Could not save movement settings: %s" % error_string(save_error)))
 	var resume := _button(column, "Resume")
 	resume.pressed.connect(toggle_menu)
 	menu.hide()

@@ -92,3 +92,5 @@
 2026-09-04: Metric-scope search included nonexistent `docs/design/scenes.json`; the accepted catalogue lives in `docs/design/selection.json`. Runtime scene configuration remains in `src/world.gd`.
 
 2026-09-04: The user's deliberate turn interruption also left `goo_body` interrupted. Root sent `send_message` updates, which queue text but do not restart an interrupted agent, and mistakenly waited for implementation progress. `interrupt_agent` returned `previous_status: interrupted`; `followup_task` resumed it. Leaf confirmed no filament files or new travel results existed at that point. After a turn-abort, inspect agent status and use followup_task to resume unfinished work.
+- 2026-09-04: Opening the native Godot UI through `cua.getApp('/Applications/Godot.app')` failed after 124.1357 seconds with `Sky Computer Use request timed out`; no screenshot or UI state was returned.
+- 2026-09-04: Native UI retry using `org.godotengine.godot` was rejected as ambiguous because `/Applications/Godot.app` and `/Applications/Godot_mono.app` share the bundle ID; selecting `/Applications/Godot.app` succeeded.

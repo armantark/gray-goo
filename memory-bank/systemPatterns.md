@@ -42,3 +42,5 @@ Pool performance: collect the weighted contact position during local consumption
 Asset colors: Blender material node inputs use linear RGB. Convert authored sRGB hex colors before assignment so exported GLBs retain the intended palette. The custom toon light divides LIGHT_COLOR by PI and applies ALBEDO once.
 
 Metric HUD contract: world config declares `meters_per_unit`; displayed size is `2 * radius * meters_per_unit`, including the goal, and scale reveals never reset it. Current authored calibrations are Quark `1e-15`, Coral `0.01`, Skatepark `0.25`, Cosmos `1e21` metres per world unit. These calibrate the cartoon scenes, not empirical object measurements. Prefixes follow SI casing, including `fm` (femtometre) and `Zm` (zettametre); reference https://www.nist.gov/pml/owm/metric-si-prefixes .
+
+The scene menu owns a saved movement-speed preference in `user://settings.cfg`, under `controls/movement_speed`. Its 10–200% range scales both keyboard and mouse steering around the authored default speed. Scene changes retain the same preference.

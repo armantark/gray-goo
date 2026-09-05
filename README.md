@@ -16,6 +16,8 @@ Open `builds/Gray Goo.app` after exporting. The game starts in the particle fiel
 
 Eat smaller objects to reach the goal size. A pointer shows the nearest edible object. Each scene has its own starting size. The HUD shows body diameter and goal diameter in metric units. The goal-reaching bite celebrates completion; the scene remains playable until you choose Next level.
 
+Open the scene menu to adjust Movement speed from 10% to 200%. The default is 100%, and the setting applies to both keyboard and mouse steering. The game saves it between launches.
+
 ## Run from the project
 
 Use Godot 4.7.2 with its standard macOS export template. Run these commands from the repository root.
@@ -42,5 +44,7 @@ The editable Blender library stays in `assets/source`; Godot imports the exporte
 ## Manual verification
 
 Play each scene from its starting size through completion. Check keyboard and mouse steering, camera rotation and limits, object engulfing, retained food color, attached parts, and the nearest-food pointer. Watch the tendrils plant and pull as you move, then release the controls and check that the body and eyes settle. Move the cursor around the goo and check that both pupils follow it. After a colored bite, check that the contact patch blends slowly and leaves a lasting tint. In the tide pool, cross the water and check that only local sections disappear. In the skatepark, nudge moving boards and cross the curved ground. In spacetime, consume the final fabric and keep moving in the void. After each goal, verify continued play and Next level.
+
+Change Movement speed in the scene menu, resume play, and check that steering responds at the selected rate. Restart the app and check that the setting remains selected.
 
 The project follows the requested basic launch checks and one final visual/performance pass rather than a separate unit/integration/end-to-end test suite. The build plan is under `memory-bank/status-updates` and remains unchanged for comparison with results.
