@@ -12,7 +12,7 @@ This is a running interview map, not a settled implementation plan. Ask small nu
 - Engulf and shrink on contact without pausing movement; large bites stretch the goo, and puddles are consumed locally.
 - Top-down smooth cartoon 3D, cel shading and outlines, standalone Mac delivery.
 - Slight overhead tilt that preserves the top-down feel; player rotation and bounded zoom, with no player tilt adjustment.
-- Goal-size completion celebrates a visually striking final bite and offers Next level while continued eating remains available.
+- Goal-size completion uses brief slow motion, exaggerated squash and stretch, and a strong color pulse. Normal play resumes with Next level available.
 
 - Predictable shape-aware eating thresholds; no precise approach alignment requirement. Suitable thin objects may snap as part of engulfing presentation.
 - Opaque foreground obstacles with a subdued goo outline visible through them.
@@ -21,13 +21,17 @@ This is a running interview map, not a settled implementation plan. Ask small nu
 - Food color starts as a localized patch at the contact point, then gradually blends throughout the goo to leave a lasting tint.
 - Coral consists of distinct composite parts with their own thresholds plus a separate whole-colony threshold. Eating parts does not automatically lower the whole threshold. The final bite consumes only surviving parts.
 
-## Current independent frontier
+- Screen-relative movement is independent of body facing. Right-button drag rotates only the view; left-button hold steers, and scroll-wheel zoom stays within the active scale view. Do not bind rotation to Q/E. Camera rotation is optional for comfort and inspection.
+- Invisible playfield walls constrain movement. The camera stops following near the boundary.
 
-1. Camera handling: confirm screen-relative keyboard steering while rotating, with Q/E rotation and scroll-wheel zoom as proposed bindings. Manual zoom stays within the active scale view rather than triggering a size jump.
-2. Completion emphasis: decide whether the goal-reaching bite includes brief slow motion, or stays at full speed with deformation and effects supplying the payoff.
+## Frontier status
+
+The current material gameplay decisions are settled. Present the compact build plan and explicit tuning assumptions for confirmation before implementation. The user is not being asked to choose engine internals.
 
 ## Engineering and tuning assumptions to surface at confirmation
 
 - Exact camera tilt, zoom bounds, color mixing strength and timing, food budgets, and size thresholds need tuning in the playable prototype.
-- Physics implementation and performance feasibility are engineering investigations, not questions for the user.
-- Preserve the agreed four-scene scope and single final visual/performance pass; no game implementation has begun.
+- Use the four proposed scenes from the accepted pool. Their budgets and object arrangements can change to satisfy the agreed gameplay.
+- For the final spacetime scene, propose an invisible movement surface after the last visible fabric disappears so post-completion control remains available.
+- Physics implementation and performance feasibility require engineering evidence. A rigid sphere with cosmetic wobble does not satisfy the goo requirement.
+- Preserve the agreed single final visual/performance pass. No game implementation has begun.

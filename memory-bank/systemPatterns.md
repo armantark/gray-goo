@@ -32,3 +32,7 @@ Occlusion: an opaque foreground obstacle hides the ordinary goo rendering, but a
 Food color: create a localized patch at the consumption contact point, using the food's average color. Gradually blend it through the goo to produce a lasting tint. Timing and color contribution strength are tuning choices, not fixed yet.
 
 Composite consumption: individual parts and the whole have separate eating thresholds. Consuming parts does not automatically reduce the whole threshold. Once eligible, consuming the whole consumes only its surviving parts; previously consumed parts contribute no second growth reward.
+
+Camera controls confirmed on 2026-09-04: WASD and arrow keys move relative to the screen, independent of the goo's facing direction. The user moved camera rotation to mouse controls to keep it separate from WASD. Use right-button drag to rotate only the view for comfort or inspection, with left-button hold for steering; rotation never turns the goo for forward/backward driving. Do not bind rotation to Q/E. Scroll-wheel zoom stays within the active scale view. Invisible playfield walls constrain the goo; the camera stops following near the boundary. Keep rotation optional for ordinary play.
+
+Winning bite confirmed on 2026-09-04: brief slow motion, exaggerated squash and stretch, and a strong color pulse through the goo. Return to normal play with Next level available. Normal bites retain uninterrupted movement.

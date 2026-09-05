@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gray goo · Four playable scenes</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='26' fill='%239aa5b6'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#0c0e12;--surface:#161a21;--surface-2:#1e232c;--border:#2a3040;--text:#e8ecf4;--text-dim:#a2acbd;--accent:#4f8cff;--accent-glow:rgba(79,140,255,.15);--red:#ff5c5c;--green:#4ade80;--amber:#fbbf24;--purple:#a78bfa;--radius:12px;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 Outfit,system-ui,sans-serif}main{max-width:1000px;margin:auto;padding:36px 22px 60px}header{border-bottom:1px solid var(--border);padding-bottom:24px}small,.tag{font:12px/1.5 'JetBrains Mono',monospace;color:var(--green)}h1{font-size:clamp(2rem,6vw,3.5rem);line-height:1.1;margin:14px 0}h2{font-size:22px;margin:30px 0 12px}h3{font-size:17px;line-height:1.3;margin:7px 0}p{margin:8px 0;color:var(--text-dim)}.goal{font-size:19px;max-width:65ch}.scenes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}article{min-width:0;background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:var(--radius);padding:16px;overflow-wrap:anywhere}article:nth-child(2){border-top-color:var(--green)}article:nth-child(3){border-top-color:var(--amber)}article:nth-child(4){border-top-color:var(--purple)}article p{font-size:14px}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--border)}.controls div{padding:13px 16px;background:var(--surface)}.controls b{display:block;font-size:14px}.controls span{font-size:14px;color:var(--text-dim)}.callout{padding:16px 20px;border-left:3px solid var(--green);background:var(--surface);margin:22px 0}.callout p{margin:0;color:var(--text)}details{border-top:1px solid var(--border);padding:12px 0}summary{cursor:pointer;font-size:18px;padding:5px 0}details p{max-width:85ch}li{margin:9px 0;color:var(--text-dim)}li strong{color:var(--text)}ol,ul{padding-left:24px}footer{border-top:1px solid var(--border);margin-top:20px;padding-top:18px;color:var(--text-dim);font-size:13px}@media(max-width:760px){.scenes{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:430px){.scenes,.controls{grid-template-columns:1fr}main{padding:25px 16px 40px}}
+</style>
+</head>
+<body><main>
+<header><small>BUILD PLAN · AWAITS CONFIRMATION</small><h1>Four scenes.<br>One convincing goo.</h1><p class="goal">Build a standalone Mac game with responsive, sticky goo and a growth journey from particles to spacetime.</p><p>The scene pool is accepted. This plan covers the playable prototype. Game implementation has not started.</p></header>
+<section><h2>The playable scenes</h2><div class="scenes">
+<article><span class="tag">SUBATOMIC</span><h3>Quark Dust Ladder</h3><p>Consume quark parts, proton knots, and nuclei. Use cartoon particle forms and one size jump.</p></article>
+<article><span class="tag">TIDE POOL</span><h3>Coral Colony</h3><p>Eat individual polyps, then whole colonies. Consume water locally. Use one size jump.</p></article>
+<article><span class="tag">HUMAN SCALE</span><h3>Skatepark Bowl</h3><p>Catch loose wheels and boards on curved ground. Grow toward rails and ramp sections. Use no size jump.</p></article>
+<article><span class="tag">SPACETIME</span><h3>Tablecloth of Everything</h3><p>Consume galaxy knots and fabric regions, then the final remainder. Use one size jump.</p></article>
+</div></section>
+<section><h2>Movement comes first</h2><div class="controls">
+<div><b>WASD / arrow keys</b><span>Move relative to the screen. Body direction does not restrict movement.</span></div>
+<div><b>Hold the left mouse button</b><span>Steer toward the pointer with the same drift and body response.</span></div>
+<div><b>Hold the right mouse button and drag</b><span>Rotate the view for comfort. Keep the camera tilt fixed.</span></div>
+<div><b>Scroll wheel</b><span>Zoom within the current scale view. Invisible walls bound the playfield.</span></div>
+</div><p>The camera keeps a mostly overhead view and stops its movement near field edges. Camera rotation is optional.</p></section>
+<aside class="callout"><p><strong>The body must feel like goo.</strong> It must roll, flatten, stretch, and peel from the ground. Contact and movement must affect deformation.</p></aside>
+<details><summary>The agreed play rules</summary>
+<ul>
+<li><strong>Growth:</strong> Each scene starts at a suitable size. Every bite contributes growth. The goal size completes the scene.</li>
+<li><strong>Milestones:</strong> The largest target usually supplies the final growth. Smaller food can remain.</li>
+<li><strong>Eating:</strong> Shape and bulk inform a predictable threshold. Edible objects do not require precise approach angles.</li>
+<li><strong>Engulfing:</strong> Objects shrink into the goo without a movement pause. Suitable thin objects can snap. Large bites stretch the body.</li>
+<li><strong>Color:</strong> Food leaves a local color patch. The patch gradually spreads through the goo and leaves a lasting tint.</li>
+<li><strong>Composites:</strong> Parts and wholes have separate thresholds. A whole-object bite consumes only the parts still present.</li>
+<li><strong>Liquids:</strong> Contact removes local sections. The untouched liquid remains a coherent, translucent surface.</li>
+<li><strong>World behavior:</strong> Objects move, collide, carry food, and form structures where the scene supports these interactions.</li>
+<li><strong>Guidance:</strong> A pointer identifies the nearest edible object. An obstacle stays opaque, with a subdued goo outline visible through it.</li>
+<li><strong>Completion:</strong> The goal-reaching bite uses brief slow motion, strong deformation, and a color pulse. Normal play resumes with Next level available.</li>
+<li><strong>Scale:</strong> Growth continues inside each view. An optional size jump reveals larger objects and removes the smallest detail.</li>
+<li><strong>Pace:</strong> Play is untimed, with no damage. Aim for roughly three to five minutes per scene; duration needs measurement.</li>
+</ul></details>
+<details><summary>Build sequence and proof</summary>
+<ol>
+<li><strong>Prepare the engine.</strong> Set up Godot 4 for macOS. Use Blender through its command-line interface for assets.</li>
+<li><strong>Build the shared interaction.</strong> Implement movement, contact deformation, the camera, boundaries, growth, and object consumption.</li>
+<li><strong>Build the four scenes.</strong> Add composite parts, local liquid consumption, scale changes, and scene-specific world behavior.</li>
+<li><strong>Complete the presentation.</strong> Add smooth cartoon assets, cel shading, outlines, color diffusion, and the winning bite.</li>
+<li><strong>Verify the playable result.</strong> Do basic launch and error checks during the build. Do one final visual and performance pass.</li>
+</ol>
+<p>The final pass must cover all four scenes at 1920 × 1080 on the target Mac. The target is 60 frames per second. Performance is unverified.</p>
+<p>Then hand the game to the user for play. Do not add the standing unit, integration, and end-to-end test matrix.</p>
+</details>
+<details open><summary>Assumptions for confirmation</summary>
+<ul>
+<li>Codex chooses the physics method and tunes camera limits, deformation, color diffusion, food budgets, and size thresholds.</li>
+<li>The four selected scenes keep their core ideas. Their object arrangements can change to make the agreed play work.</li>
+<li>After the final spacetime fabric disappears, an invisible surface preserves movement in the void.</li>
+<li>The full campaign stays outside this build. Godot setup and the playable implementation start after confirmation.</li>
+</ul>
+</details>
+<footer>Confirm this plan to start the build. This plan remains unchanged so it can be compared with the results.</footer>
+</main></body></html>
