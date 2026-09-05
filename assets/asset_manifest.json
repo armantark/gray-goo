@@ -1,98 +1,394 @@
 {
+  "rail_post": {
+    "path": "res://assets/models/rail_post.glb",
+    "radius": 0.48,
+    "height": 1.21,
+    "color": "#A8B4BE",
+    "texture": "res://assets/models/rail_post.png"
+  },
+  "rail_bar": {
+    "path": "res://assets/models/rail_bar.glb",
+    "radius": 2.3,
+    "height": 0.26,
+    "color": "#A8B4BE",
+    "texture": "res://assets/models/rail_bar.png"
+  },
+  "gluon": {
+    "path": "res://assets/models/gluon.glb",
+    "radius": 1.16,
+    "height": 0.725442,
+    "color": "#77D8AD",
+    "texture": "res://assets/models/gluon.png"
+  },
+  "photon": {
+    "path": "res://assets/models/photon.glb",
+    "radius": 1.232548,
+    "height": 0.352308,
+    "color": "#FFE69A",
+    "texture": "res://assets/models/photon.png"
+  },
+  "electron": {
+    "path": "res://assets/models/electron.glb",
+    "radius": 0.46,
+    "height": 0.925,
+    "color": "#79B9E1",
+    "texture": "res://assets/models/electron.png"
+  },
+  "positron": {
+    "path": "res://assets/models/positron.glb",
+    "radius": 0.46,
+    "height": 0.935,
+    "color": "#F8AC73",
+    "texture": "res://assets/models/positron.png"
+  },
+  "pion": {
+    "path": "res://assets/models/pion.glb",
+    "radius": 1.01,
+    "height": 0.92,
+    "color": "#B6989D",
+    "texture": "res://assets/models/pion.png"
+  },
+  "neutron": {
+    "path": "res://assets/models/neutron.glb",
+    "radius": 1.09,
+    "height": 1.42,
+    "color": "#7F9BAE",
+    "texture": "res://assets/models/neutron.png"
+  },
+  "snail": {
+    "path": "res://assets/models/snail.glb",
+    "radius": 1.05075,
+    "height": 1.830048,
+    "color": "#C59369",
+    "texture": "res://assets/models/snail.png"
+  },
+  "periwinkle": {
+    "path": "res://assets/models/periwinkle.glb",
+    "radius": 0.837289,
+    "height": 1.25175,
+    "color": "#C59369",
+    "texture": "res://assets/models/periwinkle.png"
+  },
+  "hermit_crab": {
+    "path": "res://assets/models/hermit_crab.glb",
+    "radius": 1.546626,
+    "height": 1.920009,
+    "color": "#D58355",
+    "texture": "res://assets/models/hermit_crab.png"
+  },
+  "crab_body": {
+    "path": "res://assets/models/crab_body.glb",
+    "radius": 1.310482,
+    "height": 0.9142,
+    "color": "#D58355",
+    "texture": "res://assets/models/crab_body.png"
+  },
+  "anemone": {
+    "path": "res://assets/models/anemone.glb",
+    "radius": 1.00276,
+    "height": 1.536533,
+    "color": "#DBAD7B",
+    "texture": "res://assets/models/anemone.png"
+  },
+  "sea_star": {
+    "path": "res://assets/models/sea_star.glb",
+    "radius": 1.232663,
+    "height": 0.667642,
+    "color": "#D89968",
+    "texture": "res://assets/models/sea_star.png"
+  },
+  "small_fish": {
+    "path": "res://assets/models/small_fish.glb",
+    "radius": 1.165,
+    "height": 1.05,
+    "color": "#79AEB8",
+    "texture": "res://assets/models/small_fish.png"
+  },
+  "boulder": {
+    "path": "res://assets/models/boulder.glb",
+    "radius": 1.394695,
+    "height": 1.9,
+    "color": "#9A9D91",
+    "texture": "res://assets/models/boulder.png"
+  },
+  "bolt": {
+    "path": "res://assets/models/bolt.glb",
+    "radius": 0.292779,
+    "height": 1.15,
+    "color": "#AAB8C1",
+    "texture": "res://assets/models/bolt.png"
+  },
+  "bearing": {
+    "path": "res://assets/models/bearing.glb",
+    "radius": 0.76,
+    "height": 0.24,
+    "color": "#A6B4BD",
+    "texture": "res://assets/models/bearing.png"
+  },
+  "bottle_cap": {
+    "path": "res://assets/models/bottle_cap.glb",
+    "radius": 0.588,
+    "height": 0.255,
+    "color": "#C85C4B",
+    "texture": "res://assets/models/bottle_cap.png"
+  },
+  "pebble": {
+    "path": "res://assets/models/pebble.glb",
+    "radius": 0.618188,
+    "height": 0.6,
+    "color": "#A7A18E",
+    "texture": "res://assets/models/pebble.png"
+  },
+  "truck": {
+    "path": "res://assets/models/truck.glb",
+    "radius": 0.88,
+    "height": 0.56,
+    "color": "#A8B4BE",
+    "texture": "res://assets/models/truck.png"
+  },
+  "helmet": {
+    "path": "res://assets/models/helmet.glb",
+    "radius": 0.87,
+    "height": 1.495075,
+    "color": "#DEA754",
+    "texture": "res://assets/models/helmet.png"
+  },
+  "shoe": {
+    "path": "res://assets/models/shoe.glb",
+    "radius": 1.0,
+    "height": 0.88,
+    "color": "#657F98",
+    "texture": "res://assets/models/shoe.png"
+  },
+  "water_bottle": {
+    "path": "res://assets/models/water_bottle.glb",
+    "radius": 0.43,
+    "height": 1.63,
+    "color": "#92BFCC",
+    "texture": "res://assets/models/water_bottle.png"
+  },
+  "skater": {
+    "path": "res://assets/models/skater.glb",
+    "radius": 1.07,
+    "height": 3.18,
+    "color": "#5B9F92",
+    "texture": "res://assets/models/skater.png"
+  },
+  "bench": {
+    "path": "res://assets/models/bench.glb",
+    "radius": 1.62,
+    "height": 1.59,
+    "color": "#B49169",
+    "texture": "res://assets/models/bench.png"
+  },
+  "cone": {
+    "path": "res://assets/models/cone.glb",
+    "radius": 0.68,
+    "height": 1.735,
+    "color": "#E68E43",
+    "texture": "res://assets/models/cone.png"
+  },
+  "trash_can": {
+    "path": "res://assets/models/trash_can.glb",
+    "radius": 0.685,
+    "height": 1.495,
+    "color": "#69857A",
+    "texture": "res://assets/models/trash_can.png"
+  },
+  "fence_section": {
+    "path": "res://assets/models/fence_section.glb",
+    "radius": 2.08,
+    "height": 2.55,
+    "color": "#A6AEAA",
+    "texture": "res://assets/models/fence_section.png"
+  },
+  "parked_car": {
+    "path": "res://assets/models/parked_car.glb",
+    "radius": 2.1425,
+    "height": 1.55,
+    "color": "#708D9C",
+    "texture": "res://assets/models/parked_car.png"
+  },
+  "tree": {
+    "path": "res://assets/models/tree.glb",
+    "radius": 1.628742,
+    "height": 4.196289,
+    "color": "#78996B",
+    "texture": "res://assets/models/tree.png"
+  },
+  "red_dwarf": {
+    "path": "res://assets/models/red_dwarf.glb",
+    "radius": 0.66,
+    "height": 1.32,
+    "color": "#BD775E",
+    "texture": "res://assets/models/red_dwarf.png"
+  },
+  "yellow_star": {
+    "path": "res://assets/models/yellow_star.glb",
+    "radius": 1.202832,
+    "height": 2.0,
+    "color": "#E1CC9E",
+    "texture": "res://assets/models/yellow_star.png"
+  },
+  "blue_giant": {
+    "path": "res://assets/models/blue_giant.glb",
+    "radius": 1.587738,
+    "height": 2.64,
+    "color": "#B2CAD7",
+    "texture": "res://assets/models/blue_giant.png"
+  },
+  "nebula": {
+    "path": "res://assets/models/nebula.glb",
+    "radius": 2.487537,
+    "height": 0.8,
+    "color": "#837A6E",
+    "texture": "res://assets/models/nebula.png"
+  },
+  "black_hole": {
+    "path": "res://assets/models/black_hole.glb",
+    "radius": 1.535,
+    "height": 1.41,
+    "color": "#7F7565",
+    "texture": "res://assets/models/black_hole.png"
+  },
+  "elliptical_galaxy": {
+    "path": "res://assets/models/elliptical_galaxy.glb",
+    "radius": 1.959999,
+    "height": 0.63,
+    "color": "#BDB196",
+    "texture": "res://assets/models/elliptical_galaxy.png"
+  },
+  "dwarf_galaxy": {
+    "path": "res://assets/models/dwarf_galaxy.glb",
+    "radius": 1.035832,
+    "height": 0.445,
+    "color": "#87959A",
+    "texture": "res://assets/models/dwarf_galaxy.png"
+  },
+  "galaxy_group": {
+    "path": "res://assets/models/galaxy_group.glb",
+    "radius": 2.079783,
+    "height": 0.49,
+    "color": "#93968B",
+    "texture": "res://assets/models/galaxy_group.png"
+  },
+  "galaxy_arm": {
+    "path": "res://assets/models/galaxy_arm.glb",
+    "radius": 2.504542,
+    "height": 0.502158,
+    "color": "#897F71",
+    "texture": "res://assets/models/galaxy_arm.png"
+  },
+  "galaxy_bulge": {
+    "path": "res://assets/models/galaxy_bulge.glb",
+    "radius": 1.04,
+    "height": 0.6,
+    "color": "#D8CCAF",
+    "texture": "res://assets/models/galaxy_bulge.png"
+  },
   "quark": {
     "path": "res://assets/models/quark.glb",
     "radius": 0.858441,
     "height": 1.28,
-    "color": "#F2C94C"
+    "color": "#F2C94C",
+    "texture": "res://assets/models/quark.png"
   },
   "proton": {
     "path": "res://assets/models/proton.glb",
     "radius": 1.09,
     "height": 1.42,
-    "color": "#D96672"
-  },
-  "nucleus": {
-    "path": "res://assets/models/nucleus.glb",
-    "radius": 1.06,
-    "height": 1.66,
-    "color": "#A95D72"
+    "color": "#D96672",
+    "texture": "res://assets/models/proton.png"
   },
   "plankton": {
     "path": "res://assets/models/plankton.glb",
     "radius": 1.388242,
     "height": 0.92,
-    "color": "#65D6C1"
+    "color": "#65D6C1",
+    "texture": "res://assets/models/plankton.png"
   },
   "polyp": {
     "path": "res://assets/models/polyp.glb",
     "radius": 1.11,
     "height": 1.682863,
-    "color": "#F58CA8"
+    "color": "#F58CA8",
+    "texture": "res://assets/models/polyp.png"
   },
   "coral_branch": {
     "path": "res://assets/models/coral_branch.glb",
     "radius": 1.55,
     "height": 3.38,
-    "color": "#E66F7F"
+    "color": "#E66F7F",
+    "texture": "res://assets/models/coral_branch.png"
   },
   "coral_fan": {
     "path": "res://assets/models/coral_fan.glb",
     "radius": 2.48649,
     "height": 3.65,
-    "color": "#CB5D87"
+    "color": "#CB5D87",
+    "texture": "res://assets/models/coral_fan.png"
   },
   "rock": {
     "path": "res://assets/models/rock.glb",
     "radius": 1.204563,
     "height": 1.424492,
-    "color": "#77828C"
+    "color": "#77828C",
+    "texture": "res://assets/models/rock.png"
   },
   "shell": {
     "path": "res://assets/models/shell.glb",
     "radius": 1.703627,
     "height": 0.472824,
-    "color": "#F2B27D"
+    "color": "#F2B27D",
+    "texture": "res://assets/models/shell.png"
   },
   "wheel": {
     "path": "res://assets/models/wheel.glb",
     "radius": 0.52,
     "height": 1.04,
-    "color": "#F2B43A"
+    "color": "#F2B43A",
+    "texture": "res://assets/models/wheel.png"
   },
   "board": {
     "path": "res://assets/models/board.glb",
     "radius": 2.45,
     "height": 0.454095,
-    "color": "#43AFA3"
+    "color": "#43AFA3",
+    "texture": "res://assets/models/board.png"
   },
   "skateboard": {
     "path": "res://assets/models/skateboard.glb",
     "radius": 2.45,
-    "height": 1.094096,
-    "color": "#E85D4A"
+    "height": 1.094095,
+    "color": "#E85D4A",
+    "texture": "res://assets/models/skateboard.png"
   },
   "rail": {
     "path": "res://assets/models/rail.glb",
     "radius": 2.3,
     "height": 1.34,
-    "color": "#A8B4BE"
+    "color": "#A8B4BE",
+    "texture": "res://assets/models/rail.png"
   },
   "ramp": {
     "path": "res://assets/models/ramp.glb",
     "radius": 2.46,
     "height": 2.63,
-    "color": "#5AA8D8"
+    "color": "#5AA8D8",
+    "texture": "res://assets/models/ramp.png"
   },
   "galaxy": {
     "path": "res://assets/models/galaxy.glb",
-    "radius": 3.022677,
-    "height": 0.581629,
-    "color": "#796DE2"
+    "radius": 3.29192,
+    "height": 0.681079,
+    "color": "#ABA695",
+    "texture": "res://assets/models/galaxy.png"
   },
   "knot": {
     "path": "res://assets/models/knot.glb",
-    "radius": 2.077828,
-    "height": 2.292075,
-    "color": "#EAA4FF"
+    "radius": 2.933304,
+    "height": 0.476892,
+    "color": "#A7ABA4",
+    "texture": "res://assets/models/knot.png"
   }
 }

@@ -14,10 +14,78 @@ from __future__ import annotations
 
 import json
 import math
+import sys
+import time
 from pathlib import Path
 
 import bpy
 from mathutils import Vector
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from asset_builders.geometry import (
+    consolidate_by_material,
+    curve_tube,
+    cylinder_between,
+    extruded_polygon,
+    ico_sphere,
+    material,
+    mesh_object,
+    new_collection,
+    torus,
+    uv_sphere,
+)
+from asset_builders.particles import (
+    build_electron,
+    build_gluon,
+    build_neutron,
+    build_photon,
+    build_pion,
+    build_positron,
+)
+from asset_builders.tide_pool import (
+    build_anemone,
+    build_boulder,
+    build_crab_body,
+    build_hermit_crab,
+    build_periwinkle,
+    build_sea_star,
+    build_small_fish,
+    build_snail,
+)
+from asset_builders.skatepark import (
+    build_bearing,
+    build_bench,
+    build_bolt,
+    build_bottle_cap,
+    build_cone,
+    build_fence_section,
+    build_helmet,
+    build_parked_car,
+    build_pebble,
+    build_rail_bar,
+    build_rail_post,
+    build_shoe,
+    build_skater,
+    build_trash_can,
+    build_tree,
+    build_truck,
+    build_water_bottle,
+)
+from asset_builders.space import (
+    build_black_hole,
+    build_blue_giant,
+    build_dwarf_galaxy,
+    build_elliptical_galaxy,
+    build_galaxy_arm,
+    build_galaxy_bulge,
+    build_galaxy_group,
+    build_nebula,
+    build_red_dwarf,
+    build_spiral_galaxy,
+    build_supercluster,
+    build_yellow_star,
+)
+from asset_builders.textures import bake_atlas, verify_texture
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,9 +95,49 @@ MANIFEST_PATH = ROOT / "assets" / "asset_manifest.json"
 SOURCE_PATH = SOURCE_DIR / "cartoon_asset_library.blend"
 
 MODEL_COLORS = {
+    "rail_post": "#A8B4BE",
+    "rail_bar": "#A8B4BE",
+    "gluon": "#77D8AD",
+    "photon": "#FFE69A",
+    "electron": "#79B9E1",
+    "positron": "#F8AC73",
+    "pion": "#B6989D",
+    "neutron": "#7F9BAE",
+    "snail": "#C59369",
+    "periwinkle": "#C59369",
+    "hermit_crab": "#D58355",
+    "crab_body": "#D58355",
+    "anemone": "#DBAD7B",
+    "sea_star": "#D89968",
+    "small_fish": "#79AEB8",
+    "boulder": "#9A9D91",
+    "bolt": "#AAB8C1",
+    "bearing": "#A6B4BD",
+    "bottle_cap": "#C85C4B",
+    "pebble": "#A7A18E",
+    "truck": "#A8B4BE",
+    "helmet": "#DEA754",
+    "shoe": "#657F98",
+    "water_bottle": "#92BFCC",
+    "skater": "#5B9F92",
+    "bench": "#B49169",
+    "cone": "#E68E43",
+    "trash_can": "#69857A",
+    "fence_section": "#A6AEAA",
+    "parked_car": "#708D9C",
+    "tree": "#78996B",
+    "red_dwarf": "#BD775E",
+    "yellow_star": "#E1CC9E",
+    "blue_giant": "#B2CAD7",
+    "nebula": "#837A6E",
+    "black_hole": "#7F7565",
+    "elliptical_galaxy": "#BDB196",
+    "dwarf_galaxy": "#87959A",
+    "galaxy_group": "#93968B",
+    "galaxy_arm": "#897F71",
+    "galaxy_bulge": "#D8CCAF",
     "quark": "#F2C94C",
     "proton": "#D96672",
-    "nucleus": "#A95D72",
     "plankton": "#65D6C1",
     "polyp": "#F58CA8",
     "coral_branch": "#E66F7F",
@@ -41,253 +149,9 @@ MODEL_COLORS = {
     "skateboard": "#E85D4A",
     "rail": "#A8B4BE",
     "ramp": "#5AA8D8",
-    "galaxy": "#796DE2",
-    "knot": "#EAA4FF",
+    "galaxy": "#ABA695",
+    "knot": "#A7ABA4",
 }
-
-
-def rgba(hex_color: str, alpha: float = 1.0) -> tuple[float, float, float, float]:
-    value = hex_color.removeprefix("#")
-    srgb = (int(value[index : index + 2], 16) / 255 for index in (0, 2, 4))
-    # Blender shader inputs are linear; the palette is authored in display sRGB.
-    return tuple(channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4 for channel in srgb) + (alpha,)
-
-
-def material(
-    name: str,
-    color: str,
-    *,
-    roughness: float = 0.52,
-    metallic: float = 0.0,
-    alpha: float = 1.0,
-    transmission: float = 0.0,
-    emission_strength: float = 0.0,
-) -> bpy.types.Material:
-    mat = bpy.data.materials.get(name) or bpy.data.materials.new(name)
-    mat.use_nodes = True
-    mat.diffuse_color = rgba(color, alpha)
-    bsdf = mat.node_tree.nodes.get("Principled BSDF")
-    bsdf.inputs["Base Color"].default_value = rgba(color, alpha)
-    bsdf.inputs["Roughness"].default_value = roughness
-    bsdf.inputs["Metallic"].default_value = metallic
-    bsdf.inputs["Alpha"].default_value = alpha
-    transmission_input = bsdf.inputs.get("Transmission Weight") or bsdf.inputs.get("Transmission")
-    if transmission_input:
-        transmission_input.default_value = transmission
-    emission_input = bsdf.inputs.get("Emission Color") or bsdf.inputs.get("Emission")
-    if emission_input and emission_strength:
-        emission_input.default_value = rgba(color)
-    if bsdf.inputs.get("Emission Strength"):
-        bsdf.inputs["Emission Strength"].default_value = emission_strength
-    if alpha < 1.0 and hasattr(mat, "surface_render_method"):
-        mat.surface_render_method = "DITHERED"
-    return mat
-
-
-def move_to_collection(obj: bpy.types.Object, collection: bpy.types.Collection) -> None:
-    for owner in list(obj.users_collection):
-        owner.objects.unlink(obj)
-    collection.objects.link(obj)
-
-
-def smooth(obj: bpy.types.Object) -> None:
-    if obj.type == "MESH":
-        for polygon in obj.data.polygons:
-            polygon.use_smooth = True
-
-
-def add_bevel(obj: bpy.types.Object, width: float, segments: int = 3) -> None:
-    modifier = obj.modifiers.new("Soft bevel", "BEVEL")
-    modifier.width = width
-    modifier.segments = segments
-    bpy.context.view_layer.objects.active = obj
-    obj.select_set(True)
-    bpy.ops.object.modifier_apply(modifier=modifier.name)
-    obj.select_set(False)
-
-
-def uv_sphere(
-    collection: bpy.types.Collection,
-    name: str,
-    location: tuple[float, float, float],
-    scale: tuple[float, float, float],
-    mat: bpy.types.Material,
-    *,
-    segments: int = 24,
-    rings: int = 16,
-) -> bpy.types.Object:
-    bpy.ops.mesh.primitive_uv_sphere_add(
-        segments=segments,
-        ring_count=rings,
-        location=location,
-    )
-    obj = bpy.context.object
-    obj.name = name
-    obj.scale = scale
-    obj.data.materials.append(mat)
-    smooth(obj)
-    move_to_collection(obj, collection)
-    return obj
-
-
-def ico_sphere(
-    collection: bpy.types.Collection,
-    name: str,
-    location: tuple[float, float, float],
-    scale: tuple[float, float, float],
-    mat: bpy.types.Material,
-    subdivisions: int = 3,
-) -> bpy.types.Object:
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=subdivisions, location=location)
-    obj = bpy.context.object
-    obj.name = name
-    obj.scale = scale
-    obj.data.materials.append(mat)
-    smooth(obj)
-    move_to_collection(obj, collection)
-    return obj
-
-
-def cylinder_between(
-    collection: bpy.types.Collection,
-    name: str,
-    start: tuple[float, float, float],
-    end: tuple[float, float, float],
-    radius: float,
-    mat: bpy.types.Material,
-    *,
-    vertices: int = 24,
-    bevel: float = 0.0,
-) -> bpy.types.Object:
-    start_v = Vector(start)
-    end_v = Vector(end)
-    direction = end_v - start_v
-    bpy.ops.mesh.primitive_cylinder_add(
-        vertices=vertices,
-        radius=radius,
-        depth=direction.length,
-        location=(start_v + end_v) * 0.5,
-    )
-    obj = bpy.context.object
-    obj.name = name
-    obj.rotation_mode = "QUATERNION"
-    obj.rotation_quaternion = direction.to_track_quat("Z", "Y")
-    obj.data.materials.append(mat)
-    smooth(obj)
-    move_to_collection(obj, collection)
-    if bevel:
-        add_bevel(obj, bevel)
-    return obj
-
-
-def torus(
-    collection: bpy.types.Collection,
-    name: str,
-    location: tuple[float, float, float],
-    major_radius: float,
-    minor_radius: float,
-    mat: bpy.types.Material,
-    rotation: tuple[float, float, float] = (0.0, 0.0, 0.0),
-) -> bpy.types.Object:
-    bpy.ops.mesh.primitive_torus_add(
-        major_segments=32,
-        minor_segments=12,
-        major_radius=major_radius,
-        minor_radius=minor_radius,
-        location=location,
-        rotation=rotation,
-    )
-    obj = bpy.context.object
-    obj.name = name
-    obj.data.materials.append(mat)
-    smooth(obj)
-    move_to_collection(obj, collection)
-    return obj
-
-
-def curve_tube(
-    collection: bpy.types.Collection,
-    name: str,
-    points: list[tuple[float, float, float]],
-    bevel_depth: float,
-    mat: bpy.types.Material,
-    *,
-    radii: list[float] | None = None,
-    cyclic: bool = False,
-) -> bpy.types.Object:
-    curve = bpy.data.curves.new(name, "CURVE")
-    curve.dimensions = "3D"
-    curve.bevel_depth = bevel_depth
-    curve.bevel_resolution = 3
-    curve.resolution_u = 4
-    spline = curve.splines.new("BEZIER")
-    spline.bezier_points.add(len(points) - 1)
-    for index, (bezier_point, coordinate) in enumerate(zip(spline.bezier_points, points)):
-        bezier_point.co = coordinate
-        bezier_point.handle_left_type = "AUTO"
-        bezier_point.handle_right_type = "AUTO"
-        if radii:
-            bezier_point.radius = radii[index]
-    spline.use_cyclic_u = cyclic
-    obj = bpy.data.objects.new(name, curve)
-    curve.materials.append(mat)
-    collection.objects.link(obj)
-    return obj
-
-
-def mesh_object(
-    collection: bpy.types.Collection,
-    name: str,
-    vertices: list[tuple[float, float, float]],
-    faces: list[tuple[int, ...]],
-    mat: bpy.types.Material,
-    *,
-    bevel: float = 0.0,
-) -> bpy.types.Object:
-    mesh = bpy.data.meshes.new(name)
-    mesh.from_pydata(vertices, [], faces)
-    mesh.update()
-    obj = bpy.data.objects.new(name, mesh)
-    collection.objects.link(obj)
-    mesh.materials.append(mat)
-    smooth(obj)
-    if bevel:
-        add_bevel(obj, bevel)
-    return obj
-
-
-def new_collection(name: str) -> bpy.types.Collection:
-    collection = bpy.data.collections.new(name)
-    bpy.context.scene.collection.children.link(collection)
-    return collection
-
-
-def consolidate_by_material(collection: bpy.types.Collection, model_name: str) -> None:
-    """Bake curves and merge static geometry that shares one material."""
-    for obj in list(collection.objects):
-        if obj.type != "CURVE":
-            continue
-        bpy.ops.object.select_all(action="DESELECT")
-        obj.select_set(True)
-        bpy.context.view_layer.objects.active = obj
-        bpy.ops.object.convert(target="MESH")
-
-    groups: dict[bpy.types.Material, list[bpy.types.Object]] = {}
-    for obj in collection.objects:
-        if obj.type != "MESH" or len(obj.data.materials) != 1 or obj.data.materials[0] is None:
-            continue
-        groups.setdefault(obj.data.materials[0], []).append(obj)
-
-    for mat, objects in groups.items():
-        bpy.ops.object.select_all(action="DESELECT")
-        for obj in objects:
-            obj.select_set(True)
-        active = objects[0]
-        bpy.context.view_layer.objects.active = active
-        if len(objects) > 1:
-            bpy.ops.object.join()
-        safe_material_name = "_".join(mat.name.lower().split())
-        active.name = f"{model_name}_{safe_material_name}"
 
 
 def build_quark(collection: bpy.types.Collection) -> None:
@@ -308,25 +172,6 @@ def build_proton(collection: bpy.types.Collection) -> None:
     positions = ((-0.45, -0.23, 0.64), (0.45, -0.23, 0.64), (0.0, 0.42, 0.78))
     for index, (position, mat) in enumerate(zip(positions, colors), 1):
         uv_sphere(collection, f"constituent_{index}", position, (0.64, 0.64, 0.64), mat)
-
-
-def build_nucleus(collection: bpy.types.Collection) -> None:
-    proton_mat = material("Nuclear coral", "#DD647A", roughness=0.48)
-    neutron_mat = material("Nuclear indigo", "#6670A8", roughness=0.48)
-    positions = [
-        (-0.52, -0.38, 0.58),
-        (0.05, -0.50, 0.52),
-        (0.55, -0.22, 0.62),
-        (-0.58, 0.22, 0.68),
-        (0.0, 0.10, 0.75),
-        (0.58, 0.32, 0.66),
-        (-0.25, 0.58, 0.82),
-        (0.32, 0.64, 0.86),
-        (0.08, 0.18, 1.22),
-    ]
-    for index, position in enumerate(positions):
-        mat = proton_mat if index % 2 == 0 else neutron_mat
-        uv_sphere(collection, f"nucleon_{index + 1}", position, (0.48, 0.48, 0.48), mat, segments=20, rings=12)
 
 
 def build_plankton(collection: bpy.types.Collection) -> None:
@@ -454,24 +299,6 @@ def build_rock(collection: bpy.types.Collection) -> None:
     rock = ico_sphere(collection, "rounded_rock", (0, 0, 0.66), (1.24, 0.92, 0.70), stone, subdivisions=3)
     rock.rotation_euler = (0.08, -0.14, 0.22)
     uv_sphere(collection, "rock_highlight", (-0.37, -0.55, 0.86), (0.48, 0.16, 0.26), facet, segments=20, rings=10)
-
-
-def extruded_polygon(
-    collection: bpy.types.Collection,
-    name: str,
-    outline: list[tuple[float, float]],
-    z_bottom: float,
-    z_top: float,
-    mat: bpy.types.Material,
-    bevel: float,
-) -> bpy.types.Object:
-    vertices = [(x, y, z_bottom) for x, y in outline] + [(x, y, z_top) for x, y in outline]
-    count = len(outline)
-    faces: list[tuple[int, ...]] = [tuple(reversed(range(count))), tuple(range(count, count * 2))]
-    for index in range(count):
-        next_index = (index + 1) % count
-        faces.append((index, next_index, next_index + count, index + count))
-    return mesh_object(collection, name, vertices, faces, mat, bevel=bevel)
 
 
 def build_shell(collection: bpy.types.Collection) -> None:
@@ -639,48 +466,50 @@ def build_ramp(collection: bpy.types.Collection) -> None:
     cylinder_between(collection, "ramp_coping", (high_x, -width / 2 - 0.04, high_z), (high_x, width / 2 + 0.04, high_z), 0.12, coping, vertices=32, bevel=0.02)
 
 
-def build_galaxy(collection: bpy.types.Collection) -> None:
-    core = material("Galaxy core", "#FFF3C4", roughness=0.28, emission_strength=0.8)
-    violet = material("Galaxy violet", "#796DE2", roughness=0.36, emission_strength=0.38)
-    cyan = material("Galaxy cyan", "#62D5E8", roughness=0.34, emission_strength=0.42)
-    uv_sphere(collection, "galaxy_core", (0, 0, 0.30), (0.82, 0.82, 0.28), core, segments=28, rings=16)
-    uv_sphere(collection, "galaxy_inner_glow", (0, 0, 0.24), (1.28, 1.28, 0.15), violet, segments=28, rings=12)
-    for arm in range(4):
-        points = []
-        radii = []
-        for index in range(18):
-            t = index / 17
-            angle = arm * math.tau / 4 + t * math.tau * 1.15
-            radius = 0.46 + 2.85 * t
-            points.append((math.cos(angle) * radius, math.sin(angle) * radius, 0.24 + 0.05 * math.sin(angle * 2)))
-            radii.append(1.35 - 1.10 * t)
-        curve_tube(collection, f"spiral_arm_{arm + 1}", points, 0.16, violet if arm % 2 == 0 else cyan, radii=radii)
-    for index in range(16):
-        angle = index * 2.399963
-        radius = 0.72 + (index % 5) * 0.48
-        location = (math.cos(angle) * radius, math.sin(angle) * radius, 0.31 + 0.04 * (index % 3))
-        star_mat = core if index % 4 == 0 else cyan
-        ico_sphere(collection, f"galaxy_star_{index + 1}", location, (0.07, 0.07, 0.07), star_mat, subdivisions=2)
-
-
-def build_knot(collection: bpy.types.Collection) -> None:
-    knot_mat = material("Cosmic knot", "#EAA4FF", roughness=0.25, metallic=0.08, emission_strength=0.62)
-    accent = material("Cosmic knot accent", "#79E4FF", roughness=0.28, emission_strength=0.52)
-    points = []
-    samples = 72
-    for index in range(samples):
-        t = math.tau * index / samples
-        radius = 1.46 + 0.44 * math.cos(3 * t)
-        points.append((radius * math.cos(2 * t), radius * math.sin(2 * t), 0.88 * math.sin(3 * t)))
-    curve_tube(collection, "trefoil_knot", points, 0.27, knot_mat, radii=[1.0] * samples, cyclic=True)
-    torus(collection, "knot_halo", (0, 0, 0), 1.06, 0.055, accent, (0.18, 0.0, 0.0))
-    uv_sphere(collection, "knot_core", (0, 0, 0), (0.24, 0.24, 0.24), accent, segments=20, rings=12)
-
-
 BUILDERS = {
+    "rail_post": build_rail_post,
+    "rail_bar": build_rail_bar,
+    "gluon": build_gluon,
+    "photon": build_photon,
+    "electron": build_electron,
+    "positron": build_positron,
+    "pion": build_pion,
+    "neutron": build_neutron,
+    "snail": build_snail,
+    "periwinkle": build_periwinkle,
+    "hermit_crab": build_hermit_crab,
+    "crab_body": build_crab_body,
+    "anemone": build_anemone,
+    "sea_star": build_sea_star,
+    "small_fish": build_small_fish,
+    "boulder": build_boulder,
+    "bolt": build_bolt,
+    "bearing": build_bearing,
+    "bottle_cap": build_bottle_cap,
+    "pebble": build_pebble,
+    "truck": build_truck,
+    "helmet": build_helmet,
+    "shoe": build_shoe,
+    "water_bottle": build_water_bottle,
+    "skater": build_skater,
+    "bench": build_bench,
+    "cone": build_cone,
+    "trash_can": build_trash_can,
+    "fence_section": build_fence_section,
+    "parked_car": build_parked_car,
+    "tree": build_tree,
+    "red_dwarf": build_red_dwarf,
+    "yellow_star": build_yellow_star,
+    "blue_giant": build_blue_giant,
+    "nebula": build_nebula,
+    "black_hole": build_black_hole,
+    "elliptical_galaxy": build_elliptical_galaxy,
+    "dwarf_galaxy": build_dwarf_galaxy,
+    "galaxy_group": build_galaxy_group,
+    "galaxy_arm": build_galaxy_arm,
+    "galaxy_bulge": build_galaxy_bulge,
     "quark": build_quark,
     "proton": build_proton,
-    "nucleus": build_nucleus,
     "plankton": build_plankton,
     "polyp": build_polyp,
     "coral_branch": build_coral_branch,
@@ -692,8 +521,8 @@ BUILDERS = {
     "skateboard": build_skateboard,
     "rail": build_rail,
     "ramp": build_ramp,
-    "galaxy": build_galaxy,
-    "knot": build_knot,
+    "galaxy": build_spiral_galaxy,
+    "knot": build_supercluster,
 }
 
 
@@ -770,6 +599,7 @@ def export_collection(collection: bpy.types.Collection, model_name: str) -> dict
         "radius": round(radius, 6),
         "height": round(height, 6),
         "color": MODEL_COLORS[model_name],
+        "texture": f"res://assets/models/{model_name}.png",
     }
 
 
@@ -777,8 +607,8 @@ def arrange_source_library(roots: dict[str, bpy.types.Object]) -> None:
     spacing_x = 8.0
     spacing_y = 7.0
     for index, model_name in enumerate(BUILDERS):
-        row, column = divmod(index, 4)
-        roots[model_name].location += Vector(((column - 1.5) * spacing_x, (1.5 - row) * spacing_y, 0.0))
+        row, column = divmod(index, 8)
+        roots[model_name].location += Vector(((column - 3.5) * spacing_x, (3.0 - row) * spacing_y, 0.0))
     bpy.context.scene["asset_library_note"] = (
         "Collection roots are arranged for editing. Generated GLBs were exported with each root at the origin."
     )
@@ -789,6 +619,9 @@ def validate_outputs(manifest: dict[str, dict[str, float | str]]) -> None:
     if set(manifest) != expected:
         raise RuntimeError(f"Manifest model mismatch: expected {sorted(expected)}, got {sorted(manifest)}")
     for name, entry in manifest.items():
+        texture = MODEL_DIR / f"{name}.png"
+        if not texture.is_file() or texture.stat().st_size == 0:
+            raise RuntimeError(f"Missing texture: {texture}")
         path = MODEL_DIR / f"{name}.glb"
         if not path.is_file() or path.stat().st_size == 0:
             raise RuntimeError(f"Missing or empty GLB: {path}")
@@ -811,6 +644,7 @@ def verify_exported_geometry(name: str, imported: list[bpy.types.Object]) -> Non
     materials = {slot.material for obj in meshes for slot in obj.material_slots if slot.material is not None}
     if not materials:
         raise RuntimeError(f"Round-trip produced no materials for {name}")
+    verify_texture(name, meshes)
     material_summary = ",".join(
         f"{mat.name}:{color_as_hex(tuple(mat.diffuse_color))}" for mat in sorted(materials, key=lambda item: item.name)
     )
@@ -848,7 +682,24 @@ def verify_exported_glbs(manifest: dict[str, dict[str, float | str]]) -> None:
             bpy.data.objects.remove(obj, do_unlink=True)
 
 
+def build_grounds():
+    grounds = {
+        "ground_particle": ("#A5BBB3", "particle"),
+        "ground_sand": ("#C3AE86", "sand"),
+        "ground_concrete": ("#A3A79E", "concrete"),
+        "ground_space": ("#151D25", "fabric"),
+    }
+    for name, (color, surface) in grounds.items():
+        collection = new_collection(name)
+        mat = material(name, color)
+        mesh_object(collection, name, [(-1, -1, 0), (1, -1, 0), (1, 1, 0), (-1, 1, 0)], [(0, 1, 2, 3)], mat)
+        bake_atlas(collection, name, MODEL_DIR, surface)
+        # Ground source patches sit apart from the editable model library.
+        collection.objects[0].location = (-24, list(grounds).index(name) * 3, 0)
+
+
 def main() -> None:
+    started = time.perf_counter()
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
     SOURCE_DIR.mkdir(parents=True, exist_ok=True)
     clear_scene()
@@ -863,6 +714,7 @@ def main() -> None:
         collection = new_collection(model_name)
         builder(collection)
         consolidate_by_material(collection, model_name)
+        bake_atlas(collection, model_name, MODEL_DIR)
         roots[model_name] = add_root_and_normalize(collection, model_name)
 
     manifest = {name: export_collection(bpy.data.collections[name], name) for name in BUILDERS}
@@ -875,11 +727,12 @@ def main() -> None:
         collection["godot_radius"] = entry["radius"]
         collection["godot_height"] = entry["height"]
         collection["average_color"] = entry["color"]
+    build_grounds()
     arrange_source_library(roots)
     bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE_PATH), compress=True)
     verify_exported_glbs(manifest)
 
-    print(f"ASSET_BUILD_OK models={len(manifest)} source={SOURCE_PATH}")
+    print(f"ASSET_BUILD_OK models={len(manifest)} textures={len(manifest)} grounds=4 seconds={time.perf_counter() - started:.3f} source={SOURCE_PATH}")
     for name in manifest:
         print(f"ASSET {name} bytes={(MODEL_DIR / f'{name}.glb').stat().st_size} bounds={manifest[name]['radius']},{manifest[name]['height']}")
 

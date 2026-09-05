@@ -2,6 +2,7 @@ shader_type spatial;
 render_mode specular_disabled;
 
 uniform vec4 base_color : source_color;
+uniform sampler2D albedo : source_color, hint_default_white, repeat_enable, filter_linear_mipmap;
 uniform float grain_scale = 4.0;
 varying vec2 ground_point;
 
@@ -23,7 +24,7 @@ void vertex() {
 void fragment() {
     float mottling = grain(ground_point * grain_scale);
     float fine = grain(ground_point * grain_scale * 4.7);
-    ALBEDO = base_color.rgb * (0.82 + mottling * 0.22 + fine * 0.1);
+    ALBEDO = texture(albedo, ground_point / grain_scale).rgb * base_color.rgb * (0.82 + mottling * 0.22 + fine * 0.1);
     ROUGHNESS = 1.0;
 }
 

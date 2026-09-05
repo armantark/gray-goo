@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bb5jgb3b6y345"
-path="res://.godot/imported/nucleus.glb-ca87746560fcec628766937de4804c3c.scn"
+uid="uid://ctlq0aruwg2pj"
+path="res://.godot/imported/electron.glb-8adc8a9c135f7554a41b46747c1ddb26.scn"
 
 [deps]
 
-source_file="res://assets/models/nucleus.glb"
-dest_files=["res://.godot/imported/nucleus.glb-ca87746560fcec628766937de4804c3c.scn"]
+source_file="res://assets/models/electron.glb"
+dest_files=["res://.godot/imported/electron.glb-8adc8a9c135f7554a41b46747c1ddb26.scn"]
 
 [params]
 
@@ -41,5 +41,5 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={}
 gltf/naming_version=2
-gltf/embedded_image_handling=1
+gltf/embedded_image_handling=3
 gltf/texture_map_mode=1

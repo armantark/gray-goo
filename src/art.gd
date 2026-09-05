@@ -8,11 +8,13 @@ static var _models: Dictionary = {}
 static var _materials: Dictionary = {}
 static var _outline: ShaderMaterial
 
-static func ground_material(color: Color, grain_scale: float = 4.0) -> ShaderMaterial:
+static func ground_material(color: Color, grain_scale: float = 4.0, texture: Texture2D = null) -> ShaderMaterial:
 	var mat := ShaderMaterial.new()
 	mat.shader = preload("res://shaders/ground.gdshader")
 	mat.set_shader_parameter("base_color", color)
 	mat.set_shader_parameter("grain_scale", grain_scale)
+	if texture != null:
+		mat.set_shader_parameter("albedo", texture)
 	return mat
 
 static func manifest() -> Dictionary:
@@ -20,13 +22,17 @@ static func manifest() -> Dictionary:
 		_manifest = JSON.parse_string(FileAccess.get_file_as_string("res://assets/asset_manifest.json"))
 	return _manifest
 
-static func material(color: Color, glow: float = 0.0) -> ShaderMaterial:
+static func material(color: Color, glow: float = 0.0, texture: Texture2D = null) -> ShaderMaterial:
 	var key := color.to_html() + ":" + str(glow)
+	if texture != null:
+		key += ":" + str(texture.get_instance_id())
 	if not _materials.has(key):
 		var mat := ShaderMaterial.new()
 		mat.shader = TOON
 		mat.set_shader_parameter("base_color", color)
 		mat.set_shader_parameter("glow", glow)
+		if texture != null:
+			mat.set_shader_parameter("albedo", texture)
 		if _outline == null:
 			_outline = ShaderMaterial.new()
 			_outline.shader = OUTLINE
@@ -48,9 +54,11 @@ static func _style(node: Node) -> void:
 		for surface in node.mesh.get_surface_count():
 			var original: Material = node.get_active_material(surface)
 			var color := Color.WHITE
+			var texture: Texture2D
 			if original is StandardMaterial3D:
 				color = original.albedo_color
-			node.set_surface_override_material(surface, material(color))
+				texture = original.albedo_texture
+			node.set_surface_override_material(surface, material(color, 0.0, texture))
 	for child in node.get_children():
 		_style(child)
 
@@ -76,3 +84,19 @@ static func clip_model(node: Node, side: float) -> void:
 			node.set_surface_override_material(surface, mat)
 	for child in node.get_children():
 		clip_model(child, side)
+
+static func tint_model(node: Node, color: Color) -> void:
+	if node is MeshInstance3D:
+		for surface in node.mesh.get_surface_count():
+			var mat: Material = node.get_active_material(surface).duplicate()
+			if mat is ShaderMaterial:
+				mat.set_shader_parameter("base_color", color)
+				mat.set_shader_parameter("recolor", true)
+			elif mat is StandardMaterial3D:
+				mat.albedo_color = color
+			if node.material_override != null:
+				node.material_override = mat
+			else:
+				node.set_surface_override_material(surface, mat)
+	for child in node.get_children():
+		tint_model(child, color)
