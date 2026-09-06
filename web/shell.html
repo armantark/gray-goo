@@ -41,6 +41,7 @@
       notice.textContent = 'Loading the game';
       try {
         const missing = Engine.getMissingFeatures({ threads: false });
+        if (!('DecompressionStream' in window)) missing.push('DecompressionStream');
         if (missing.length) throw new Error('This browser cannot run the game. Try a current Chrome or Firefox browser.');
         await engine.startGame({
           onProgress(current, total) {

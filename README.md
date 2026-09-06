@@ -4,7 +4,7 @@ An eat-and-grow game for Mac and desktop browsers with four scenes: Sugar Water,
 
 ## Play
 
-Download the standalone Mac app from [GitHub Releases](https://github.com/armantark/gray-goo/releases/latest), or [play in your browser](https://gray-goo.tarkavor.chatgpt.site). The Sites version requires the owner’s ChatGPT sign-in. The Mac app is ad-hoc signed and is not notarized; macOS can require **Privacy & Security → Open Anyway** after the first launch attempt.
+Download the standalone Mac app from [GitHub Releases](https://github.com/armantark/gray-goo/releases/latest), or [play in your browser](https://gray-goo.tarkavor.chatgpt.site). The browser version is public and requires no login. The Mac app is ad-hoc signed and is not notarized; macOS can require **Privacy & Security → Open Anyway** after the first launch attempt.
 
 For a local build, open `builds/Gray Goo.app` after exporting. The game starts in the particle field. Use the Scenes menu to replay any of the four scenes.
 
@@ -110,7 +110,7 @@ Install the matching Godot 4.7.2 web export templates, then run:
 python3 scripts/web_build.py serve
 ```
 
-Open http://127.0.0.1:8064/ and press Play. The export compresses WebAssembly and game data in place; the host must honor the generated `_headers` file. Ordinary static servers without those headers cannot load these compressed files.
+Open http://127.0.0.1:8064/ and press Play. The export compresses WebAssembly and game data in place. Godot’s preloader decompresses them in the browser, so ordinary static servers work without custom response headers.
 
 Regenerate the four original MIDI and Ogg songs with Python dependencies managed by uv and FFmpeg on PATH:
 

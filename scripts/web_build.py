@@ -7,13 +7,12 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 OUTPUT = Path(__file__).resolve().parents[1] / "dist"
-MIME = {".wasm": "application/wasm", ".pck": "application/octet-stream"}
+BINARY_SUFFIXES = (".wasm", ".pck")
 
 
 def pack():
     shutil.copytree(OUTPUT.parent / "licenses", OUTPUT / "licenses", dirs_exist_ok=True)
-    headers = []
-    for suffix, content_type in MIME.items():
+    for suffix in BINARY_SUFFIXES:
         path = OUTPUT / ("index" + suffix)
         raw = path.read_bytes()
         expected = b"\x00asm" if suffix == ".wasm" else b"GDPC"
@@ -21,9 +20,19 @@ def pack():
             raise ValueError(f"Expected a fresh Godot export: {path}")
         compressed = gzip.compress(raw, compresslevel=9, mtime=0)
         path.write_bytes(compressed)
-        headers.append(f"/{path.name}\n  Content-Encoding: gzip\n  Content-Type: {content_type}\n")
         print(f"{path.name}: {len(raw)} -> {len(compressed)} bytes")
-    (OUTPUT / "_headers").write_text("\n".join(headers))
+    # Decode in Godot's preloader so static hosts need no header overrides.
+    loader = OUTPUT / "index.js"
+    source = loader.read_text()
+    marker = "const tr = getTrackedResponse(response, tracker[file]);"
+    if source.count(marker) != 1:
+        raise ValueError("Godot preloader changed; review compressed asset loading")
+    source = source.replace(marker, """if (file.endsWith('.wasm') || file.endsWith('.pck')) {
+            response = new Response(response.body.pipeThrough(new DecompressionStream('gzip')));
+        }
+        """ + marker)
+    loader.write_text(source)
+    (OUTPUT / "_headers").unlink(missing_ok=True)
     for path in OUTPUT.rglob("*"):
         if path.is_file() and path.stat().st_size > 25 * 1024 * 1024:
             raise ValueError(f"Static asset exceeds the host limit: {path}")
@@ -32,11 +41,6 @@ def pack():
 class PreviewHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(OUTPUT), **kwargs)
-
-    def end_headers(self):
-        if Path(self.path.split("?", 1)[0]).suffix in MIME:
-            self.send_header("Content-Encoding", "gzip")
-        super().end_headers()
 
 
 if __name__ == "__main__":

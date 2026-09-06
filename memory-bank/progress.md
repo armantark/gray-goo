@@ -203,3 +203,9 @@ Source push to the public GitHub repository succeeded. The initial Site source p
 - Closed the root-owned local browser QA tab and stopped only the verified project preview server (PID 614, scripts/web_build.py serve, cwd=/Users/ArmanTarkhanian1/Desktop/tasty planet clone, port 8064). No simulation jobs or future project work were left running or scheduled.
 
 The user requested shelving after this release. Preserve the accepted scope and known limits: procedural grip remains experimental; audio timbre/balance was not auditioned; phone controls are unverified; the browser omits cast shadows; the signed-in production playthrough is unverified. Resume only for a new user request.
+
+## Public access and portable web loading, 2026-09-05
+
+The user explicitly requested public access without login. Sites access changed from custom to public, revision 2. Anonymous requests to /, /index.wasm, and /index.pck returned HTTP/2 200. This revealed a real hosting defect: Sites does not apply dist/_headers, so the engine received gzip bytes without Content-Encoding. The web packer now inserts native DecompressionStream decoding into Godot's preloader. The preview server uses ordinary static responses and no longer supplies special headers. The generated loader patch requires exactly one known preloader insertion point and fails if Godot changes it. Native game code and Mac release are unchanged.
+
+The rebuilt browser export completed successfully. PinchTab started the game from the ordinary static preview, reported LEVEL_READY 0 Sugar Water without engine errors, and displayed the full game HUD. Screenshot: builds/public-loader-play.png. The production browser domain policy remains unchanged; anonymous HTTP verification does not use credentials or cookies.
