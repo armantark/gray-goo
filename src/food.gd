@@ -13,6 +13,8 @@ var volume: float
 var pigment: Color
 var tier: int
 var active := true
+var detail_hidden := false
+var collect_when_empty := false
 var milestone := false
 var parts: Array[Food] = []
 var parent_food: Food
@@ -100,21 +102,34 @@ func _highlight_visual(node: Node, material: Material) -> void:
 	for child in node.get_children():
 		_highlight_visual(child, material)
 
-func remaining_volume() -> float:
+func remaining_volume(include_empty_parents: bool = true) -> float:
 	if not active:
 		return 0.0
 	var result := volume
 	for part in parts:
 		if is_instance_valid(part):
-			result += part.remaining_volume()
+			result += part.remaining_volume(false)
+	if include_empty_parents:
+		var child := self
+		var parent := parent_food
+		while is_instance_valid(parent) and parent.active and parent.collect_when_empty and parent._last_visible_part(child):
+			result += parent.remaining_volume(false) - child.remaining_volume(false)
+			child = parent
+			parent = parent.parent_food
 	return result
+
+func _last_visible_part(except: Food) -> bool:
+	for part in parts:
+		if is_instance_valid(part) and part.active and not part.detail_hidden and part != except:
+			return false
+	return true
 
 func meal_color() -> Color:
 	var total := volume
 	var combined := Vector3(pigment.r, pigment.g, pigment.b) * volume
 	for part in parts:
 		if is_instance_valid(part) and part.active:
-			var portion := part.remaining_volume()
+			var portion := part.remaining_volume(false)
 			var color := part.meal_color()
 			combined += Vector3(color.r, color.g, color.b) * portion
 			total += portion
@@ -141,6 +156,8 @@ func consume(target: Node3D) -> void:
 	set_physics_process(true)
 	if model_name == "board":
 		_snap_board()
+	if is_instance_valid(parent_food) and parent_food.active and parent_food.collect_when_empty and parent_food._last_visible_part(self):
+		parent_food.consume(target)
 
 func _disable_parts() -> void:
 	for part in parts:

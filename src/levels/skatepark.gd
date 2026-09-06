@@ -1,6 +1,7 @@
 extends RefCounted
 
 const BOWL_CENTER := Vector2(16.0, -6.0)
+const BOARD_SCALE := 0.5
 var _world: GameWorld
 var _bowl: Node3D
 var _boards: Array[Dictionary] = []
@@ -111,16 +112,16 @@ func _build_boards() -> void:
 			_bottles.append(gear)
 
 func _add_board(at: Vector2, parent: Food = null) -> Food:
-	var board := _world._add_food("", at, 1.18, 0.85, 0.02, "Skateboard", false, 1, parent)
+	var board := _world._add_food("", at, 1.18 * BOARD_SCALE, 0.85, 0.02, "Skateboard", false, 1, parent)
 	board.rotation.y = 0.0
-	board.height = 0.5
-	var deck := _world._add_food("board", Vector2.ZERO, 1.15, 0.85, 0.015, "Skate deck", false, 1, board, 0.22)
+	board.height = 0.5 * BOARD_SCALE
+	var deck := _world._add_food("board", Vector2.ZERO, 1.15 * BOARD_SCALE, 0.85, 0.015, "Skate deck", false, 1, board, 0.22 * BOARD_SCALE)
 	deck.rotation.y = 0.0
 	for axle in [-1.0, 1.0]:
-		var truck := _world._add_food("truck", Vector2(axle * 0.68, 0), 0.34, 0.85, 0.005, "Skateboard truck", false, 1, board, 0.11)
+		var truck := _world._add_food("truck", Vector2(axle * 0.68, 0) * BOARD_SCALE, 0.34 * BOARD_SCALE, 0.85, 0.005, "Skateboard truck", false, 1, board, 0.11 * BOARD_SCALE)
 		truck.rotation.y = 0.0
 		for side in [-1.0, 1.0]:
-			var wheel := _world._add_food("wheel", Vector2(axle * 0.68, side * 0.44), 0.16, 0.4, 0.002, "Skateboard wheel", false, 0, board)
+			var wheel := _world._add_food("wheel", Vector2(axle * 0.68, side * 0.44) * BOARD_SCALE, 0.16 * BOARD_SCALE, 0.4, 0.002, "Skateboard wheel", false, 0, board)
 			wheel.rotation.y = 0.0
 	board.part_consumed.connect(_board_changed.bind(board))
 	return board
@@ -133,7 +134,7 @@ func _add_rider(at: Vector2) -> void:
 	rider.rotation.y = 0.0
 	var person := Art.model("skater", 0.62)
 	rider.visual.add_child(person)
-	person.position.y = 0.30
+	person.position.y = 0.30 * BOARD_SCALE
 	var board := _add_board(Vector2.ZERO, rider)
 	_align_to_ground(rider)
 	rider.part_consumed.connect(_rider_changed.bind(rider))

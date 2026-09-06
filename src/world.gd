@@ -85,10 +85,20 @@ func nearest_edible(point: Vector3, goo_radius: float) -> Food:
 	return nearest
 
 func is_edible(food: Food, goo_radius: float) -> bool:
-	return is_instance_valid(food) and food.active and food.tier <= current_tier and food.threshold <= goo_radius
+	return is_instance_valid(food) and food.active and not food.detail_hidden and food.tier <= current_tier and food.threshold <= goo_radius
 
 func advance_scale(tier_index: int) -> void:
 	current_tier = tier_index
+	var radius: float = config.jumps[tier_index].radius
+	for food in foods:
+		food.detail_hidden = food.tier < tier_index and food.radius < radius * 0.12
+		if food.detail_hidden:
+			if food.parent_food == null:
+				food.visual.hide()
+			food.set_highlighted(false)
+			food.collider_radius = 0.0
+			food.collision_layer = 0
+			food.collision_mask = 0
 	if config.jumps[tier_index].has("meters_per_unit"):
 		config.meters_per_unit = config.jumps[tier_index].meters_per_unit
 

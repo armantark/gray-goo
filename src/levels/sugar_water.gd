@@ -17,7 +17,6 @@ var _detail_tier := -1
 var _free_hosts: Array[Food] = []
 var _nuclei: Array[Food] = []
 var _clumps: Array[Dictionary] = []
-var _first_view_projection: Node3D
 var _waters: Array[Food] = []
 var _drifters: Array[Dictionary] = []
 
@@ -50,12 +49,12 @@ func build(scene_world: GameWorld) -> void:
 	_build_water()
 	_build_nursery()
 	_build_background()
-	_build_first_view_projection()
 
 func _whole(at: Vector2, size: float, threshold: float, volume: float, label: String, tier: int, parent: Food = null) -> Food:
 	var food := world._add_food("", at, size, threshold, volume, label, false, tier, parent)
 	food.rotation = Vector3.ZERO
 	food.height = 0.36
+	food.collect_when_empty = true
 	if parent == null:
 		food.context_whole = drop
 	return food
@@ -87,7 +86,6 @@ func _build_sucrose() -> void:
 	sucrose.set_meta("formula", "C12H22O11")
 	sucrose.set_meta("atom_count", 45)
 	sucrose.set_meta("ring_sizes", [6, 5])
-	sucrose.part_consumed.connect(_molecule_changed.bind(sucrose))
 
 func _add_sucrose_hydroxyls(atoms: Array[Food], sites: Array[Vector2]) -> void:
 	for index in [1, 3, 4, 8, 9, 11, 12, 13]:
@@ -136,7 +134,6 @@ func _build_water() -> void:
 			var hydrogen := _atom(water, Vector2(side * 2.25, 1.65), 1, 0, 3, 1.0)
 			_bond(water, oxygen, hydrogen)
 		water.set_meta("formula", "H2O")
-		water.part_consumed.connect(_molecule_changed.bind(water))
 		_waters.append(water)
 		water.rotation.y = world._rng.randf_range(-PI, PI)
 		_add_drift(water, world._rng.randf_range(0.7, 1.3), 0.028, 0.014)
@@ -164,7 +161,7 @@ func _nucleus(atom: Food, protons: int, neutrons: int) -> Food:
 		var distance := sqrt(float(index)) * NUCLEON_RADIUS * 0.86
 		var kind := "proton" if proton else "neutron"
 		var nucleon := world._add_food(kind, Vector2.from_angle(angle) * distance, NUCLEON_RADIUS,
-			0.85, 0.006, kind.capitalize(), false, 2, nucleus, (index % 3) * 0.035)
+			0.38, 0.006, kind.capitalize(), false, 1, nucleus, (index % 3) * 0.035)
 		nucleon.set_meta("proton", proton)
 	return nucleus
 
@@ -179,7 +176,7 @@ func _add_electrons(atom: Food, count: int, atom_radius: float) -> void:
 		for index in range(shells[shell]):
 			var phase: float = TAU * index / shells[shell] + shell * 0.4
 			var electron := world._add_food("electron", Vector2.from_angle(phase) * orbit_radius,
-				0.065, 0.16, 0.00025, "Orbital electron", false, 2, atom, 0.1)
+				0.065, 0.16, 0.00025, "Orbital electron", false, 0, atom, 0.1)
 			_orbits.append({"food": electron, "radius": orbit_radius, "phase": phase, "speed": 0.65 + shell * 0.2})
 
 func _nucleus_changed(part: Food, nucleus: Food, atom: Food) -> void:
@@ -197,8 +194,6 @@ func _nucleus_changed(part: Food, nucleus: Food, atom: Food) -> void:
 	if count == 0:
 		nucleus.rename("Neutron cluster", Color(COLORS[0]))
 		atom.rename("Neutron remnant", Color(COLORS[0]))
-		if int(nucleus.get_meta("neutrons")) == 0:
-			_retire_empty_nucleus(nucleus, atom)
 
 func _build_nursery() -> void:
 	for index in range(16):
@@ -213,7 +208,6 @@ func _build_nursery() -> void:
 		shell.part_consumed.connect(_atom_changed.bind(shell))
 		for nucleon in nucleus.parts:
 			nucleon.tier = 1
-			nucleon.threshold = 0.44
 			nucleon.volume = 0.0095
 			_clumps.append({"food": nucleon, "home": nucleon.position})
 			_bind_quarks(nucleon, 3, index)
@@ -229,6 +223,7 @@ func _build_nursery() -> void:
 		_add_free_particle(index)
 
 func _bind_quarks(nucleon: Food, count: int, phase: int) -> void:
+	nucleon.collect_when_empty = true
 	for index in range(count):
 		var at := Vector2.from_angle(TAU * index / count) * 0.23
 		var quark := world._add_food("quark", at, 0.075, 0.16, 0.00025, "Bound quark", false, 0, nucleon)
@@ -241,8 +236,8 @@ func _bind_quarks(nucleon: Food, count: int, phase: int) -> void:
 func _collapse_nucleon(part: Food, nucleon: Food) -> void:
 	if part.model_name != "quark" or not nucleon.active or nucleon.get_meta("collapsed", false):
 		return
-	nucleon.rename("Collapsed quark remnant", Color("6a7180"))
-	nucleon.visual.scale *= 0.52
+	nucleon.visual.hide()
+	nucleon.threshold = INF
 	nucleon.set_meta("collapsed", true)
 	nucleon.collider_radius = 0.0
 	nucleon.collision_layer = 0
@@ -346,7 +341,9 @@ func _update_detail() -> void:
 	if _detail_tier == world.current_tier:
 		return
 	_detail_tier = world.current_tier
-	_first_view_projection.visible = _detail_tier < 2
+	for food in world.foods:
+		if food.detail_hidden:
+			food.visual.hide()
 	if _detail_tier > 0:
 		_capture_free_quarks()
 	for nucleus in _nuclei:
@@ -355,7 +352,7 @@ func _update_detail() -> void:
 		_refresh_nucleus_proxy(nucleus)
 		for nucleon in nucleus.parts:
 			if is_instance_valid(nucleon):
-				nucleon.visible = _detail_tier < 3
+				nucleon.visible = nucleon.active and not nucleon.detail_hidden and _detail_tier < 3
 
 func _build_free_hosts() -> void:
 	for index in range(8):
@@ -367,6 +364,7 @@ func _build_free_hosts() -> void:
 		_add_electrons(shell, 1, 0.8)
 		shell.part_consumed.connect(_atom_changed.bind(shell))
 		var proton: Food = nucleus.parts[0]
+		proton.collect_when_empty = true
 		proton.tier = 1
 		proton.threshold = 0.38
 		proton.volume = 0.0095
@@ -399,7 +397,7 @@ func _refresh_nucleus_proxy(nucleus: Food) -> void:
 	for kind in ["proton", "neutron"]:
 		var transforms: Array[Transform3D] = []
 		for nucleon in nucleus.parts:
-			if is_instance_valid(nucleon) and nucleon.active and nucleon.model_name == kind:
+			if is_instance_valid(nucleon) and nucleon.active and not nucleon.get_meta("collapsed", false) and nucleon.model_name == kind:
 				transforms.append(Transform3D(Basis.IDENTITY, nucleon.position + Vector3.UP * NUCLEON_RADIUS))
 		_add_nucleon_batch(nucleus.visual, transforms, kind)
 
@@ -421,17 +419,6 @@ func _add_nucleon_batch(parent: Node3D, transforms: Array[Transform3D], kind: St
 	node.multimesh = batch
 	node.material_override = Art.material(Color.WHITE, 0, load("res://assets/models/" + kind + ".png"))
 	parent.add_child(node)
-
-func _build_first_view_projection() -> void:
-	_first_view_projection = _molecule_replica(sucrose, 0.065)
-	_first_view_projection.name = "DistantProjectionOfSameSucroseMolecule"
-	world.add_child(_first_view_projection)
-	_first_view_projection.position = Vector3(-24.5, 0.06, 15.0)
-	_first_view_projection.set_meta("represents", sucrose)
-	var water := _molecule_replica(_waters[0], 0.22)
-	water.name = "DistantWaterMolecule"
-	_first_view_projection.add_child(water)
-	water.position = Vector3(-1.6, 0.08, 0.5)
 
 func _molecule_replica(molecule: Food, scale_factor: float) -> Node3D:
 	var projection := Node3D.new()
@@ -484,14 +471,6 @@ func _pack_nucleus(nucleus: Food) -> void:
 		nucleon.position = Vector3(at.x, (index % 3) * 0.035, at.y)
 		index += 1
 
-func _retire_empty_nucleus(nucleus: Food, atom: Food) -> void:
-	atom.volume += nucleus.volume
-	nucleus.volume = 0.0
-	nucleus.active = false
-	nucleus.visible = false
-	nucleus.set_physics_process(false)
-	_atom_changed(nucleus, atom)
-
 func _atom_changed(_part: Food, atom: Food) -> void:
 	var electrons := 0
 	var has_nucleus := false
@@ -505,34 +484,13 @@ func _atom_changed(_part: Food, atom: Food) -> void:
 	atom.set_meta("electrons", electrons)
 	if has_nucleus:
 		return
-	atom.rename("Electron cloud" if electrons > 0 else "Atomic remnant", Color("a7b9c4"))
+	atom.threshold = INF
+	if electrons > 0:
+		atom.title = "Electron cloud"
 	atom.set_meta("electron_cloud", true)
 	for child in atom.visual.get_children():
 		if child.name.begins_with("ElectronShellRing"):
 			child.visible = false
-	if electrons > 0 or atom.get_meta("remnant", false):
-		return
-	_show_remnant(atom)
-
-func _molecule_changed(_part: Food, molecule: Food) -> void:
-	for part in molecule.parts:
-		if is_instance_valid(part) and part.active:
-			return
-	molecule.rename("Molecular remnant", Color("a7b9c4"))
-	_show_remnant(molecule)
-
-func _show_remnant(atom: Food) -> void:
-	atom.set_meta("remnant", true)
-	var mesh := SphereMesh.new()
-	mesh.radius = atom.radius * 0.3
-	mesh.height = atom.radius * 0.3
-	mesh.radial_segments = 12
-	mesh.rings = 6
-	var remnant := MeshInstance3D.new()
-	remnant.mesh = mesh
-	remnant.material_override = Art.material(Color("a7b9c4"), 0.1, load("res://assets/models/electron.png"))
-	atom.visual.add_child(remnant)
-	remnant.position.y = 0.12
 
 func _nursery_point(index: int) -> Vector2:
 	var centers := [Vector2(-25, 17), Vector2(-12, 12), Vector2(-15, 29), Vector2(-33, 30)]
