@@ -190,3 +190,4 @@
 
 - 2026-09-05: PinchTab viewport 1600x900 correctly set innerHeight and canvas height to 900, but screenshot output stayed 1600x757 and cropped the bottom. Used 1600x740 within the capture surface for final browser checks; do not confuse screenshot cropping with game layout.
 - 2026-09-05: Final Sites source push returned `remote: Invalid or expired token` and HTTP 403 after the initial large-history upload and soundtrack expansion. Refresh the short-lived credential for the same Site before retrying; never recreate the Site or persist its token.
+- 2026-09-05: PinchTab blocked the deployed Site with `Error 403: navigation blocked by IDPI: Domain not in allowlist: gray-goo.tarkavor.chatgpt.site`. The configured browser boundary was preserved; no allowlist change, server restart, or browser bypass was attempted. Codex browser handoff returned `status: queued` for thread `01a06edb-a791-7190-8578-e40d1589f112`.
