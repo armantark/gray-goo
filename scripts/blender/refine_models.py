@@ -19,7 +19,7 @@ def asset_definitions():
             if isinstance(node, ast.FunctionDef):
                 definitions[node.name] = node
             elif isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name):
-                if node.targets[0].id in {"SURFACES", "MODEL_SURFACES", "MODEL_COLORS", "BUILDERS"}:
+                if node.targets[0].id in {"SURFACES", "MODEL_COLORS", "BUILDERS"}:
                     definitions[node.targets[0].id] = node
     return definitions
 
@@ -39,14 +39,34 @@ def builder_code(names):
     ) + "\n"
 
 
+def rebuild_grounds(destination):
+    code = builder_code(["build_grounds"])
+    code += f'''
+for name in ['ground_particle', 'ground_sand', 'ground_concrete', 'ground_space']:
+    collection = bpy.data.collections.get(name)
+    if collection:
+        for obj in list(collection.all_objects):
+            bpy.data.objects.remove(obj, do_unlink=True)
+        bpy.data.collections.remove(collection)
+build_grounds({str(PROJECT / 'assets/models')!r})
+print('GROUND_TEXTURES_EXPORTED')
+'''
+    call("execute_blender_code", {"code": code, "user_prompt": "Replace generic cloudy ground textures with clean cartoon surfaces and restrained material-specific grain."}, destination / "grounds-build.json")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("models", nargs="+")
+    parser.add_argument("models", nargs="*")
+    parser.add_argument("--grounds", action="store_true")
     parser.add_argument("--pass-name", required=True)
     parser.add_argument("--export", action="store_true")
     args = parser.parse_args()
+    if not args.models and not args.grounds:
+        parser.error("Choose model names or --grounds")
     destination = PROJECT / "builds/model-review" / args.pass_name
     destination.mkdir(parents=True, exist_ok=True)
+    if args.grounds:
+        rebuild_grounds(destination)
     builder_map = asset_definitions()["BUILDERS"].value
     builders = {key.value: value.id for key, value in zip(builder_map.keys, builder_map.values)}
     for name in args.models:

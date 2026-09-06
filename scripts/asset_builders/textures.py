@@ -6,77 +6,33 @@ import math
 import bpy
 
 
-# Scale, contrast, elongated grain: these preserve the material's authored color.
-SURFACES = {
-    "shell": (9.0, 0.40, (1.0, 1.0, 0.15)),
-    "wood": (12.0, 0.30, (0.12, 4.0, 4.0)),
-    "metal": (35.0, 0.23, (0.2, 1.0, 5.0)),
-    "stone": (8.0, 0.45, (1.0, 1.0, 1.0)),
-    "skin": (16.0, 0.24, (1.0, 1.0, 1.0)),
-    "gas": (4.0, 0.64, (1.0, 1.0, 2.0)),
-    "particle": (6.0, 0.32, (1.0, 1.0, 1.0)),
-    "concrete": (38.0, 0.35, (1.0, 1.0, 1.0)),
-    "sand": (65.0, 0.42, (1.0, 1.0, 1.0)),
-    "fabric": (7.0, 0.68, (1.0, 1.0, 1.0)),
-}
-
-MODEL_SURFACES = {
-    "shell": "shell", "snail": "shell", "periwinkle": "shell", "hermit_crab": "shell",
-    "board": "wood", "skateboard": "wood", "bench": "wood", "tree": "wood",
-    "bolt": "metal", "bearing": "metal", "bottle_cap": "metal", "truck": "metal",
-    "rail": "metal", "fence_section": "metal", "trash_can": "metal", "parked_car": "metal",
-    "rock": "stone", "boulder": "stone", "pebble": "stone", "ramp": "concrete",
-    "galaxy": "gas", "galaxy_arm": "gas", "galaxy_bulge": "gas", "galaxy_group": "gas",
-    "elliptical_galaxy": "gas", "dwarf_galaxy": "gas", "nebula": "gas", "knot": "gas",
-    "red_dwarf": "gas", "yellow_star": "gas", "blue_giant": "gas", "black_hole": "gas",
-    "quark": "particle", "proton": "particle", "neutron": "particle", "electron": "particle",
-    "positron": "particle", "gluon": "particle", "photon": "particle", "pion": "particle",
-}
+# Fine pores and granules are confined to surfaces where they explain the material.
+SURFACES = {"grip": (95.0, 0.16), "sand": (85.0, 0.12), "concrete": (110.0, 0.10)}
 
 
 def procedural_color(mat: bpy.types.Material, surface: str) -> bpy.types.NodeSocket:
-    nodes = mat.node_tree.nodes
-    links = mat.node_tree.links
-    scale, contrast, grain = SURFACES[surface]
-    coordinate = nodes.new("ShaderNodeTexCoord")
-    mapping = nodes.new("ShaderNodeVectorMath")
-    mapping.operation = "MULTIPLY"
-    mapping.inputs[1].default_value = grain
-    links.new(coordinate.outputs["Generated"], mapping.inputs[0])
-    noise = nodes.new("ShaderNodeTexNoise")
-    noise.inputs["Scale"].default_value = scale
-    noise.inputs["Detail"].default_value = 3.0
-    noise.inputs["Roughness"].default_value = 0.7
-    links.new(mapping.outputs["Vector"], noise.inputs["Vector"])
-    ramp = nodes.new("ShaderNodeValToRGB")
-    color = tuple(mat.diffuse_color)
-    ramp.color_ramp.elements[0].position = 0.22
-    ramp.color_ramp.elements[0].color = tuple(v * (1.0 - contrast) for v in color[:3]) + (1.0,)
-    ramp.color_ramp.elements[1].position = 0.78
-    ramp.color_ramp.elements[1].color = tuple(min(1.0, v * (1.0 + contrast) + contrast * 0.025) for v in color[:3]) + (1.0,)
-    links.new(noise.outputs["Fac"], ramp.inputs["Fac"])
-    if surface == "fabric":
-        return fabric_color(mat, coordinate.outputs["Generated"], ramp.outputs["Color"])
-    return ramp.outputs["Color"]
-
-
-def fabric_color(mat, coordinates, color):
     nodes, links = mat.node_tree.nodes, mat.node_tree.links
-    cell = nodes.new("ShaderNodeTexVoronoi")
-    cell.feature = "DISTANCE_TO_EDGE"
-    cell.inputs["Scale"].default_value = 7.0
-    links.new(coordinates, cell.inputs["Vector"])
-    ramp = nodes.new("ShaderNodeValToRGB")
-    ramp.color_ramp.elements[0].position = 0.0
-    ramp.color_ramp.elements[0].color = (0.016, 0.024, 0.032, 1)
-    ramp.color_ramp.elements[1].position = 0.08
-    ramp.color_ramp.elements[1].color = (0.001, 0.002, 0.004, 1)
-    links.new(cell.outputs["Distance"], ramp.inputs["Fac"])
+    base = nodes.new("ShaderNodeRGB")
+    base.outputs[0].default_value = mat.diffuse_color
+    if surface not in SURFACES:
+        return base.outputs[0]
+    scale, contrast = SURFACES[surface]
+    coordinate = nodes.new("ShaderNodeTexCoord")
+    pores = nodes.new("ShaderNodeTexVoronoi")
+    pores.feature = "F1"
+    pores.inputs["Scale"].default_value = scale
+    links.new(coordinate.outputs["Generated"], pores.inputs["Vector"])
+    speckle = nodes.new("ShaderNodeValToRGB")
+    speckle.color_ramp.elements[0].position = 0.07
+    speckle.color_ramp.elements[0].color = (1 - contrast, 1 - contrast, 1 - contrast, 1)
+    speckle.color_ramp.elements[1].position = 0.18
+    speckle.color_ramp.elements[1].color = (1, 1, 1, 1)
+    links.new(pores.outputs["Distance"], speckle.inputs["Fac"])
     mix = nodes.new("ShaderNodeMixRGB")
-    mix.blend_type = "ADD"
-    mix.inputs[0].default_value = 0.65
-    links.new(color, mix.inputs[1])
-    links.new(ramp.outputs["Color"], mix.inputs[2])
+    mix.blend_type = "MULTIPLY"
+    mix.inputs[0].default_value = 1.0
+    links.new(base.outputs[0], mix.inputs[1])
+    links.new(speckle.outputs["Color"], mix.inputs[2])
     return mix.outputs[0]
 
 
@@ -98,19 +54,18 @@ def join_and_unwrap(collection, name):
     return obj
 
 
-def bake_atlas(collection, name: str, output_path: str, surface: str | None = None):
+def bake_atlas(collection, name: str, output_path: str):
     obj = join_and_unwrap(collection, name)
     image = bpy.data.images.new(name + "_albedo", width=512, height=512, alpha=False)
     image.filepath_raw = output_path
     image.file_format = "PNG"
-    surface = surface or MODEL_SURFACES.get(name, "skin")
     # Materials are copied because several models deliberately share a palette.
     for index, original in enumerate(list(obj.data.materials)):
         mat = original.copy()
         obj.data.materials[index] = mat
         nodes = mat.node_tree.nodes
         emission = nodes.new("ShaderNodeEmission")
-        mat.node_tree.links.new(procedural_color(mat, surface), emission.inputs["Color"])
+        mat.node_tree.links.new(procedural_color(mat, mat["texture_surface"]), emission.inputs["Color"])
         mat.node_tree.links.new(emission.outputs[0], nodes.get("Material Output").inputs["Surface"])
         target = nodes.new("ShaderNodeTexImage")
         target.image = image

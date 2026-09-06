@@ -267,7 +267,7 @@
   },
   "galaxy_group": {
     "path": "res://assets/models/galaxy_group.glb",
-    "radius": 1.695237,
+    "radius": 1.695236,
     "height": 0.234,
     "color": "#93968B",
     "texture": "res://assets/models/galaxy_group.png"

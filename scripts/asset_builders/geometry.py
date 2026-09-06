@@ -21,9 +21,11 @@ def material(
     alpha: float = 1.0,
     transmission: float = 0.0,
     emission_strength: float = 0.0,
+    texture_surface: str = "flat",
 ) -> bpy.types.Material:
     mat = bpy.data.materials.get(name) or bpy.data.materials.new(name)
     mat.use_nodes = True
+    mat["texture_surface"] = texture_surface
     mat.diffuse_color = rgba(color, alpha)
     bsdf = mat.node_tree.nodes.get("Principled BSDF")
     bsdf.inputs["Base Color"].default_value = rgba(color, alpha)

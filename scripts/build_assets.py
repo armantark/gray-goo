@@ -398,13 +398,13 @@ def deck_body(
 
 def build_board(collection: bpy.types.Collection) -> None:
     deck = material("Board teal", "#43AFA3", roughness=0.48)
-    grip = material("Board grip", "#243C43", roughness=0.84)
+    grip = material("Board grip", "#243C43", roughness=0.84, texture_surface="grip")
     deck_body(collection, "board", 0.18, deck, grip)
 
 
 def build_skateboard(collection: bpy.types.Collection) -> None:
     deck = material("Skateboard coral", "#E85D4A", roughness=0.45)
-    grip = material("Skateboard grip", "#27343B", roughness=0.88)
+    grip = material("Skateboard grip", "#27343B", roughness=0.88, texture_surface="grip")
     metal = material("Truck metal", "#A8B4BE", roughness=0.30, metallic=0.72)
     wheel_mat = material("Skate wheel mint", "#68D6B4", roughness=0.42)
     bearing = material("Skate bearing", "#59656F", metallic=0.7, roughness=0.2)
@@ -677,18 +677,18 @@ def verify_exported_glbs(manifest: dict[str, dict[str, float | str]]) -> None:
             bpy.data.objects.remove(obj, do_unlink=True)
 
 
-def build_grounds():
+def build_grounds(output_dir: str):
     grounds = {
-        "ground_particle": ("#A5BBB3", "particle"),
+        "ground_particle": ("#A5BBB3", "flat"),
         "ground_sand": ("#C3AE86", "sand"),
         "ground_concrete": ("#A3A79E", "concrete"),
-        "ground_space": ("#151D25", "fabric"),
+        "ground_space": ("#151D25", "flat"),
     }
     for name, (color, surface) in grounds.items():
         collection = new_collection(name)
-        mat = material(name, color)
+        mat = material(name, color, texture_surface=surface)
         mesh_object(collection, name, [(-1, -1, 0), (1, -1, 0), (1, 1, 0), (-1, 1, 0)], [(0, 1, 2, 3)], mat)
-        bake_atlas(collection, name, str(MODEL_DIR / f"{name}.png"), surface)
+        bake_atlas(collection, name, output_dir + "/" + name + ".png")
         # Ground source patches sit apart from the editable model library.
         collection.objects[0].location = (-24, list(grounds).index(name) * 3, 0)
 
@@ -722,7 +722,7 @@ def main() -> None:
         collection["godot_radius"] = entry["radius"]
         collection["godot_height"] = entry["height"]
         collection["average_color"] = entry["color"]
-    build_grounds()
+    build_grounds(str(MODEL_DIR))
     arrange_source_library(roots)
     bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE_PATH), compress=True)
     verify_exported_glbs(manifest)
