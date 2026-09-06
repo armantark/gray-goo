@@ -185,3 +185,7 @@
 - 2026-09-05: PinchTab rejected about:blank with Error 400: invalid url. Reloaded the owned local start page without pressing Play to stop its game before native performance measurements.
 
 - 2026-09-05: Music/web release commit was rejected by slop-gate: scripts/build_music.py rhythm_section complexity 17. Extracted the musically separate brush-bar part and verified every rhythm note event remains identical; retry with a new commit.
+
+- 2026-09-05: Tasty Planet OST Fandom page retrieval failed in web open with 402 Payment Required and curl with HTTP 403; search returned the indexed track list. Instrumentation was not inferred from titles.
+
+- 2026-09-05: PinchTab viewport 1600x900 correctly set innerHeight and canvas height to 900, but screenshot output stayed 1600x757 and cropped the bottom. Used 1600x740 within the capture surface for final browser checks; do not confuse screenshot cropping with game layout.

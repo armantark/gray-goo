@@ -18,7 +18,7 @@ For a local build, open `builds/Gray Goo.app` after exporting. The game starts i
 
 Eat smaller objects to reach the goal size. A pointer and yellow outline identify the nearest edible object. The bottom-left portrait shows the last consumed item. Each scene has its own starting size. The HUD shows body diameter and goal diameter in metric units. The goal-reaching bite celebrates completion; the scene remains playable until you choose Next level.
 
-Open the scene menu to adjust Movement speed from 10% to 200%. The native default is 100% and the browser default is 200%, and the setting applies to both keyboard and mouse steering. The game saves it between launches. The Body selector offers Shell and Procedural; it also persists between launches. Switching bodies keeps the current position, size, and food pigment. The Music button enables or mutes the original jazz loop and saves the choice.
+Open the scene menu to adjust Movement speed from 10% to 200%. The native default is 100% and the browser default is 200%, and the setting applies to both keyboard and mouse steering. The game saves it between launches. The Body selector offers Shell and Procedural; it also persists between launches. Switching bodies keeps the current position, size, and food pigment. The Music button enables or mutes the current scene’s original music and saves the choice.
 
 ## Run from the project
 
@@ -84,7 +84,7 @@ Use `-- --level=0 --tier=4` for a single view. Stop other simulation jobs before
 
 Play each scene from its starting size through completion. Check keyboard and mouse steering, camera rotation and limits, object engulfing, retained food color, attached parts, and the nearest-food pointer. Watch the body reach and grip with uneven forward lobes while rear contacts stretch and peel. Release the controls for several seconds and check that it spreads into an irregular shallow puddle with unequal, slowly spreading lobes; move again and check that it gathers into a rolling mass. During keyboard steering, check that the pupils look toward the highlighted target. Hold the left mouse button to switch to cursor-following eyes, and confirm that the chosen gaze mode persists after release. After a colored bite, check that the contact patch blends slowly and leaves a lasting tint. In the tide pool, cross the water and check that only local sections disappear. In the skatepark, nudge moving boards and cross the curved ground. In spacetime, consume the final fabric and keep moving in the void. After each goal, verify continued play and Next level.
 
-Change Movement speed in the scene menu, resume play, and check that steering responds at the selected rate. Restart the app and check that the setting remains selected. Switch Body in both directions during a meal, then verify position, size, color, and camera continuity. Restart once more to check the body setting.
+Change Movement speed in the scene menu, resume play, and check that steering responds at the selected rate. Restart the app and check that the setting remains selected. Switch Body in both directions during a meal, then verify position, size, color, and camera continuity. Restart once more to check the body setting. Visit all four scenes and check that each plays its own song. Mute Music, change scenes, and confirm it stays muted; enable it and restart to verify persistence.
 
 Verification combines behavior canaries, randomized world checks, ordinary-input routes, and native visual/performance checks. In the skatepark, confirm that wheel hubs stay on their axles while the wheels spin. The build plan is under `memory-bank/status-updates` and remains unchanged for comparison with results.
 
@@ -112,12 +112,12 @@ python3 scripts/web_build.py serve
 
 Open http://127.0.0.1:8064/ and press Play. The export compresses WebAssembly and game data in place; the host must honor the generated `_headers` file. Ordinary static servers without those headers cannot load these compressed files.
 
-Regenerate the original MIDI and Ogg loop with Python dependencies managed by uv and FFmpeg on PATH:
+Regenerate the four original MIDI and Ogg songs with Python dependencies managed by uv and FFmpeg on PATH:
 
 ```sh
 uv run scripts/build_music.py
 ```
 
-The music source contains the composition and a synthesizer; it uses no sampled instruments or third-party music. The Ogg render loops across scene changes. Numerical audio checks cover clipping and the loop boundary; listening quality remains a human judgment.
+The music source contains four compositions and a synthesizer; it uses no sampled instruments or third-party music. Each scene selects its own Ogg loop; the mute setting remains in effect when scenes change. The soundtrack uses sax-led swing in Sugar Water, bossa nova in the tide pool, samba-jazz in the skatepark, and slower sax-led jazz in Cosmic Web. Numerical audio checks cover clipping and each loop boundary; listening quality remains a human judgment.
 
 Godot’s license and third-party notices are included under `licenses/` and in both exports. All models, textures, sound effects, and music were generated for this project. The project is shelved after this release.

@@ -1,5 +1,12 @@
 extends Node3D
 
+const MUSIC_TRACKS := [
+	"res://assets/audio/particle_shuffle.ogg",
+	"res://assets/audio/tidepool_bossa.ogg",
+	"res://assets/audio/skatepark_samba.ogg",
+	"res://assets/audio/cosmic_drift.ogg",
+]
+
 const BODY_LENGTHS_PER_SECOND := 4.0
 var world: GameWorld
 var goo: GooBody
@@ -38,13 +45,9 @@ func _ready() -> void:
 	_win_sound.volume_db = -10.0
 	add_child(_win_sound)
 	_music = AudioStreamPlayer.new()
-	_music.stream = load("res://assets/audio/particle_shuffle.ogg")
-	_music.stream.loop = true
 	_music.volume_db = -17.0
 	_music.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(_music)
-	_music.play()
-	_music.stream_paused = not hud.music_enabled
 	hud.music_changed.connect(func(enabled: bool): _music.stream_paused = not enabled)
 	for arg in OS.get_cmdline_user_args():
 		if arg == "--performance":
@@ -71,6 +74,7 @@ func start_level(index: int) -> void:
 	_cinematic = -1.0
 	_bite_sound.stop()
 	_win_sound.stop()
+	_music.stop()
 	if is_instance_valid(rig):
 		rig.free()
 	if is_instance_valid(goo):
@@ -93,6 +97,10 @@ func start_level(index: int) -> void:
 	add_child(rig)
 	rig.configure(world.field, world.config.jumps[0].view_size, goo, world.get_ground_height)
 	hud.configure(index, world.config)
+	_music.stream = load(MUSIC_TRACKS[index])
+	_music.stream.loop = true
+	_music.play()
+	_music.stream_paused = not hud.music_enabled
 	print("LEVEL_READY ", index, " ", world.config.title)
 
 func _switch_body(kind: String) -> void:
