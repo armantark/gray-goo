@@ -23,3 +23,11 @@ The user approved the audited MCP setup on 2026-09-05, conditional on avoiding c
 ## Read-only leaf: browser release feasibility
 
 The leaf owns no files or sessions. Inspect Godot export requirements, current project shaders/physics, and Sites capabilities. Return the smallest viable route to a playable hosted version, the native renderer preservation method, and exact blockers. Do not install, edit, export, launch apps, publish, request credentials, create tasks, message other threads, use Claude, or spawn agents. The root owns all side effects.
+
+## Model critic ownership
+
+The native critic owns `scripts/blender/capture_views.py`, `builds/model-review/`, and its review log during each capture pass. It owns the live Blender session only between the root's explicit transfer and its release. Camera changes, selection, and temporary object visibility are allowed; geometry, materials, exports, saved source, Git, and other app sessions are not. The root owns all model edits and integration. The critic captures four angles per model and supplies the images to a separate Opus review context using ask-claude with read-only image access, because the installed Kimi client has no image input. No reviewer can alter the scoring rubric, invoke child reviewers, publish, or install tools. In-game evidence is added before final acceptance.
+
+## Gameplay fixes before music
+
+On 2026-09-05 the user added a bounded gameplay repair slice after the live Blender models and before music, then publishing. Investigate the shrunk-down large molecule visible at the first level's start. Hide the smallest edible objects as the player grows so larger targets remain clear. Diagnose gray objects after eating that appear edible again only at a much larger size, and inconsistent eating thresholds including electrons. Reproduce the behavior and inspect composite-part consumption and size rules before deciding the fixes. This does not authorize another level redesign.

@@ -47,6 +47,7 @@ from asset_builders.tide_pool import (
     build_boulder,
     build_crab_body,
     build_hermit_crab,
+    build_hermit_shell,
     build_periwinkle,
     build_sea_star,
     build_small_fish,
@@ -105,7 +106,8 @@ MODEL_COLORS = {
     "neutron": "#7F9BAE",
     "snail": "#C59369",
     "periwinkle": "#C59369",
-    "hermit_crab": "#D58355",
+    "hermit_crab": "#D66E3E",
+    "hermit_shell": "#987347",
     "crab_body": "#D58355",
     "anemone": "#DBAD7B",
     "sea_star": "#D89968",
@@ -351,6 +353,30 @@ def build_wheel(collection: bpy.types.Collection) -> None:
     build_wheel_parts(collection, "wheel", (0, 0, 0.54), urethane, hub)
 
 
+def deck_surface(collection, prefix, center_z, deck_mat, grip_mat, grip):
+    xs = [-2.44, -2.39, -2.28, -2.12, -1.92, -1.70, -1.3, -0.7, 0, 0.7, 1.3, 1.70, 1.92, 2.12, 2.28, 2.39, 2.44]
+    vertices, faces = [], []
+    for x in xs:
+        taper = math.sqrt(max(0.01, 1 - (max(0, abs(x) - 1.70) / 0.75) ** 2))
+        width = 0.75 * taper * (0.91 if grip else 1)
+        rise = 0.22 * max(0, (abs(x) - 1.65) / 0.80) ** 1.7
+        for y in (-width, 0, width):
+            z = center_z + rise + 0.025 * (y / 0.75) ** 2
+            vertices.append((x * (0.985 if grip else 1), y, z + (0.007 if grip else 0)))
+    for i in range(len(xs) - 1):
+        for j in range(2):
+            a = i * 3 + j
+            faces.append((a, a + 3, a + 4, a + 1))
+    obj = mesh_object(collection, prefix + ("_grip" if grip else "_deck"), vertices, faces, grip_mat if grip else deck_mat)
+    if not grip:
+        solidify = obj.modifiers.new("Laminated deck thickness", "SOLIDIFY")
+        solidify.thickness = 0.10
+        bpy.context.view_layer.objects.active = obj
+        obj.select_set(True)
+        bpy.ops.object.modifier_apply(modifier=solidify.name)
+        obj.select_set(False)
+
+
 def deck_body(
     collection: bpy.types.Collection,
     prefix: str,
@@ -358,49 +384,16 @@ def deck_body(
     deck_mat: bpy.types.Material,
     grip_mat: bpy.types.Material,
 ) -> None:
-    xs = [-2.45, -2.1, -1.65, -0.9, 0.0, 0.9, 1.65, 2.1, 2.45]
-    vertices: list[tuple[float, float, float]] = []
-    for x in xs:
-        rise = 0.30 * max(0.0, (abs(x) - 1.60) / 0.85) ** 2
-        half_width = 0.78 * (1.0 - 0.10 * (abs(x) / 2.45) ** 2)
-        vertices.extend(
-            [
-                (x, -half_width, center_z + rise - 0.09),
-                (x, half_width, center_z + rise - 0.09),
-                (x, -half_width, center_z + rise + 0.09),
-                (x, half_width, center_z + rise + 0.09),
-            ]
-        )
-    faces: list[tuple[int, ...]] = []
-    for index in range(len(xs) - 1):
-        a = index * 4
-        b = (index + 1) * 4
-        faces.extend(
-            [
-                (a + 2, b + 2, b + 3, a + 3),
-                (a, a + 1, b + 1, b),
-                (a, b, b + 2, a + 2),
-                (a + 1, a + 3, b + 3, b + 1),
-            ]
-        )
-    faces.extend([(0, 2, 3, 1), (len(vertices) - 4, len(vertices) - 3, len(vertices) - 1, len(vertices) - 2)])
-    mesh_object(collection, f"{prefix}_deck", vertices, faces, deck_mat, bevel=0.065)
-    grip_points = []
-    for x in xs[1:-1]:
-        rise = 0.30 * max(0.0, (abs(x) - 1.60) / 0.85) ** 2
-        half_width = 0.66 * (1.0 - 0.08 * (abs(x) / 2.45) ** 2)
-        grip_points.extend([(x, -half_width, center_z + rise + 0.145), (x, half_width, center_z + rise + 0.145)])
-    grip_faces = []
-    for index in range(len(xs[1:-1]) - 1):
-        a = index * 2
-        grip_faces.append((a, a + 2, a + 3, a + 1))
-    grip = mesh_object(collection, f"{prefix}_grip", grip_points, grip_faces, grip_mat)
-    solidify = grip.modifiers.new("Grip thickness", "SOLIDIFY")
-    solidify.thickness = 0.025
-    bpy.context.view_layer.objects.active = grip
-    grip.select_set(True)
-    bpy.ops.object.modifier_apply(modifier=solidify.name)
-    grip.select_set(False)
+    # Both surfaces follow the same kicktail profile so the grip stays flush.
+    deck_surface(collection, prefix, center_z, deck_mat, grip_mat, False)
+    deck_surface(collection, prefix, center_z, deck_mat, grip_mat, True)
+    bolt = material("Deck mounting bolts", "#9CA8AA", metallic=0.7)
+    for x in (-1.63, -1.31, 1.31, 1.63):
+        for y in (-0.23, 0.23):
+            uv_sphere(collection, prefix + "_bolt", (x, y, center_z + 0.012), (0.043, 0.043, 0.012), bolt, segments=12, rings=8)
+    graphic = material("Deck cream graphic", "#F5DCAE")
+    for x in (-0.45, 0.0, 0.45):
+        cylinder_between(collection, prefix + "_underside_graphic", (x, -0.52, center_z - 0.108), (x + 0.27, 0.52, center_z - 0.108), 0.065, graphic, vertices=12)
 
 
 def build_board(collection: bpy.types.Collection) -> None:
@@ -478,6 +471,7 @@ BUILDERS = {
     "snail": build_snail,
     "periwinkle": build_periwinkle,
     "hermit_crab": build_hermit_crab,
+    "hermit_shell": build_hermit_shell,
     "crab_body": build_crab_body,
     "anemone": build_anemone,
     "sea_star": build_sea_star,
@@ -556,6 +550,7 @@ def object_bounds(objects: list[bpy.types.Object] | bpy.types.bpy_prop_collectio
 
 
 def add_root_and_normalize(collection: bpy.types.Collection, model_name: str) -> bpy.types.Object:
+    bpy.context.view_layer.update()
     root = bpy.data.objects.new(f"{model_name}_ROOT", None)
     root.empty_display_type = "CIRCLE"
     root.empty_display_size = 0.45
@@ -572,7 +567,7 @@ def add_root_and_normalize(collection: bpy.types.Collection, model_name: str) ->
     return root
 
 
-def export_collection(collection: bpy.types.Collection, model_name: str) -> dict[str, float | str]:
+def export_collection(collection: bpy.types.Collection, model_name: str, output_path: str) -> dict[str, float | str]:
     minimum, maximum = collection_bounds(collection)
     width_x = maximum.x - minimum.x
     width_y = maximum.y - minimum.y
@@ -585,7 +580,6 @@ def export_collection(collection: bpy.types.Collection, model_name: str) -> dict
     for obj in collection.all_objects:
         obj.select_set(True)
     bpy.context.view_layer.objects.active = next((obj for obj in collection.all_objects if obj.type == "MESH"), None)
-    output_path = MODEL_DIR / f"{model_name}.glb"
     bpy.ops.export_scene.gltf(
         filepath=str(output_path),
         export_format="GLB",
@@ -694,7 +688,7 @@ def build_grounds():
         collection = new_collection(name)
         mat = material(name, color)
         mesh_object(collection, name, [(-1, -1, 0), (1, -1, 0), (1, 1, 0), (-1, 1, 0)], [(0, 1, 2, 3)], mat)
-        bake_atlas(collection, name, MODEL_DIR, surface)
+        bake_atlas(collection, name, str(MODEL_DIR / f"{name}.png"), surface)
         # Ground source patches sit apart from the editable model library.
         collection.objects[0].location = (-24, list(grounds).index(name) * 3, 0)
 
@@ -715,10 +709,10 @@ def main() -> None:
         collection = new_collection(model_name)
         builder(collection)
         consolidate_by_material(collection, model_name)
-        bake_atlas(collection, model_name, MODEL_DIR)
+        bake_atlas(collection, model_name, str(MODEL_DIR / f"{model_name}.png"))
         roots[model_name] = add_root_and_normalize(collection, model_name)
 
-    manifest = {name: export_collection(bpy.data.collections[name], name) for name in BUILDERS}
+    manifest = {name: export_collection(bpy.data.collections[name], name, str(MODEL_DIR / f"{name}.glb")) for name in BUILDERS}
     validate_outputs(manifest)
     MANIFEST_PATH.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 

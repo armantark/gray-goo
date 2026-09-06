@@ -4,13 +4,13 @@ Last staleness sweep: 2026-09-05
 
 The second goo body is implemented and exported to `builds/Gray Goo.app`. The Body menu switches between Shell and Procedural and preserves the current game state. Both native Coral routes run near 60 FPS at 1920 × 1080 with the user's saved 200% speed. Shell behavior is unchanged. Procedural grip/peel and rolling circulation remain less visually distinct than requested; do not claim full visual acceptance. Evidence is in `builds/body-verification/report.json` and `progress.md`.
 
-The user requested this final sequence: complete the body experiment, refine a few models through MCP in live Blender with a separate multi-angle critic scoring above 8, add jazzy MIDI music, publish GitHub source plus a downloadable standalone app, publish a playable GPT Sites browser build, and shelve the project. GitHub publishing is authorized for that final result. The user approved project-only MCP installation conditional on avoiding context bloat; setup and canary verification are complete. The fixed critic rubric and scope are in `plans/final-shipping.md`.
+The user requested this final sequence: complete the body experiment, refine a few models through MCP in live Blender with a separate multi-angle critic scoring above 8, fix the reported start-molecule, tiny-food visibility, gray remnants, and eating-threshold issues, add jazzy MIDI music, publish GitHub source plus a downloadable standalone app, publish a playable GPT Sites browser build, and shelve the project. GitHub publishing is authorized for that final result. The user approved project-only MCP installation conditional on avoiding context bloat; setup and canary verification are complete. The fixed critic rubric and scope are in `plans/final-shipping.md`.
 
 ## Current scope
 
 The user approved the four-scene plan with "Go for it" on 2026-09-04. Sugar Water, Coral Colony Tide Pool, Skatepark Bowl, and Cosmic Web are implemented per `docs/design/level-contract.md`, each with five tiers and four jumps in `src/levels/`. The accepted catalogue in `docs/design/selection.json` is inspiration for future scope, not authorization to build the 60-level campaign. Do not reopen the design interview or present another full catalogue.
 
-Godot 4.7.2 standard supplies the native runtime, with the Mobile renderer and a 1920 × 1080 render size. Blender 5.2.1 LTS supplies editable source assets through its CLI; no MCP was installed. The final shipping scope includes a playable browser export in addition to the Mac app. Everything informs scale and theme diversity, not gameplay or origin story.
+Godot 4.7.2 standard supplies the native runtime, with the Mobile renderer and a 1920 × 1080 render size. Blender 5.2.1 LTS supplies editable source assets. The live refinement pass uses the isolated project MCP connection with three allowed tools and telemetry disabled. The final shipping scope includes a playable browser export in addition to the Mac app. Everything informs scale and theme diversity, not gameplay or origin story.
 
 ## Settled behavior
 

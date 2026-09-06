@@ -155,7 +155,8 @@ func _build_animals() -> void:
 		crab.loose_reason = "The hermit crab forages between the pool's coral heads."
 		crab.rotation.y = angle
 		crab.visual.add_child(Art.model("crab_body", 0.72))
-		_world._add_food("shell", Vector2(0.0, 0.08), 0.54, 0.85, 0.035, "Hermit crab shell", false, 1, crab, 0.14)
+		var shell := _world._add_food("hermit_shell", Vector2(0.0, -0.776), 0.475, 0.85, 0.035, "Hermit crab shell", false, 1, crab)
+		shell.rotation.y = 0.0
 		crab.part_consumed.connect(_crab_changed.bind(crab))
 		_animals.append({"food": crab, "home": crab.position, "pace": _world._rng.randf_range(0.16, 0.27), "range": 2.3, "phase": angle, "kind": "walk"})
 		var star := _world._add_food("sea_star", at + Vector2(2.8, 2.4), 0.85, 1.55, 0.18, "Sea star", false, 2)

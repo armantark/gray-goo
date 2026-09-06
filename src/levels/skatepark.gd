@@ -96,6 +96,7 @@ func _build_boards() -> void:
 		board.context_whole = _bowl
 		board.loose_reason = "A rider's board rolls from the rim toward the low bowl."
 		board.rotation.y = _world._rng.randf_range(-PI, PI)
+		_align_to_ground(board)
 		_boards.append({"food": board, "velocity": Vector2.ZERO})
 	var rests := [Vector2(-11, -17), Vector2(4, 16), Vector2(39, -12), Vector2(22, -28),
 		Vector2(-19, -31), Vector2(-25, 5), Vector2(10, 32), Vector2(37, 31)]
@@ -132,8 +133,9 @@ func _add_rider(at: Vector2) -> void:
 	rider.rotation.y = 0.0
 	var person := Art.model("skater", 0.62)
 	rider.visual.add_child(person)
-	person.position.y = 0.36
+	person.position.y = 0.30
 	var board := _add_board(Vector2.ZERO, rider)
+	_align_to_ground(rider)
 	rider.part_consumed.connect(_rider_changed.bind(rider))
 	var route_center := BOWL_CENTER + Vector2(_world._rng.randf_range(-2, 2), _world._rng.randf_range(-2, 2))
 	var offset := Vector2((at.x - route_center.x) / 1.2, at.y - route_center.y)
@@ -281,6 +283,7 @@ func step(delta: float) -> void:
 		var movement := Vector2(at.x - rider.position.x, at.y - rider.position.z)
 		rider.position = Vector3(at.x, ground_height(Vector3(at.x, 0, at.y)), at.y)
 		rider.rotation.y = atan2(-movement.y, movement.x)
+		_align_to_ground(rider)
 
 func _step_board(item: Dictionary, delta: float) -> void:
 	var board: Food = item.food
@@ -299,10 +302,19 @@ func _step_board(item: Dictionary, delta: float) -> void:
 	if velocity.length_squared() > 0.0001:
 		board.rotation.y = atan2(-velocity.y, velocity.x)
 		if not board.get_meta("lost_wheel", false):
-			board.rotation.z = atan(gradient.dot(velocity.normalized()))
+			_align_to_ground(board)
 			for part in board.parts:
 				if is_instance_valid(part) and part.active and part.model_name == "wheel":
 					part.visual.rotation.z -= velocity.length() / part.radius * delta
 					var axle := Vector3.UP * float(Art.manifest().wheel.height) * 0.5
 					part.visual.position = Vector3.UP * part.height * 0.5 - part.visual.basis * axle
 	item.velocity = velocity
+
+func _align_to_ground(food: Food) -> void:
+	var at := food.global_position
+	var dx := ground_height(at + Vector3(0.1, 0, 0)) - ground_height(at - Vector3(0.1, 0, 0))
+	var dz := ground_height(at + Vector3(0, 0, 0.1)) - ground_height(at - Vector3(0, 0, 0.1))
+	var up := Vector3(-dx, 0.2, -dz).normalized()
+	var forward := Vector3(cos(food.rotation.y), 0, -sin(food.rotation.y))
+	var side := forward.cross(up).normalized()
+	food.basis = Basis(up.cross(side).normalized(), up, side)

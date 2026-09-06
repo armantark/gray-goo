@@ -71,15 +71,15 @@
   },
   "hermit_crab": {
     "path": "res://assets/models/hermit_crab.glb",
-    "radius": 1.546626,
-    "height": 1.920009,
-    "color": "#D58355",
+    "radius": 1.639779,
+    "height": 1.473637,
+    "color": "#D66E3E",
     "texture": "res://assets/models/hermit_crab.png"
   },
   "crab_body": {
     "path": "res://assets/models/crab_body.glb",
-    "radius": 1.310482,
-    "height": 0.9142,
+    "radius": 1.261233,
+    "height": 1.038994,
     "color": "#D58355",
     "texture": "res://assets/models/crab_body.png"
   },
@@ -142,7 +142,7 @@
   "truck": {
     "path": "res://assets/models/truck.glb",
     "radius": 0.88,
-    "height": 0.56,
+    "height": 0.38,
     "color": "#A8B4BE",
     "texture": "res://assets/models/truck.png"
   },
@@ -169,8 +169,8 @@
   },
   "skater": {
     "path": "res://assets/models/skater.glb",
-    "radius": 1.07,
-    "height": 3.18,
+    "radius": 1.02,
+    "height": 3.16,
     "color": "#5B9F92",
     "texture": "res://assets/models/skater.png"
   },
@@ -351,15 +351,15 @@
   },
   "board": {
     "path": "res://assets/models/board.glb",
-    "radius": 2.45,
-    "height": 0.454095,
+    "radius": 2.480266,
+    "height": 0.395894,
     "color": "#43AFA3",
     "texture": "res://assets/models/board.png"
   },
   "skateboard": {
     "path": "res://assets/models/skateboard.glb",
-    "radius": 2.45,
-    "height": 1.094095,
+    "radius": 2.480266,
+    "height": 0.952894,
     "color": "#E85D4A",
     "texture": "res://assets/models/skateboard.png"
   },
@@ -390,5 +390,12 @@
     "height": 0.476892,
     "color": "#A7ABA4",
     "texture": "res://assets/models/knot.png"
+  },
+  "hermit_shell": {
+    "path": "res://assets/models/hermit_shell.glb",
+    "radius": 0.831819,
+    "height": 1.473637,
+    "color": "#987347",
+    "texture": "res://assets/models/hermit_shell.png"
   }
 }

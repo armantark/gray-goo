@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import math
-from pathlib import Path
 
 import bpy
 
@@ -99,10 +98,10 @@ def join_and_unwrap(collection, name):
     return obj
 
 
-def bake_atlas(collection, name: str, output_dir: Path, surface: str | None = None):
+def bake_atlas(collection, name: str, output_path: str, surface: str | None = None):
     obj = join_and_unwrap(collection, name)
     image = bpy.data.images.new(name + "_albedo", width=512, height=512, alpha=False)
-    image.filepath_raw = str(output_dir / (name + ".png"))
+    image.filepath_raw = output_path
     image.file_format = "PNG"
     surface = surface or MODEL_SURFACES.get(name, "skin")
     # Materials are copied because several models deliberately share a palette.

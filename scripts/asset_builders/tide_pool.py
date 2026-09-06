@@ -49,20 +49,62 @@ def build_periwinkle(collection):
 
 
 def crab_parts(collection):
-    orange = material("Crab rust", "#D58355")
-    tip = material("Crab claw tips", "#EBD0A2")
-    eye = material("Crab eyes", "#222D31")
+    orange = material("Crab rust", "#D66E3E")
+    tip = material("Crab claw tips", "#F4D4A1")
+    eye = material("Crab eyes", "#182F36")
+    white = material("Crab eye glint", "#FFF3D4")
     uv_sphere(collection, "crab_carapace", (0, 0, 0.49), (0.70, 0.61, 0.34), orange)
     for side in (-1, 1):
         for i in range(3):
-            y = -0.36 + i * 0.35
-            curve_tube(collection, "crab_leg", [(side * 0.48, y, 0.48), (side * 1.05, y - 0.22, 0.40), (side * 1.30, y - 0.42, 0.09)], 0.065, orange, radii=[1, 0.9, 0.2])
-        curve_tube(collection, "crab_arm", [(side * 0.46, -0.30, 0.54), (side * 0.80, -0.86, 0.55), (side * 0.71, -1.17, 0.54)], 0.10, orange)
-        uv_sphere(collection, "crab_claw", (side * 0.71, -1.23, 0.58), (0.24, 0.32, 0.19), orange)
-        for offset in (-0.1, 0.1):
-            curve_tube(collection, "crab_pincer", [(side * 0.71 + offset, -1.38, 0.58), (side * 0.71 + offset * 0.4, -1.63, 0.58)], 0.08, tip, radii=[1, 0.2])
-        cylinder_between(collection, "crab_eyestalk", (side * 0.27, -0.43, 0.58), (side * 0.31, -0.55, 0.90), 0.055, orange)
-        uv_sphere(collection, "crab_eye", (side * 0.31, -0.55, 0.91), (0.085, 0.085, 0.085), eye, segments=12, rings=8)
+            y = -0.30 + i * 0.34
+            curve_tube(collection, "crab_leg", [(side * 0.48, y, 0.48), (side * 1.0, y - 0.12, 0.46), (side * 1.25, y - 0.43, 0.06)], 0.085, orange, radii=[1.2, 0.85, 0.15])
+            uv_sphere(collection, "crab_knee", (side * 1.0, y - 0.12, 0.46), (0.095, 0.09, 0.085), orange, segments=16, rings=10)
+        scale = 1.15 if side == -1 else 0.85
+        x = side * 0.78
+        curve_tube(collection, "crab_arm", [(side * 0.46, -0.30, 0.54), (side * 0.89, -0.75, 0.55), (x, -1.1, 0.55)], 0.12, orange)
+        uv_sphere(collection, "crab_claw", (x, -1.16, 0.58), (0.25 * scale, 0.30 * scale, 0.20 * scale), orange)
+        for sign in (-1, 1):
+            curve_tube(collection, "crab_pincer", [(x + sign * 0.16 * scale, -1.26, 0.60), (x + sign * 0.19 * scale, -1.48, 0.60), (x + sign * 0.045 * scale, -1.67, 0.60)], 0.09 * scale, tip, radii=[1, 0.75, 0.1])
+        curve_tube(collection, "crab_eyestalk", [(side * 0.27, -0.43, 0.58), (side * 0.33, -0.62, 0.93)], 0.065, orange)
+        uv_sphere(collection, "crab_eye", (side * 0.33, -0.62, 0.96), (0.12, 0.105, 0.13), eye, segments=20, rings=12)
+        uv_sphere(collection, "crab_eye_glint", (side * 0.33 - 0.025, -0.714, 1.0), (0.035, 0.02, 0.035), white, segments=12, rings=8)
+        curve_tube(collection, "crab_feeler", [(side * 0.12, -0.57, 0.57), (side * 0.15, -0.93, 0.68), (side * 0.28, -1.06, 0.71)], 0.023, tip, radii=[1, 0.8, 0.1])
+
+
+def hermit_shell_parts(collection):
+    shell = material("Hermit shell ochre", "#987347")
+    ridge = material("Hermit shell growth ridges", "#C3A071")
+    inside = material("Hermit shell interior", "#493D32")
+    # A closed conical whorl with a broad aperture at the crab's abdomen.
+    vertices, faces = [], []
+    rings, sides = 40, 48
+    for i in range(rings + 1):
+        t = i / rings
+        radius = 0.76 * (1 - t) ** 0.85 + 0.015
+        for j in range(sides):
+            a = j / sides * math.tau
+            rib = 1 + 0.035 * math.cos(a - t * math.tau * 3)
+            vertices.append((math.cos(a) * radius * rib, 0.12 + t * 1.48, 0.78 + t * 0.48 + math.sin(a) * radius * 0.87 * rib))
+    for i in range(rings):
+        for j in range(sides):
+            a, b = i * sides + j, i * sides + (j + 1) % sides
+            faces.append((a + sides, b + sides, b, a))
+    faces.append(tuple(reversed(range(rings * sides, (rings + 1) * sides))))
+    mesh_object(collection, "hermit_shell_whorl", vertices, faces, shell)
+    lip = [(math.cos(j / 48 * math.tau) * 0.77, 0.115, 0.78 + math.sin(j / 48 * math.tau) * 0.675) for j in range(48)]
+    curve_tube(collection, "hermit_shell_lip", lip, 0.065, ridge, cyclic=True)
+    uv_sphere(collection, "hermit_shell_aperture", (0, 0.135, 0.78), (0.70, 0.065, 0.61), inside)
+    points = []
+    for i in range(145):
+        t = i / 144
+        a = t * math.tau * 3
+        radius = 0.76 * (1 - t) ** 0.85 + 0.021
+        points.append((math.cos(a) * radius, 0.12 + t * 1.48, 0.78 + t * 0.48 + math.sin(a) * radius * 0.87))
+    curve_tube(collection, "hermit_shell_spiral_ridge", points, 0.035, ridge, radii=[1 - i / 160 for i in range(145)])
+
+
+def build_hermit_shell(collection):
+    hermit_shell_parts(collection)
 
 
 def build_crab_body(collection):
@@ -71,7 +113,7 @@ def build_crab_body(collection):
 
 def build_hermit_crab(collection):
     crab_parts(collection)
-    spiral_shell(collection, "hermit", (0, 0.37, 0.94), 1.15, conical=True)
+    hermit_shell_parts(collection)
 
 
 def build_anemone(collection):

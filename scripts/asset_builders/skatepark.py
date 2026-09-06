@@ -52,10 +52,10 @@ def build_pebble(collection):
 def build_truck(collection):
     metal = material("Truck brushed metal", "#A8B4BE", metallic=0.6)
     rubber = material("Truck bushings", "#BF8C58")
-    box(collection, "truck_baseplate", (0, 0, 0.12), (0.39, 0.32, 0.11), metal, 0.045)
-    cylinder_between(collection, "truck_kingpin", (0, 0, 0.20), (0.1, 0, 0.51), 0.12, rubber)
-    cylinder_between(collection, "truck_axle", (0.1, -0.88, 0.47), (0.1, 0.88, 0.47), 0.10, metal, bevel=0.02)
-    box(collection, "truck_hanger", (0.1, 0, 0.45), (0.17, 0.51, 0.12), metal, 0.06)
+    box(collection, "truck_baseplate", (0, 0, 0.39), (0.39, 0.32, 0.05), metal, 0.045)
+    cylinder_between(collection, "truck_kingpin", (0, 0, 0.34), (0.1, 0, 0.18), 0.12, rubber)
+    cylinder_between(collection, "truck_axle", (0.1, -0.88, 0.16), (0.1, 0.88, 0.16), 0.10, metal, bevel=0.02)
+    box(collection, "truck_hanger", (0.1, 0, 0.18), (0.17, 0.51, 0.12), metal, 0.06)
 
 
 def build_helmet(collection):
@@ -96,22 +96,54 @@ def build_skater(collection):
     skin = material("Skater warm skin", "#BA8966")
     shirt = material("Skater teal shirt", "#5B9F92")
     jeans = material("Skater dark trousers", "#455969")
-    shoe = material("Skater shoes", "#DDCEAA")
+    shoe = material("Skater shoes", "#BB654D")
+    cream = material("Skater sole and eye whites", "#F3E7CD")
+    dark = material("Skater face and collar", "#293A3B")
+    gold = material("Skater shirt badge", "#E9B45C")
     hair = material("Skater hair", "#473D32")
-    uv_sphere(collection, "skater_torso", (0, 0, 1.89), (0.43, 0.27, 0.59), shirt)
-    uv_sphere(collection, "skater_head", (0.06, 0, 2.78), (0.29, 0.27, 0.36), skin)
-    uv_sphere(collection, "skater_hair", (0.025, 0.035, 2.98), (0.30, 0.28, 0.20), hair)
+
+    box(collection, "skater_torso", (0, -0.03, 1.86), (0.38, 0.25, 0.45), shirt, 0.17)
+    uv_sphere(collection, "skater_hips", (0, 0.02, 1.42), (0.35, 0.23, 0.22), jeans)
+    cylinder_between(collection, "skater_neck", (0, -0.035, 2.23), (0, -0.035, 2.46), 0.13, skin)
+    torus(collection, "skater_collar", (0, -0.035, 2.29), 0.13, 0.025, dark)
+    uv_sphere(collection, "skater_badge", (0, -0.286, 2.02), (0.115, 0.017, 0.115), gold)
+    curve_tube(collection, "skater_badge_wave", [(-0.08, -0.305, 2.00), (0, -0.307, 2.03), (0.08, -0.305, 2.00)], 0.017, cream)
+
+    uv_sphere(collection, "skater_head", (0, -0.035, 2.68), (0.33, 0.29, 0.38), skin)
+    uv_sphere(collection, "skater_hair_crown", (0, 0.005, 2.99), (0.34, 0.29, 0.17), hair)
+    uv_sphere(collection, "skater_hair_nape", (0, 0.19, 2.80), (0.28, 0.12, 0.25), hair)
+    fringe = uv_sphere(collection, "skater_swept_fringe", (-0.08, -0.258, 2.945), (0.235, 0.075, 0.10), hair)
+    fringe.rotation_euler.y = -0.22
     for sign in (-1, 1):
-        hip = (sign * 0.23, 0, 1.44)
-        knee = (sign * 0.45, -0.12, 0.87)
-        ankle = (sign * 0.62, 0.02, 0.21)
-        curve_tube(collection, "skater_leg", [hip, knee, ankle], 0.16, jeans)
-        uv_sphere(collection, "skater_shoe", (sign * 0.62 + 0.08, -0.10, 0.14), (0.31, 0.20, 0.14), shoe)
-        elbow = (sign * 0.70, 0.03, 1.80)
-        hand = (sign * 0.94, -0.18, 2.01)
-        cylinder_between(collection, "skater_sleeve", (sign * 0.29, 0, 2.23), elbow, 0.16, shirt)
-        cylinder_between(collection, "skater_forearm", elbow, hand, 0.115, skin)
-        uv_sphere(collection, "skater_hand", hand, (0.13, 0.12, 0.13), skin)
+        uv_sphere(collection, "skater_ear", (sign * 0.325, -0.005, 2.68), (0.065, 0.06, 0.105), skin)
+        uv_sphere(collection, "skater_sideburn", (sign * 0.29, 0.01, 2.82), (0.055, 0.12, 0.12), hair)
+        uv_sphere(collection, "skater_eye_white", (sign * 0.115, -0.307, 2.755), (0.064, 0.031, 0.078), cream)
+        uv_sphere(collection, "skater_pupil", (sign * 0.115 + 0.009, -0.337, 2.755), (0.028, 0.012, 0.043), dark, segments=16, rings=12)
+        curve_tube(collection, "skater_eyebrow", [(sign * 0.06, -0.300, 2.861), (sign * 0.115, -0.275, 2.88), (sign * 0.17, -0.257, 2.86)], 0.019, hair)
+    uv_sphere(collection, "skater_nose", (0, -0.329, 2.658), (0.062, 0.079, 0.074), skin)
+    curve_tube(collection, "skater_smile", [(-0.083, -0.296, 2.543), (0, -0.305, 2.522), (0.084, -0.293, 2.551)], 0.014, dark)
+
+    for hip, knee, ankle in (
+        ((-0.21, 0.015, 1.43), (-0.47, -0.22, 0.83), (-0.57, 0.035, 0.25)),
+        ((0.21, 0.015, 1.43), (0.43, -0.31, 0.79), (0.55, 0.075, 0.25)),
+    ):
+        curve_tube(collection, "skater_leg", [hip, knee, ankle], 0.18, jeans, radii=[1.08, 1.0, 0.82])
+        x, y, _ = ankle
+        box(collection, "skater_shoe_sole", (x, y - 0.10, 0.065), (0.205, 0.32, 0.065), cream, 0.055)
+        uv_sphere(collection, "skater_shoe_upper", (x, y - 0.085, 0.18), (0.19, 0.30, 0.13), shoe)
+        uv_sphere(collection, "skater_shoe_heel", (x, y + 0.065, 0.24), (0.175, 0.15, 0.17), shoe)
+        for offset in (-0.13, -0.045):
+            cylinder_between(collection, "skater_shoe_lace", (x - 0.095, y + offset, 0.298), (x + 0.095, y + offset, 0.298), 0.014, cream, vertices=12)
+
+    for shoulder, cuff, elbow, wrist in (
+        ((-0.32, -0.025, 2.18), (-0.52, -0.025, 2.00), (-0.65, -0.06, 1.85), (-0.90, -0.20, 1.94)),
+        ((0.32, -0.025, 2.18), (0.53, 0.015, 2.04), (0.67, 0.045, 1.94), (0.90, 0.08, 2.15)),
+    ):
+        uv_sphere(collection, "skater_shoulder", shoulder, (0.19, 0.23, 0.20), shirt)
+        cylinder_between(collection, "skater_sleeve", shoulder, cuff, 0.19, shirt, bevel=0.045)
+        curve_tube(collection, "skater_arm", [cuff, elbow, wrist], 0.105, skin, radii=[1.12, 1.0, 0.85])
+        uv_sphere(collection, "skater_hand", wrist, (0.12, 0.10, 0.13), skin)
+        uv_sphere(collection, "skater_thumb", (wrist[0], wrist[1] - 0.075, wrist[2] - 0.045), (0.061, 0.055, 0.073), skin)
 
 
 def build_bench(collection):
