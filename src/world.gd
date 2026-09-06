@@ -144,7 +144,8 @@ func _lighting(background: Color, key: Color, rim: Color) -> void:
 	sun.rotation_degrees = Vector3(-58.0, -28.0, 0.0)
 	sun.light_color = key
 	sun.light_energy = 0.7
-	sun.shadow_enabled = true
+	# Compatibility adds shadow-light passes after sRGB conversion, bleaching the palette.
+	sun.shadow_enabled = RenderingServer.get_current_rendering_method() != "gl_compatibility"
 	sun.directional_shadow_max_distance = 65.0
 	var fill := DirectionalLight3D.new()
 	add_child(fill)

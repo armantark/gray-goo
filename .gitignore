@@ -6,3 +6,5 @@ builds/*
 !builds/.gdignore
 .tooling/
 tooling/blender-mcp/.venv/
+dist/*
+!dist/.gdignore

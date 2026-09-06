@@ -172,3 +172,16 @@
 - 2026-09-05: The eating investigation initially searched nonexistent src/levels/sugar.gd, src/player.gd, and memory-bank/GLOSSARY.md; the actual files are src/levels/sugar_water.gd, src/game.gd, and root GLOSSARY.md. Use the repository file inventory before targeted reads.
 - 2026-09-05: Removing invisible electron-cloud targets exposed Sugar Water growth-budget stalls in randomized meal orders: tier 3 radii 4.32631414062797, 4.13636101152893, and 4.16559950768232 could not reach 4.5. Hidden electrons were holding an atom's residual volume after its nucleus was eaten. The last visible constituent now collects the container and hidden constituents; the same five-order check passes afterward. Evidence: builds/eating-budgets-final.log.
 - 2026-09-05: A board-proportion read guessed assets/models/manifest.json; the actual registry is assets/asset_manifest.json, named by Art.manifest().
+- 2026-09-05: Web-template extraction matched both godot.html and godot.offline.html and overwrote the scratch shell with the offline page. Read the exact godot.html member instead.
+- 2026-09-05: The music renderer's ffmpeg 8.1.2 lacks libvorbis (`Unknown encoder 'libvorbis'`, exit 8). Its built-in encoder is `vorbis -strict experimental`. Native Vorbis pads the 3,023,998-frame render to 3,024,000 decoded frames; judge the audible seam with a tolerance instead of requiring byte-exact decoded length.
+- 2026-09-05: A music validation detour through soundfile 0.13.1/libsndfile 1.2.2 exited 139 on a single 3,023,998-frame Ogg write even though a one-second canary passed. A later seam check found an actual discontinuity in native FFmpeg Vorbis; bounded 8192-frame libsndfile writes succeeded and are the final encoding path.
+- 2026-09-05: PinchTab's release session rejected `instances` with `Error 403`, code `session_scope_forbidden`, and `safeControlledEnvironmentOnly: true`. Keep browser work inside that scoped session; do not enumerate or change other instances.
+- 2026-09-05: PinchTab `wait '#start' --state hidden` timed out after the game had started; a screenshot and read-only DOM check confirmed `startHidden: true` and the playable canvas. Use the actual rendered state instead of retrying that wait condition.
+- 2026-09-05: The local audio audition was emitted successfully, but the assistant runtime returned `audio content omitted because you do not support audio input`. Musical listening judgment remains unverified; do not infer it from waveform or MIDI inspection.
+
+- 2026-09-05: PinchTab viewport 844x390 initially cropped the running Godot canvas while DOM dimensions stayed 1600x740. Reloading the page applied the viewport and produced matching 844x390 canvas dimensions and a fully visible menu; no application change was needed.
+- 2026-09-05: Official Godot license retrieval initially failed because zsh expanded an unquoted GitHub API URL containing ?ref; quote the full endpoint.
+
+- 2026-09-05: PinchTab rejected about:blank with Error 400: invalid url. Reloaded the owned local start page without pressing Play to stop its game before native performance measurements.
+
+- 2026-09-05: Music/web release commit was rejected by slop-gate: scripts/build_music.py rhythm_section complexity 17. Extracted the musically separate brush-bar part and verified every rhythm note event remains identical; retry with a new commit.

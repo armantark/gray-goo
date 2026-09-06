@@ -1,10 +1,12 @@
 # Gray Goo
 
-A standalone Mac eat-and-grow game with four scenes: Sugar Water, Coral Colony Tide Pool, Skatepark Bowl, and Cosmic Web. Each place has five food tiers and four size jumps. Objects belong to visible larger structures, and eating their parts changes what remains.
+An eat-and-grow game for Mac and desktop browsers with four scenes: Sugar Water, Coral Colony Tide Pool, Skatepark Bowl, and Cosmic Web. Each place has five food tiers and four size jumps. Objects belong to visible larger structures, and eating their parts changes what remains.
 
 ## Play
 
-Open `builds/Gray Goo.app` after exporting. The game starts in the particle field. Use the Scenes menu to replay any of the four scenes.
+Download the standalone Mac app from [GitHub Releases](https://github.com/armantark/gray-goo/releases/latest), or [play in your browser](https://gray-goo.tarkavor.chatgpt.site). The Sites version requires the owner’s ChatGPT sign-in. The Mac app is ad-hoc signed and is not notarized; macOS can require **Privacy & Security → Open Anyway** after the first launch attempt.
+
+For a local build, open `builds/Gray Goo.app` after exporting. The game starts in the particle field. Use the Scenes menu to replay any of the four scenes.
 
 | Control | Action |
 | --- | --- |
@@ -16,7 +18,7 @@ Open `builds/Gray Goo.app` after exporting. The game starts in the particle fiel
 
 Eat smaller objects to reach the goal size. A pointer and yellow outline identify the nearest edible object. The bottom-left portrait shows the last consumed item. Each scene has its own starting size. The HUD shows body diameter and goal diameter in metric units. The goal-reaching bite celebrates completion; the scene remains playable until you choose Next level.
 
-Open the scene menu to adjust Movement speed from 10% to 200%. The default is 100%, and the setting applies to both keyboard and mouse steering. The game saves it between launches. The Body selector offers Shell and Procedural; it also persists between launches. Switching bodies keeps the current position, size, and food pigment.
+Open the scene menu to adjust Movement speed from 10% to 200%. The native default is 100% and the browser default is 200%, and the setting applies to both keyboard and mouse steering. The game saves it between launches. The Body selector offers Shell and Procedural; it also persists between launches. Switching bodies keeps the current position, size, and food pigment. The Music button enables or mutes the original jazz loop and saves the choice.
 
 ## Run from the project
 
@@ -39,7 +41,7 @@ Regenerate the original assets:
 python3 scripts/build_audio.py
 ```
 
-The editable Blender library stays in `assets/source`; Godot imports the textured GLBs. Model builders live in `scripts/asset_builders/`. The game uses the Mobile renderer at a fixed 1920 × 1080 render size.
+The editable Blender library stays in `assets/source`; Godot imports the textured GLBs. Model builders live in `scripts/asset_builders/`. The Mac app uses the Mobile renderer. The web build uses Compatibility without cast shadows to prevent its separate shadow pass from bleaching colors. The game scales its 1920 × 1080 design to the window. Browser controls target a keyboard and mouse; phone play has not been verified.
 
 Check that each tier can fund the next jump and each food belongs to a visible whole:
 
@@ -98,3 +100,24 @@ ffmpeg -i builds/goo-procedural.avi -c:v libx264 -crf 20 -pix_fmt yuv420p -c:a a
 ```
 
 Use `--body=shell` for the matching shell clip. Require `BODY_CHECK_OK=true` from the body canary. The procedural skin has an uneven idle spread and regathers on movement. Its five individual grips and rolling circulation are less distinct at game camera distance; the comparison remains an experiment.
+
+## Browser build and music
+
+Install the matching Godot 4.7.2 web export templates, then run:
+
+```sh
+./scripts/export_web.sh
+python3 scripts/web_build.py serve
+```
+
+Open http://127.0.0.1:8064/ and press Play. The export compresses WebAssembly and game data in place; the host must honor the generated `_headers` file. Ordinary static servers without those headers cannot load these compressed files.
+
+Regenerate the original MIDI and Ogg loop with Python dependencies managed by uv and FFmpeg on PATH:
+
+```sh
+uv run scripts/build_music.py
+```
+
+The music source contains the composition and a synthesizer; it uses no sampled instruments or third-party music. The Ogg render loops across scene changes. Numerical audio checks cover clipping and the loop boundary; listening quality remains a human judgment.
+
+Godot’s license and third-party notices are included under `licenses/` and in both exports. All models, textures, sound effects, and music were generated for this project. The project is shelved after this release.

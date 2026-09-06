@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Eat, grow, and explore four worlds in Gray Goo.">
+  <title>Gray Goo</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #0b1622; color: #f3eee0; }
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; width: 100vw; height: 100dvh; outline: none; touch-action: none; }
+    #start { position: fixed; inset: 0; display: grid; place-content: center; gap: 24px; text-align: center; background: #0b1622; padding: 24px; }
+    #start[hidden] { display: none; }
+    h1 { font-size: clamp(40px, 8vw, 72px); margin: 0; font-weight: 650; }
+    button { padding: 16px 36px; background: #277f72; border: 2px solid transparent; border-radius: 8px; color: #f3eee0; font: inherit; font-size: 22px; cursor: pointer; }
+    button:hover { background: #319b8b; }
+    button:focus-visible { border-color: #ffe05a; outline: none; }
+    button:disabled { cursor: wait; opacity: .7; }
+    progress { width: min(320px, 75vw); margin: auto; accent-color: #f1c78a; }
+    p { max-width: 36ch; margin: 0; line-height: 1.5; }
+  </style>
+  $GODOT_HEAD_INCLUDE
+</head>
+<body>
+  <canvas id="canvas" tabindex="0" aria-label="Gray Goo game">This game needs a browser with WebGL 2 support.</canvas>
+  <div id="start">
+    <h1>Gray Goo</h1>
+    <button id="play" type="button">Play</button>
+    <progress id="progress" hidden aria-label="Loading game"></progress>
+    <p id="notice" role="status">Eat smaller objects. Keep growing.</p>
+  </div>
+  <script src="$GODOT_URL"></script>
+  <script>
+    const engine = new Engine($GODOT_CONFIG);
+    const play = document.getElementById('play');
+    const notice = document.getElementById('notice');
+    const progress = document.getElementById('progress');
+    async function startGame() {
+      play.disabled = true;
+      progress.hidden = false;
+      notice.textContent = 'Loading the game';
+      try {
+        const missing = Engine.getMissingFeatures({ threads: false });
+        if (missing.length) throw new Error('This browser cannot run the game. Try a current Chrome or Firefox browser.');
+        await engine.startGame({
+          onProgress(current, total) {
+            if (total > 0) { progress.max = total; progress.value = current; }
+          },
+        });
+        document.getElementById('start').hidden = true;
+        document.getElementById('canvas').focus();
+        return { started: true };
+      } catch (error) {
+        console.error(error);
+        progress.hidden = true;
+        notice.textContent = error.message;
+        play.textContent = 'Reload';
+        play.disabled = false;
+        play.onclick = () => location.reload();
+        throw error;
+      }
+    }
+    play.onclick = () => { void startGame().catch(() => {}); };
+    if (document.modelContext?.registerTool) {
+      const lifecycle = new AbortController();
+      Promise.resolve(document.modelContext.registerTool({
+        name: 'start_game',
+        description: 'Start Gray Goo and show its playable first scene.',
+        inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+        annotations: { readOnlyHint: false, untrustedContentHint: false },
+        execute(input) {
+          if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).length) throw new Error('No arguments are accepted.');
+          if (play.disabled) throw new Error('The game has already started loading.');
+          return startGame();
+        },
+      }, { signal: lifecycle.signal })).catch(console.error);
+      window.addEventListener('pagehide', () => lifecycle.abort(), { once: true });
+    }
+  </script>
+</body>
+</html>

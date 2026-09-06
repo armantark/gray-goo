@@ -4,6 +4,7 @@ extends CanvasLayer
 signal scene_requested(index: int)
 signal pause_requested(paused: bool)
 signal body_requested(kind: String)
+signal music_changed(enabled: bool)
 
 # The HUD reads as labels on a microscope slide: paper cards with ink text over the dark scene.
 const INK := Color("1b2a2c")
@@ -26,6 +27,7 @@ var hint_label: Label
 var pointer: FoodPointer
 var movement_speed := 1.0
 var body_kind := "shell"
+var music_enabled := true
 var _root: Control
 var _scene_index := 0
 var _hint_time := 0.0
@@ -317,14 +319,15 @@ func _build_menu() -> void:
 	var error := _settings.load("user://settings.cfg")
 	if error != OK and error != ERR_FILE_NOT_FOUND:
 		push_error("Could not load movement settings: %s" % error_string(error))
-	movement_speed = clampf(float(_settings.get_value("controls", "movement_speed", 1.0)), 0.1, 2.0)
+	movement_speed = clampf(float(_settings.get_value("controls", "movement_speed", 2.0 if OS.has_feature("web") else 1.0)), 0.1, 2.0)
 	body_kind = str(_settings.get_value("controls", "body", "shell"))
+	music_enabled = bool(_settings.get_value("audio", "music", true))
 	menu = _panel(_root)
 	menu.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	menu.offset_left = -260
 	menu.offset_right = 260
-	menu.offset_top = -298
-	menu.offset_bottom = 298
+	menu.offset_top = -328
+	menu.offset_bottom = 328
 	var column := _column(menu)
 	_caption(column, "SLIDE TRAY")
 	_label(column, "Gray Goo", 34)
@@ -375,9 +378,23 @@ func _build_menu() -> void:
 		if save_error != OK:
 			push_error("Could not save body setting: %s" % error_string(save_error))
 		body_requested.emit(body_kind))
+	_build_music_control(column)
 	var resume := _button(column, "Resume")
 	resume.pressed.connect(toggle_menu)
 	menu.hide()
+
+func _build_music_control(column: VBoxContainer) -> void:
+	var music := _button(column, "Music · On" if music_enabled else "Music · Off")
+	music.toggle_mode = true
+	music.button_pressed = music_enabled
+	music.toggled.connect(func(enabled: bool):
+		music_enabled = enabled
+		music.text = "Music · On" if enabled else "Music · Off"
+		_settings.set_value("audio", "music", enabled)
+		var error := _settings.save("user://settings.cfg")
+		if error != OK:
+			push_error("Could not save music setting: %s" % error_string(error))
+		music_changed.emit(enabled))
 
 func configure(index: int, config: Dictionary) -> void:
 	_scene_index = index

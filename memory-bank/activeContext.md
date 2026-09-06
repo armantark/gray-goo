@@ -61,3 +61,11 @@ The user approved the file-specific, read-only Kimi review of this game's world,
 ## Current review
 
 The user reviewed the September 4 ten-second clip and requested slower movement, five irregular forward anchors, control-dependent gaze, and idle melting. This revision is implemented and the native app and comparison clip are ready. The user called the motion/build "Pretty good" and "pretty decent", but rejected the subatomic scene’s lack of structure. The design interview in `plans/subatomic-system-interview.md` now covers all four levels, ends at a whole molecule for the subatomic level, and must produce a contract for Astra with new model requests. Fable owns the speed-scaling and HUD revamp work after the interview settles.
+
+## Final release state, 2026-09-05
+
+The final shipping slice is complete in source. The procedural body remains an optional comparison; do not claim that its grip motion was accepted. Live Blender refinement covers the hermit crab, skater, and skateboard. Runtime board assemblies now use a uniform 0.5 deck scale with the rider’s feet lowered to match. The eating repair removes the initial miniature molecule, retires tiny targets, gives equal-size particles equal thresholds, and collects depleted sugar structures through their last visible constituent.
+
+Particle Shuffle is the original MIDI/Ogg jazz loop, with a saved Music switch. It uses no third-party soundfont. The Mac app preserves the saved movement speed; fresh browser settings default to 200%. The browser uses Compatibility without sun cast shadows because its additive shadow pass bleached the custom toon materials. Native Mobile keeps shadows. Small landscape canvas and menu were checked after reload; phone controls are not verified.
+
+Publish the standalone Mac app and source to https://github.com/armantark/gray-goo and the playable owner-only site to https://gray-goo.tarkavor.chatgpt.site, then shelve. Publication state and final measured evidence belong in progress.md. Do not create a future iteration or automation.

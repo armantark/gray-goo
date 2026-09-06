@@ -127,6 +127,7 @@ func _finish() -> void:
 	file.store_string(JSON.stringify(report, "\t"))
 	file.close()
 	print("MOTION_REPORT ", JSON.stringify(report))
+	_game._music.stop()
 	_game._bite_sound.stop()
 	_game._win_sound.stop()
 	quit(0 if report.route_complete else 1)

@@ -12,6 +12,7 @@ var _tier := 0
 var _cinematic := -1.0
 var _bite_sound: AudioStreamPlayer
 var _win_sound: AudioStreamPlayer
+var _music: AudioStreamPlayer
 var _last_sound := 0
 var _frame_times := PackedFloat64Array()
 var _record_performance := false
@@ -36,6 +37,15 @@ func _ready() -> void:
 	_win_sound.stream = load("res://assets/audio/complete.wav")
 	_win_sound.volume_db = -10.0
 	add_child(_win_sound)
+	_music = AudioStreamPlayer.new()
+	_music.stream = load("res://assets/audio/particle_shuffle.ogg")
+	_music.stream.loop = true
+	_music.volume_db = -17.0
+	_music.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(_music)
+	_music.play()
+	_music.stream_paused = not hud.music_enabled
+	hud.music_changed.connect(func(enabled: bool): _music.stream_paused = not enabled)
 	for arg in OS.get_cmdline_user_args():
 		if arg == "--performance":
 			_record_performance = true
@@ -308,5 +318,6 @@ func _shutdown() -> void:
 		_write_performance()
 	_bite_sound.stop()
 	_win_sound.stop()
+	_music.stop()
 	await get_tree().create_timer(0.1, true, false, true).timeout
 	get_tree().quit()
