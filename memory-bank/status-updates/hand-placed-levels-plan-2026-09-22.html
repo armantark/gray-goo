@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan: hand-placed levels and game feel</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='9' r='6' fill='%238b95a8'/%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #0c0e12; --surface: #161a21; --surface-2: #1e232c; --border: #2a3040;
+  --text: #e8ecf4; --text-dim: #8b95a8; --accent: #4f8cff; --accent-glow: rgba(79, 140, 255, 0.15);
+  --red: #ff5c5c; --green: #4ade80; --amber: #fbbf24; --purple: #a78bfa; --radius: 12px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Outfit, "Avenir Next", "Segoe UI", system-ui, sans-serif; line-height: 1.5; }
+main { max-width: 1120px; margin: 0 auto; padding: 40px 24px 64px; }
+.mono { font-family: "JetBrains Mono", "SF Mono", Menlo, monospace; }
+.badge { display: inline-block; padding: 4px 12px; border-radius: 999px; background: var(--accent-glow); color: var(--accent); font-size: 0.72rem; letter-spacing: 0.06em; }
+h1 { font-size: 2rem; margin: 14px 0 6px; }
+.sub { color: var(--text-dim); margin: 0 0 28px; max-width: 760px; }
+a { color: var(--accent); }
+h2 { font-size: 1.1rem; margin: 36px 0 14px; }
+.lanes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.lane { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }
+.lane h3 { margin: 0 0 10px; font-size: 0.8rem; color: var(--text-dim); font-weight: 600; }
+.t { background: var(--surface-2); border-left: 3px solid var(--accent); border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; font-size: 0.86rem; }
+.t b { font-family: "JetBrains Mono", Menlo, monospace; font-size: 0.72rem; color: var(--text-dim); margin-right: 6px; }
+.t small { display: block; color: var(--text-dim); font-size: 0.72rem; margin-top: 2px; }
+.feel { border-left-color: var(--amber); }
+.layout { border-left-color: var(--green); }
+.model { border-left-color: var(--purple); }
+.ship { border-left-color: var(--red); }
+.gates { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.gate { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.gate .num { font-size: 1.6rem; font-weight: 700; }
+.gate p { margin: 4px 0 0; color: var(--text-dim); font-size: 0.86rem; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pane { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.pane .label { font-size: 0.68rem; letter-spacing: 0.08em; color: var(--text-dim); }
+.field { position: relative; height: 150px; margin-top: 10px; background: var(--surface-2); border-radius: 8px; overflow: hidden; }
+.dot { position: absolute; border-radius: 50%; background: var(--text-dim); }
+.big { background: var(--green); }
+.spawn { position: absolute; width: 0; height: 0; border-top: 7px solid transparent; border-bottom: 7px solid transparent; border-left: 11px solid var(--amber); }
+.pane p { font-size: 0.86rem; color: var(--text-dim); margin: 10px 0 0; }
+ul { padding-left: 20px; } li { margin: 4px 0; }
+.foot { color: var(--text-dim); font-size: 0.8rem; margin-top: 40px; }
+@media (max-width: 900px) { .lanes, .gates, .split { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+<span class="badge mono">PRE-IMPLEMENTATION PLAN</span>
+<h1>Hand-placed levels and Tasty Planet game feel</h1>
+<p class="sub">Opus 5.5 writes all the code. The full design is in the spec at <span class="mono">memory-bank/specs/hand-placed-levels-and-feel/spec.md</span>, with 13 tickets beside it. This page shows the order of work and the gates that each step must pass.</p>
+
+<h2>Order of work</h2>
+<div class="lanes">
+  <div class="lane"><h3>1 · Measure</h3>
+    <div class="t"><b>01</b>Measure missed meals and stalls<small>Shows your bugs as numbers first</small></div>
+  </div>
+  <div class="lane"><h3>2 · Eat and collide</h3>
+    <div class="t feel"><b>02</b>Tasty Planet eat rule<small>After 01</small></div>
+    <div class="t feel"><b>03</b>Smooth collision<small>After 02</small></div>
+    <div class="t feel"><b>04</b>Clean composite pickups<small>After 02</small></div>
+    <div class="t feel"><b>05</b>Level 1 growth bug, double speed<small>After 02</small></div>
+  </div>
+  <div class="lane"><h3>3 · Feel</h3>
+    <div class="t feel"><b>06</b>Eat moment, edible signal, arrow<small>After 02</small></div>
+    <div class="t feel"><b>07</b>Size jump and camera<small>No blockers</small></div>
+  </div>
+  <div class="lane"><h3>4 · Layouts</h3>
+    <div class="t layout"><b>08</b>Spawn points and Tide Pool<small>After 03, 04, 05</small></div>
+    <div class="t layout"><b>09</b>Sugar Water<small>After 08</small></div>
+    <div class="t layout"><b>10</b>Skatepark Bowl<small>After 08</small></div>
+    <div class="t layout"><b>11</b>Cosmic Web<small>After 08</small></div>
+  </div>
+  <div class="lane"><h3>5 · Model and ship</h3>
+    <div class="t model"><b>12</b>3D model test<small>After 08</small></div>
+    <div class="t ship"><b>13</b>Release check<small>After all</small></div>
+  </div>
+</div>
+
+<h2>Gates for each level</h2>
+<div class="gates">
+  <div class="gate"><div class="num mono">6–10 min</div><p>Automatic play-through time at the new default speed. You finish Level 1 in less than 1 minute now.</p></div>
+  <div class="gate"><div class="num mono">0</div><p>Food that the goo touches but does not eat. Also no stuck time over 2 seconds against a large object.</p></div>
+  <div class="gate"><div class="num mono">≥ 58 fps</div><p>A 20-second native play at 1920 × 1080.</p></div>
+</div>
+
+<h2>What changes in a layout</h2>
+<div class="split">
+  <div class="pane"><div class="label mono">NOW</div>
+    <div class="field">
+      <span class="dot" style="left:8%;top:12%;width:6px;height:6px"></span><span class="dot" style="left:14%;top:30%;width:5px;height:5px"></span><span class="dot" style="left:22%;top:18%;width:6px;height:6px"></span><span class="dot" style="left:31%;top:44%;width:5px;height:5px"></span><span class="dot" style="left:40%;top:22%;width:7px;height:7px"></span><span class="dot" style="left:47%;top:64%;width:5px;height:5px"></span><span class="dot" style="left:55%;top:38%;width:6px;height:6px"></span><span class="dot" style="left:63%;top:14%;width:5px;height:5px"></span><span class="dot" style="left:70%;top:58%;width:6px;height:6px"></span><span class="dot" style="left:78%;top:30%;width:5px;height:5px"></span><span class="dot" style="left:86%;top:72%;width:7px;height:7px"></span><span class="dot" style="left:18%;top:70%;width:6px;height:6px"></span><span class="dot" style="left:36%;top:80%;width:5px;height:5px"></span><span class="dot" style="left:60%;top:84%;width:6px;height:6px"></span><span class="dot" style="left:90%;top:20%;width:5px;height:5px"></span><span class="dot" style="left:73%;top:8%;width:6px;height:6px"></span><span class="dot" style="left:5%;top:52%;width:5px;height:5px"></span><span class="dot" style="left:50%;top:6%;width:6px;height:6px"></span>
+    </div>
+    <p>Code scatters thousands of objects with random offsets. Sugar Water had 2687.</p>
+  </div>
+  <div class="pane"><div class="label mono">PLAN</div>
+    <div class="field">
+      <span class="dot big" style="left:62%;top:18%;width:34px;height:34px"></span><span class="dot big" style="left:20%;top:55%;width:22px;height:22px"></span><span class="dot big" style="left:28%;top:62%;width:14px;height:14px"></span><span class="dot big" style="left:74%;top:66%;width:18px;height:18px"></span><span class="dot big" style="left:44%;top:30%;width:12px;height:12px"></span>
+      <span class="spawn" style="left:0;top:40%"></span><span class="spawn" style="left:0;top:78%"></span><span class="spawn" style="left:48%;top:78%"></span>
+    </div>
+    <p>A few dozen objects placed by hand (green), plus spawn points (amber) that release small moving food.</p>
+  </div>
+</div>
+
+<h2>Rules for the day</h2>
+<ul>
+  <li>I commit to <span class="mono">master</span> after each ticket, and I do not push.</li>
+  <li>I look at game screenshots of every layout and every feel change before I call it done.</li>
+  <li>For the 3D model, I look at renders from four angles after each revision. GPT-6 Astra scores it, and GLM 5.3 Flash gives a second vote.</li>
+  <li>Hostile movers, a fifth level, and a level editor are out of scope.</li>
+  <li>Your saved speed of 200% becomes four times the old speed after ticket 05. Set the slider to 100% once.</li>
+</ul>
+<p class="foot mono">2026-09-22 · This page stays unchanged, so you can compare it with the results page.</p>
+</main>
+</body>
+</html>
