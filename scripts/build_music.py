@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["mido==1.3.3"]
+# dependencies = ["mido==1.3.3", "numpy==2.2.6", "soundfile==0.13.1"]
 # ///
 """Engrave the four scene scores with LilyPond, render them with MuseScore 4, and cut seamless Ogg loops.
 
@@ -14,6 +14,12 @@ Each piece plays its intro once and then loops from its first rehearsal mark,
 through the Ogg's Godot loop_offset. The last moments before the loop end are
 crossfaded into the audio that really precedes that mark, so the first pass out
 of the intro and every later wrap reach the loop start through the same sound.
+
+MuseScore cannot load the SFZ upright bass, so each score's bass track is
+rendered by sfz_player from the same MIDI and mixed with MuseScore's render of
+the rest of the band. MuseScore sounds events a few milliseconds late, drifting
+across a piece, so a click at every bass note is rendered through MuseScore and
+the bass follows the fitted lateness.
 """
 
 import argparse
@@ -25,6 +31,10 @@ import re
 import subprocess
 
 import mido
+import numpy as np
+import soundfile as sf
+
+import sfz_player
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "assets/source/music"
@@ -36,6 +46,16 @@ SOUNDS = {"muse-sounds": ("MuseSounds", True), "ms-basic": ("MuseScore Basic", F
 # MuseScore silently falls back to MS Basic when this library is missing.
 MUSE_SAMPLER = "MuseSampler/lib/libMuseSamplerCoreLib.dylib"
 RATE = 44100
+# The Larry Seyer Upright Acoustic Bass (Pianobook, SFZ), unpacked outside git.
+UPRIGHT_BASS = ROOT / ".tooling/upright-bass/sfz/Larry Seyer Upright Acoustic Bass SFZ Format Ver 1.0/0000 - Larry Seyer Upright Acoustic Bass.sfz"
+# The library keys its samples an octave above sounding pitch (key 40 sounds E1).
+UPRIGHT_TRANSPOSE = 12
+BASS_PROGRAM = 32
+# Bass stem loudness relative to the rest of the band, in LU.
+BASS_RELATIVE_LU = -7.0
+ATTACK_LEVEL = .2
+PROBE_REACH_MS = 15
+PROBE_OUTLIER_MS = 3
 TARGET_LUFS = -16.0
 # Vorbis adds intersample overshoot, so the limiter sits below the -1 dBTP ceiling.
 LIMIT = 10 ** (-2 / 20)
@@ -70,16 +90,13 @@ def engrave(name):
 
 
 def timeline(midi_path):
-    """Frames at the first rehearsal mark, where the loop starts, and at the end of the score."""
+    """Nominal seconds at the first rehearsal mark, where the loop starts, and at the end of the score."""
     elapsed, start = 0.0, None
     for message in mido.MidiFile(midi_path):
         elapsed += message.time
         if message.type == "marker" and start is None:
             start = elapsed
-    frames = [seconds * RATE for seconds in (start, elapsed)]
-    # Tempos are chosen so both points fall on whole frames.
-    assert all(abs(value - round(value)) < .01 for value in frames), (midi_path, frames)
-    return [round(value) for value in frames]
+    return start, elapsed
 
 
 def render(midi, wav, sounds):
@@ -90,6 +107,92 @@ def render(midi, wav, sounds):
     job = WORK / (midi.stem + "-job.json")
     job.write_text(json.dumps([{"in": str(midi), "out": str(wav)}]))
     run(MSCORE, "--sound-profile", profile, "-j", str(job))
+
+
+def track_notes(track):
+    """(start tick, stop tick, pitch, velocity) for every note in a MIDI track."""
+    notes, held, tick = [], {}, 0
+    for message in track:
+        tick += message.time
+        if message.type == "note_on" and message.velocity:
+            held[message.note] = (tick, message.velocity)
+        elif message.type in ("note_on", "note_off") and message.note in held:
+            begin, velocity = held.pop(message.note)
+            notes.append((begin, tick, message.note, velocity))
+    return notes
+
+
+def split_bass(midi_path, name):
+    """Write the band without its bass track, and the bass alone; return the bass notes in seconds."""
+    midi = mido.MidiFile(midi_path)
+    tempos = [m.tempo for m in midi.tracks[0] if m.type == "set_tempo"]
+    assert len(set(tempos)) == 1, ("one tempo per score", tempos)
+    programs = [{m.program for m in track if m.type == "program_change"} for track in midi.tracks]
+    [bass] = [i for i, found in enumerate(programs) if BASS_PROGRAM in found]
+    band, alone = (mido.MidiFile(type=1, ticks_per_beat=midi.ticks_per_beat) for _ in range(2))
+    band.tracks.extend(t for i, t in enumerate(midi.tracks) if i != bass)
+    alone.tracks.extend([midi.tracks[0], midi.tracks[bass]])
+    paths = WORK / (name + "-band.midi"), WORK / (name + "-bass.midi")
+    band.save(paths[0])
+    alone.save(paths[1])
+    seconds = lambda tick: mido.tick2second(tick, midi.ticks_per_beat, tempos[0])
+    notes = [sfz_player.Note(seconds(begin), seconds(stop), pitch, velocity)
+             for begin, stop, pitch, velocity in track_notes(midi.tracks[bass])]
+    return *paths, notes
+
+
+def probe(bass_midi, name):
+    """Fit MuseScore's timeline from a side-stick click at every bass note start.
+
+    MuseScore sounds events a few milliseconds late in 4/4, and in 12/8 its clock
+    runs about 0.1% fast, so nominal MIDI times drift by over 100 ms across a piece.
+    Returns a function from nominal seconds to MuseScore seconds, and the fit's
+    offsets at five points for the report.
+    """
+    midi = mido.MidiFile(bass_midi)
+    tempo = next(m.tempo for m in midi.tracks[0] if m.type == "set_tempo")
+    starts = sorted({begin for begin, *_ in track_notes(midi.tracks[1])})
+    events = sorted([(t, 1) for t in starts] + [(t + midi.ticks_per_beat // 16, 0) for t in starts])
+    clicks, previous = mido.MidiTrack(), 0
+    for t, on in events:
+        clicks.append(mido.Message("note_on", channel=9, note=37, velocity=110 * on, time=t - previous))
+        previous = t
+    probe_midi, probe_wav = WORK / (name + "-probe.midi"), WORK / (name + "-probe.wav")
+    mido.MidiFile(type=1, ticks_per_beat=midi.ticks_per_beat, tracks=[midi.tracks[0], clicks]).save(probe_midi)
+    render(probe_midi, probe_wav, "ms-basic")
+    audio, _ = sf.read(probe_wav, dtype="float32", always_2d=True)
+    level = np.abs(audio).max(axis=1)
+    # Follow the drift click by click: search near where the last click's lateness predicts.
+    lateness, nominal, measured = 0.0, [], []
+    for t in starts:
+        seconds = mido.tick2second(t, midi.ticks_per_beat, tempo)
+        reach = PROBE_REACH_MS / 1000 * (4 if not measured else 1)
+        low = max(round((seconds + lateness - reach) * RATE), 0)
+        window = level[low:round((seconds + lateness + reach) * RATE)]
+        first = low + int(np.argmax(window >= ATTACK_LEVEL * window.max()))
+        lateness = first / RATE - seconds
+        nominal.append(seconds)
+        measured.append(lateness)
+    nominal, measured = np.array(nominal), np.array(measured)
+    fit = np.polyfit(nominal, measured, 1)
+    keep = np.abs(measured - np.polyval(fit, nominal)) < PROBE_OUTLIER_MS / 1000
+    fit = np.polyfit(nominal[keep], measured[keep], 1)
+    points = np.linspace(nominal[0], nominal[-1], 5)
+    return (lambda t: t + np.polyval(fit, t)), [round(float(np.polyval(fit, t)) * 1000, 2) for t in points]
+
+
+def mix_bass(band_wav, notes, to_mscore, name):
+    """Add the SFZ upright bass on MuseScore's timeline, BASS_RELATIVE_LU below the band."""
+    band, _ = sf.read(band_wav, dtype="float32", always_2d=True)
+    player = sfz_player.Player(UPRIGHT_BASS, UPRIGHT_TRANSPOSE)
+    moved = [sfz_player.Note(to_mscore(n.start), to_mscore(n.stop), n.pitch, n.velocity) for n in notes]
+    bass = player.render(moved, len(band))
+    bass_wav = WORK / (name + "-upright.wav")
+    sf.write(bass_wav, bass, RATE, subtype="FLOAT")
+    gain_db = loudness(band_wav)[0] + BASS_RELATIVE_LU - loudness(bass_wav)[0]
+    mixed = WORK / (name + "-render.wav")
+    sf.write(mixed, band + bass * 10 ** (gain_db / 20), RATE, subtype="FLOAT")
+    return mixed, round(gain_db, 2)
 
 
 def loudness(path):
@@ -205,9 +308,12 @@ def seam_images(ogg, start, name):
 def build(slug, sounds, output):
     name, title, reverb = PIECES[slug]
     midi, pages = engrave(name)
-    start, end = timeline(midi)
-    rendered = WORK / (name + "-render.wav")
-    render(midi, rendered, sounds)
+    band_midi, bass_midi, notes = split_bass(midi, name)
+    band = WORK / (name + "-band.wav")
+    render(band_midi, band, sounds)
+    to_mscore, lateness = probe(bass_midi, name)
+    start, end = (round(to_mscore(seconds) * RATE) for seconds in timeline(midi))
+    rendered, bass_gain = mix_bass(band, notes, to_mscore, name)
     mastered = master(rendered, start, end, reverb, name)
     ogg = output / (slug + ".ogg")
     end = cut_loop(mastered, start, end, name, ogg)
@@ -225,7 +331,7 @@ def build(slug, sounds, output):
               "source": str((SOURCE / (name + ".ly")).relative_to(ROOT)),
               "score_pages": [str(page.relative_to(ROOT)) for page in pages],
               "duration_seconds": end / RATE, "integrated_lufs": final_lufs, "true_peak_dbfs": final_peak,
-              "ogg_bytes": ogg.stat().st_size, **seam}
+              "ogg_bytes": ogg.stat().st_size, **seam, "mscore_lateness_ms": lateness, "bass_gain_db": bass_gain}
     (WORK / (name + "-report.json")).write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({slug: report}), flush=True)
     return report

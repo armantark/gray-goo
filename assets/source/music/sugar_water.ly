@@ -169,7 +169,7 @@ flute = {
   \mark \default \melOutro
 }
 glock = {
-  \global <>\p
+  \global <>\pp
   R1*4 R1*16
   \melAFront R1*8
   R1*16 \glockSolo R1*4
@@ -204,7 +204,7 @@ shaker = \drummode {
   \repeat unfold 64 \ganza
 }
 bell = \drummode {
-  \meter <>\pp
+  \meter <>\ppp
   R1*4 R1*16
   \repeat unfold 16 \agogo
   R1*16 R1*8 R1*4

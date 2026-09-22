@@ -91,10 +91,10 @@ soloPadHigh = { c''1. | c''1. | gis'1. | gis'1. | des''1. | c''1. | c''1. | des'
 soloPadLow = { f'1. | f'1. | cis'1. | cis'1. | ges'1. | ges'1. | f'1. | ges'2. ges'2. | }
 % Starlight: celesta twinkles in the held bars of each A.
 twinkleA = {
-  R1. | r2. r4 c'''8 f'''4 aes'''8 | R1. | r2. r4 dis'''8 gis'''4 b'''8 |
+  R1. | r2. r4 c'''8 f'''4 aes'''8 | R1. | r2. r4 cis'''8 e'''4 gis'''8 |
   R1. | R1. | R1. | R1. |
 }
-twinkleIntro = { r2. r4 c'''8 f'''4 aes'''8 | r2. r4 dis'''8 gis'''4 b'''8 | R1. | R1. | }
+twinkleIntro = { r2. r4 c'''8 f'''4 aes'''8 | r2. r4 cis'''8 e'''4 gis'''8 | R1. | R1. | }
 
 % Drum cells, one measure each.
 swing = \drummode { << { cymr4. cymr4 cymr8 cymr4. cymr4 cymr8 } \\ { bd4. hhp4. bd4. hhp4. } >> }
@@ -106,21 +106,21 @@ eight = \drummode { \crash \repeat unfold 6 \swing \fill }
 eightHat = \drummode { \crash \repeat unfold 6 \hatSwing \fill }
 
 trumpet = {
-  \global <>\mf
+  \global <>\mp
   R1.*4
   \mark \default \melA
   \mark \default \melAToB
   \mark \default <>\p \padHigh
-  \mark \default <>\mf \melA
+  \mark \default <>\mp \melA
   \mark \default <>\pp \soloPadHigh \soloPadHigh
   \mark \default <>\f \shout
-  \mark \default <>\mf \melA
+  \mark \default <>\mp \melA
   \mark \default R1.*4
 }
 alto = {
-  \global <>\mf
-  R1.*4 \melA \melAToB <>\p \padLow <>\mf \melA <>\pp \soloPadLow \soloPadLow
-  <>\f \shout <>\mf \melA R1.*4
+  \global <>\mp
+  R1.*4 \melA \melAToB <>\p \padLow <>\mp \melA <>\pp \soloPadLow \soloPadLow
+  <>\f \shout <>\mp \melA R1.*4
 }
 tenor = {
   \global <>\f
@@ -133,7 +133,7 @@ trombone = {
   <>\mf \transpose c c, \padLow <>\p \tromGuide R1.*4
 }
 celesta = {
-  \global <>\p
+  \global <>\pp
   \twinkleIntro \twinkleA \twinkleA R1.*8 \twinkleA R1.*16 R1.*8 \twinkleA \twinkleIntro
 }
 pianoUpper = {

@@ -212,7 +212,7 @@ kit = \drummode {
   \groove \groove \groove \fill
 }
 clapping = \drummode {
-  \meter <>\p
+  \meter <>\pp
   R1*4 \repeat unfold 24 \hands R1*8 R1*12 \repeat unfold 24 \hands R1*4
 }
 % Boogaloo conga tumbao: slap on two, open tones pushing into the next bar.

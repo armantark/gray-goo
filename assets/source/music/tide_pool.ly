@@ -125,20 +125,19 @@ rideBossa = \drummode { \repeat unfold 4 { cymr8 cymr16 cymr } }
 kitClave = \drummode { << \clave \\ \kick >> }
 kitRide = \drummode { << \rideBossa \\ \kick >> }
 kitSplash = \drummode { << { cyms4 r8 ss16 r r r ss r r ss r r } \\ \kick >> }
-cabasa = \drummode { \repeat unfold 8 { r16 cab } }
 
 trumpet = {
-  \global <>\mf
+  \global <>\mp
   R1*3 \outroLast
   \mark \default \melA
   \mark \default \melATurn
   \mark \default <>\p \trumpetGuide
-  \mark \default <>\mf \trumpetBreak
+  \mark \default <>\mp \trumpetBreak
   \mark \default \melA
   \mark \default \melOutro
 }
 trombone = {
-  \global \clef bass <>\p
+  \global \clef bass <>\mp
   R1*4 R1*8 \tromGuide
   <>\mf \transpose c c, \melB
   R1*8 R1*8 R1*4
@@ -183,12 +182,6 @@ kit = \drummode {
   \kitSplash \repeat unfold 7 \kitClave
   \repeat unfold 3 \kitRide \kitClave
 }
-shaker = \drummode {
-  \meter <>\ppp
-  \repeat unfold 28 \cabasa
-  R1*8
-  \repeat unfold 12 \cabasa
-}
 
 \score {
     <<
@@ -206,8 +199,6 @@ shaker = \drummode {
         { \bass }
       \new DrumStaff \with { instrumentName = "Kit" }
         { \kit }
-      \new DrumStaff \with { instrumentName = "Cabasa" }
-        { \shaker }
     >>
   \layout { }
   \midi { }
