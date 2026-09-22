@@ -3,6 +3,8 @@
 % Dissolve, for Sugar Water: a bright samba-jazz in A major, vibraphone over
 % electric-piano partido alto, with a surdo-style bass and a light batucada.
 % Samba's 2/4 is written two bars to a 4/4 measure, sixteenths at quarter = 100.
+% The intro plays once; the game loops from mark A, and the outro's last bar
+% matches the intro's so the wrap joins like to like.
 
 \header { title = "Dissolve" subtitle = "Sugar Water" composer = "Opus 5.5" tagline = ##f }
 
@@ -29,7 +31,7 @@ chBm = <d' fis' a' cis''>
 chEt = <d' fis' gis' cis''>
 chEbn = <d' f' gis' b'>
 chCsm = <e' gis' b' dis''>
-chFst = <e' g' ais' dis''>
+chFst = <e' gis' ais' dis''>
 chAt = <g' b' cis'' fis''>
 chDmaj = <cis' e' fis' a'>
 chDmsix = <d' f' a' b'>
@@ -53,7 +55,7 @@ epB = {
   \comp \chFmaj \chFmaj \comp \chEsus \chEt \comp \chAmaj \chFsm \comp \chBm \chEt
 }
 epSolo = { \repeat unfold 4 { \comp \chAmaj \chFsm \comp \chBm \chEt } }
-epOutro = { \comp \chDmaj \chDmsix \comp \chCsm \chFst \comp \chBm \chBm \comp \chEsus \chEbn }
+epOutro = { \comp \chDmaj \chDmsix \comp \chCsm \chFst \comp \chBm \chBm \comp \chBm \chEbn }
 
 bassIntro = { \surdo a, e, \surdo fis, cis, \surdo b, fis, \surdo e, b,, \surdo a, e, \surdo fis, cis, \surdo b, fis, \surdo e, b,, }
 bassA = {
@@ -70,7 +72,7 @@ bassB = {
   \surdo f, c \surdo f, c \surdo e, b,, \surdo e, b,, \surdo a, e, \surdo fis, cis, \surdo b, fis, \surdo e, b,,
 }
 bassSolo = { \repeat unfold 4 { \surdo a, e, \surdo fis, cis, \surdo b, fis, \surdo e, b,, } }
-bassOutro = { \surdo d a, \surdo d a, \surdo cis gis, \surdo fis, cis, \surdo b, fis, \surdo b, fis, \surdo e, b,, \surdo e, b,, }
+bassOutro = { \surdo d a, \surdo d a, \surdo cis gis, \surdo fis, cis, \surdo b, fis, \surdo b, fis, \surdo b, fis, \surdo e, b,, }
 
 melAFront = {
   r8 cis''16 e'' gis''8. b''16~ b''4 a''8 e''8 |
@@ -104,7 +106,7 @@ melBFront = {
   r8 a'16 cis'' e''8. fis''16~ fis''2 |
   r8 a'16 c'' e''8. f''16~ f''4 e''8 d''8 |
   gis''8. fis''16~ fis''8 e''8 b'4 r4 |
-  ais'8 cis''8 e''8 fis''8 g''8. fis''16~ fis''4 |
+  ais'8 cis''8 e''8 fis''8 gis''8. fis''16~ fis''4 |
 }
 melB = {
   \melBFront
@@ -118,16 +120,14 @@ melB = {
   cis''8. e''16~ e''8 a''8 gis''8. fis''16~ fis''8 e''8 |
   d''8 cis''8 b'8 a'8 gis'4 r4 |
 }
-melSolo = {
-  e''16 fis'' gis'' a'' b''8 a''16 gis'' fis''8 cis''16 e'' fis''8 a''8 |
-  d''16 e'' fis'' a'' cis'''8 b''16 a'' gis''8 e''16 d'' b'8 gis'8 |
-  r8 a''16 gis'' fis'' e'' cis''8 r8 e''16 fis'' a''8 fis''16 e'' |
-  d''8. fis''16 a''8 cis'''8 b''8. gis''16~ gis''4 |
-  cis'''16 b'' a'' gis'' a''8 e''8 fis''16 a'' cis''' e''' cis'''8 a''8 |
-  b''16 a'' fis'' d'' cis''8 b'8 d''16 e'' gis'' b'' d'''8 b''8 |
-  a''8. e''16~ e''8 cis''8 a''8. fis''16~ fis''8 cis''8 |
-  d''8 fis''8 a''8 b''8 gis''4 e''4 |
-}
+% Breakdown: the vibraphone calls, the glockenspiel answers a beat late.
+callOne = { cis'''8. b''16~ b''8 a''8 fis''4 r4 | r8 d''16 fis'' a''8 cis'''8 b''4 r4 | }
+callTwo = { e'''8. cis'''16~ cis'''8 a''8 gis''4 fis''4 | r8 fis''16 a'' d'''8 cis'''8 b''8. gis''16~ gis''4 | }
+answerOne = { r4 cis'''8. b''16~ b''8 a''8 fis''4 | r4 r8 d''16 fis'' a''8 cis'''8 b''4 | }
+answerTwo = { r4 e'''8. cis'''16~ cis'''8 a''8 gis''4 | }
+together = { d'''8 cis'''8 b''8 a''8 gis''4 e''4 | }
+melSolo = { \callOne R1*2 \callTwo R1 \together }
+glockSolo = { R1*2 \answerOne R1*2 \answerTwo \together }
 melOutro = {
   fis''8. a''16~ a''8 fis''8 f''8. d''16~ d''8 b'8 |
   e''8. gis''16~ gis''8 b''8 ais''8. fis''16~ fis''8 e''8 |
@@ -136,11 +136,12 @@ melOutro = {
 }
 
 % Percussion cells, one measure each.
-kick = \drummode { bd8. bd16 bd4 bd8. bd16 bd4 }
+% A soft kick on the beat and a floor-tom surdo carrying the heavy second beat.
+kick = \drummode { bd8. bd16 tomfl4-> bd8. bd16 tomfl4-> }
 teleco = \drummode { ss16 r ss ss r ss r ss r ss ss r ss r ss r }
 rideSamba = \drummode { cymr8 cymr16 cymr cymr8 cymr cymr8 cymr16 cymr cymr8 cymr }
-ganza = \drummode { \repeat unfold 4 { mar16 mar mar mar } }
-agogo = \drummode { agh8. agh16 r8 agl8 agh8 r8 agl8 agl8 }
+ganza = \drummode { \repeat unfold 4 { mar16 mar mar mar-> } }
+agogo = \drummode { agh8.-> agh16 r8 agl8 agh8 r8 agl8 agl8 }
 kitStick = \drummode { << \teleco \\ \kick >> }
 kitRide = \drummode { << \rideSamba \\ \kick >> }
 kitCrash = \drummode { << { cymc4 ss16 r ss ss r ss r ss r ss ss r } \\ \kick >> }
@@ -158,11 +159,11 @@ glock = {
   \global <>\p
   R1*4 R1*16
   \melAFront R1*8
-  R1*16 R1*8 R1*4
+  R1*16 \glockSolo R1*4
 }
 ep = {
   \global <>\mp
-  \epIntro \epA \epA \epB \epSolo \epOutro
+  \epIntro \epA \epA \epB <>\pp \epSolo <>\mp \epOutro
 }
 bass = {
   \global \clef bass <>\mf
@@ -174,41 +175,37 @@ kit = \drummode {
   \kitCrash \repeat unfold 15 \kitStick
   \kitCrash \repeat unfold 15 \kitStick
   \kitCrash \repeat unfold 15 \kitRide
-  \kitCrash \repeat unfold 7 \kitStick
-  \repeat unfold 4 \kitRide
+  <>\pp \repeat unfold 8 \kitStick
+  <>\p \kitCrash \kitRide \kitRide \kitStick
 }
 shaker = \drummode {
-  \meter <>\pp
+  \meter <>\ppp
   \repeat unfold 64 \ganza
 }
 bell = \drummode {
-  \meter <>\p
+  \meter <>\pp
   R1*4 R1*16
   \repeat unfold 16 \agogo
-  R1*16
-  \repeat unfold 8 \agogo
-  R1*4
+  R1*16 R1*8 R1*4
 }
 
-band = #(define-music-function (passes) (integer?)
-  #{
+\score {
     <<
       \new Staff \with { instrumentName = "Vibraphone" midiInstrument = "vibraphone" }
-        { \repeat unfold $passes { \vibes } }
+        { \vibes }
       \new Staff \with { instrumentName = "Glockenspiel" midiInstrument = "glockenspiel" }
-        { \repeat unfold $passes { \glock } }
+        { \glock }
       \new Staff \with { instrumentName = "Electric piano" midiInstrument = "electric piano 1" }
-        { \repeat unfold $passes { \ep } }
+        { \ep }
       \new Staff \with { instrumentName = "Bass" midiInstrument = "acoustic bass" }
-        { \repeat unfold $passes { \bass } }
+        { \bass }
       \new DrumStaff \with { instrumentName = "Kit" }
-        { \repeat unfold $passes { \kit } }
+        { \kit }
       \new DrumStaff \with { instrumentName = "Ganzá" }
-        { \repeat unfold $passes { \shaker } }
+        { \shaker }
       \new DrumStaff \with { instrumentName = "Agogô" }
-        { \repeat unfold $passes { \bell } }
+        { \bell }
     >>
-  #})
-
-\score { \band 1 \layout { } }
-\score { \band 3 \midi { } }
+  \layout { }
+  \midi { }
+}
