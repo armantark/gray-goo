@@ -4,7 +4,11 @@
 # ///
 """Engrave the four scene scores with LilyPond, render them with MuseScore 4, and cut seamless Ogg loops.
 
-Run: uv run scripts/build_music.py [slug ...]
+Run: uv run scripts/build_music.py [--sounds muse-sounds|ms-basic] [slug ...]
+
+Only final sounds write the game's Oggs in assets/audio. MS Basic is General MIDI,
+which the owner rejected, so it renders previews under builds/music/preview for
+arranging and listening checks only.
 
 Each LilyPond source engraves one pass of its piece and writes MIDI of three
 passes. MuseScore renders that MIDI, reverb and a limiter are added, and the
@@ -14,12 +18,12 @@ crossfade from the render's real continuation after the middle pass into the
 pass's own head: the wrap then plays exactly what uninterrupted playback would.
 """
 
+import argparse
 from array import array
 import json
 import math
 from pathlib import Path
 import subprocess
-import sys
 
 import mido
 
@@ -28,6 +32,10 @@ SOURCE = ROOT / "assets/source/music"
 OUTPUT = ROOT / "assets/audio"
 WORK = ROOT / "builds/music"
 MSCORE = "/Applications/MuseScore 4.app/Contents/MacOS/mscore"
+# MuseScore sound profiles, keyed by the --sounds name, with whether they may ship.
+SOUNDS = {"muse-sounds": ("MuseSounds", True), "ms-basic": ("MuseScore Basic", False)}
+# MuseScore silently falls back to MS Basic when this library is missing.
+MUSE_SAMPLER = "MuseSampler/lib/libMuseSamplerCoreLib.dylib"
 RATE = 44100
 PASSES = 3
 TARGET_LUFS = -16.0
@@ -49,11 +57,12 @@ def run(*command):
 
 
 def engrave(name):
-    for stale in WORK.glob(name + "*.png"):
-        stale.unlink()
+    for stale in [*WORK.glob(name + "-page*.png"), WORK / (name + ".png")]:
+        stale.unlink(missing_ok=True)
     run("lilypond", "-dno-point-and-click", "--png", "-dresolution=100",
         "-o", str(WORK / name), str(SOURCE / (name + ".ly")))
-    return WORK / (name + ".midi"), sorted(WORK.glob(name + "*.png"))
+    pages = sorted(WORK.glob(name + "-page*.png"), key=lambda page: int(page.stem.rsplit("page", 1)[1]))
+    return WORK / (name + ".midi"), pages or [WORK / (name + ".png")]
 
 
 def pass_frames(midi_path):
@@ -146,12 +155,22 @@ def cut_loop(mastered, frames, name, ogg):
     return period
 
 
-def build(slug):
+def render(midi, wav, sounds):
+    profile, final = SOUNDS[sounds]
+    if final:
+        roots = (Path("/Library/Application Support"), Path.home() / "Library/Application Support")
+        assert any((root / MUSE_SAMPLER).exists() for root in roots), "Muse Sounds is not installed"
+    job = WORK / (midi.stem + "-job.json")
+    job.write_text(json.dumps([{"in": str(midi), "out": str(wav)}]))
+    run(MSCORE, "--sound-profile", profile, "-j", str(job))
+
+
+def build(slug, sounds, output):
     name, title, reverb = PIECES[slug]
     midi, pages = engrave(name)
     frames = pass_frames(midi)
     rendered = WORK / (name + "-render.wav")
-    run(MSCORE, "-o", str(rendered), str(midi))
+    render(midi, rendered, sounds)
     wet = WORK / (name + "-wet.wav")
     # Float intermediates keep reverb overs intact until the limiter.
     run("sox", str(rendered), "-e", "floating-point", "-b", "32", str(wet), *reverb)
@@ -164,7 +183,7 @@ def build(slug):
     run("ffmpeg", "-y", "-v", "error", "-i", str(wet), "-af",
         f"volume={TARGET_LUFS - lufs:.2f}dB,alimiter=limit={LIMIT}:attack=5:release=80:level=0",
         "-c:a", "pcm_f32le", str(mastered))
-    ogg = OUTPUT / (slug + ".ogg")
+    ogg = output / (slug + ".ogg")
     period = cut_loop(mastered, frames, name, ogg)
     final_lufs, final_peak = loudness(ogg)
     seam = seam_report(ogg, mastered, frames, period)
@@ -174,7 +193,7 @@ def build(slug):
     assert seam["seam_residual_5ms_db"] < -20, seam
     assert seam["loop_step"] < seam["adjacent_step_p99"], seam
     assert final_peak <= -1, (slug, "true peak", final_peak)
-    report = {"title": title, "source": str((SOURCE / (name + ".ly")).relative_to(ROOT)),
+    report = {"title": title, "sounds": SOUNDS[sounds][0], "ogg": str(ogg.relative_to(ROOT)), "source": str((SOURCE / (name + ".ly")).relative_to(ROOT)),
               "score_pages": [str(page.relative_to(ROOT)) for page in pages],
               "duration_seconds": period / RATE, "integrated_lufs": final_lufs, "true_peak_dbfs": final_peak,
               "ogg_bytes": ogg.stat().st_size, **seam}
@@ -184,13 +203,21 @@ def build(slug):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--sounds", choices=SOUNDS, default="muse-sounds")
+    parser.add_argument("slugs", nargs="*", metavar="slug", help=", ".join(PIECES))
+    args = parser.parse_args()
+    args.slugs = args.slugs or list(PIECES)
+    if unknown := set(args.slugs) - set(PIECES):
+        parser.error(f"unknown pieces {sorted(unknown)}")
     WORK.mkdir(parents=True, exist_ok=True)
-    slugs = sys.argv[1:] or list(PIECES)
-    reports = {slug: build(slug) for slug in slugs}
+    output = OUTPUT if SOUNDS[args.sounds][1] else WORK / "preview"
+    output.mkdir(parents=True, exist_ok=True)
+    reports = {slug: build(slug, args.sounds, output) for slug in args.slugs}
     if len(reports) == len(PIECES):
         spread = max(r["integrated_lufs"] for r in reports.values()) - min(r["integrated_lufs"] for r in reports.values())
         assert spread <= 2, ("loudness spread", spread)
-        (WORK / "report.json").write_text(json.dumps(reports, indent=2) + "\n")
+        (output / "report.json").write_text(json.dumps(reports, indent=2) + "\n")
     print("MUSIC_OK", flush=True)
 
 
