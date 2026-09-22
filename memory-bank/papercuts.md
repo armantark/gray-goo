@@ -196,3 +196,4 @@
 
 2026-09-06T02:00:47.572583+00:00 Public deployment verification: anonymous root returned HTTP 200 but HTML byte comparison failed (5217 bytes, SHA256 1a944e74ece3b82bf0a72859ccf0a8db4fbcc0c0701d16de5026fdd350da9a4d); inspect platform changes before judging export mismatch.
 - 2026-09-22T22:30:29Z: scripts/drive_levels.gd refused to run with the owner's saved movement_speed=2.0 (`Route timings require the default saved speed`); it now takes `--speed=` for the run instead of reading the saved slider.
+- 2026-09-22T22:53:42Z: every git commit prints `/Users/ArmanTarkhanian1/fleet/config/git/hooks/reference-transaction: line 28: /Users/ArmanTarkhanian1/Desktop/tasty planet clone/scripts/release-tag-deploy.sh: No such file or directory`; the commit still succeeds.
