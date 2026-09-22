@@ -45,3 +45,13 @@ An object or structure made of distinct parts, such as a coral colony. Its parts
 
 **Organic clustering**:
 Uneven, off-center groups with a visible cause, varied gaps, and local motion. Food follows currents, shelter, worn paths, and parent structures instead of grids or concentric rings.
+
+**Placed object**:
+An object that a designer put at a chosen position in a level by hand. Placed objects form the scenery and the large goals of a level.
+
+**Spawn point**:
+A place in a level, or a stretch of its edge, that releases objects over time, up to a limit of live objects at once. Spawned objects move, and they can leave the level. Spawn points supply most of the small food.
+
+**Mover**:
+Any object that moves on its own, whether it is food or a threat.
+_Avoid_: Enemy, when the object does no harm
