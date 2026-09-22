@@ -1,0 +1,34 @@
+{
+  "enabledMcpjsonServers": [
+    "blender_gray_goo"
+  ],
+  "permissions": {
+    "deny": [
+      "mcp__blender_gray_goo__disable_telemetry",
+      "mcp__blender_gray_goo__download_polyhaven_asset",
+      "mcp__blender_gray_goo__download_polypizza_model",
+      "mcp__blender_gray_goo__download_sketchfab_model",
+      "mcp__blender_gray_goo__generate_hunyuan3d_model",
+      "mcp__blender_gray_goo__generate_hyper3d_model_via_images",
+      "mcp__blender_gray_goo__generate_hyper3d_model_via_text",
+      "mcp__blender_gray_goo__get_addon_status",
+      "mcp__blender_gray_goo__get_hunyuan3d_status",
+      "mcp__blender_gray_goo__get_hyper3d_status",
+      "mcp__blender_gray_goo__get_object_info",
+      "mcp__blender_gray_goo__get_polyhaven_categories",
+      "mcp__blender_gray_goo__get_polyhaven_status",
+      "mcp__blender_gray_goo__get_polypizza_status",
+      "mcp__blender_gray_goo__get_sketchfab_model_preview",
+      "mcp__blender_gray_goo__get_sketchfab_status",
+      "mcp__blender_gray_goo__import_generated_asset",
+      "mcp__blender_gray_goo__import_generated_asset_hunyuan",
+      "mcp__blender_gray_goo__poll_hunyuan_job_status",
+      "mcp__blender_gray_goo__poll_rodin_job_status",
+      "mcp__blender_gray_goo__record_trajectory_feedback",
+      "mcp__blender_gray_goo__search_polyhaven_assets",
+      "mcp__blender_gray_goo__search_polypizza_models",
+      "mcp__blender_gray_goo__search_sketchfab_models",
+      "mcp__blender_gray_goo__set_texture"
+    ]
+  }
+}
