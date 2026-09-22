@@ -78,3 +78,7 @@ Camera clipping grows with its orthographic view: its far plane must stay beyond
 At size reveals, tiny food leaves individual targeting and collision. Standalone tiny objects disappear; visible parts of larger ordinary models remain to preserve the model silhouette. Sugar also hides its subatomic constituent visuals and retains batched nucleus detail at larger scales. Retired free detail does not award growth automatically.
 
 Skatepark board geometry, offsets, metadata, and colliders share BOARD_SCALE. The rider foot height uses the same scale so board-to-person proportions cannot drift through independent placement edits.
+
+Eat rule (settled 2026-09-22): the goo eats any object that looks smaller than itself, on contact, and larger objects block it. Visible size is the eating threshold; the view number controls only what is shown. An object that becomes edible gives a clear signal, and the nearest-edible arrow grows with the target's growth reward. This replaces the separate threshold and tier gate, which made edible-looking food act as a wall.
+
+Level layout (settled 2026-09-22): each level has a few dozen placed objects, positioned by hand with no random offsets, plus spawn points that release small moving food. Composites stay single placeable objects. Spawn timing and paths can be random. See `memory-bank/research/original-level-format.md`.
