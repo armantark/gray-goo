@@ -1,6 +1,6 @@
 # 14: New soundtrack
 
-**What to build:** The owner does not like the current four scene tracks. Opus 5.5 writes four new original pieces, one per level, in its own style, and each piece loops without a seam. The scores are written in LilyPond and rendered to audio through MuseScore 4 with its best installed sounds. The current approach, which synthesizes every instrument in numpy, is retired. Each piece must fit its place: a drop of sugar water, a tide pool, a skatepark bowl, and the cosmic web. The pieces do not need to be sax-led or jazz.
+**What to build:** The owner does not like the current four scene tracks. Opus 5.5 writes four new original pieces, one per level, and each piece loops without a seam. The owner wants every piece to sound really upbeat and groovy and to stay within samba, bossa nova, or jazz, with Opus's own spin inside those styles. The scores are written in LilyPond and rendered to audio through MuseScore 4 with its best installed sounds. The current approach, which synthesizes every instrument in numpy, is retired. Each piece must fit its place: a drop of sugar water, a tide pool, a skatepark bowl, and the cosmic web. The pieces do not need to be sax-led.
 
 **Blocked by:** None (can start immediately).
 
