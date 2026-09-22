@@ -53,6 +53,8 @@ UPRIGHT_TRANSPOSE = 12
 BASS_PROGRAM = 32
 # Bass stem loudness relative to the rest of the band, in LU.
 BASS_RELATIVE_LU = -7.0
+# Gemini heard uneven booming low notes that masked the kick, and too little fingerboard definition.
+BASS_EQ = ("equalizer", "110", "1q", "-3", "equalizer", "1400", "1.2q", "+3")
 ATTACK_LEVEL = .2
 PROBE_REACH_MS = 15
 PROBE_OUTLIER_MS = 3
@@ -187,8 +189,10 @@ def mix_bass(band_wav, notes, to_mscore, name):
     player = sfz_player.Player(UPRIGHT_BASS, UPRIGHT_TRANSPOSE)
     moved = [sfz_player.Note(to_mscore(n.start), to_mscore(n.stop), n.pitch, n.velocity) for n in notes]
     bass = player.render(moved, len(band))
-    bass_wav = WORK / (name + "-upright.wav")
-    sf.write(bass_wav, bass, RATE, subtype="FLOAT")
+    dry, bass_wav = WORK / (name + "-upright-dry.wav"), WORK / (name + "-upright.wav")
+    sf.write(dry, bass, RATE, subtype="FLOAT")
+    run("sox", str(dry), "-e", "floating-point", "-b", "32", str(bass_wav), *BASS_EQ)
+    bass, _ = sf.read(bass_wav, dtype="float32", always_2d=True)
     gain_db = loudness(band_wav)[0] + BASS_RELATIVE_LU - loudness(bass_wav)[0]
     mixed = WORK / (name + "-render.wav")
     sf.write(mixed, band + bass * 10 ** (gain_db / 20), RATE, subtype="FLOAT")
@@ -275,14 +279,18 @@ def seam_report(ogg, mastered, start, end):
     """Measure the wrap from the Ogg's end back to the loop start.
 
     The loop's opening follows the audio just before the loop start in the render,
-    so the Ogg's end must converge on exactly that audio: the residual against it
-    over the final 5 ms is near zero only when the wrap sounds like uninterrupted playback.
+    so the Ogg's end must converge on exactly that audio: its residual over the final
+    5 ms should be no worse than Vorbis's own error anywhere else in the loop.
     """
     audio = decode(ogg)
     window, onset = RATE * SEAM_MS // 1000 * 2, RATE * 5 // 1000 * 2
     head, tail = audio[start * 2:start * 2 + window], audio[-window:]
     predecessor = decode_range(mastered, start - window // 2, window // 2)
     residual = [a - b for a, b in zip(tail[-onset:], predecessor[-onset:])]
+    # The same residual mid-loop, where the Ogg is an untouched copy of the master: the codec's floor.
+    middle = (start + end) // 2
+    reference = decode_range(mastered, middle, onset // 2)
+    interior = [a - b for a, b in zip(audio[middle * 2:middle * 2 + onset], reference)]
     step = max(abs(audio[-2 + channel] - audio[start * 2 + channel]) for channel in range(2))
     adjacent = sorted(abs(audio[i] - audio[i - 2]) for i in range(2, len(audio), 97))
     return {"decoded_frames": len(audio) // 2, "expected_frames": end,
@@ -290,6 +298,7 @@ def seam_report(ogg, mastered, start, end):
             "loop_first_50ms_rms_dbfs": round(rms_dbfs(head), 2), "loop_last_50ms_rms_dbfs": round(rms_dbfs(tail), 2),
             "pre_loop_50ms_rms_dbfs": round(rms_dbfs(predecessor), 2),
             "seam_residual_5ms_db": round(rms_dbfs(residual) - rms_dbfs(predecessor[-onset:]), 2),
+            "interior_residual_5ms_db": round(rms_dbfs(interior) - rms_dbfs(reference), 2),
             "loop_step": round(step, 5), "adjacent_step_p99": round(adjacent[int(len(adjacent) * .99)], 5)}
 
 
@@ -324,7 +333,7 @@ def build(slug, sounds, output):
     seam_images(ogg, start, name)
     assert seam["decoded_frames"] == end, seam
     assert abs(seam["loop_last_50ms_rms_dbfs"] - seam["pre_loop_50ms_rms_dbfs"]) < 1, seam
-    assert seam["seam_residual_5ms_db"] < -20, seam
+    assert seam["seam_residual_5ms_db"] < seam["interior_residual_5ms_db"] + 3, seam
     assert seam["loop_step"] < seam["adjacent_step_p99"], seam
     assert final_peak <= -1, (slug, "true peak", final_peak)
     report = {"title": title, "sounds": SOUNDS[sounds][0], "ogg": str(ogg.relative_to(ROOT)),
