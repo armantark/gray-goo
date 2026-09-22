@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** open
+**Status:** claimed by opus-5.5 music agent
 
 - [ ] Each piece has a LilyPond source in the repository, an engraved score image that Opus looked at, and a rendered Ogg that the game plays.
 - [ ] The loop point of each Ogg has no audible click or gap: the last and first 50 milliseconds match in level, and a spectrogram image across the loop shows no break.
