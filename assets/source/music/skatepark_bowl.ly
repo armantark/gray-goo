@@ -36,6 +36,19 @@ bassBlues = {
   \dom f, \dom bes,, \dom f, \dom f, \dom bes,, \dom bes,, \dom f, \dom d,
   \minor g, \dom c, \halfDom f, \halfDom des, \halfMinor g, \halfDom c,
 }
+% Walking quarters under the organ solo, for contrast with the riff.
+walkDom = #(define-music-function (root) (ly:pitch?)
+  #{ \transpose f, $root { f,4 a, c ees } #})
+walkMinor = #(define-music-function (root) (ly:pitch?)
+  #{ \transpose g, $root { g,4 bes, d f } #})
+halfWalkDom = #(define-music-function (root) (ly:pitch?)
+  #{ \transpose f, $root { f,4 a, } #})
+halfWalkMinor = #(define-music-function (root) (ly:pitch?)
+  #{ \transpose g, $root { g,4 bes, } #})
+bassWalkBlues = {
+  \walkDom f, \walkDom bes,, \walkDom f, \walkDom f, \walkDom bes,, \walkDom bes,, \walkDom f, \walkDom d,
+  \walkMinor g, \walkDom c, \halfWalkDom f, \halfWalkDom des, \halfWalkMinor g, \halfWalkDom c,
+}
 bassIntro = { \dom f, \dom f, \dom f, \halfMinor g, \halfDom c, }
 bassBridge = { \stop des, \stop c, \stop des, \stop c, \stop bes,, \stop ees, \stop a,, \stop g,, }
 
@@ -119,6 +132,12 @@ organSolo = {
   a''8 f''8 c''8 ees''8 f''8 aes''8 b''8 aes''8 |
   g''8 f''8 d''8 bes'8 c''4 r4 |
 }
+% Horn backgrounds behind the organ solo: a blue-note push and a hit, every four bars.
+soloBacks = {
+  r2 r8 aes'8-> a'8-> r8 | c''4-> r4 r2 | R1*2 |
+  r2 r8 des''8-> d''8-> r8 | f''4-> r4 r2 | R1*2 |
+  r2 r8 bes'8-> b'8-> r8 | c''4-> r4 r2 | R1*2 |
+}
 % Shout chorus: the horns call with the head riffs, the guitar answers.
 shoutCalls = {
   \riffOne ees''8 f''8 r8 c''8~ c''2 | R1*2
@@ -154,18 +173,19 @@ organ = {
   \mark \default \organBlues
   \mark \default \organBlues
   \mark \default <>\mf \bridge
-  \mark \default \organSolo
+  \mark \default <>\f \organSolo
   \mark \default <>\p \organBlues
   \mark \default \organBlues
   \mark \default \organPad
 }
-% Trumpet and tenor sax in unison; the trombone doubles an octave below from the second head.
-horns = { \transpose c c, { \head \headToBridge } R1*8 R1*12 \transpose c c, { \shoutCalls \head } \hornTag }
-trumpet = { \global <>\mf R1*4 \horns }
-tenor = { \global <>\mf R1*4 \horns }
+% Trumpet and tenor sax in unison, with the trombone an octave below. Every head has the
+% same texture, so the wrap from the last head through the tag into the first adds no cliff.
+horns = { \transpose c c, { \head \headToBridge } R1*8 \soloBacks \transpose c c, { \shoutCalls \head } \hornTag }
+trumpet = { \global <>\mp R1*4 \horns }
+tenor = { \global <>\mp R1*4 \horns }
 trombone = {
-  \global \clef bass <>\mf
-  R1*4 R1*12 \transpose c c,, \headToBridge R1*8 R1*12
+  \global \clef bass <>\mp
+  R1*4 \transpose c c,, { \head \headToBridge } R1*8 \transpose c c, \soloBacks
   \transpose c c,, { \shoutCalls \head } \transpose c c, \hornTag
 }
 guitar = {
@@ -181,7 +201,7 @@ guitar = {
 }
 bass = {
   \global \clef bass <>\f
-  \bassIntro \bassBlues \bassBlues \bassBridge \bassBlues \bassBlues \bassBlues \bassIntro
+  \bassIntro \bassBlues \bassBlues \bassBridge \bassWalkBlues \bassBlues \bassBlues \bassIntro
 }
 kit = \drummode {
   \meter <>\mf
@@ -192,11 +212,14 @@ kit = \drummode {
   \groove \groove \groove \fill
 }
 clapping = \drummode {
+  \meter <>\p
+  R1*4 \repeat unfold 24 \hands R1*8 R1*12 \repeat unfold 24 \hands R1*4
+}
+% Boogaloo conga tumbao: slap on two, open tones pushing into the next bar.
+tumbao = \drummode { r8 cgh cghm4 r8 cgh cgl cgl }
+congas = \drummode {
   \meter <>\mp
-  R1*4 R1*12 R1*12 R1*8 R1*12
-  \repeat unfold 12 \hands
-  \repeat unfold 12 \hands
-  R1*4
+  R1*4 \repeat unfold 24 \tumbao R1*8 \repeat unfold 36 \tumbao R1*4
 }
 
 \score {
@@ -215,6 +238,8 @@ clapping = \drummode {
       { \bass }
     \new DrumStaff \with { instrumentName = "Kit" }
       { \kit }
+    \new DrumStaff \with { instrumentName = "Congas" }
+      { \congas }
     \new DrumStaff \with { instrumentName = "Hands" }
       { \clapping }
   >>

@@ -86,6 +86,9 @@ pianoSolo = {
   ges''4 bes''8 des'''4 bes''8 f''4 ges''8 f''4 ees''8 | c''4 f''8 aes''4 f''8 ges''4 ees''8 c''4 r8 |
   aes'4 c''8 f''4 aes''8 c'''4. aes''4 f''8 | ees''4 des''8 bes'4 ges'8 c''4 ees''8 aes''4 r8 |
 }
+% Soft horn pads behind the piano solo: thirds and sevenths of each A chord.
+soloPadHigh = { c''1. | c''1. | gis'1. | gis'1. | des''1. | c''1. | c''1. | des''2. c''2. | }
+soloPadLow = { f'1. | f'1. | cis'1. | cis'1. | ges'1. | ges'1. | f'1. | ges'2. ges'2. | }
 % Starlight: celesta twinkles in the held bars of each A.
 twinkleA = {
   R1. | r2. r4 c'''8 f'''4 aes'''8 | R1. | r2. r4 dis'''8 gis'''4 b'''8 |
@@ -97,7 +100,10 @@ twinkleIntro = { r2. r4 c'''8 f'''4 aes'''8 | r2. r4 dis'''8 gis'''4 b'''8 | R1.
 swing = \drummode { << { cymr4. cymr4 cymr8 cymr4. cymr4 cymr8 } \\ { bd4. hhp4. bd4. hhp4. } >> }
 crash = \drummode { << { cymc4. cymr4 cymr8 cymr4. cymr4 cymr8 } \\ { bd4. hhp4. bd4. hhp4. } >> }
 fill = \drummode { << { cymr4. cymr4 cymr8 r2. } \\ { bd4. hhp4. sn8 sn sn tomh8 tommh tomfl } >> }
+% The heads ride a closed hi-hat with cross-stick; the ride cymbal is saved for bridge, solo and shout.
+hatSwing = \drummode { << { hh4. hh4 hh8 hh4. hh4 hh8 } \\ { bd4. ss4. bd4. ss4. } >> }
 eight = \drummode { \crash \repeat unfold 6 \swing \fill }
+eightHat = \drummode { \crash \repeat unfold 6 \hatSwing \fill }
 
 trumpet = {
   \global <>\mf
@@ -106,14 +112,14 @@ trumpet = {
   \mark \default \melAToB
   \mark \default <>\p \padHigh
   \mark \default <>\mf \melA
-  \mark \default R1.*16
+  \mark \default <>\pp \soloPadHigh \soloPadHigh
   \mark \default <>\f \shout
   \mark \default <>\mf \melA
   \mark \default R1.*4
 }
 alto = {
   \global <>\mf
-  R1.*4 \melA \melAToB <>\p \padLow <>\mf \melA R1.*16
+  R1.*4 \melA \melAToB <>\p \padLow <>\mf \melA <>\pp \soloPadLow \soloPadLow
   <>\f \shout <>\mf \melA R1.*4
 }
 tenor = {
@@ -124,16 +130,16 @@ tenor = {
 trombone = {
   \global \clef bass <>\p
   R1.*4 R1.*8 \tromGuide <>\mf \transpose c c, \melB <>\p \tromGuide R1.*16
-  <>\f \transpose c c, \shout <>\p \tromGuide R1.*4
+  <>\mf \transpose c c, \padLow <>\p \tromGuide R1.*4
 }
 celesta = {
-  \global <>\mp
+  \global <>\p
   \twinkleIntro \twinkleA \twinkleA R1.*8 \twinkleA R1.*16 R1.*8 \twinkleA \twinkleIntro
 }
 pianoUpper = {
   \global <>\p
   \compIntro \compA \compA \compB \compA
-  <>\mf \pianoSolo
+  <>\f \pianoSolo
   <>\p \compB \compA \compIntro
 }
 pianoLower = {
@@ -151,9 +157,9 @@ bass = {
 kit = \drummode {
   \meter <>\p
   \swing \swing \swing \fill
-  \eight \eight \eight \eight
+  \eightHat \eightHat \eight \eightHat
   \eight \eight
-  <>\mp \eight <>\p \eight
+  <>\mp \eight <>\p \eightHat
   \swing \swing \swing \fill
 }
 
