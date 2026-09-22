@@ -2,7 +2,7 @@
 
 **What to build:** The macOS app and the browser build contain all the work. Each level passes a performance check and a short play in the browser.
 
-**Blocked by:** 06 Eat moment, edible signal, and arrow; 07 Size jump and camera; 09 Hand-placed Sugar Water; 10 Hand-placed Skatepark Bowl; 11 Hand-placed Cosmic Web; 12 3D model test.
+**Blocked by:** 06 Eat moment, edible signal, and arrow; 07 Size jump and camera; 09 Hand-placed Sugar Water; 10 Hand-placed Skatepark Bowl; 11 Hand-placed Cosmic Web; 12 3D model test; 14 New soundtrack.
 
 **Status:** open
 
