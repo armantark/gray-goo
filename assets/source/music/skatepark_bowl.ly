@@ -1,8 +1,9 @@
 \version "2.26.0"
 
 % Coping Stones, for the skatepark bowl: a soul-jazz boogaloo blues in F at
-% quarter = 120, organ and jazz guitar over a pushing bass riff, with a
-% stop-time bridge and a shout chorus that trades riffs over hand claps.
+% quarter = 120. Trumpet, tenor sax and trombone carry the head over Hammond,
+% jazz guitar and a pushing upright bass riff; the organ sings the stop-time
+% bridge and solos, and the shout chorus trades horn riffs with the guitar.
 % The intro plays once; the game loops from mark A, and the tag's last bar
 % matches the intro's so the wrap joins like to like.
 
@@ -71,7 +72,14 @@ guitarIntroTag = { \chank \gF \chank \gF \chank \gF \chankSplit \gGm \gC }
 oF = <ees' g' a' c''>
 oGm = <f' bes' d''>
 oC = <e' bes' d''>
+oBb = <d' f' aes' c''>
+oD = <fis' c'' f''>
+oDb = <f' ces'' ees''>
 organPad = { \hit 1 \oF | \hit 1 \oF | \hit 1 \oF | \hit 2 \oGm \hit 2 \oC | }
+organBlues = {
+  \hit 1 \oF | \hit 1 \oBb | \hit 1 \oF | \hit 1 \oF | \hit 1 \oBb | \hit 1 \oBb |
+  \hit 1 \oF | \hit 1 \oD | \hit 1 \oGm | \hit 1 \oC | \hit 2 \oF \hit 2 \oDb | \hit 2 \oGm \hit 2 \oC |
+}
 
 riffOne = { f''8 r16 f''16 aes''8 a''8~ a''4 c'''8 a''8 | }
 headFront = {
@@ -111,8 +119,8 @@ organSolo = {
   a''8 f''8 c''8 ees''8 f''8 aes''8 b''8 aes''8 |
   g''8 f''8 d''8 bes'8 c''4 r4 |
 }
-% Shout chorus: the organ calls with the head riffs, the guitar answers.
-organShout = {
+% Shout chorus: the horns call with the head riffs, the guitar answers.
+shoutCalls = {
   \riffOne ees''8 f''8 r8 c''8~ c''2 | R1*2
   f''8 r16 f''16 aes''8 f''8~ f''4 d''8 f''8 | aes''8 bes''8 r8 f''8~ f''2 | R1*2
   \headEnd g''8 f''8 d''8 c''8 bes'8 g'8 r4 |
@@ -122,7 +130,7 @@ guitarShout = {
   R1*2 a'8 c''8 ees''8 f''8 ees''8 c''8 a'8 f'8 | fis'8 a'8 c''8 f''8~ f''4 r4 |
   \transpose c c, { \headEnd g''8 f''8 d''8 c''8 bes'8 g'8 r4 | }
 }
-organTag = { f''1~ | f''2 r2 | <>\p \hit 1 \oF | \hit 2 \oGm \hit 2 \oC | }
+hornTag = { f'1~ | f'2 r2 | R1*2 }
 
 % Drum cells, one measure each.
 groove = \drummode {
@@ -141,26 +149,35 @@ bluesKit = \drummode { \crash \repeat unfold 10 \groove \fill }
 hands = \drummode { << { \repeat unfold 8 tamb8 } \\ { r4 hc4 r4 hc4 } >> }
 
 organ = {
-  \global <>\mf
-  R1*2 <>\p \hit 1 \oF | \hit 2 \oGm \hit 2 \oC |
-  \mark \default <>\mf \head
-  \mark \default \headToBridge
-  \mark \default \bridge
+  \global <>\p
+  R1*2 \hit 1 \oF | \hit 2 \oGm \hit 2 \oC |
+  \mark \default \organBlues
+  \mark \default \organBlues
+  \mark \default <>\mf \bridge
   \mark \default \organSolo
-  \mark \default \organShout
-  \mark \default \head
-  \mark \default \organTag
+  \mark \default <>\p \organBlues
+  \mark \default \organBlues
+  \mark \default \organPad
+}
+% Trumpet and tenor sax in unison; the trombone doubles an octave below from the second head.
+horns = { \transpose c c, { \head \headToBridge } R1*8 R1*12 \transpose c c, { \shoutCalls \head } \hornTag }
+trumpet = { \global <>\mf R1*4 \horns }
+tenor = { \global <>\mf R1*4 \horns }
+trombone = {
+  \global \clef bass <>\mf
+  R1*4 R1*12 \transpose c c,, \headToBridge R1*8 R1*12
+  \transpose c c,, { \shoutCalls \head } \transpose c c, \hornTag
 }
 guitar = {
   \global <>\mp
   R1*2 \chank \gF \chankSplit \gGm \gC
   \guitarBlues
-  <>\mf \transpose c c, \headToBridge
+  \guitarBlues
   \guitarBridge
-  <>\mp \guitarBlues
+  \guitarBlues
   <>\mf \guitarShout
-  \transpose c c, \head
-  <>\mp \guitarIntroTag
+  <>\mp \guitarBlues
+  \guitarIntroTag
 }
 bass = {
   \global \clef bass <>\f
@@ -184,11 +201,17 @@ clapping = \drummode {
 
 \score {
   <<
+    \new Staff \with { instrumentName = "Trumpet" midiInstrument = "trumpet" }
+      { \trumpet }
+    \new Staff \with { instrumentName = "Tenor sax" midiInstrument = "tenor sax" }
+      { \tenor }
+    \new Staff \with { instrumentName = "Trombone" midiInstrument = "trombone" }
+      { \trombone }
     \new Staff \with { instrumentName = "Organ" midiInstrument = "drawbar organ" }
       { \organ }
     \new Staff \with { instrumentName = "Jazz guitar" midiInstrument = "electric guitar (jazz)" }
       { \guitar }
-    \new Staff \with { instrumentName = "Bass" midiInstrument = "electric bass (finger)" }
+    \new Staff \with { instrumentName = "Upright bass" midiInstrument = "acoustic bass" }
       { \bass }
     \new DrumStaff \with { instrumentName = "Kit" }
       { \kit }

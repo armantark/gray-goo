@@ -1,7 +1,7 @@
 \version "2.26.0"
 
-% Dissolve, for Sugar Water: a bright samba-jazz in A major, vibraphone over
-% electric-piano partido alto, with a surdo-style bass and a light batucada.
+% Dissolve, for Sugar Water: a bright samba-jazz in A major, flute over piano
+% partido alto, upright bass in surdo style, brass pops, and a light batucada.
 % Samba's 2/4 is written two bars to a 4/4 measure, sixteenths at quarter = 100.
 % The intro plays once; the game loops from mark A, and the intro's last bar
 % copies the outro's in every part so the wrap blends identical music.
@@ -40,22 +40,22 @@ chGt = <f' a' b' e''>
 chFmaj = <e' g' a' c''>
 chEsus = <d' e' a' b'>
 
-epIntro = { \comp \chAmaj \chFsm \comp \chBm \chEt \comp \chAmaj \chFsm \comp \chBm \chEbn }
-epA = {
+pianoIntro = { \comp \chAmaj \chFsm \comp \chBm \chEt \comp \chAmaj \chFsm \comp \chBm \chEbn }
+pianoA = {
   \comp \chAmaj \chAmaj \comp \chAmaj \chAmaj \comp \chCsm \chFst \comp \chBm \chEt
   \comp \chBm \chBm \comp \chEt \chEt \comp \chCsm \chFst \comp \chBm \chEt
   \comp \chAmaj \chAmaj \comp \chAt \chAt \comp \chDmaj \chDmaj \comp \chDmsix \chGt
   \comp \chCsm \chFst \comp \chBm \chEt \comp \chAmaj \chFsm \comp \chBm \chEt
 }
-epBFront = { \comp \chDmaj \chDmaj \comp \chDm \chGt \comp \chCsm \chCsm \comp \chFst \chFst }
-epB = {
-  \epBFront
+pianoBFront = { \comp \chDmaj \chDmaj \comp \chDm \chGt \comp \chCsm \chCsm \comp \chFst \chFst }
+pianoB = {
+  \pianoBFront
   \comp \chBm \chBm \comp \chEt \chEt \comp \chCsm \chFst \comp \chBm \chEt
-  \epBFront
+  \pianoBFront
   \comp \chFmaj \chFmaj \comp \chEsus \chEt \comp \chAmaj \chFsm \comp \chBm \chEt
 }
-epSolo = { \repeat unfold 4 { \comp \chAmaj \chFsm \comp \chBm \chEt } }
-epOutro = { \comp \chDmaj \chDmsix \comp \chCsm \chFst \comp \chBm \chBm \comp \chBm \chEbn }
+pianoSolo = { \repeat unfold 4 { \comp \chAmaj \chFsm \comp \chBm \chEt } }
+pianoOutro = { \comp \chDmaj \chDmsix \comp \chCsm \chFst \comp \chBm \chBm \comp \chBm \chEbn }
 
 bassIntro = { \surdo a, e, \surdo fis, cis, \surdo b, fis, \surdo e, b,, \surdo a, e, \surdo fis, cis, \surdo b, fis, \surdo e, b,, }
 bassA = {
@@ -120,7 +120,7 @@ melB = {
   cis''8. e''16~ e''8 a''8 gis''8. fis''16~ fis''8 e''8 |
   d''8 cis''8 b'8 a'8 gis'4 r4 |
 }
-% Breakdown: the vibraphone calls, the glockenspiel answers a beat late.
+% Breakdown: the flute calls, the glockenspiel answers a beat late.
 callOne = { cis'''8. b''16~ b''8 a''8 fis''4 r4 | r8 d''16 fis'' a''8 cis'''8 b''4 r4 | }
 callTwo = { e'''8. cis'''16~ cis'''8 a''8 gis''4 fis''4 | r8 fis''16 a'' d'''8 cis'''8 b''8. gis''16~ gis''4 | }
 answerOne = { r4 cis'''8. b''16~ b''8 a''8 fis''4 | r4 r8 d''16 fis'' a''8 cis'''8 b''4 | }
@@ -136,6 +136,18 @@ melOutro = {
   \outroLast
 }
 
+% Brass pops in the second chorus: a sixteenth anticipation of beat four, then a short hit.
+pop = #(define-music-function (pitch) (ly:pitch?)
+  #{ r2 r8. $pitch 16~ $pitch 8 $pitch 8 #})
+trumpetPops = {
+  \pop gis' \pop b' \pop ais' \pop gis' \pop a' \pop gis' \pop ais' \pop gis'
+  \pop gis' \pop g' \pop fis' \pop b' \pop ais' \pop gis' \pop a' \pop gis'
+}
+tromPops = {
+  \pop cis' \pop e' \pop e' \pop d' \pop d' \pop d' \pop e' \pop d'
+  \pop cis' \pop cis' \pop cis' \pop f \pop e' \pop d' \pop e' \pop d'
+}
+
 % Percussion cells, one measure each.
 % A soft kick on the beat and a floor-tom surdo carrying the heavy second beat.
 kick = \drummode { bd8. bd16 tomfl4-> bd8. bd16 tomfl4-> }
@@ -147,7 +159,7 @@ kitStick = \drummode { << \teleco \\ \kick >> }
 kitRide = \drummode { << \rideSamba \\ \kick >> }
 kitCrash = \drummode { << { cymc4 ss16 r ss ss r ss r ss r ss ss r } \\ \kick >> }
 
-vibes = {
+flute = {
   \global <>\mf
   R1*3 \outroLast
   \mark \default \melA
@@ -162,9 +174,17 @@ glock = {
   \melAFront R1*8
   R1*16 \glockSolo R1*4
 }
-ep = {
+piano = {
+  \global <>\p
+  \pianoIntro \pianoA \pianoA \pianoB <>\pp \pianoSolo <>\p \pianoOutro
+}
+brassTrumpet = {
   \global <>\mp
-  \epIntro \epA \epA \epB <>\pp \epSolo <>\mp \epOutro
+  R1*4 R1*16 \trumpetPops R1*16 R1*8 R1*4
+}
+brassTrombone = {
+  \global \clef bass <>\mp
+  R1*4 R1*16 \tromPops R1*16 R1*8 R1*4
 }
 bass = {
   \global \clef bass <>\mf
@@ -192,13 +212,17 @@ bell = \drummode {
 
 \score {
     <<
-      \new Staff \with { instrumentName = "Vibraphone" midiInstrument = "vibraphone" }
-        { \vibes }
+      \new Staff \with { instrumentName = "Flute" midiInstrument = "flute" }
+        { \flute }
       \new Staff \with { instrumentName = "Glockenspiel" midiInstrument = "glockenspiel" }
         { \glock }
-      \new Staff \with { instrumentName = "Electric piano" midiInstrument = "electric piano 1" }
-        { \ep }
-      \new Staff \with { instrumentName = "Bass" midiInstrument = "acoustic bass" }
+      \new Staff \with { instrumentName = "Trumpet" midiInstrument = "trumpet" }
+        { \brassTrumpet }
+      \new Staff \with { instrumentName = "Trombone" midiInstrument = "trombone" }
+        { \brassTrombone }
+      \new Staff \with { instrumentName = "Piano" midiInstrument = "acoustic grand" }
+        { \piano }
+      \new Staff \with { instrumentName = "Upright bass" midiInstrument = "acoustic bass" }
         { \bass }
       \new DrumStaff \with { instrumentName = "Kit" }
         { \kit }

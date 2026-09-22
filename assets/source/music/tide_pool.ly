@@ -1,7 +1,8 @@
 \version "2.26.0"
 
-% Low Tide Glimmer, for the tide pool: an upbeat bossa nova in F major, flute over
-% a nylon-guitar batida, with a Rhodes chorus and a bridge that drifts to A-flat.
+% Low Tide Glimmer, for the tide pool: an upbeat bossa nova in F major, trumpet
+% over a nylon-guitar batida and upright bass, with a trombone bridge that drifts
+% to A-flat and a marimba crab-walk breakdown.
 % Bossa's 2/2 is written two bars to a 4/4 measure, sixteenths at quarter = 80.
 % The intro plays once; the game loops from mark A, and the intro's last bar
 % copies the outro's in every part so the wrap blends identical music.
@@ -104,14 +105,18 @@ melB = {
 outroLast = { f''2 e''4 r4 | }
 melOutro = { a''2 g''2 | f''2 g''2 | a'4. c''8~ c''2 | \outroLast }
 
-% Breakdown: a staccato crab-walk on marimba, answered by the flute.
+% Breakdown: a staccato crab-walk on marimba, answered by the trumpet.
 crabOne = { c''16 r a' c'' r8 f''16 e'' r8 c''16 a' g'8 r8 | d''16 r e'' g'' r8 f''16 d'' r8 aes'16 c'' d''8 r8 | }
 crabTwo = { d''16 r f'' a'' r8 g''16 f'' r8 des''16 f'' g''8 r8 | c''16 r e'' a'' r8 g''16 e'' r8 d''16 f'' b'8 r8 | }
 marimbaBreak = { \crabOne R1*2 \crabTwo R1*2 }
-fluteBreak = {
+trumpetBreak = {
   R1*2 e''4. c''8~ c''8 ees''8 d''8 c''8 | bes'4. a'8~ a'4 r4 |
   R1*2 f''4. d''8~ d''8 bes'8 a'8 g'8 | f'4. r8 r8 f'8 g'8 a'8 |
 }
+
+% Guide tones: thirds and sevenths under the second chorus, and above the trombone bridge.
+tromGuide = { a1 | aes1 | g2 fis2 | f2 e2 | d'2 des'2 | c'2 b2 | bes2 bes2 | a2 g2 | }
+trumpetGuide = { g'1 | f'1 | des''2 des''2 | c''2 c''2 | bes'1 | g'1 | g'2 fis'2 | f'2 f'2 | }
 
 % Percussion cells, one measure (two bossa bars) each.
 clave = \drummode { ss16 r r ss r r ss r r r ss r r ss r r }
@@ -122,15 +127,21 @@ kitRide = \drummode { << \rideBossa \\ \kick >> }
 kitSplash = \drummode { << { cyms4 r8 ss16 r r r ss r r ss r r } \\ \kick >> }
 cabasa = \drummode { \repeat unfold 8 { r16 cab } }
 
-flute = {
+trumpet = {
   \global <>\mf
   R1*3 \outroLast
   \mark \default \melA
   \mark \default \melATurn
-  \mark \default \melB
-  \mark \default \fluteBreak
+  \mark \default <>\p \trumpetGuide
+  \mark \default <>\mf \trumpetBreak
   \mark \default \melA
   \mark \default \melOutro
+}
+trombone = {
+  \global \clef bass <>\p
+  R1*4 R1*8 \tromGuide
+  <>\mf \transpose c c, \melB
+  R1*8 R1*8 R1*4
 }
 marimba = {
   \global <>\mf
@@ -181,15 +192,17 @@ shaker = \drummode {
 
 \score {
     <<
-      \new Staff \with { instrumentName = "Flute" midiInstrument = "flute" }
-        { \flute }
+      \new Staff \with { instrumentName = "Trumpet" midiInstrument = "trumpet" }
+        { \trumpet }
+      \new Staff \with { instrumentName = "Trombone" midiInstrument = "trombone" }
+        { \trombone }
       \new Staff \with { instrumentName = "Marimba" midiInstrument = "marimba" }
         { \marimba }
       \new Staff \with { instrumentName = "Nylon guitar" midiInstrument = "acoustic guitar (nylon)" }
         { \guitar }
       \new Staff \with { instrumentName = "Rhodes" midiInstrument = "electric piano 1" }
         { \rhodes }
-      \new Staff \with { instrumentName = "Bass" midiInstrument = "acoustic bass" }
+      \new Staff \with { instrumentName = "Upright bass" midiInstrument = "acoustic bass" }
         { \bass }
       \new DrumStaff \with { instrumentName = "Kit" }
         { \kit }
