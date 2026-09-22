@@ -4,8 +4,8 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** open
+**Status:** done
 
-- [ ] The route driver writes the three new measures per level into its JSON report.
-- [ ] A baseline report for all four levels at 200% speed is saved under `builds/` and its numbers are recorded in `memory-bank/progress.md`, verbatim.
-- [ ] The baseline shows at least one of the reported failures as a nonzero count or a Level 1 time under two minutes. If it shows none, record that and describe what the driver misses.
+- [x] The route driver writes the three new measures per level into its JSON report.
+- [x] A baseline report for all four levels at 200% speed is saved under `builds/` and its numbers are recorded in `memory-bank/progress.md`, verbatim.
+- [x] The baseline shows at least one of the reported failures as a nonzero count or a Level 1 time under two minutes. If it shows none, record that and describe what the driver misses.

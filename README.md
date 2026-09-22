@@ -58,13 +58,17 @@ Use `-- --trials=8 --seed=9217` for a randomized food-order sweep. Check wheel p
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script scripts/check_obstacles.gd
 ```
 
-Record complete native routes through all four levels with the saved movement speed at 100%:
+Record complete native routes through all four levels at 100% movement speed:
 
 ```sh
 /Applications/Godot.app/Contents/MacOS/Godot --path . --resolution 1920x1080 --script scripts/drive_levels.gd -- --output=res://builds/level-routes.json
 ```
 
 The driver uses ordinary directional input. It saves progress, jump times, completion times, frame measurements, and one image per reached view. `--start=2 --last=2` selects only the skatepark. `--limit=900` sets the verification timeout in seconds; it does not add a game timer.
+
+`--speed=2.0` drives at 200% for that run without changing the saved slider.
+
+Each level result also counts missed edible contacts (the goo touches food the game calls edible and the food survives that tick), edible-looking contacts (a visible object smaller than the goo that the game will not eat, split into blocked and passed-through), and stalls (drive input into a touched obstacle with smoothed forward speed under 10% of the commanded speed for at least half a second).
 
 `--seed=439` varies target choices reproducibly. The driver retries another target if it stops moving or makes no growth for 15 seconds, so it cannot chase an inaccessible moving part forever.
 

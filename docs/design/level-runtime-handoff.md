@@ -16,7 +16,7 @@ The four scene definitions live in `src/levels/`. They contain the current names
 4. Show the initial Cosmic Web scale in light years. Its calibration is `9.4607e15` meters per world unit. The existing formatter shows petameters.
 5. Read the current `world.config.meters_per_unit` after each jump. The existing HUD copies that value only in `configure()`.
 
-The native view inspector stages camera views without food consumption. Its images do not establish completion times. `scripts/drive_levels.gd` uses ordinary movement input and records actual routes at the saved default speed of 100%.
+The native view inspector stages camera views without food consumption. Its images do not establish completion times. `scripts/drive_levels.gd` uses ordinary movement input and records actual routes at 100% speed unless `--speed=` sets another speed for the run.
 
 ## Body work
 
