@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** claimed by opus-5.5 music agent
+**Status:** blocked: MuseScore cannot initialize Muse Sounds (`Could not init MuseSampler`, 0.105.8), so no final Ogg can be rendered; scores, build and previews are done (see progress.md)
 
 - [ ] Each piece has a LilyPond source in the repository, an engraved score image that Opus looked at, and a rendered Ogg that the game plays.
 - [ ] The loop point of each Ogg has no audible click or gap: the last and first 50 milliseconds match in level, and a spectrogram image across the loop shows no break.
