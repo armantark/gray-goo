@@ -3,7 +3,8 @@
 % Low Tide Glimmer, for the tide pool: an upbeat bossa nova in F major, flute over
 % a nylon-guitar batida, with a Rhodes chorus and a bridge that drifts to A-flat.
 % Bossa's 2/2 is written two bars to a 4/4 measure, sixteenths at quarter = 80.
-% The intro plays once; the game loops from mark A.
+% The intro plays once; the game loops from mark A, and the intro's last bar
+% copies the outro's in every part so the wrap blends identical music.
 
 \header { title = "Low Tide Glimmer" subtitle = "Tide Pool" composer = "Opus 5.5" tagline = ##f }
 
@@ -45,7 +46,7 @@ gAmhd = <g c' ees' a'>
 
 % Harmony is written once as a chord-pair function and fed to guitar and Rhodes.
 formIntro = #(define-music-function (f) (procedure?)
-  #{ $(f gF gF) $(f gGm gCt) $(f gF gF) $(f gGm gCt) #})
+  #{ $(f gF gF) $(f gGm gCt) $(f gF gF) $(f gDbmaj gCt) #})
 formA = #(define-music-function (f last) (procedure? ly:music?)
   #{ $(f gF gF) $(f gBbt gBbt) $(f gAm gDbn) $(f gGm gCt)
      $(f gBbmaj gBbmsix) $(f gAm gAbo) $(f gGm gCt) $(f gF last) #})
@@ -57,7 +58,7 @@ formOutro = #(define-music-function (f) (procedure?)
 guitarPair = #(lambda (a b) (batida a b))
 padPair = #(lambda (a b) (pad a b))
 
-bassIntro = { \bossa f, c, \bossa f, c, \bossa g, d, \bossa c g,, \bossa f, c, \bossa f, c, \bossa g, d, \bossa c g,, }
+bassIntro = { \bossa f, c, \bossa f, c, \bossa g, d, \bossa c g,, \bossa f, c, \bossa f, c, \bossa des aes,, \bossa c g,, }
 bassAFront = {
   \bossa f, c, \bossa f, c, \bossa bes,, f, \bossa bes,, f, \bossa a,, e, \bossa d a,,
   \bossa g, d, \bossa c g,, \bossa bes,, f, \bossa bes,, f, \bossa a,, e, \bossa aes,, aes,,
@@ -100,22 +101,16 @@ melB = {
   e''4 c''8 a'8~ a'8 ees''8 d''8 c''8 |
   bes'4. a'8~ a'8 g'8 f'8 r8 |
 }
-% Held tones under the Rhodes chorus.
-fluteChorus = {
-  a''1 | g''1 | e''2 fis''2 | f''2 e''2 |
-  d''2 des''2 | c''2 b'2 | bes'1 | a'2 r2 |
-}
-melOutro = { a''2 g''2 | f''2 g''2 | a'4. c''8~ c''2 | f''2 e''4 r4 | }
+outroLast = { f''2 e''4 r4 | }
+melOutro = { a''2 g''2 | f''2 g''2 | a'4. c''8~ c''2 | \outroLast }
 
-rhodesChorus = {
-  r8 a'16 c'' e''8 f''16 g''~ g''8 a''16 g'' f''8 e''16 c'' |
-  d''8 e''16 g''~ g''8 f''16 d''~ d''4 r8 aes'16 c'' |
-  e''8 g''16 e''~ e''8 c''16 a'~ a'8 fis'16 a' c''16 ees'' d''8 |
-  bes'8 d''16 f''~ f''8 a''16 g''~ g''8 e''16 d'' bes'16 a' g'8 |
-  f''8 d''16 a'~ a'8 c''16 d''~ d''8 des''16 f'' g''16 f'' des''8 |
-  c''4 e''16 g'' a'' c'''~ c'''8 b''16 aes'' f''16 d'' b'8 |
-  a''8 g''16 f''~ f''8 d''16 bes'~ bes'8 a'16 g' e'16 g' bes'8 |
-  a'4 r4 r8 f'16 g' a'16 c'' r8 |
+% Breakdown: a staccato crab-walk on marimba, answered by the flute.
+crabOne = { c''16 r a' c'' r8 f''16 e'' r8 c''16 a' g'8 r8 | d''16 r e'' g'' r8 f''16 d'' r8 aes'16 c'' d''8 r8 | }
+crabTwo = { d''16 r f'' a'' r8 g''16 f'' r8 des''16 f'' g''8 r8 | c''16 r e'' a'' r8 g''16 e'' r8 d''16 f'' b'8 r8 | }
+marimbaBreak = { \crabOne R1*2 \crabTwo R1*2 }
+fluteBreak = {
+  R1*2 e''4. c''8~ c''8 ees''8 d''8 c''8 | bes'4. a'8~ a'4 r4 |
+  R1*2 f''4. d''8~ d''8 bes'8 a'8 g'8 | f'4. r8 r8 f'8 g'8 a'8 |
 }
 
 % Percussion cells, one measure (two bossa bars) each.
@@ -125,20 +120,26 @@ rideBossa = \drummode { \repeat unfold 4 { cymr8 cymr16 cymr } }
 kitClave = \drummode { << \clave \\ \kick >> }
 kitRide = \drummode { << \rideBossa \\ \kick >> }
 kitSplash = \drummode { << { cyms4 r8 ss16 r r r ss r r ss r r } \\ \kick >> }
-cabasa = \drummode { \repeat unfold 8 { cab16 cab-> } }
+cabasa = \drummode { \repeat unfold 8 { r16 cab } }
 
 flute = {
   \global <>\mf
-  R1*4
+  R1*3 \outroLast
   \mark \default \melA
   \mark \default \melATurn
   \mark \default \melB
-  \mark \default <>\mp \fluteChorus
-  \mark \default <>\mf \melA
+  \mark \default \fluteBreak
+  \mark \default \melA
   \mark \default \melOutro
 }
+marimba = {
+  \global <>\mf
+  R1*4 R1*8 R1*8 R1*8
+  \marimbaBreak
+  R1*8 R1*4
+}
 guitar = {
-  \global <>\mp
+  \global <>\mf
   \formIntro #guitarPair
   \formA #guitarPair #gCsus
   \formA #guitarPair #gEbt
@@ -147,27 +148,28 @@ guitar = {
   \formA #guitarPair #gCsus
   \formOutro #guitarPair
 }
+rhodesLast = { \hit 2 \gDbmaj r2 | }
 rhodes = {
-  \global <>\p
-  R1*4 R1*8
+  \global <>\pp
+  R1*3 \rhodesLast R1*8
   \formA #padPair #gEbt
   \formB #padPair
-  <>\mf \rhodesChorus
-  <>\p R1*8
-  \pad \gF \gEbt \pad \gDbmaj \gCsus \pad \gF \gEbt \hit 2 \gDbmaj r2
+  R1*8
+  R1*8
+  \pad \gF \gEbt \pad \gDbmaj \gCsus \pad \gF \gEbt \rhodesLast
 }
 bass = {
   \global \clef bass <>\mf
   \bassIntro \bassA \bassATurn \bassB \bassA \bassA \bassOutro
 }
 kit = \drummode {
-  \meter <>\p
+  \meter <>\pp
   \repeat unfold 4 \kitClave
   \kitSplash \repeat unfold 7 \kitClave
   \kitSplash \repeat unfold 7 \kitClave
   \kitSplash \repeat unfold 7 \kitRide
-  <>\pp \repeat unfold 8 \kitClave
-  <>\p \kitSplash \repeat unfold 7 \kitClave
+  \repeat unfold 8 \clave
+  \kitSplash \repeat unfold 7 \kitClave
   \repeat unfold 3 \kitRide \kitClave
 }
 shaker = \drummode {
@@ -181,6 +183,8 @@ shaker = \drummode {
     <<
       \new Staff \with { instrumentName = "Flute" midiInstrument = "flute" }
         { \flute }
+      \new Staff \with { instrumentName = "Marimba" midiInstrument = "marimba" }
+        { \marimba }
       \new Staff \with { instrumentName = "Nylon guitar" midiInstrument = "acoustic guitar (nylon)" }
         { \guitar }
       \new Staff \with { instrumentName = "Rhodes" midiInstrument = "electric piano 1" }

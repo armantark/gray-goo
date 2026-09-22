@@ -3,8 +3,8 @@
 % Dissolve, for Sugar Water: a bright samba-jazz in A major, vibraphone over
 % electric-piano partido alto, with a surdo-style bass and a light batucada.
 % Samba's 2/4 is written two bars to a 4/4 measure, sixteenths at quarter = 100.
-% The intro plays once; the game loops from mark A, and the outro's last bar
-% matches the intro's so the wrap joins like to like.
+% The intro plays once; the game loops from mark A, and the intro's last bar
+% copies the outro's in every part so the wrap blends identical music.
 
 \header { title = "Dissolve" subtitle = "Sugar Water" composer = "Opus 5.5" tagline = ##f }
 
@@ -128,11 +128,12 @@ answerTwo = { r4 e'''8. cis'''16~ cis'''8 a''8 gis''4 | }
 together = { d'''8 cis'''8 b''8 a''8 gis''4 e''4 | }
 melSolo = { \callOne R1*2 \callTwo R1 \together }
 glockSolo = { R1*2 \answerOne R1*2 \answerTwo \together }
+outroLast = { a'8. b'16~ b'8 d''8 e''4 r4 | }
 melOutro = {
   fis''8. a''16~ a''8 fis''8 f''8. d''16~ d''8 b'8 |
   e''8. gis''16~ gis''8 b''8 ais''8. fis''16~ fis''8 e''8 |
   d''2 cis''4 b'4 |
-  a'8. b'16~ b'8 d''8 e''4 r4 |
+  \outroLast
 }
 
 % Percussion cells, one measure each.
@@ -148,7 +149,7 @@ kitCrash = \drummode { << { cymc4 ss16 r ss ss r ss r ss r ss ss r } \\ \kick >>
 
 vibes = {
   \global <>\mf
-  R1*4
+  R1*3 \outroLast
   \mark \default \melA
   \mark \default \melATag
   \mark \default \melB
