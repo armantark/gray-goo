@@ -4,9 +4,9 @@
 
 **Blocked by:** 01 Measure missed meals and stalls.
 
-**Status:** open
+**Status:** done
 
-- [ ] The body and eat check shows that a smaller object from a later tier is eaten on contact and that a larger object blocks.
-- [ ] The route driver reports zero missed edible contacts in all four levels.
-- [ ] Native screenshots at two tiers of one level show that highlighted edible objects are smaller than the goo and blocked objects are larger.
-- [ ] The separate eating threshold argument is gone from food creation.
+- [x] The body and eat check shows that a smaller object from a later tier is eaten on contact and that a larger object blocks.
+- [x] The route driver reports zero missed edible contacts in all four levels.
+- [x] Native screenshots at two tiers of one level show that highlighted edible objects are smaller than the goo and blocked objects are larger.
+- [x] The separate eating threshold argument is gone from food creation.

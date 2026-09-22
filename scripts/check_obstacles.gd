@@ -24,7 +24,7 @@ func _run() -> void:
 		world.advance_scale(0)
 		world.player_radius = world.config.initial_radius
 		_check(world, world.get_start(), 2.0)
-		var added := world._add_food("rock", Vector2.ZERO, 1.0, 100.0, 0.1, "Obstacle canary")
+		var added := world._add_food("rock", Vector2.ZERO, 1.0, 0.1, "Obstacle canary")
 		_check(world, added.global_position, 2.0)
 		var old_position := added.global_position
 		added.position += Vector3(7, 0, 0)

@@ -28,7 +28,7 @@ A reviewer must be able to point at any object and name the whole it belongs to.
 
 1. Replace `jump_radius` and `camera_sizes` with a `jumps` list in each scene config. Each jump has a `radius` and a `view_size`. Tier zero uses the first view size.
 2. Store the ladder in each scene config as a `tiers` list of display names, in order. The HUD reads this list.
-3. Keep the composite accounting in `src/food.gd`. Parts and wholes keep separate thresholds. Removed parts do not reduce the whole threshold.
+3. Keep the composite accounting in `src/food.gd`. Parts and wholes keep separate sizes and separate edibility. Removed parts do not reduce the whole's size.
 4. Add a `rename` capability to composites. A whole can change its label and its color when a part count changes. Use it for the nucleus and element rule below.
 5. Make the camera zoom out slowly with growth inside each view, so on-screen speed does not spike before a jump. Fable sets the speed law; do not change `src/game.gd:90` or `src/goo_body.gd`.
 6. Every scene gets a 3D background beyond the field walls. Background objects are not edible and do not collide. They must move or drift where the theme calls for motion.

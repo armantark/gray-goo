@@ -32,7 +32,7 @@ The goo size at which a level is complete. All consumed matter contributes growt
 A prominent edible target that marks a major growth payoff and usually supplies the final growth needed to reach the level goal size. It is not a separately required objective.
 
 **Eating threshold**:
-The minimum goo size needed to consume an object, informed by its shape and bulk. This is distinct from the growth the object contributes when consumed.
+The minimum goo size needed to consume an object: its visible footprint radius divided by one global margin, so the goo eats what looks smaller than itself. This is distinct from the growth the object contributes when consumed.
 
 **Ladder**:
 The ordered sequence of tiers in a level. Each tier's whole becomes ordinary food in the next tier, and the last tier's whole is the level's milestone.

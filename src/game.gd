@@ -145,17 +145,17 @@ func _physics_process(delta: float) -> void:
 		_complete()
 
 func _consume_foods() -> void:
-	var eaten := 0
+	# Judge every contact before any meal, because a meal can move or hide the rest of its composite.
+	var meals: Array[Food] = []
 	for food in world.nearby(goo.global_position, goo.radius * 3.0):
-		if food.active and food.touched.has_connections() and goo.touches(food.center(), food.radius):
-			food.touched.emit()
-		if not world.is_edible(food, goo.radius):
+		if not food.active or not goo.touches(food.center(), food.radius):
 			continue
-		if goo.touches(food.center(), food.radius * 0.72):
+		food.touched.emit()
+		if world.is_edible(food, goo.radius):
+			meals.append(food)
+	for food in meals:
+		if food.active:
 			_eat(food)
-			eaten += 1
-			if eaten == 5:
-				break
 
 func _consume_pools(delta: float) -> void:
 	for pool in world.pools:

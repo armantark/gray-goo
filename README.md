@@ -70,9 +70,9 @@ The driver uses ordinary directional input. It saves progress, jump times, compl
 
 Each level result also counts missed edible contacts (the goo touches food the game calls edible and the food survives that tick), edible-looking contacts (a visible object smaller than the goo that the game will not eat, split into blocked and passed-through), and stalls (drive input into a touched obstacle with smoothed forward speed under 10% of the commanded speed for at least half a second).
 
-`--seed=439` varies target choices reproducibly. The driver retries another target if it stops moving or makes no growth for 15 seconds, so it cannot chase an inaccessible moving part forever.
+`--seed=439` varies target choices reproducibly. The driver retries another target if it stops moving or makes no growth for 15 seconds, so it cannot chase an inaccessible moving part forever. After 30 seconds without growth it ends the level and reports it as `stuck`.
 
-For faster pacing experiments, use `--headless --fixed-fps 60` before `--script` and `--simulation-clock` after `--`. Those reports use simulation seconds and identify the headless display server. They do not establish native completion time or render performance.
+For routine eat-rule and timing runs, use `--headless --audio-driver Dummy --fixed-fps 60` before `--script` and `--simulation-clock` after `--`. Those reports use simulation seconds and identify the headless display server. They do not establish native completion time or render performance.
 
 Inspect untouched scenes at all five sizes and measure their uncapped render performance:
 

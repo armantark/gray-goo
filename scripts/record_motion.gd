@@ -95,7 +95,7 @@ func _place_fixture() -> void:
 	var down: Vector3 = -_game.rig.camera.global_basis.y
 	down.y = 0.0
 	var at: Vector3 = _game.goo.global_position + down.normalized() * _game.goo.radius * 3.0
-	_fixture = _game.world._add_food("plankton", Vector2(at.x, at.z), _game.goo.radius * 0.3, 0.0, pow(_game.goo.radius, 3.0) * 0.2, "Motion route contact fixture")
+	_fixture = _game.world._add_food("plankton", Vector2(at.x, at.z), _game.goo.radius * 0.3, pow(_game.goo.radius, 3.0) * 0.2, "Motion route contact fixture")
 	_fixture.rename(_fixture.title, Color(0.95, 0.32, 0.23))
 	_pending_foods.append(_fixture)
 

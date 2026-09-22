@@ -33,7 +33,7 @@ func build(scene_world: GameWorld) -> void:
 	filament.name = "VisibleCosmicFilament"
 	world.add_child(filament)
 	_build_filament()
-	supercluster = _whole(Vector2.ZERO, 180.0, 6.0, 192.0, "Filament supercluster", 4)
+	supercluster = _whole(Vector2.ZERO, 180.0, 192.0, "Filament supercluster", 4)
 	supercluster.context_whole = filament
 	supercluster.milestone = true
 	_build_supercluster()
@@ -43,8 +43,8 @@ func build(scene_world: GameWorld) -> void:
 	fabric.minimum_radius = 6.0
 	_build_background()
 
-func _whole(at: Vector2, size: float, threshold: float, volume: float, label: String, tier: int, parent: Food = null) -> Food:
-	var food := world._add_food("", at, size, threshold, volume, label, false, tier, parent)
+func _whole(at: Vector2, size: float, volume: float, label: String, tier: int, parent: Food = null) -> Food:
+	var food := world._add_food("", at, size, volume, label, false, tier, parent)
 	food.rotation = Vector3.ZERO
 	food.height = 0.4
 	return food
@@ -89,7 +89,7 @@ func _dust_path(parent: Node3D, points: PackedVector3Array, count: int, spread: 
 func _build_supercluster() -> void:
 	for index in range(28):
 		var point := _group_point(index)
-		var group := _whole(Vector2(point.x, point.z), 9.5, 3.3 + (index % 7) * 0.12, 6.3,
+		var group := _whole(Vector2(point.x, point.z), 9.5, 6.3,
 			"Galaxy group " + str(index + 1), 3, supercluster)
 		group.rotation.y = 0.12 if index == 1 else world._rng.randf_range(-1.8, 1.8)
 		_groups.append({"food": group, "home": group.position, "phase": world._rng.randf_range(0, TAU)})
@@ -102,9 +102,9 @@ func _build_supercluster() -> void:
 func _build_group(group: Food, index: int) -> void:
 	var spiral := _spiral(group, Vector2(-4.2, 0) + _galaxy_offset(), index)
 	_galaxies.append(spiral)
-	var elliptical := world._add_food("elliptical_galaxy", Vector2(3.4, 3.6) + _galaxy_offset(), 2.3, 2.05,
+	var elliptical := world._add_food("elliptical_galaxy", Vector2(3.4, 3.6) + _galaxy_offset(), 2.3,
 		0.375, "Elliptical galaxy", false, 2, group)
-	var dwarf := world._add_food("dwarf_galaxy", Vector2(4.0, -4.1) + _galaxy_offset(), 1.4, 1.75,
+	var dwarf := world._add_food("dwarf_galaxy", Vector2(4.0, -4.1) + _galaxy_offset(), 1.4,
 		0.33, "Dwarf galaxy", false, 2, group)
 	_nonblocking(elliptical)
 	_nonblocking(dwarf)
@@ -117,26 +117,26 @@ func _build_group(group: Food, index: int) -> void:
 	_nebula(dwarf, Vector2(0.8, -0.6), 0.6, index * 3 + 2)
 
 func _spiral(group: Food, at: Vector2, seed_index: int) -> Food:
-	var galaxy := _whole(at, 4.2, 2.4, 0.3, "Spiral galaxy", 2, group)
+	var galaxy := _whole(at, 4.2, 0.3, "Spiral galaxy", 2, group)
 	Geometry.backdrop_model(galaxy.visual, "galaxy_bulge", Vector3.ZERO, 0.92)
 	for index in range(3):
-		var arm := world._add_food("galaxy_arm", Vector2.ZERO, 3.5, 1.75, 0.05,
+		var arm := world._add_food("galaxy_arm", Vector2.ZERO, 3.5, 0.05,
 			"Spiral arm", false, 2, galaxy)
 		arm.rotation.y = index * TAU / 3.0
 		_nonblocking(arm)
 		if index < 2:
 			_nebula(arm, Vector2(1.7, 0.4), 1.25, seed_index * 3)
-	var hole := world._add_food("black_hole", Vector2(0.12, 0.15), 0.35, 1.1,
+	var hole := world._add_food("black_hole", Vector2(0.12, 0.15), 0.35,
 		0.045, "Black hole with accretion disk", false, 1, galaxy, 0.7)
 	hole.set_meta("accretion_disk", true)
 	galaxy.part_consumed.connect(_spiral_changed.bind(galaxy))
 	return galaxy
 
 func _nebula(parent: Food, at: Vector2, size: float, index: int) -> void:
-	var nebula := world._add_food("nebula", at, size, 1.05, 0.025, "Stellar nursery nebula", false, 1, parent)
+	var nebula := world._add_food("nebula", at, size, 0.025, "Stellar nursery nebula", false, 1, parent)
 	nebula.rotation = Vector3.ZERO
 	_nonblocking(nebula)
-	var cluster := _whole(Vector2.ZERO, size * 0.82, 0.85, 0.0165, "Open star cluster", 1, nebula)
+	var cluster := _whole(Vector2.ZERO, size * 0.82, 0.0165, "Open star cluster", 1, nebula)
 	for star_index in range(9):
 		var lobe := Vector2(-0.28, 0.13) if star_index < 6 else Vector2(0.34, -0.22)
 		var scatter := Vector2(world._rng.randfn(0, 0.2), world._rng.randfn(0, 0.14))
@@ -144,7 +144,7 @@ func _nebula(parent: Food, at: Vector2, size: float, index: int) -> void:
 		var kind: String = ["red_dwarf", "yellow_star", "blue_giant"][star_index % 3]
 		var star_size: float = [0.115, 0.15, 0.2][star_index % 3]
 		var star := world._add_food(kind, position,
-			star_size, 0.4, 0.00225, kind.replace("_", " ").capitalize(), false, 0, cluster, 0.025)
+			star_size, 0.00225, kind.replace("_", " ").capitalize(), false, 0, cluster, 0.025)
 		_stars.append({"food": star, "home": star.position, "phase": world._rng.randf_range(0, TAU), "speed": world._rng.randf_range(0.15, 0.3)})
 
 func _spiral_changed(part: Food, galaxy: Food) -> void:

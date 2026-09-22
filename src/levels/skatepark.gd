@@ -68,7 +68,7 @@ func _build_litter() -> void:
 		var radius := _world._rng.randf_range(6.9, 8.8)
 		var at := BOWL_CENTER + Vector2(cos(angle) * 1.2, sin(angle)) * radius
 		var kind: String = kinds[index % kinds.size()]
-		var food := _world._add_food(kind, at, _world._rng.randf_range(0.1, 0.19), 0.32, 0.0014, kind.replace("_", " ").capitalize())
+		var food := _world._add_food(kind, at, _world._rng.randf_range(0.1, 0.19), 0.0014, kind.replace("_", " ").capitalize())
 		food.context_whole = _bowl
 		food.loose_reason = "Pebbles broke from the concrete rim and washed into the low gutter."
 		if kind in ["bolt", "bearing"]:
@@ -105,29 +105,29 @@ func _build_boards() -> void:
 		var at: Vector2 = rests[index / 3] + Vector2(_world._rng.randf_range(-1.5, 1.5), _world._rng.randf_range(-1.5, 1.5))
 		var kinds := ["helmet", "shoe", "water_bottle"]
 		var kind: String = kinds[index % 3]
-		var gear := _world._add_food(kind, at, 0.48, 0.85, 0.03, kind.replace("_", " ").capitalize(), false, 1)
+		var gear := _world._add_food(kind, at, 0.48, 0.03, kind.replace("_", " ").capitalize(), false, 1)
 		gear.context_whole = _bowl
 		gear.loose_reason = "Skaters leave their gear in small piles on the dry rim before riding."
 		if kind == "water_bottle":
 			_bottles.append(gear)
 
 func _add_board(at: Vector2, parent: Food = null) -> Food:
-	var board := _world._add_food("", at, 1.18 * BOARD_SCALE, 0.85, 0.02, "Skateboard", false, 1, parent)
+	var board := _world._add_food("", at, 1.18 * BOARD_SCALE, 0.02, "Skateboard", false, 1, parent)
 	board.rotation.y = 0.0
 	board.height = 0.5 * BOARD_SCALE
-	var deck := _world._add_food("board", Vector2.ZERO, 1.15 * BOARD_SCALE, 0.85, 0.015, "Skate deck", false, 1, board, 0.22 * BOARD_SCALE)
+	var deck := _world._add_food("board", Vector2.ZERO, 1.15 * BOARD_SCALE, 0.015, "Skate deck", false, 1, board, 0.22 * BOARD_SCALE)
 	deck.rotation.y = 0.0
 	for axle in [-1.0, 1.0]:
-		var truck := _world._add_food("truck", Vector2(axle * 0.68, 0) * BOARD_SCALE, 0.34 * BOARD_SCALE, 0.85, 0.005, "Skateboard truck", false, 1, board, 0.11 * BOARD_SCALE)
+		var truck := _world._add_food("truck", Vector2(axle * 0.68, 0) * BOARD_SCALE, 0.34 * BOARD_SCALE, 0.005, "Skateboard truck", false, 1, board, 0.11 * BOARD_SCALE)
 		truck.rotation.y = 0.0
 		for side in [-1.0, 1.0]:
-			var wheel := _world._add_food("wheel", Vector2(axle * 0.68, side * 0.44) * BOARD_SCALE, 0.16 * BOARD_SCALE, 0.4, 0.002, "Skateboard wheel", false, 0, board)
+			var wheel := _world._add_food("wheel", Vector2(axle * 0.68, side * 0.44) * BOARD_SCALE, 0.16 * BOARD_SCALE, 0.002, "Skateboard wheel", false, 0, board)
 			wheel.rotation.y = 0.0
 	board.part_consumed.connect(_board_changed.bind(board))
 	return board
 
 func _add_rider(at: Vector2) -> void:
-	var rider := _world._add_food("", at, 0.9, 1.4, 0.25, "Skater", false, 2)
+	var rider := _world._add_food("", at, 0.9, 0.25, "Skater", false, 2)
 	rider.context_whole = _bowl
 	rider.loose_reason = "This skater rides a board through the concrete bowl."
 	rider.height = 2.0
@@ -166,20 +166,20 @@ func _build_furniture() -> void:
 		Vector2(-28, -14), Vector2(-31, -3), Vector2(8, 41), Vector2(40, 12)]
 	for point in seats:
 		var at: Vector2 = point + Vector2(_world._rng.randf_range(-0.7, 0.7), _world._rng.randf_range(-0.7, 0.7))
-		var bench := _world._add_food("bench", at, 1.65, 1.4, 0.34, "Park bench", false, 2)
+		var bench := _world._add_food("bench", at, 1.65, 0.34, "Park bench", false, 2)
 		bench.context_whole = _bowl
 		bench.loose_reason = "Seating lines the flat spectator side of the bowl."
 		bench.rotation.y = PI * 0.5 + _world._rng.randf_range(-0.25, 0.25)
 	for at in [Vector2(-23, -24), Vector2(-24, -5), Vector2(-22, 20), Vector2(-9, 36),
 			Vector2(-34, -13), Vector2(-35, -2), Vector2(4, 40), Vector2(44, 12)]:
-		var bin := _world._add_food("trash_can", at, 0.9, 1.4, 0.24, "Park trash can", false, 2)
+		var bin := _world._add_food("trash_can", at, 0.9, 0.24, "Park trash can", false, 2)
 		bin.context_whole = _bowl
 		bin.loose_reason = "The park's trash cans stand beside its spectator benches."
 	for at in [Vector2(-4, 25), Vector2(1, 28), Vector2(7, 24), Vector2(10, 29),
 			Vector2(18, 25), Vector2(24, 30), Vector2(27, 26), Vector2(33, 29),
 			Vector2(-28, -30), Vector2(-21, -34), Vector2(-16, -29), Vector2(-8, -32),
 			Vector2(8, -28), Vector2(17, -34), Vector2(22, -29), Vector2(32, -33)]:
-		var cone := _world._add_food("cone", at, 0.55, 1.4, 0.045, "Practice cone", false, 2)
+		var cone := _world._add_food("cone", at, 0.55, 0.045, "Practice cone", false, 2)
 		cone.context_whole = _bowl
 		cone.loose_reason = "The cone line marks the approach to the quarter pipes."
 
@@ -191,9 +191,8 @@ func _build_rails() -> void:
 			Vector2(43, 22), Vector2(-21, -10), Vector2(-27, 8), Vector2(-8, 26)]
 	for index in positions.size():
 		var at: Vector2 = positions[index]
-		var required := 2.3 + floorf(index / 4.0) * 0.225
-		var size := required * 1.05
-		var rail := _world._add_food("", at, size, required, 0.5, "Grind rail", false, 3)
+		var size := 2.415 + floorf(index / 4.0) * 0.23625
+		var rail := _world._add_food("", at, size, 0.5, "Grind rail", false, 3)
 		rail.context_whole = _bowl
 		rail.loose_reason = "The grind rail belongs to the bowl's flat trick course."
 		rail.rotation.y = _world._rng.randf_range(-0.45, 0.45)
@@ -202,7 +201,7 @@ func _build_rails() -> void:
 		rail.visual.add_child(bar)
 		bar.position.y = 0.94
 		for side in [-1.0, 1.0]:
-			var post := _world._add_food("rail_post", Vector2(side * size * 0.643, 0), 0.42, 1.4, 0.07, "Grind rail post", false, 2, rail)
+			var post := _world._add_food("rail_post", Vector2(side * size * 0.643, 0), 0.42, 0.07, "Grind rail post", false, 2, rail)
 			post.rotation.y = 0.0
 		rail.part_consumed.connect(_rail_changed.bind(rail))
 
@@ -217,15 +216,14 @@ func _build_pipes() -> void:
 			Vector2(30, 22), Vector2(2, 29), Vector2(-24, 22),
 			Vector2(-39, -20), Vector2(-16, -40), Vector2(19, -40), Vector2(43, -24),
 			Vector2(-39, 26), Vector2(-17, 29), Vector2(6, 38), Vector2(40, 40)]
-	var thresholds := [2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.05, 3.1, 3.15, 3.2, 3.3, 3.4]
+	var sizes := [2.622, 2.736, 2.85, 2.964, 3.078, 3.192, 3.306, 3.42, 3.477, 3.534, 3.591, 3.648, 3.762, 3.876]
 	for index in positions.size():
 		var at: Vector2 = positions[index]
-		var required: float = thresholds[index]
-		var pipe := _world._add_food("ramp", at, required * 1.14, required, 1.55, "Quarter pipe", false, 3)
+		var pipe := _world._add_food("ramp", at, sizes[index], 1.55, "Quarter pipe", false, 3)
 		pipe.context_whole = _bowl
 		pipe.loose_reason = "Quarter pipes face the connected bowl and trick course."
 		pipe.rotation.y = atan2(at.y - BOWL_CENTER.y, BOWL_CENTER.x - at.x)
-	var final := _world._add_food("ramp", Vector2(-33, 7), 4.7, 3.5, 38.0, "Big quarter pipe", false, 4)
+	var final := _world._add_food("ramp", Vector2(-33, 7), 4.7, 38.0, "Big quarter pipe", false, 4)
 	final.context_whole = _bowl
 	final.loose_reason = "The park's biggest quarter pipe anchors its western deck."
 	final.rotation.y = 0.0

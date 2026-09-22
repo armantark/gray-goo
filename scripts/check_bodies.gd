@@ -82,15 +82,39 @@ func _run() -> void:
 		_check(game.goo.global_position.x > edge_start.x, kind + " wall probe drives outward")
 		_check(grounded, kind + " skin stays above terrain")
 		_check(bounded, kind + " skin stays inside field")
+		_check_eat_rule(game, kind)
 		print("BODY_CASE ", kind, " radius=", game.goo.radius, " position=", game.goo.global_position)
 	game.free()
 	Engine.time_scale = 1.0
 	print("BODY_CHECK_OK=", _valid, " checks=", _checks)
 	quit(0 if _valid else 1)
 
+# Size decides edibility, not tier: a smaller rock from the last tier is eaten on first contact,
+# and a larger can from the first tier survives contact as an obstacle. Whether the body slides
+# cleanly along it is the collision check's concern.
+func _check_eat_rule(game: Node3D, kind: String) -> void:
+	game.start_level(1)
+	game._switch_body(kind)
+	var at: Vector3 = game.goo.global_position
+	var small: Food = game.world._add_food("rock", Vector2(at.x, at.z), game.goo.radius * 0.5, 0.01, "Later-tier canary", false, 4)
+	game._physics_process(1.0 / 60.0)
+	_check(not small.active, kind + " smaller later-tier object is eaten on contact")
+	Input.action_press("move_up")
+	var heading: Vector3 = game.rig.movement_direction()
+	at = game.goo.global_position + heading * game.goo.radius * 3.0
+	var large: Food = game.world._add_food("trash_can", Vector2(at.x, at.z), game.goo.radius * 2.0, 0.01, "Larger canary", false, 0)
+	var touched := false
+	for tick in 180:
+		_tick(game)
+		touched = touched or game.goo.touches(large.center(), large.radius)
+	Input.action_release("move_up")
+	var solid: bool = game.world.get_obstacles(large.global_position, 0.0).any(
+		func(obstacle: Dictionary) -> bool: return obstacle.center == large.global_position)
+	_check(touched and large.active and solid, kind + " larger object blocks")
+
 func _food_at_body(game: Node3D, volume: float) -> Food:
 	var at: Vector3 = game.goo.global_position
-	var food: Food = game.world._add_food("plankton", Vector2(at.x, at.z), game.goo.radius * 0.25, 0.0, volume, "Body canary contact fixture")
+	var food: Food = game.world._add_food("plankton", Vector2(at.x, at.z), game.goo.radius * 0.25, volume, "Body canary contact fixture")
 	food.rename(food.title, Color(1.0, 0.15, 0.25))
 	return food
 

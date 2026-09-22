@@ -15,3 +15,5 @@ Blender CLI can run Python for asset creation, materials, rendering, and export.
 Godot 4.7.2 standard universal is installed at /Applications/Godot.app. Its official archive passed SHA512 verification, codesign verification, spctl assessment (`accepted`, `source=Notarized Developer ID`), and headless version execution (`4.7.2.stable.official.ed1daf0bf`). The existing /Applications/Godot_mono.app is untouched. Only macos.zip from the verified official export templates is installed under ~/Library/Application Support/Godot/export_templates/4.7.2.stable.
 
 Regenerate models with Blender using scripts/build_assets.py and --python-exit-code 1. assets/source/.gdignore prevents Godot from trying to import the editable .blend source; the runtime uses the exported GLBs and committed .import settings. Regenerate the original short sounds with python3 scripts/build_audio.py.
+
+Route and timing runs are headless with `--audio-driver Dummy` and the driver's `--simulation-clock`; open a native window only for required screenshots, kept short and muted, because the owner found visible, noisy route runs disruptive (2026-09-22).

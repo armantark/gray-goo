@@ -11,11 +11,18 @@ var current_tier := 0
 var _layout: RefCounted
 var _time := 0.0
 var _rng := RandomNumberGenerator.new()
-# Foods wander a bounded distance from where the layout placed them, so a grid keyed by
-# placement plus a wander margin answers "what is near the goo" without scanning every food.
+# The goo eats objects whose footprint radius is under its radius times this margin. Its skin
+# reaches at least 1.19 radii from its center while moving, so 1.2 keeps "smaller" true on screen.
+const EAT_MARGIN := 1.2
+# Foods drift, orbit, and roll, so a grid answers "what is near the goo" without scanning every
+# food. Each physics tick re-bins a slice, so every food is re-binned within REBIN_SECONDS; a
+# food must move less than WANDER in that time.
 const CELL := 8.0
 const WANDER := 8.0
+const REBIN_SECONDS := 0.5
 var _cells: Dictionary = {}
+var _cell_of: Dictionary = {}
+var _rebin_index := 0
 var _widest_collider := 0.0
 
 func build(level_index: int) -> void:
@@ -58,10 +65,12 @@ func get_obstacles(center: Vector3, reach: float) -> Array:
 
 func nearby(center: Vector3, reach: float) -> Array[Food]:
 	if _cells.is_empty():
+		_cell_of.clear()
 		_widest_collider = 0.0
 		for food in foods:
-			var point := food.global_position
-			_cells.get_or_add(Vector2i(floori(point.x / CELL), floori(point.z / CELL)), []).append(food)
+			var cell := _cell(food.global_position)
+			_cells.get_or_add(cell, []).append(food)
+			_cell_of[food] = cell
 			_widest_collider = maxf(_widest_collider, food.collider_radius)
 	var margin := reach + WANDER + _widest_collider
 	var result: Array[Food] = []
@@ -71,6 +80,23 @@ func nearby(center: Vector3, reach: float) -> Array[Food]:
 				if is_instance_valid(food):
 					result.append(food)
 	return result
+
+func _cell(point: Vector3) -> Vector2i:
+	return Vector2i(floori(point.x / CELL), floori(point.z / CELL))
+
+func _rebin(count: int) -> void:
+	if _cells.is_empty():
+		return
+	for _step in mini(count, foods.size()):
+		_rebin_index = (_rebin_index + 1) % foods.size()
+		var food := foods[_rebin_index]
+		if not is_instance_valid(food) or not food.active:
+			continue
+		var cell := _cell(food.global_position)
+		if cell != _cell_of[food]:
+			_cells[_cell_of[food]].erase(food)
+			_cells.get_or_add(cell, []).append(food)
+			_cell_of[food] = cell
 
 func nearest_edible(point: Vector3, goo_radius: float) -> Food:
 	var nearest: Food
@@ -84,8 +110,11 @@ func nearest_edible(point: Vector3, goo_radius: float) -> Food:
 			nearest = food
 	return nearest
 
+# The one edibility rule for eating, blocking, and the arrow. A container whose own body is
+# hidden, such as a disassembled nucleon, is eaten only through its visible parts.
 func is_edible(food: Food, goo_radius: float) -> bool:
-	return is_instance_valid(food) and food.active and not food.detail_hidden and food.tier <= current_tier and food.threshold <= goo_radius
+	return is_instance_valid(food) and food.active and not food.detail_hidden and food.visual.visible \
+		and food.radius < goo_radius * EAT_MARGIN
 
 func advance_scale(tier_index: int) -> void:
 	current_tier = tier_index
@@ -102,7 +131,7 @@ func advance_scale(tier_index: int) -> void:
 	if config.jumps[tier_index].has("meters_per_unit"):
 		config.meters_per_unit = config.jumps[tier_index].meters_per_unit
 
-func _add_food(kind: String, at: Vector2, size: float, threshold: float, volume: float,
+func _add_food(kind: String, at: Vector2, size: float, volume: float,
 		label: String, moving: bool = false, tier: int = 0, parent: Food = null, lift: float = 0.0) -> Food:
 	var food := Food.new()
 	if parent == null:
@@ -111,7 +140,7 @@ func _add_food(kind: String, at: Vector2, size: float, threshold: float, volume:
 		parent.add_child(food)
 		parent.parts.append(food)
 		food.parent_food = parent
-	food.configure(kind, size, threshold, volume, label, moving, tier)
+	food.configure(kind, size, volume, label, moving, tier)
 	if parent == null:
 		var point := Vector3(at.x, 0.0, at.y)
 		food.global_position = point + Vector3.UP * (get_ground_height(point) + lift + (0.05 if moving else 0.0))
@@ -214,3 +243,4 @@ func _walls() -> void:
 func _physics_process(delta: float) -> void:
 	_time += delta
 	_layout.step(delta)
+	_rebin(ceili(foods.size() * delta / REBIN_SECONDS))

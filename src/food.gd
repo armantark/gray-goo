@@ -8,7 +8,6 @@ var title: String
 var model_name: String
 var radius: float
 var height: float
-var threshold: float
 var volume: float
 var pigment: Color
 var tier: int
@@ -31,13 +30,12 @@ var _sway_phase := 0.0
 var _highlighted := false
 static var _target_outline: ShaderMaterial
 
-func configure(kind: String, size: float, required_size: float, food_volume: float,
+func configure(kind: String, size: float, food_volume: float,
 		label: String, moving: bool = false, band: int = 0) -> void:
 	model_name = kind
 	title = label
 	radius = size
 	height = Art.model_height(kind, size) if not kind.is_empty() else size * 0.4
-	threshold = required_size
 	volume = food_volume
 	pigment = Art.food_color(kind) if not kind.is_empty() else Color.WHITE
 	tier = band

@@ -43,7 +43,7 @@ func build(world: GameWorld) -> void:
 	_build_coral()
 	_build_current()
 	_build_animals()
-	var crown := _world._add_food("coral_fan", CROWN_POSITION, 5.0, 4.2, 34.0, "Great coral crown", false, 4)
+	var crown := _world._add_food("coral_fan", CROWN_POSITION, 5.0, 34.0, "Great coral crown", false, 4)
 	crown.context_whole = _rim
 	crown.loose_reason = "The great coral colony grows from the basin's deep end."
 	crown.milestone = true
@@ -57,7 +57,7 @@ func _build_rim() -> void:
 		var angle := (index + _world._rng.randf_range(-0.34, 0.34)) * TAU / 40.0
 		var shore := 1.0 + 0.055 * sin(angle * 3.0 + 0.4) + 0.03 * sin(angle * 5.0 - 1.1)
 		var at := Vector2(cos(angle) * 36.0, sin(angle) * 31.0) * (shore + _world._rng.randf_range(-0.035, 0.035)) * HABITAT_SCALE
-		var rock := _world._add_food("boulder", at, _world._rng.randf_range(1.55, 2.5), 2.4, 0.3, "Pool rim boulder", false, 3)
+		var rock := _world._add_food("boulder", at, _world._rng.randf_range(1.55, 2.5), 0.3, "Pool rim boulder", false, 3)
 		rock.context_whole = _rim
 		rock.loose_reason = "Exposed bedrock forms the continuous pool rim."
 		if index % 4 == 0:
@@ -78,7 +78,7 @@ func _build_coral() -> void:
 	for index in range(shelf.size()):
 		var angle := _world._rng.randf_range(-PI, PI)
 		var at: Vector2 = shelf[index] * HABITAT_SCALE + Vector2(_world._rng.randf_range(-0.7, 0.7), _world._rng.randf_range(-0.7, 0.7))
-		var head := _world._add_food("", at, 2.0, 1.55, 0.15, "Coral head", false, 2)
+		var head := _world._add_food("", at, 2.0, 0.15, "Coral head", false, 2)
 		head.context_whole = _rim
 		head.loose_reason = "The colony is rooted on the inner rock shelf of the pool."
 		head.rotation.y = angle
@@ -89,14 +89,14 @@ func _build_coral() -> void:
 			var branch_angle := branch_index * TAU / 4.0 + _world._rng.randf_range(-0.45, 0.45)
 			_add_branch(head, Vector2.from_angle(branch_angle) * _world._rng.randf_range(0.9, 1.4))
 		var snail_kind := "snail" if index % 2 == 0 else "periwinkle"
-		var snail := _world._add_food(snail_kind, at + Vector2.from_angle(angle) * _world._rng.randf_range(2.6, 3.4), 0.44, 0.85, 0.02, snail_kind.capitalize(), false, 1)
+		var snail := _world._add_food(snail_kind, at + Vector2.from_angle(angle) * _world._rng.randf_range(2.6, 3.4), 0.44, 0.02, snail_kind.capitalize(), false, 1)
 		snail.context_whole = head
 		snail.loose_reason = "The snail grazes algae on this coral colony's rock shelf."
 		_animals.append({"food": snail, "home": snail.position, "pace": 0.065, "range": 0.65, "phase": angle, "kind": "creep"})
 
 func _add_branch(head: Food, at: Vector2) -> void:
 	var size := _world._rng.randf_range(0.64, 0.77)
-	var branch := _world._add_food("coral_branch", at, size, 0.85, 0.02, "Living coral branch", false, 1, head)
+	var branch := _world._add_food("coral_branch", at, size, 0.02, "Living coral branch", false, 1, head)
 	branch.rotation.y = _world._rng.randf_range(-PI, PI)
 	# Low-growing branches put their actual tips inside the starting goo's reach.
 	branch.visual.scale.y = 0.42
@@ -108,7 +108,7 @@ func _add_branch(head: Food, at: Vector2) -> void:
 	branch.part_consumed.connect(_branch_changed.bind(branch))
 	for tip in [Vector3(-0.61, 0.40, 0.01), Vector3(-0.43, 0.48, -0.04),
 			Vector3(0.47, 0.57, 0.01), Vector3(0.64, 0.45, -0.04)]:
-		_world._add_food("polyp", Vector2(tip.x, tip.z) * size / 0.72, 0.15, 0.34, 0.0027, "Living polyp", false, 0, branch, tip.y * size / 0.72)
+		_world._add_food("polyp", Vector2(tip.x, tip.z) * size / 0.72, 0.15, 0.0027, "Living polyp", false, 0, branch, tip.y * size / 0.72)
 
 func _branch_changed(_part: Food, branch: Food) -> void:
 	var survivors := 0
@@ -125,7 +125,7 @@ func _build_current() -> void:
 			"lane": _world._rng.randf_range(-2.3, 1.8), "pace": _world._rng.randf_range(0.010, 0.017),
 			"sway": _world._rng.randf_range(0.0, TAU), "bob": _world._rng.randf_range(1.1, 2.0)}
 		var at := _current_position(item)
-		var food := _world._add_food("plankton", Vector2(at.x, at.z), _world._rng.randf_range(0.15, 0.22), 0.32, 0.0015, "Current plankton")
+		var food := _world._add_food("plankton", Vector2(at.x, at.z), _world._rng.randf_range(0.15, 0.22), 0.0015, "Current plankton")
 		food.position = at
 		food.context_whole = _water
 		food.loose_reason = "The basin current gathers drifting plankton into eddies around its rock shelf."
@@ -150,16 +150,16 @@ func _build_animals() -> void:
 	for refuge in refuges:
 		var angle := _world._rng.randf_range(-PI, PI)
 		var at: Vector2 = refuge * HABITAT_SCALE + Vector2(_world._rng.randf_range(-1.2, 1.2), _world._rng.randf_range(-1.2, 1.2))
-		var crab := _world._add_food("", at, 0.9, 1.55, 0.22, "Hermit crab", false, 2)
+		var crab := _world._add_food("", at, 0.9, 0.22, "Hermit crab", false, 2)
 		crab.context_whole = _rim
 		crab.loose_reason = "The hermit crab forages between the pool's coral heads."
 		crab.rotation.y = angle
 		crab.visual.add_child(Art.model("crab_body", 0.72))
-		var shell := _world._add_food("hermit_shell", Vector2(0.0, -0.776), 0.475, 0.85, 0.035, "Hermit crab shell", false, 1, crab)
+		var shell := _world._add_food("hermit_shell", Vector2(0.0, -0.776), 0.475, 0.035, "Hermit crab shell", false, 1, crab)
 		shell.rotation.y = 0.0
 		crab.part_consumed.connect(_crab_changed.bind(crab))
 		_animals.append({"food": crab, "home": crab.position, "pace": _world._rng.randf_range(0.16, 0.27), "range": 2.3, "phase": angle, "kind": "walk"})
-		var star := _world._add_food("sea_star", at + Vector2(2.8, 2.4), 0.85, 1.55, 0.18, "Sea star", false, 2)
+		var star := _world._add_food("sea_star", at + Vector2(2.8, 2.4), 0.85, 0.18, "Sea star", false, 2)
 		star.context_whole = _rim
 		star.loose_reason = "The sea star creeps over the submerged rock shelf."
 		_animals.append({"food": star, "home": star.position, "pace": _world._rng.randf_range(0.025, 0.05), "range": 1.5, "phase": angle, "kind": "creep"})
@@ -170,7 +170,7 @@ func _crab_changed(_part: Food, crab: Food) -> void:
 	crab.rename("Hermit crab without its shell", Color("ef9b69"))
 
 func _add_anemone(parent: Food, at: Vector2) -> void:
-	var anemone := _world._add_food("anemone", at, 0.66, 1.55, 0.16, "Sea anemone", false, 2, parent)
+	var anemone := _world._add_food("anemone", at, 0.66, 0.16, "Sea anemone", false, 2, parent)
 	if parent == null:
 		anemone.context_whole = _rim
 		anemone.loose_reason = "The anemone is attached to submerged bedrock."
@@ -182,7 +182,7 @@ func _close_anemone(anemone: Food) -> void:
 		anemone.visual.scale = Vector3(0.72, 0.34, 0.72)
 
 func _build_fish_refuge() -> void:
-	var shelter := _world._add_food("", Vector2(-10, -8) * HABITAT_SCALE, 2.5, 2.4, 0.7, "Fish shelter rock", false, 3)
+	var shelter := _world._add_food("", Vector2(-10, -8) * HABITAT_SCALE, 2.5, 0.7, "Fish shelter rock", false, 3)
 	shelter.rotation.y = 0.0
 	shelter.context_whole = _rim
 	shelter.loose_reason = "A bedrock overhang shelters the pool's small fish."
@@ -191,8 +191,8 @@ func _build_fish_refuge() -> void:
 	roof.position.y = 1.25
 	roof.scale.y *= 0.3
 	for side in [-1.0, 1.0]:
-		_world._add_food("rock", Vector2(side * 1.75, 0), 0.6, 2.4, 0.24, "Shelter rock foot", false, 3, shelter)
-	var fish := _world._add_food("small_fish", Vector2(-10, -8) * HABITAT_SCALE, 0.68, 1.55, 0.32, "Small pool fish", false, 2, null, 0.16)
+		_world._add_food("rock", Vector2(side * 1.75, 0), 0.6, 0.24, "Shelter rock foot", false, 3, shelter)
+	var fish := _world._add_food("small_fish", Vector2(-10, -8) * HABITAT_SCALE, 0.68, 0.32, "Small pool fish", false, 2, null, 0.16)
 	fish.context_whole = shelter
 	fish.loose_reason = "The fish hides under this overhang and darts out to feed."
 	_animals.append({"food": fish, "home": fish.position, "pace": 0.45, "range": 4.2, "phase": 0.0, "kind": "fish", "shelter": shelter})

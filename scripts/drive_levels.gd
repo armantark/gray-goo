@@ -19,6 +19,9 @@ var _progress_age := 0.0
 var _stalled := 0.0
 var _last_volume := 0.0
 var _growth_age := 0.0
+# A level with no growth for this long is stuck; ending it saves minutes of an idle goo.
+const GIVE_UP_SECONDS := 30.0
+var _grew_at := 0.0
 var _limit := 900.0
 var _output := "res://builds/level-routes.json"
 var _simulation_clock := false
@@ -86,7 +89,7 @@ func _process(delta: float) -> bool:
 		_next_capture = INF
 		if DisplayServer.get_name() != "headless":
 			_capture_view()
-	if _game._won or _elapsed >= _limit:
+	if _game._won or _elapsed >= _limit or _elapsed - _grew_at >= GIVE_UP_SECONDS:
 		_ending = true
 		_finish_level.call_deferred()
 		return false
@@ -202,6 +205,7 @@ func _check_stall(delta: float) -> void:
 	if _game._volume > _last_volume + 0.0000001:
 		_last_volume = _game._volume
 		_growth_age = 0.0
+		_grew_at = _elapsed
 	_progress_age += delta
 	if _progress_age < 1.0:
 		return
@@ -290,6 +294,7 @@ func _finish_level() -> void:
 	for frame in _frames:
 		seconds += frame
 	var result := {"level": _level, "title": _game.world.config.title, "won": _game._won,
+		"stuck": _elapsed - _grew_at >= GIVE_UP_SECONDS, "position": str(_game.goo.global_position),
 		"clock": "simulation" if _simulation_clock else "wall",
 		"route_seed": _route_seed,
 		"play_seconds": _elapsed, "jumps": _jumps.duplicate(true), "radius": pow(_game._volume, 1.0 / 3.0),
@@ -318,6 +323,7 @@ func _finish_level() -> void:
 	_stalled = 0.0
 	_last_volume = 0.0
 	_growth_age = 0.0
+	_grew_at = 0.0
 	_contacts.clear()
 	_pending.clear()
 	_missed = 0
