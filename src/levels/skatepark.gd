@@ -1,18 +1,136 @@
 extends RefCounted
 
-const BOWL_CENTER := Vector2(16.0, -6.0)
-const BOARD_SCALE := 0.5
+# One concrete skate bowl in a small city park. The bowl sits east of center; the wind off the
+# street to the north blows litter over its north coping, and the litter rolls down and gathers
+# in the south gutter. Riders carve laps on its walls. The park's big vert quarter pipe stands on
+# the bowl's west lip, where skaters drop in, with spectator benches, gear piles, and shade trees
+# on the deck behind it. A street course fills the south plaza: a cone slalom, three grind rails,
+# and two quarter pipes facing each other. A line of pipes backs onto the north fence. Skaters
+# and the park's service vehicles come in through the gate in the east fence.
+const BOWL := Vector2(14.0, -4.0)
+# The bowl is an ellipse this many times wider east to west than north to south.
+const STRETCH := 1.2
+const FLOOR_RADIUS := 9.0
+const COPING_RADIUS := 19.0
+const DEPTH := 2.6
+# The north coping, where wind-blown litter tops the rim, and the west lip in front of the vert
+# pipe, where a skater's bail sends the board rolling into the bowl.
+const NORTH_COPING := [Vector2(2.6, -20.5), Vector2(25.4, -20.5)]
+const WEST_LIP := [Vector2(-8.5, -8.0), Vector2(-8.5, 0.0)]
+const GATE := [Vector2(48.5, 18.0), Vector2(48.5, 20.0)]
+# The service lane runs from the gate along the bowl's south side to the west lip and back,
+# between the coping and the cone slalom.
+const LANE_END := 2.0
+# A rider's board is this share of the rider's footprint, and the rider's figure this share.
+const RIDER_BOARD := 0.79
+const RIDER_FIGURE := 0.98
+
+# [kind, at, turn in degrees, size]
+const PLACED := [
+	# The milestone: the big vert quarter pipe on the bowl's west lip, facing east into it.
+	["big_pipe", Vector2(-16.0, -4.0), 0, 4.8],
+	# Litter the wind left in the bowl: a drift in each half of the south gutter, a few pieces in
+	# the west gutter where the goo starts, and strays along the rest of the gutter.
+	["cap", Vector2(16.2, 3.9), 30, 0.18],
+	["pebble", Vector2(17.3, 4.6), 0, 0.16],
+	["cap", Vector2(18.7, 3.5), 200, 0.2],
+	["bolt", Vector2(17.1, 2.9), 75, 0.14],
+	["bearing", Vector2(19.8, 2.4), 0, 0.15],
+	["pebble", Vector2(15.2, 4.5), 120, 0.14],
+	["cap", Vector2(8.0, 3.4), 310, 0.19],
+	["pebble", Vector2(9.3, 3.3), 60, 0.15],
+	["bolt", Vector2(7.1, 2.4), 140, 0.13],
+	["cap", Vector2(9.0, 2.0), 90, 0.17],
+	["pebble", Vector2(6.6, 1.1), 250, 0.16],
+	["bearing", Vector2(4.6, -5.4), 0, 0.15],
+	["cap", Vector2(4.9, -3.0), 170, 0.17],
+	["bolt", Vector2(5.4, -6.6), 20, 0.13],
+	["bolt", Vector2(14.0, -12.0), 100, 0.14],
+	["pebble", Vector2(20.5, -11.4), 0, 0.15],
+	["cap", Vector2(23.6, -4.2), 240, 0.18],
+	["bearing", Vector2(23.0, 1.0), 0, 0.14],
+	# A board left on the bowl floor.
+	["board", Vector2(13.0, -6.5), 30, 1.25],
+	# Riders carving laps on the bowl walls, each on its own line.
+	["rider", Vector2(0.5, -8.1), 20, 1.35],
+	["rider", Vector2(26.0, -12.4), 110, 1.4],
+	["rider", Vector2(16.4, 7.3), 200, 1.3],
+	["rider", Vector2(1.6, 4.7), 290, 1.35],
+	# Spectator benches on the west lip, north and south of the vert pipe, turned to the bowl, each
+	# with a trash can behind it and a rider's gear pile and board in front.
+	["bench", Vector2(-10.0, -20.0), 65, 2.1],
+	["trash_can", Vector2(-16.0, -23.0), 0, 1.0],
+	["helmet", Vector2(-6.5, -18.6), 40, 0.7],
+	["shoe", Vector2(-4.8, -16.7), 300, 0.6],
+	["water_bottle", Vector2(-7.6, -16.2), 0, 0.5],
+	["board", Vector2(-3.5, -20.8), 150, 1.25],
+	["bench", Vector2(-10.0, 12.0), 115, 2.1],
+	["trash_can", Vector2(-16.0, 15.0), 0, 1.0],
+	["shoe", Vector2(-6.8, 9.0), 80, 0.6],
+	["helmet", Vector2(-5.0, 10.8), 210, 0.7],
+	["water_bottle", Vector2(-7.9, 11.4), 0, 0.5],
+	["board", Vector2(-3.5, 14.6), 20, 1.25],
+	# The shaded lawn behind the vert pipe: two trees, a bench under each looking east, a can.
+	["tree", Vector2(-36.0, -28.0), 40, 4.4],
+	["bench", Vector2(-28.0, -20.0), 90, 2.0],
+	["trash_can", Vector2(-28.0, -13.5), 0, 1.0],
+	["tree", Vector2(-37.0, 8.0), 160, 4.2],
+	["bench", Vector2(-28.0, 28.0), 90, 2.0],
+	["water_bottle", Vector2(-24.3, 26.6), 0, 0.5],
+	["helmet", Vector2(-24.4, 29.4), 120, 0.7],
+	# The pipe line along the north fence: two quarter pipes facing the bowl and a flat rail
+	# between them, with boards dropped on the way in.
+	["pipe", Vector2(-8.0, -35.0), 270, 3.4],
+	["rail", Vector2(12.0, -36.0), 0, 3.0],
+	["pipe", Vector2(32.0, -35.0), 270, 3.6],
+	["board", Vector2(-1.5, -30.0), 200, 1.25],
+	["board", Vector2(24.0, -30.5), 340, 1.25],
+	# The east deck by the gate: one bench looking west over the bowl, its can, and a lost shoe.
+	["bench", Vector2(43.0, -8.0), 270, 2.0],
+	["trash_can", Vector2(43.0, -15.0), 0, 1.0],
+	["shoe", Vector2(39.6, -6.5), 150, 0.6],
+	# The south plaza's street course, south of the service lane: a cone slalom, three grind rails
+	# at easy angles, two quarter pipes facing each other, and benches along the far edge.
+	["cone", Vector2(-8.0, 28.0), 0, 0.9],
+	["cone", Vector2(-3.0, 28.0), 0, 0.9],
+	["cone", Vector2(2.0, 28.0), 0, 0.9],
+	["cone", Vector2(7.0, 28.0), 0, 0.9],
+	["cone", Vector2(12.0, 28.0), 0, 0.9],
+	["rail", Vector2(-22.0, 35.0), 10, 2.7],
+	["rail", Vector2(0.0, 37.0), 0, 3.2],
+	["rail", Vector2(22.0, 35.0), 350, 2.9],
+	["pipe", Vector2(-35.0, 33.0), 0, 3.4],
+	["pipe", Vector2(40.0, 27.0), 180, 3.5],
+	["board", Vector2(-14.0, 30.0), 80, 1.25],
+	["bench", Vector2(-12.0, 42.0), 180, 2.0],
+	["trash_can", Vector2(-4.0, 43.0), 0, 1.0],
+	["bench", Vector2(14.0, 42.0), 180, 2.0],
+	["helmet", Vector2(10.4, 40.2), 300, 0.7],
+	["shoe", Vector2(17.8, 40.0), 20, 0.6],
+	["tree", Vector2(36.0, 42.0), 250, 4.2],
+]
+
+# The street north of the park fence: [at, turn in degrees, size].
+const PARKED_CARS := [
+	[Vector2(-40.0, -61.5), 2, 2.6], [Vector2(-27.0, -61.0), -3, 2.5], [Vector2(-3.0, -61.8), 1, 2.7],
+	[Vector2(11.0, -61.2), 178, 2.6], [Vector2(33.0, -61.6), -2, 2.6],
+]
+const STREET_TREES := [
+	[Vector2(-44.0, -73.0), 20, 3.6], [Vector2(-22.0, -74.0), 200, 4.4], [Vector2(-6.0, -72.0), 80, 3.1],
+	[Vector2(19.0, -73.5), 140, 4.1], [Vector2(41.0, -72.5), 300, 3.4],
+]
+
 var _world: GameWorld
 var _bowl: Node3D
+var _street: Node3D
 var _boards: Array[Dictionary] = []
 var _riders: Array[Dictionary] = []
-var _bottles: Array[Food] = []
 var _time := 0.0
 
 func definition() -> Dictionary:
 	return {"title": "Skatepark Bowl", "meters_per_unit": 0.25,
 		"initial_radius": 0.55, "goal_radius": 4.3,
-		"start_position": Vector3(7.0, 0.0, -6.0), "field": Rect2(-45, -44, 94, 92),
+		"start_position": Vector3(7.5, 0.0, -4.0), "field": Rect2(-45, -44, 94, 92),
 		"accent": Color("ffaf68"), "background_color": Color("9db8c7"),
 		"key_color": Color("fff0d0"), "fill_color": Color("98dcff"),
 		"ground_color": Color("a4b6b7"), "ground_texture": "res://assets/models/ground_concrete.png",
@@ -22,34 +140,63 @@ func definition() -> Dictionary:
 			{"radius": 3.0, "view_size": 53.0}]}
 
 func ground_height(point: Vector3) -> float:
-	var distance := Vector2((point.x - 16.0) / 1.2, point.z + 6.0).length()
-	var slope := clampf((distance - 9.0) / 10.0, 0.0, 1.0)
-	return -2.6 * (1.0 - slope * slope * (3.0 - 2.0 * slope))
+	var distance := _bowl_distance(Vector2(point.x, point.z))
+	var slope := smoothstep(FLOOR_RADIUS, COPING_RADIUS, distance)
+	return -DEPTH * (1.0 - slope)
+
+# Distance from the bowl's center in the bowl's own round coordinates.
+func _bowl_distance(at: Vector2) -> float:
+	return Vector2((at.x - BOWL.x) / STRETCH, at.y - BOWL.y).length()
 
 func build(world: GameWorld) -> void:
 	_world = world
 	_build_bowl()
-	_build_boards()
-	_build_litter()
-	_build_furniture()
-	_build_rails()
-	_build_pipes()
 	_build_street()
+	var litter := "Wind off the street blows litter over the north coping, and it rolls down into the bowl's gutter."
+	var hardware := "Hardware shaken loose from riders' trucks rolls down into the bowl's gutter."
+	var gear := "Skaters leave their gear by the benches before they ride."
+	var kinds := {
+		"big_pipe": {"model": "ramp", "label": "Big vert quarter pipe", "tier": 4, "density": 0.07, "whole": _bowl,
+			"reason": "The park's biggest quarter pipe stands on the bowl's west lip, where skaters drop in.",
+			"fit": 1.25, "build": func(pipe: Food) -> void: pipe.milestone = true},
+		"cap": {"model": "bottle_cap", "label": "Bottle cap", "tier": 0, "density": 0.35, "whole": _bowl, "reason": litter},
+		"pebble": {"model": "pebble", "label": "Pebble", "tier": 0, "density": 0.35, "whole": _bowl, "reason": litter},
+		"bolt": {"model": "bolt", "label": "Bolt", "tier": 0, "density": 0.35, "whole": _bowl, "reason": hardware},
+		"bearing": {"model": "bearing", "label": "Bearing", "tier": 0, "density": 0.35, "whole": _bowl, "reason": hardware},
+		"board": {"label": "Skateboard", "tier": 1, "density": 0.01, "whole": _bowl,
+			"reason": "A rider left this board while resting.", "build": _loose_board},
+		"rider": {"label": "Skater", "tier": 2, "density": 0.04, "whole": _bowl,
+			"reason": "This skater carves laps on the bowl's walls.", "build": _rider},
+		"helmet": {"model": "helmet", "label": "Helmet", "tier": 1, "density": 0.025, "whole": _bowl, "reason": gear},
+		"shoe": {"model": "shoe", "label": "Shoe", "tier": 1, "density": 0.025, "whole": _bowl, "reason": gear},
+		"water_bottle": {"model": "water_bottle", "label": "Water bottle", "tier": 1, "density": 0.025, "whole": _bowl, "reason": gear},
+		"cone": {"model": "cone", "label": "Practice cone", "tier": 1, "density": 0.012, "whole": _bowl,
+			"reason": "The cones mark a slalom line across the plaza.", "fit": 1.362},
+		"bench": {"model": "bench", "label": "Park bench", "tier": 2, "density": 0.055, "whole": _bowl,
+			"reason": "Benches face the bowl and the street course for spectators."},
+		"trash_can": {"model": "trash_can", "label": "Park trash can", "tier": 2, "density": 0.04, "whole": _bowl,
+			"reason": "Each trash can stands by a bench."},
+		"rail": {"label": "Grind rail", "tier": 3, "density": 0.02, "whole": _bowl,
+			"reason": "The grind rail belongs to the park's street course.", "build": _rail},
+		"pipe": {"model": "ramp", "label": "Quarter pipe", "tier": 3, "density": 0.065, "whole": _bowl,
+			"reason": "Quarter pipes face each other across the street course and line the north fence.", "fit": 1.25},
+		"tree": {"model": "tree", "label": "Shade tree", "tier": 4, "density": 0.07, "whole": _bowl,
+			"reason": "Shade trees stand over the park's benches."},
+	}
+	world.place(PLACED, kinds)
+	_build_spawns()
 
 func _build_bowl() -> void:
 	_bowl = Node3D.new()
 	_bowl.name = "The concrete bowl and its low gutter"
 	_world.add_child(_bowl)
-	for radius in [8.6, 19.0]:
+	# The dark gutter line where the floor meets the walls, and the pale steel coping on the rim.
+	for ring in [[8.6, Color("657a82")], [COPING_RADIUS, Color("d4eee7")]]:
 		var strip := SurfaceTool.new()
 		strip.begin(Mesh.PRIMITIVE_TRIANGLES)
 		for index in range(96):
-			var angle := index * TAU / 96.0
-			var next_angle := (index + 1) * TAU / 96.0
-			var a := Vector3(16.0 + cos(angle) * radius * 1.2, 0, -6.0 + sin(angle) * radius)
-			var b := Vector3(16.0 + cos(next_angle) * radius * 1.2, 0, -6.0 + sin(next_angle) * radius)
-			a.y = ground_height(a) + 0.035
-			b.y = ground_height(b) + 0.035
+			var a := _ring_point(ring[0], index * TAU / 96.0)
+			var b := _ring_point(ring[0], (index + 1) * TAU / 96.0)
 			var side := (b - a).cross(Vector3.UP).normalized() * 0.12
 			for point in [a - side, b + side, a + side, a - side, b - side, b + side]:
 				strip.set_normal(Vector3.UP)
@@ -57,93 +204,64 @@ func _build_bowl() -> void:
 				strip.add_vertex(point)
 		var mesh := MeshInstance3D.new()
 		mesh.mesh = strip.commit()
-		mesh.material_override = _concrete_material(Color("657a82") if radius < 10 else Color("d4eee7"))
+		mesh.material_override = _concrete_material(ring[1])
 		_bowl.add_child(mesh)
 
-func _build_litter() -> void:
-	var kinds := ["bolt", "bearing", "bottle_cap", "pebble"]
-	var catches := [0.3, 0.6, 2.6, 2.85, 4.55]
-	for index in range(180):
-		var angle: float = catches[index % catches.size()] + _world._rng.randfn(0.0, 0.13)
-		var radius := _world._rng.randf_range(6.9, 8.8)
-		var at := BOWL_CENTER + Vector2(cos(angle) * 1.2, sin(angle)) * radius
-		var kind: String = kinds[index % kinds.size()]
-		var food := _world._add_food(kind, at, _world._rng.randf_range(0.1, 0.19), 0.0014, kind.replace("_", " ").capitalize())
-		food.context_whole = _bowl
-		food.loose_reason = "Pebbles broke from the concrete rim and washed into the low gutter."
-		if kind in ["bolt", "bearing"]:
-			food.context_whole = _boards[index % _boards.size()].food
-			food.loose_reason = "Worn skateboard hardware rolled downhill into the gutter."
-		elif kind == "bottle_cap":
-			food.context_whole = _bottles[index % _bottles.size()]
-			food.loose_reason = "A cap dropped from a skater's rim-side water bottle and washed downhill."
+func _ring_point(radius: float, angle: float) -> Vector3:
+	var point := Vector3(BOWL.x + cos(angle) * radius * STRETCH, 0.0, BOWL.y + sin(angle) * radius)
+	point.y = ground_height(point) + 0.035
+	return point
 
-func _build_boards() -> void:
-	var riders := [Vector2(27, 3), Vector2(23, 6), Vector2(2, 1), Vector2(7, -13),
-		Vector2(30, -11), Vector2(24, -16), Vector2(18, 6), Vector2(11, -20),
-		Vector2(7, 6), Vector2(19, -20), Vector2(29, -2), Vector2(1, -9),
-		Vector2(15, -15), Vector2(21, 9), Vector2(5, -2), Vector2(31, -17)]
-	for at in riders:
-		_add_rider(at)
-	var boards := [Vector2(32, -3), Vector2(31, 0), Vector2(30, 4), Vector2(5, -15),
-		Vector2(3, -14), Vector2(22, -22), Vector2(24, -21), Vector2(-8, -15),
-		Vector2(-10, -14), Vector2(-11, 17), Vector2(-9, 16), Vector2(36, 9),
-		Vector2(-17, -34), Vector2(-7, -33), Vector2(9, -34), Vector2(17, -29),
-		Vector2(-23, 3), Vector2(-25, 14), Vector2(-32, 29), Vector2(-17, 34),
-		Vector2(12, 33), Vector2(22, 36), Vector2(37, 27), Vector2(40, -30)]
-	for point in boards:
-		var at: Vector2 = point + Vector2(_world._rng.randf_range(-0.45, 0.45), _world._rng.randf_range(-0.45, 0.45))
-		var board := _add_board(at)
-		board.context_whole = _bowl
-		board.loose_reason = "A rider's board rolls from the rim toward the low bowl."
-		board.rotation.y = _world._rng.randf_range(-PI, PI)
-		_align_to_ground(board)
-		_boards.append({"food": board, "velocity": Vector2.ZERO})
-	var rests := [Vector2(-11, -17), Vector2(4, 16), Vector2(39, -12), Vector2(22, -28),
-		Vector2(-19, -31), Vector2(-25, 5), Vector2(10, 32), Vector2(37, 31)]
-	for index in range(24):
-		var at: Vector2 = rests[index / 3] + Vector2(_world._rng.randf_range(-1.5, 1.5), _world._rng.randf_range(-1.5, 1.5))
-		var kinds := ["helmet", "shoe", "water_bottle"]
-		var kind: String = kinds[index % 3]
-		var gear := _world._add_food(kind, at, 0.48, 0.03, kind.replace("_", " ").capitalize(), false, 1)
-		gear.context_whole = _bowl
-		gear.loose_reason = "Skaters leave their gear in small piles on the dry rim before riding."
-		if kind == "water_bottle":
-			_bottles.append(gear)
-
-func _add_board(at: Vector2, parent: Food = null) -> Food:
-	var board := _world._add_food("", at, 1.18 * BOARD_SCALE, 0.02, "Skateboard", false, 1, parent)
-	board.rotation.y = 0.0
-	board.height = 0.5 * BOARD_SCALE
-	# The board draws nothing of its own, so it goes with its last deck, truck, or wheel.
+# A board is a deck on two trucks with two wheels each. It draws nothing of its own, so it goes
+# with its last deck, truck, or wheel.
+func _board_parts(board: Food) -> void:
+	var scale := board.radius / 1.18
+	board.height = 0.5 * scale
 	board.collect_when_empty = true
-	var deck := _world._add_food("board", Vector2.ZERO, 1.15 * BOARD_SCALE, 0.015, "Skate deck", false, 1, board, 0.22 * BOARD_SCALE)
+	var deck := _world._add_food("board", Vector2.ZERO, 1.15 * scale, 0.025 * pow(1.15 * scale, 3.0), "Skate deck", false, 1, board, 0.22 * scale)
 	deck.rotation.y = 0.0
 	for axle in [-1.0, 1.0]:
-		var truck := _world._add_food("truck", Vector2(axle * 0.68, 0) * BOARD_SCALE, 0.34 * BOARD_SCALE, 0.005, "Skateboard truck", false, 1, board, 0.11 * BOARD_SCALE)
+		var truck := _world._add_food("truck", Vector2(axle * 0.68, 0) * scale, 0.34 * scale, 0.05 * pow(0.34 * scale, 3.0), "Skateboard truck", false, 1, board, 0.11 * scale)
 		truck.rotation.y = 0.0
 		for side in [-1.0, 1.0]:
-			var wheel := _world._add_food("wheel", Vector2(axle * 0.68, side * 0.44) * BOARD_SCALE, 0.16 * BOARD_SCALE, 0.002, "Skateboard wheel", false, 0, board)
+			var wheel := _world._add_food("wheel", Vector2(axle * 0.68, side * 0.44) * scale, 0.16 * scale, 0.15 * pow(0.16 * scale, 3.0), "Skateboard wheel", false, 0, board)
 			wheel.rotation.y = 0.0
 	board.part_consumed.connect(_board_changed.bind(board))
-	return board
 
-func _add_rider(at: Vector2) -> void:
-	var rider := _world._add_food("", at, 0.9, 0.25, "Skater", false, 2)
-	rider.context_whole = _bowl
-	rider.loose_reason = "This skater rides a board through the concrete bowl."
-	rider.height = 2.0
-	rider.rotation.y = 0.0
-	var person := Art.model("skater", 0.62)
+func _loose_board(board: Food) -> void:
+	_board_parts(board)
+	_align_to_ground(board)
+	_boards.append({"food": board, "velocity": Vector2.ZERO})
+
+# A rider stands on its own board and carves an elliptical lap around the bowl at its placed
+# distance, swinging up and down the wall; the row's turn sets where in that swing it starts.
+func _rider(rider: Food) -> void:
+	var size := rider.radius
+	rider.height = 2.2 * size
+	var board := _world._add_food("", Vector2.ZERO, RIDER_BOARD * size, 0.01 * pow(RIDER_BOARD * size, 3.0), "Skateboard", false, 1, rider)
+	board.rotation.y = 0.0
+	_board_parts(board)
+	var person := Art.model("skater", RIDER_FIGURE * size)
 	rider.visual.add_child(person)
-	person.position.y = 0.30 * BOARD_SCALE
-	var board := _add_board(Vector2.ZERO, rider)
-	_align_to_ground(rider)
+	person.position.y = 0.3 * board.radius / 1.18
+	var offset := Vector2((rider.position.x - BOWL.x) / STRETCH, rider.position.z - BOWL.y)
 	rider.part_consumed.connect(_rider_changed.bind(rider))
-	var route_center := BOWL_CENTER + Vector2(_world._rng.randf_range(-2, 2), _world._rng.randf_range(-2, 2))
-	var offset := Vector2((at.x - route_center.x) / 1.2, at.y - route_center.y)
 	_riders.append({"food": rider, "board": board, "phase": offset.angle(), "radius": offset.length(),
-		"center": route_center, "pace": _world._rng.randf_range(0.065, 0.12), "sway": _world._rng.randf_range(0, TAU)})
+		"pace": 2.0 / (offset.length() * STRETCH), "sway": rider.rotation.y})
+	_step_rider(_riders[-1])
+
+# The bar rests on two posts; the goo can eat a post first, and the bar then tips toward it.
+func _rail(rail: Food) -> void:
+	var size := rail.radius
+	var unit := size / 2.6
+	rail.height = 1.25 * unit
+	var bar := Art.model("rail_bar", size * 0.952)
+	rail.visual.add_child(bar)
+	bar.position.y = 0.94 * unit
+	for side in [-1.0, 1.0]:
+		var post := _world._add_food("rail_post", Vector2(side * size * 0.643, 0), 0.42 * unit, 0.03 * pow(0.42 * unit, 3.0), "Grind rail post", false, 2, rail)
+		post.rotation.y = 0.0
+	rail.part_consumed.connect(_rail_changed.bind(rail))
 
 func _board_changed(part: Food, board: Food) -> void:
 	if part.model_name == "wheel":
@@ -162,102 +280,102 @@ func _rider_changed(part: Food, rider: Food) -> void:
 		rider.title = "Standing skater"
 		rider.visual.get_child(0).position.y = 0.0
 
-func _build_furniture() -> void:
-	var seats := [Vector2(-18, -26), Vector2(-16, -16), Vector2(-21, -3),
-		Vector2(-17, 13), Vector2(-19, 22), Vector2(-13, 34),
-		Vector2(-28, -14), Vector2(-31, -3), Vector2(8, 41), Vector2(40, 12)]
-	for point in seats:
-		var at: Vector2 = point + Vector2(_world._rng.randf_range(-0.7, 0.7), _world._rng.randf_range(-0.7, 0.7))
-		var bench := _world._add_food("bench", at, 1.65, 0.34, "Park bench", false, 2)
-		bench.context_whole = _bowl
-		bench.loose_reason = "Seating lines the flat spectator side of the bowl."
-		bench.rotation.y = PI * 0.5 + _world._rng.randf_range(-0.25, 0.25)
-	for at in [Vector2(-23, -24), Vector2(-24, -5), Vector2(-22, 20), Vector2(-9, 36),
-			Vector2(-34, -13), Vector2(-35, -2), Vector2(4, 40), Vector2(44, 12)]:
-		var bin := _world._add_food("trash_can", at, 0.9, 0.24, "Park trash can", false, 2)
-		bin.context_whole = _bowl
-		bin.loose_reason = "The park's trash cans stand beside its spectator benches."
-	for at in [Vector2(-4, 25), Vector2(1, 28), Vector2(7, 24), Vector2(10, 29),
-			Vector2(18, 25), Vector2(24, 30), Vector2(27, 26), Vector2(33, 29),
-			Vector2(-28, -30), Vector2(-21, -34), Vector2(-16, -29), Vector2(-8, -32),
-			Vector2(8, -28), Vector2(17, -34), Vector2(22, -29), Vector2(32, -33)]:
-		var cone := _world._add_food("cone", at, 0.55, 0.045, "Practice cone", false, 2)
-		cone.context_whole = _bowl
-		cone.loose_reason = "The cone line marks the approach to the quarter pipes."
-
-func _build_rails() -> void:
-	var positions := [Vector2(-34, -34), Vector2(-12, -36), Vector2(3, -31), Vector2(26, -36),
-			Vector2(-30, 33), Vector2(-8, 39), Vector2(13, 36), Vector2(34, 35),
-			Vector2(-38, -30), Vector2(-24, -36), Vector2(11, -39), Vector2(37, -35),
-			Vector2(-35, 17), Vector2(-37, 39), Vector2(-18, 39), Vector2(24, 41),
-			Vector2(43, 22), Vector2(-21, -10), Vector2(-27, 8), Vector2(-8, 26)]
-	for index in positions.size():
-		var at: Vector2 = positions[index]
-		var size := 2.415 + floorf(index / 4.0) * 0.23625
-		var rail := _world._add_food("", at, size, 0.5, "Grind rail", false, 3)
-		rail.context_whole = _bowl
-		rail.loose_reason = "The grind rail belongs to the bowl's flat trick course."
-		rail.rotation.y = _world._rng.randf_range(-0.45, 0.45)
-		rail.height = 1.25
-		var bar := Art.model("rail_bar", size * 0.952)
-		rail.visual.add_child(bar)
-		bar.position.y = 0.94
-		for side in [-1.0, 1.0]:
-			var post := _world._add_food("rail_post", Vector2(side * size * 0.643, 0), 0.42, 0.07, "Grind rail post", false, 2, rail)
-			post.rotation.y = 0.0
-		rail.part_consumed.connect(_rail_changed.bind(rail))
-
 func _rail_changed(part: Food, rail: Food) -> void:
 	var bar: Node3D = rail.visual.get_child(0)
 	bar.rotation.z = -signf(part.position.x) * 0.24
-	bar.position.y = 0.58
+	bar.position.y = 0.58 * rail.radius / 2.6
 	rail.title = "Tilted grind rail"
 
-func _build_pipes() -> void:
-	var positions := [Vector2(-32, -23), Vector2(-4, -31), Vector2(40, -14),
-			Vector2(30, 22), Vector2(2, 29), Vector2(-24, 22),
-			Vector2(-39, -20), Vector2(-16, -40), Vector2(19, -40), Vector2(43, -24),
-			Vector2(-39, 26), Vector2(-17, 29), Vector2(6, 38), Vector2(40, 40)]
-	var sizes := [2.622, 2.736, 2.85, 2.964, 3.078, 3.192, 3.306, 3.42, 3.477, 3.534, 3.591, 3.648, 3.762, 3.876]
-	for index in positions.size():
-		var at: Vector2 = positions[index]
-		var pipe := _world._add_food("ramp", at, sizes[index], 1.55, "Quarter pipe", false, 3)
-		pipe.context_whole = _bowl
-		pipe.loose_reason = "Quarter pipes face the connected bowl and trick course."
-		pipe.rotation.y = atan2(at.y - BOWL_CENTER.y, BOWL_CENTER.x - at.x)
-	var final := _world._add_food("ramp", Vector2(-33, 7), 4.1, 38.0, "Big quarter pipe", false, 4)
-	final.context_whole = _bowl
-	final.loose_reason = "The park's biggest quarter pipe anchors its western deck."
-	final.rotation.y = 0.0
-	final.milestone = true
+func _build_spawns() -> void:
+	_world.spawn({"kind": {"model": "bottle_cap", "label": "Blown bottle cap", "tier": 0, "density": 0.5,
+			"whole": _bowl, "reason": "Wind off the street blows litter over the north coping, and it rolls down into the bowl."},
+		"from": NORTH_COPING, "sizes": Vector2(0.16, 0.24), "tiers": Vector2i(0, 0),
+		"rate": 0.8, "limit": 6, "lifetime": 50.0, "move": _roll.bind(0.5, 0.6)})
+	_world.spawn({"kind": {"model": "skateboard", "label": "Runaway skateboard", "tier": 1, "density": 0.06,
+			"whole": _bowl, "reason": "A skater bails on the vert pipe, and the board rolls away into the bowl."},
+		"from": WEST_LIP, "sizes": Vector2(0.8, 1.05), "tiers": Vector2i(1, 1),
+		"rate": 0.35, "limit": 3, "lifetime": 35.0, "move": _roll.bind(0.12, 0.0)})
+	_world.spawn({"kind": {"model": "skater", "label": "Skater on foot", "tier": 2, "density": 0.11,
+			"whole": _bowl, "reason": "Skaters walk in through the east gate to ride the park."},
+		"from": GATE, "sizes": Vector2(1.45, 1.7), "tiers": Vector2i(2, 2),
+		"rate": 0.2, "limit": 3, "lifetime": 50.0, "move": _walk})
+	_world.spawn({"kind": {"model": "parked_car", "label": "Park service cart", "tier": 3, "density": 0.07,
+			"whole": _street, "reason": "The park's service cart drives in through the east gate to empty the trash cans."},
+		"from": GATE, "sizes": Vector2(2.3, 2.7), "tiers": Vector2i(3, 3),
+		"rate": 0.12, "limit": 2, "lifetime": 45.0, "move": _drive})
+	_world.spawn({"kind": {"model": "parked_car", "label": "Park maintenance truck", "tier": 4, "density": 0.07,
+			"whole": _street, "reason": "The maintenance truck drives in through the east gate to work on the ramps."},
+		"from": GATE, "sizes": Vector2(3.0, 3.5), "tiers": Vector2i(4, 4),
+		"rate": 0.1, "limit": 2, "lifetime": 45.0, "move": _drive})
+
+# Litter and runaway boards roll under gravity on the bowl's walls from a push toward its center,
+# and settle at the given friction. The wind off the street pushes light litter on to the south
+# wall, where it comes to rest just above the gutter.
+func _roll(mover: Dictionary, delta: float, friction: float, wind: float) -> Vector2:
+	var velocity: Vector2 = mover.get("velocity", (BOWL - mover.from).normalized() * 4.0)
+	var gradient := _slope(mover.at)
+	velocity -= gradient * 9.8 / (1.0 + gradient.length_squared()) * delta
+	velocity.y += wind * delta
+	velocity *= exp(-delta * friction)
+	mover["velocity"] = velocity
+	return mover.at + velocity * delta
+
+# Skaters on foot walk in along the service lane and head for a spot on the south plaza.
+func _walk(mover: Dictionary, delta: float) -> Vector2:
+	var goal := Vector2(lerpf(-18.0, 26.0, mover.seed), 22.0 + 3.0 * sin(mover.seed * 17.0))
+	var step: Vector2 = (goal - mover.at).limit_length(1.8 * delta)
+	return mover.at + step + step.orthogonal() * sin(mover.age * 6.0) * 0.15
+
+# Service vehicles drive west along the lane to the west lip, turn, and drive back to park by the
+# gate until their work is done.
+func _drive(mover: Dictionary, delta: float) -> Vector2:
+	var lane: float = mover.from.y
+	if mover.at.x <= LANE_END + 0.5:
+		mover["back"] = true
+	var goal := Vector2(GATE[0].x - 3.0, lane + 3.5) if mover.get("back", false) else Vector2(LANE_END, lane)
+	return mover.at + (goal - mover.at).limit_length(3.5 * delta)
+
+func _slope(at: Vector2) -> Vector2:
+	var point := Vector3(at.x, 0.0, at.y)
+	return Vector2(ground_height(point + Vector3(0.1, 0, 0)) - ground_height(point - Vector3(0.1, 0, 0)),
+		ground_height(point + Vector3(0, 0, 0.1)) - ground_height(point - Vector3(0, 0, 0.1))) / 0.2
 
 func _build_street() -> void:
-	var street := MeshInstance3D.new()
-	street.name = "Street beyond the skatepark fence"
-	var road := BoxMesh.new()
-	road.size = Vector3(150, 0.18, 18)
-	street.mesh = road
-	street.material_override = _concrete_material(Color("515963"))
-	street.position = Vector3(0, -0.15, -59)
-	_world.add_child(street)
+	_street = Node3D.new()
+	_street.name = "The street beyond the park fence"
+	_world.add_child(_street)
+	var road := MeshInstance3D.new()
+	var slab := BoxMesh.new()
+	slab.size = Vector3(150, 0.18, 18)
+	road.mesh = slab
+	road.material_override = _concrete_material(Color("515963"))
+	road.position = Vector3(2, -0.15, -59)
+	_street.add_child(road)
+	for row in PARKED_CARS:
+		var car := Art.model("parked_car", row[2])
+		_street.add_child(car)
+		car.position = Vector3(row[0].x, 0.0, row[0].y)
+		car.rotation.y = deg_to_rad(row[1])
+	for row in STREET_TREES:
+		var tree := Art.model("tree", row[2])
+		_street.add_child(tree)
+		tree.position = Vector3(row[0].x, -0.1, row[0].y)
+		tree.rotation.y = deg_to_rad(row[1])
+	# The park fence: a straight run along the street and down each side, with the gate in the
+	# east run where the service lane meets it.
 	for index in range(17):
-		var fence := Art.model("fence_section", 3.1)
-		_world.add_child(fence)
-		fence.position = Vector3(-48 + index * 6, 0, -47)
-	for index in range(7):
-		var car := Art.model("parked_car", 2.6)
-		street.add_child(car)
-		car.position = Vector3(-42 + index * 14 + _world._rng.randf_range(-2, 2), 0.15, _world._rng.randf_range(-3.0, -2.0))
-		car.rotation.y = _world._rng.randf_range(-0.08, 0.08)
-		var tree := Art.model("tree", _world._rng.randf_range(2.8, 4.7))
-		_world.add_child(tree)
-		tree.position = Vector3(-44 + index * 15 + _world._rng.randf_range(-4, 4), -0.1, _world._rng.randf_range(-75, -71))
-	for side in [-1.0, 1.0]:
-		for index in range(12):
-			var fence := Art.model("fence_section", 3.1)
-			_world.add_child(fence)
-			fence.position = Vector3(-48 if side < 0 else 52, 0, -42 + index * 8)
-			fence.rotation.y = PI * 0.5
+		_fence(Vector3(-46.0 + index * 6.0, 0, -47.0), 0.0)
+	for index in range(15):
+		var z := -41.0 + index * 6.0
+		_fence(Vector3(-48.0, 0, z), PI * 0.5)
+		if absf(z - 20.0) > 5.0:
+			_fence(Vector3(52.0, 0, z), PI * 0.5)
+
+func _fence(at: Vector3, turn: float) -> void:
+	var fence := Art.model("fence_section", 3.1)
+	_street.add_child(fence)
+	fence.position = at
+	fence.rotation.y = turn
 
 func _concrete_material(color: Color) -> StandardMaterial3D:
 	var material := StandardMaterial3D.new()
@@ -272,27 +390,30 @@ func step(delta: float) -> void:
 	for item in _boards:
 		_step_board(item, delta)
 	for item in _riders:
-		var rider: Food = item.food
-		var board: Food = item.board
-		if not is_instance_valid(rider) or not rider.active:
-			continue
-		if not is_instance_valid(board) or not board.active or board.get_meta("lost_wheel", false):
-			continue
-		var phase: float = item.phase + _time * item.pace
-		var radius: float = item.radius + (sin(phase * 2.0 + item.sway) - sin(item.phase * 2.0 + item.sway)) * 1.1
-		var at: Vector2 = item.center + Vector2(cos(phase) * 1.2, sin(phase)) * radius
-		var movement := Vector2(at.x - rider.position.x, at.y - rider.position.z)
-		rider.position = Vector3(at.x, ground_height(Vector3(at.x, 0, at.y)), at.y)
+		_step_rider(item)
+
+func _step_rider(item: Dictionary) -> void:
+	var rider: Food = item.food
+	var board: Food = item.board
+	if not rider.active or not board.active or board.get_meta("lost_wheel", false):
+		return
+	var phase: float = item.phase + _time * item.pace
+	var radius: float = item.radius + (sin(phase * 2.0 + item.sway) - sin(item.phase * 2.0 + item.sway)) * 1.1
+	var at: Vector2 = BOWL + Vector2(cos(phase) * STRETCH, sin(phase)) * radius
+	var movement := Vector2(at.x - rider.position.x, at.y - rider.position.z)
+	rider.position = Vector3(at.x, ground_height(Vector3(at.x, 0, at.y)), at.y)
+	if movement.length_squared() > 0.0000001:
 		rider.rotation.y = atan2(-movement.y, movement.x)
-		_align_to_ground(rider)
+	else:
+		rider.rotation.y = atan2(-cos(phase), -sin(phase) * STRETCH)
+	_align_to_ground(rider)
 
 func _step_board(item: Dictionary, delta: float) -> void:
 	var board: Food = item.food
-	if not is_instance_valid(board) or not board.active:
+	if not board.active:
 		return
 	var at := board.position
-	var gradient := Vector2(ground_height(at + Vector3(0.1, 0, 0)) - ground_height(at - Vector3(0.1, 0, 0)),
-		ground_height(at + Vector3(0, 0, 0.1)) - ground_height(at - Vector3(0, 0, 0.1))) / 0.2
+	var gradient := _slope(Vector2(at.x, at.z))
 	var velocity: Vector2 = item.velocity
 	velocity -= gradient * 9.8 / (1.0 + gradient.length_squared()) * delta
 	velocity *= exp(-delta * (2.8 if board.get_meta("lost_wheel", false) else 0.08))
@@ -305,7 +426,7 @@ func _step_board(item: Dictionary, delta: float) -> void:
 		if not board.get_meta("lost_wheel", false):
 			_align_to_ground(board)
 			for part in board.parts:
-				if is_instance_valid(part) and part.active and part.model_name == "wheel":
+				if part.active and part.model_name == "wheel":
 					part.visual.rotation.z -= velocity.length() / part.radius * delta
 					var axle := Vector3.UP * float(Art.manifest().wheel.height) * 0.5
 					part.visual.position = Vector3.UP * part.height * 0.5 - part.visual.basis * axle
