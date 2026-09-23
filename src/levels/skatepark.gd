@@ -21,8 +21,8 @@ const GATE := [Vector2(46.0, 18.0), Vector2(46.0, 20.0)]
 # The service lane runs from the gate along the bowl's south side to the west lip and back,
 # between the coping and the cone slalom.
 const LANE_END := 2.0
-# The two parking bays inside the gate, north of the lane.
-const PARKING := [Vector2(44.0, 4.0), Vector2(44.0, 11.0)]
+# Parking bays inside the gate, north of the lane: one for every vehicle that can be live at once.
+const PARKING := [Vector2(44.0, 4.0), Vector2(44.0, 11.0), Vector2(37.0, 4.0), Vector2(37.0, 11.0)]
 # A rider's board is this share of the rider's footprint, and the rider's figure this share.
 const RIDER_BOARD := 0.79
 const RIDER_FIGURE := 0.98
@@ -127,7 +127,9 @@ var _bowl: Node3D
 var _street: Node3D
 var _boards: Array[Dictionary] = []
 var _riders: Array[Dictionary] = []
-var _next_bay := 0
+# The vehicle parked in or bound for each bay.
+var _parked: Array[Food] = [null, null, null, null]
+var _runaways: Dictionary
 var _time := 0.0
 
 func definition() -> Dictionary:
@@ -294,10 +296,11 @@ func _build_spawns() -> void:
 			"whole": _bowl, "reason": "Wind off the street blows litter over the north coping, and it rolls down into the bowl."},
 		"from": NORTH_COPING, "sizes": Vector2(0.16, 0.24), "tiers": Vector2i(0, 0),
 		"rate": 0.76, "limit": 6, "lifetime": 35.0, "move": _roll.bind(0.5, 0.6)})
-	_world.spawn({"kind": {"model": "skateboard", "label": "Runaway skateboard", "tier": 1, "density": 0.06,
+	_runaways = {"kind": {"model": "skateboard", "label": "Runaway skateboard", "tier": 1, "density": 0.06,
 			"whole": _bowl, "reason": "A skater bails on the vert pipe, and the board rolls away into the bowl."},
 		"from": WEST_LIP, "sizes": Vector2(0.8, 1.05), "tiers": Vector2i(1, 1),
-		"rate": 0.35, "limit": 3, "lifetime": 35.0, "move": _roll.bind(0.12, 0.0)})
+		"rate": 0.35, "limit": 3, "lifetime": 35.0, "move": _roll.bind(0.12, 0.0)}
+	_world.spawn(_runaways)
 	_world.spawn({"kind": {"model": "skater", "label": "Skater on foot", "tier": 2, "density": 0.11,
 			"whole": _bowl, "reason": "Skaters walk in through the east gate to ride the park."},
 		"from": GATE, "sizes": Vector2(1.45, 1.7), "tiers": Vector2i(2, 2),
@@ -330,11 +333,12 @@ func _walk(mover: Dictionary, delta: float) -> Vector2:
 	return mover.at + step + step.orthogonal() * sin(mover.age * 6.0) * 0.15
 
 # Service vehicles drive west along the lane to the west lip, turn, and drive back to park in the
-# next free bay by the gate until their work is done.
+# first free bay by the gate until their work is done.
 func _drive(mover: Dictionary, delta: float) -> Vector2:
 	if mover.at.x <= LANE_END + 0.5 and not mover.has("bay"):
-		mover["bay"] = PARKING[_next_bay]
-		_next_bay = (_next_bay + 1) % PARKING.size()
+		var bay := _parked.find_custom(func(vehicle: Food) -> bool: return vehicle == null or not vehicle.active)
+		_parked[bay] = mover.food
+		mover["bay"] = PARKING[bay]
 	var goal: Vector2 = mover.get("bay", Vector2(LANE_END, mover.from.y))
 	return mover.at + (goal - mover.at).limit_length(3.5 * delta)
 
@@ -394,6 +398,10 @@ func step(delta: float) -> void:
 		_step_board(item, delta)
 	for item in _riders:
 		_step_rider(item)
+	# A runaway board rides flat on the bowl's curved walls, as a placed board does.
+	for mover in _runaways.movers:
+		if mover.food.active:
+			_align_to_ground(mover.food)
 
 func _step_rider(item: Dictionary) -> void:
 	var rider: Food = item.food
