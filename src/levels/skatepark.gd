@@ -290,7 +290,7 @@ func _build_spawns() -> void:
 	_world.spawn({"kind": {"model": "bottle_cap", "label": "Blown bottle cap", "tier": 0, "density": 0.5,
 			"whole": _bowl, "reason": "Wind off the street blows litter over the north coping, and it rolls down into the bowl."},
 		"from": NORTH_COPING, "sizes": Vector2(0.16, 0.24), "tiers": Vector2i(0, 0),
-		"rate": 0.8, "limit": 6, "lifetime": 50.0, "move": _roll.bind(0.5, 0.6)})
+		"rate": 0.8, "limit": 6, "lifetime": 35.0, "move": _roll.bind(0.5, 0.6)})
 	_world.spawn({"kind": {"model": "skateboard", "label": "Runaway skateboard", "tier": 1, "density": 0.06,
 			"whole": _bowl, "reason": "A skater bails on the vert pipe, and the board rolls away into the bowl."},
 		"from": WEST_LIP, "sizes": Vector2(0.8, 1.05), "tiers": Vector2i(1, 1),
@@ -298,15 +298,15 @@ func _build_spawns() -> void:
 	_world.spawn({"kind": {"model": "skater", "label": "Skater on foot", "tier": 2, "density": 0.11,
 			"whole": _bowl, "reason": "Skaters walk in through the east gate to ride the park."},
 		"from": GATE, "sizes": Vector2(1.45, 1.7), "tiers": Vector2i(2, 2),
-		"rate": 0.2, "limit": 3, "lifetime": 50.0, "move": _walk})
+		"rate": 0.2, "limit": 3, "lifetime": 40.0, "move": _walk})
 	_world.spawn({"kind": {"model": "parked_car", "label": "Park service cart", "tier": 3, "density": 0.07,
 			"whole": _street, "reason": "The park's service cart drives in through the east gate to empty the trash cans."},
 		"from": GATE, "sizes": Vector2(2.3, 2.7), "tiers": Vector2i(3, 3),
-		"rate": 0.12, "limit": 2, "lifetime": 45.0, "move": _drive})
+		"rate": 0.12, "limit": 2, "lifetime": 40.0, "move": _drive})
 	_world.spawn({"kind": {"model": "parked_car", "label": "Park maintenance truck", "tier": 4, "density": 0.07,
 			"whole": _street, "reason": "The maintenance truck drives in through the east gate to work on the ramps."},
 		"from": GATE, "sizes": Vector2(3.0, 3.5), "tiers": Vector2i(4, 4),
-		"rate": 0.1, "limit": 2, "lifetime": 45.0, "move": _drive})
+		"rate": 0.1, "limit": 2, "lifetime": 40.0, "move": _drive})
 
 # Litter and runaway boards roll under gravity on the bowl's walls from a push toward its center,
 # and settle at the given friction. The wind off the street pushes light litter on to the south
