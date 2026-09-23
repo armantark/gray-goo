@@ -17,6 +17,8 @@ void fragment() {
 
 void light() {
     float facing = dot(NORMAL, LIGHT);
-    float band = facing > 0.55 ? 1.0 : (facing > 0.05 ? 0.65 : 0.2);
+    // Terrain shades smoothly, because a stepped band draws a sharp-edged patch wherever a curved
+    // slope, such as the Skatepark bowl's walls, turns across the step toward a light.
+    float band = mix(0.2, 1.0, smoothstep(0.0, 0.7, facing));
     DIFFUSE_LIGHT += band * ATTENUATION * LIGHT_COLOR / PI;
 }
