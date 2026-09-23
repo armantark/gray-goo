@@ -47,16 +47,20 @@ var _jump_card: PanelContainer
 var _jump_label: Label
 var _jump_age := INF
 
+# The arrow grows with its target's reward, so a big meal nearby is worth the detour.
 class FoodPointer extends Control:
+	const SMALLEST := 1.0
+	const LARGEST := 2.4
 	var position_on_screen := Vector2.ZERO
 	var direction := Vector2.RIGHT
 	var target_visible := false
+	var scale_factor := SMALLEST
 	func _draw() -> void:
 		if not target_visible:
 			return
 		var points := PackedVector2Array()
 		for point in [Vector2(17, 0), Vector2(-10, -9), Vector2(-5, 0), Vector2(-10, 9)]:
-			points.append(position_on_screen + point.rotated(direction.angle()))
+			points.append(position_on_screen + (point * scale_factor).rotated(direction.angle()))
 		draw_colored_polygon(points, Color("fff2a6"))
 		points.append(points[0])
 		draw_polyline(points, Color("172729"), 2.5, true)
@@ -139,21 +143,13 @@ func _build_slide_label() -> void:
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 6)
 	row.add_child(column)
-	_caption(column, "SPECIMEN SLIDE")
 	title_label = _label(column, "", 28)
 	tier_label = _label(column, "", 16)
 	tier_label.add_theme_color_override("font_color", INK_SOFT)
 	ladder = HBoxContainer.new()
 	ladder.add_theme_constant_override("separation", 4)
 	column.add_child(ladder)
-	_caption(column, "NEAREST FOOD")
 	target_label = _label(column, "", 19)
-
-func _caption(parent: Node, text: String) -> Label:
-	var label := _label(parent, text, 12)
-	label.add_theme_color_override("font_color", INK_SOFT)
-	label.add_theme_font_override("font", _mono)
-	return label
 
 func _build_ladder(tiers: Array) -> void:
 	for rung in _rungs:
@@ -209,7 +205,6 @@ func _build_last_meal() -> void:
 	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_child(text)
-	_caption(text, "SPECIMEN · LAST EATEN")
 	_meal_label = _label(text, "", 22)
 	_meal_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_meal_camera = Camera3D.new()
@@ -345,7 +340,6 @@ func _build_menu() -> void:
 	menu.offset_top = -328
 	menu.offset_bottom = 328
 	var column := _column(menu)
-	_caption(column, "SLIDE TRAY")
 	_label(column, "Gray Goo", 34)
 	for index in TITLES.size():
 		var button := _button(column, "%02d · %s" % [index + 1, TITLES[index]])
@@ -428,7 +422,7 @@ func configure(index: int, config: Dictionary) -> void:
 	_hint_time = 0.0
 
 func update_game(radius: float, initial: float, goal: float, tier: int, camera: Camera3D,
-		goo_position: Vector3, target_position: Vector3, target_name: String) -> void:
+		goo_position: Vector3, target_position: Vector3, target_name: String, target_reward: float) -> void:
 	var meters_per_unit := float(_config.meters_per_unit)
 	if meters_per_unit != _meters_per_unit:
 		_meters_per_unit = meters_per_unit
@@ -444,14 +438,16 @@ func update_game(radius: float, initial: float, goal: float, tier: int, camera: 
 	gauge.reading = format_size(radius * 2.0 * meters_per_unit)
 	gauge.goal = "goal " + format_size(goal * 2.0 * meters_per_unit)
 	gauge.queue_redraw()
-	target_label.text = target_name if not target_name.is_empty() else "—"
+	target_label.text = "Nearest · " + (target_name if not target_name.is_empty() else "—")
 	pointer.target_visible = not target_name.is_empty() and not menu.visible
 	if pointer.target_visible:
 		var center := camera.unproject_position(goo_position)
 		var destination := camera.unproject_position(target_position)
 		pointer.direction = (destination - center).normalized()
 		var screen_radius := radius / camera.size * get_viewport().get_visible_rect().size.y
-		pointer.position_on_screen = center + pointer.direction * (screen_radius + 33.0)
+		var size := lerpf(FoodPointer.SMALLEST, FoodPointer.LARGEST, target_reward)
+		pointer.scale_factor = lerpf(pointer.scale_factor, size, 1.0 - exp(-8.0 * get_process_delta_time()))
+		pointer.position_on_screen = center + pointer.direction * (screen_radius + 16.0 + 17.0 * pointer.scale_factor)
 	pointer.queue_redraw()
 
 # Sizes from a tenth of a light year upward read in light years, as astronomy does.

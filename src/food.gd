@@ -24,6 +24,7 @@ var collider_radius: float
 var drift := Vector3.ZERO
 var _meal_target: Node3D
 var _meal_age := 0.0
+var _meal_seconds := 0.34
 var _meal_start := Vector3.ZERO
 var _meal_scale := Vector3.ONE
 var _sway_phase := 0.0
@@ -94,6 +95,16 @@ func set_highlighted(enabled: bool) -> void:
 		if is_instance_valid(part):
 			part.set_highlighted(enabled)
 
+# A hop and a flash when the goo grows past this object's size. The flash material is shared
+# by every object that crosses on the same frame, so they fade together.
+func signal_edible(flash: Material) -> void:
+	_highlight_visual(visual, flash)
+	var rest := visual.scale
+	var tween := visual.create_tween()
+	tween.tween_property(visual, "scale", rest * 1.35, 0.09).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(visual, "scale", rest, 0.4).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(func(): _highlight_visual(visual, _target_outline if _highlighted else null))
+
 func _highlight_visual(node: Node, material: Material) -> void:
 	if node is MeshInstance3D:
 		node.material_overlay = material
@@ -132,7 +143,7 @@ func meal_color() -> Color:
 func center() -> Vector3:
 	return global_position + Vector3.UP * height * 0.4
 
-func consume(target: Node3D) -> void:
+func consume(target: Node3D, seconds: float = 0.34) -> void:
 	set_highlighted(false)
 	active = false
 	freeze = true
@@ -142,6 +153,7 @@ func consume(target: Node3D) -> void:
 	if is_instance_valid(parent_food):
 		parent_food.part_consumed.emit(self)
 	_meal_target = target
+	_meal_seconds = seconds
 	_meal_start = global_position
 	_meal_scale = scale
 	set_physics_process(true)
@@ -150,7 +162,7 @@ func consume(target: Node3D) -> void:
 	# An emptied container leaves with its last visible part but pays no growth: the goo
 	# grows only from what it could eat, never from a whole that still looks larger.
 	if is_instance_valid(parent_food) and parent_food.active and parent_food.collect_when_empty and parent_food._last_visible_part(self):
-		parent_food.consume(target)
+		parent_food.consume(target, seconds)
 
 func _disable_parts() -> void:
 	for part in parts:
@@ -180,7 +192,7 @@ func _snap_board() -> void:
 func _physics_process(delta: float) -> void:
 	if is_instance_valid(_meal_target):
 		_meal_age += delta
-		var progress := clampf(_meal_age / 0.34, 0.0, 1.0)
+		var progress := clampf(_meal_age / _meal_seconds, 0.0, 1.0)
 		global_position = _meal_start.lerp(_meal_target.global_position, progress * progress)
 		if progress >= 1.0:
 			# Scene graphs keep part references for damage and motion until the level ends.

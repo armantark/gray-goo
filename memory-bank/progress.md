@@ -343,3 +343,23 @@ Tide Pool stuck in the first after run at radius 3.98795198822987, goo at (-0.28
 Checks: `BODY_CHECK_OK=true checks=58`, `OBSTACLE_CHECK queries=420 pass=true`.
 
 Not verified: look-ahead with mouse steering, and with the player's manual rotation or zoom, in a live session. Rotation and zoom are covered only by design: the lead is a world-space offset scaled by `camera.size`, and it never writes yaw or zoom.
+## Ticket 06: eat moment, edible signal, and arrow, 2026-09-22
+
+Reward is a meal's share of the goo's volume, read on a log scale: `_reward = clamp(log(portion / (volume * 0.002)) / log(0.25 / 0.002), 0, 1)`. It drives the bite sound (volume_db -19 to -5, pitch 1.35 to 0.6, a bigger bite always gets its own sound), the goo pulse (shell swell 1 to 8 radii per second and a warm brightening up to 0.55 of the win flash), the burst (6 to 36 droplets, 0.05 to 0.12 goo radii, speeds and gravity in goo radii, sprayed out of the bite), and the pull-in time (0.3 to 0.55 s). The arrow scales from 1.0 to 2.4 times its old size with the target's reward, smoothed. Objects that change from blocked to edible hop to 1.35 scale and flash with one shared additive material that fades in 0.5 s. HUD eyebrow labels removed: "SPECIMEN SLIDE", "NEAREST FOOD", "SPECIMEN · LAST EATEN", "SLIDE TRAY"; the nearest target reads "Nearest · <name>".
+
+Existing bug fixed: the meal burst never rendered. A one-shot CPUParticles3D with explosiveness exactly 1.0 emits nothing in Godot 4.7.2 (control emitters: 0.9 and 0.0 render, 1.0 with `emitting` or `restart()` does not). Now 0.95.
+
+Calibration (headless, `--audio-driver Dummy --fixed-fps 60`, `--simulation-clock --limit=150`, speed 1.0, instrumented copy, log `/tmp/t06_cal.log`): meal share p10/p50/p90 and reward p10/p50/p90 per level: Sugar 0.0008453 / 0.02569 / 0.08871, 0.00 / 0.53 / 0.79; Tide Pool 0.001309 / 0.01418 / 0.05523, 0.00 / 0.41 / 0.69; Skatepark 0.0024 / 0.006179 / 0.04279, 0.04 / 0.23 / 0.63; Cosmic 0.00429 / 0.01907 / 0.1111, 0.16 / 0.47 / 0.83. Largest edible-signal batch in one frame: Sugar 325, Tide Pool 24, Skatepark 24, Cosmic 56.
+
+Frames (native, muted, 1920 × 1080, Tide Pool, `scripts/capture_eat_feel.gd`, log `builds/eat-feel/frames.log`) in `builds/eat-feel/frames/`: `arrow-small.png` (reward 0.0, scale 1.00018590352698) and `arrow-large.png` (reward 1.0, scale 2.39958588957546) on the same real target; `meal-small-*` (plankton, reward 0.08397654547086) and `meal-large-*` (sea star, reward 1.0); `signal-*` (7 fixtures at 1.05 times the goo's reach, one 40% meal; goo 0.79635647365933 to 0.88886452736205; 7 of 7 edible after). HUD cards: `builds/eat-feel/hud/`. No truncated text seen.
+
+Performance, native 20-second routes, `--resolution 1920x1080 --audio-driver Dummy --script scripts/drive_levels.gd -- --limit=20 --performance`, average_fps (p95 ms). Other agents loaded the machine; load averages are from `uptime`.
+
+| Run | Load (1 min) | Sugar Water | Tide Pool | Skatepark Bowl | Cosmic Web |
+|---|---|---|---|---|---|
+| before, base c6b6aff (`builds/eat-feel/perf-before.log`) | 450.35 | 49.6743085919016 (30.79) | 57.5059758200693 (17.287) | 58.5259623387929 (17.359) | 57.2026167173343 (19.275) |
+| after, 62cfd5f (`builds/eat-feel/perf-after.log`) | 153.04 | 58.1577898530418 (18.199) | 58.1773577831451 (17.358) | 59.651912501354 (17.103) | 58.8969080955106 (17.546) |
+| before rerun, base c6b6aff (`builds/eat-feel/perf-before-rerun.log`) | 121.78 | 56.1779807160346 (19.678) | 58.1848739981015 (17.702) | 56.7660062536847 (19.584) | 49.0346313886836 (36.81) |
+
+Checks after the change: `BODY_CHECK_OK=true checks=58`, `OBSTACLE_CHECK queries=420 pass=true`, `check_worlds` unchanged from master (`TIER_BUDGET Skatepark Bowl tier=4 radius=3.62439133657015 target=4.3 closes=false`, Cosmic tiers 2 and 3 closes=false; tickets 10 and 11). `ERROR: 3 resources still in use at exit` from `check_bodies` also appears on the base commit.
+

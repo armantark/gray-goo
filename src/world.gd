@@ -24,6 +24,11 @@ var _cells: Dictionary = {}
 var _cell_of: Dictionary = {}
 var _rebin_index := 0
 var _widest_collider := 0.0
+# Foods sorted by footprint. The goo only grows, so the foods it has grown past are a prefix,
+# and each frame's newly edible foods are found by advancing a cursor instead of a full scan.
+var _by_size: Array[Food] = []
+var _grown_past := 0
+var _reach := 0.0
 
 func build(level_index: int) -> void:
 	_level = level_index
@@ -37,6 +42,8 @@ func build(level_index: int) -> void:
 	_terrain(config.ground_color, config.get("visible_ground", true))
 	_layout.build(self)
 	player_radius = float(config.initial_radius)
+	_reach = player_radius * EAT_MARGIN
+	_grown_past = _size_index(_reach)
 	_walls()
 
 func get_start() -> Vector3:
@@ -110,6 +117,27 @@ func nearest_edible(point: Vector3, goo_radius: float) -> Food:
 			nearest = food
 	return nearest
 
+# Foods the goo has just grown past that it can eat now. Foods hidden at that moment never report.
+func newly_edible(goo_radius: float) -> Array[Food]:
+	var result: Array[Food] = []
+	_reach = maxf(_reach, goo_radius * EAT_MARGIN)
+	while _grown_past < _by_size.size() and _by_size[_grown_past].radius < _reach:
+		if is_edible(_by_size[_grown_past], goo_radius):
+			result.append(_by_size[_grown_past])
+		_grown_past += 1
+	return result
+
+func _size_index(size: float) -> int:
+	var low := 0
+	var high := _by_size.size()
+	while low < high:
+		var middle := (low + high) >> 1
+		if _by_size[middle].radius < size:
+			low = middle + 1
+		else:
+			high = middle
+	return low
+
 # The one edibility rule for eating, blocking, and the arrow. A container whose own body is
 # hidden, such as a disassembled nucleon, is eaten only through its visible parts.
 func is_edible(food: Food, goo_radius: float) -> bool:
@@ -149,6 +177,10 @@ func _add_food(kind: String, at: Vector2, size: float, volume: float,
 	food.rotation.y = _rng.randf_range(-PI, PI)
 	foods.append(food)
 	_cells.clear()
+	_by_size.insert(_size_index(food.radius), food)
+	# A food added below the reach is already edible, so it counts as grown past without a signal.
+	if food.radius < _reach:
+		_grown_past += 1
 	return food
 
 func _pool(at: Vector3, extent: Vector2, color: Color, volume: float, threshold: float = 0.0, fabric: bool = false) -> LocalPool:

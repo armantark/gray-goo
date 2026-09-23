@@ -136,6 +136,13 @@ func absorb(at: Vector3, color: Color, fraction: float) -> void:
 		_previous[i] -= direction * radius * tug * minf(amount * 32.4, 12.0) * _previous_dt
 	_update_tint()
 
+# Each meal swells the whole shell and brightens it, more for a larger share of the goo.
+func pulse(strength: float) -> void:
+	_celebration = maxf(_celebration, 0.55 * strength)
+	var swell := lerpf(1.0, 8.0, strength)
+	for i in _points.size():
+		_previous[i] -= (_points[i] - global_position) * swell * _previous_dt
+
 func celebrate() -> void:
 	_celebration = 1.0
 	for i in _points.size():
