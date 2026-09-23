@@ -126,6 +126,8 @@ func _check_composite_meals(game: Node3D) -> void:
 	for case in [[0, "Water molecule · H2O", "Hydrogen atom"], [1, "Coral head", "Living coral branch"],
 			[1, "Hermit crab", "Hermit crab shell"], [2, "Skater", "Skateboard"], [3, "Spiral galaxy", "Spiral arm"]]:
 		game.start_level(case[0])
+		# Spawn points add food as the level runs; this case audits one composite in a closed level.
+		game.world.spawns.clear()
 		var whole := _find(game, case[1])
 		var part := _find(game, case[2], whole)
 		var total := _level_volume(game)

@@ -10,7 +10,13 @@ var _level := 0
 var current_tier := 0
 var _layout: RefCounted
 var _time := 0.0
+# Scatter and spawn timing draw on this stream. Placed objects set every turn and offset by hand
+# after `_add_food` draws its turn, so a build with any seed places them identically.
 var _rng := RandomNumberGenerator.new()
+var placed: Array[Food] = []
+var spawns: Array[Dictionary] = []
+# A mover that outlives its spawn point's lifetime shrinks away over this many seconds.
+const LEAVE_SECONDS := 0.8
 # The goo eats objects whose footprint radius is under its radius times this margin. Its skin
 # reaches at least 1.19 radii from its center while moving, so 1.2 keeps "smaller" true on screen.
 const EAT_MARGIN := 1.2
@@ -30,9 +36,9 @@ var _by_size: Array[Food] = []
 var _grown_past := 0
 var _reach := 0.0
 
-func build(level_index: int) -> void:
+func build(level_index: int, random_seed: int = 7309) -> void:
 	_level = level_index
-	_rng.seed = 7309 + level_index * 197
+	_rng.seed = random_seed + level_index * 197
 	var layouts := [preload("res://src/levels/sugar_water.gd"), preload("res://src/levels/tide_pool.gd"),
 		preload("res://src/levels/skatepark.gd"), preload("res://src/levels/cosmic_web.gd")]
 	_layout = layouts[level_index].new()
@@ -75,10 +81,7 @@ func nearby(center: Vector3, reach: float) -> Array[Food]:
 		_cell_of.clear()
 		_widest_collider = 0.0
 		for food in foods:
-			var cell := _cell(food.global_position)
-			_cells.get_or_add(cell, []).append(food)
-			_cell_of[food] = cell
-			_widest_collider = maxf(_widest_collider, food.collider_radius)
+			_bin(food)
 	var margin := reach + WANDER + _widest_collider
 	var result: Array[Food] = []
 	for x in range(floori((center.x - margin) / CELL), floori((center.x + margin) / CELL) + 1):
@@ -87,6 +90,12 @@ func nearby(center: Vector3, reach: float) -> Array[Food]:
 				if is_instance_valid(food):
 					result.append(food)
 	return result
+
+func _bin(food: Food) -> void:
+	var cell := _cell(food.global_position)
+	_cells.get_or_add(cell, []).append(food)
+	_cell_of[food] = cell
+	_widest_collider = maxf(_widest_collider, food.collider_radius)
 
 func _cell(point: Vector3) -> Vector2i:
 	return Vector2i(floori(point.x / CELL), floori(point.z / CELL))
@@ -176,12 +185,117 @@ func _add_food(kind: String, at: Vector2, size: float, volume: float,
 		food.position = Vector3(at.x, lift, at.y)
 	food.rotation.y = _rng.randf_range(-PI, PI)
 	foods.append(food)
-	_cells.clear()
+	if not _cells.is_empty():
+		_bin(food)
 	_by_size.insert(_size_index(food.radius), food)
 	# A food added below the reach is already edible, so it counts as grown past without a signal.
 	if food.radius < _reach:
 		_grown_past += 1
 	return food
+
+# A spawned mover that was eaten or has left the level leaves every registry, so the scans
+# stay the size of the live level. Like any meal it keeps its node until the level is freed,
+# because the driver and the HUD may still hold it.
+func _retire(food: Food) -> void:
+	food.active = false
+	food.hide()
+	food.set_physics_process(false)
+	food.collision_layer = 0
+	food.collision_mask = 0
+	foods.erase(food)
+	var index := _by_size.find(food)
+	_by_size.remove_at(index)
+	if index < _grown_past:
+		_grown_past -= 1
+	if _cell_of.has(food):
+		_cells[_cell_of[food]].erase(food)
+		_cell_of.erase(food)
+
+# Placed objects, one row per object: [kind, at, turn in degrees, size], every value chosen by
+# hand. `kinds` maps a kind to its "model" (none for a composite), "label", "tier", growth
+# "density" (volume per size cubed), visible "whole", and "reason". Optional: "lift" raises it off
+# the ground, "fit" (the model's drawn reach per unit of manifest radius) draws a model that
+# reaches past its manifest radius within its footprint, and "build" is a callable that adds a
+# composite's parts to the placed food.
+func place(rows: Array, kinds: Dictionary) -> void:
+	for row in rows:
+		var kind: Dictionary = kinds[row[0]]
+		var food := _make(kind, row[1], row[3])
+		food.rotation.y = deg_to_rad(row[2])
+		if kind.has("build"):
+			kind.build.call(food)
+		placed.append(food)
+
+func _make(kind: Dictionary, at: Vector2, size: float) -> Food:
+	var food := _add_food(kind.get("model", ""), at, size, kind.density * size * size * size,
+		kind.label, false, kind.tier, null, kind.get("lift", 0.0))
+	food.context_whole = kind.whole
+	food.loose_reason = kind.reason
+	var fit: float = kind.get("fit", 1.0)
+	food.visual.scale /= fit
+	food.height /= fit
+	return food
+
+# A spawn point releases movers of one `kind` (as for `place`) while the view is within `tiers`
+# (first and last, a Vector2i), `rate` per second on average at jittered intervals, until `limit`
+# are live. Each starts at a random point between the ends of `from` (one point for a fixed
+# source, two for a stretch of edge) with a size within `sizes`, and leaves after `lifetime`
+# seconds or on crossing the field edge. `move` takes the mover ({"food", "age", "from", "at",
+# "seed" in 0..1}) and the step, and returns its next ground position; the mover faces along it.
+func spawn(point: Dictionary) -> void:
+	point.merge({"movers": [], "wait": 0.0})
+	spawns.append(point)
+
+func _step_spawns(delta: float) -> void:
+	for point in spawns:
+		var live := 0
+		for mover: Dictionary in point.movers.duplicate():
+			var food: Food = mover.food
+			mover.age += delta
+			if not food.active:
+				# Eaten: gone once its meal animation has landed.
+				if not food.is_physics_processing():
+					_retire(food)
+					point.movers.erase(mover)
+			elif mover.age > point.lifetime:
+				var left: float = (mover.age - point.lifetime) / LEAVE_SECONDS
+				food.scale = Vector3.ONE * maxf(0.01, 1.0 - left)
+				if left >= 1.0:
+					_retire(food)
+					point.movers.erase(mover)
+			else:
+				live += 1
+				_move(point, mover, delta)
+		point.wait -= delta
+		if point.wait <= 0.0 and live < point.limit and current_tier >= point.tiers.x and current_tier <= point.tiers.y:
+			_release(point)
+			# Jittered, not exponential: at low rates an exponential gap left a minute with no movers.
+			point.wait = _rng.randf_range(0.5, 1.5) / point.rate
+
+func _release(point: Dictionary) -> void:
+	var at: Vector2 = point.from[0].lerp(point.from[-1], _rng.randf())
+	var food := _make(point.kind, at, _rng.randf_range(point.sizes.x, point.sizes.y))
+	point.movers.append({"food": food, "age": 0.0, "from": at, "at": at, "seed": _rng.randf()})
+
+func _move(point: Dictionary, mover: Dictionary, delta: float) -> void:
+	var food: Food = mover.food
+	var next: Vector2 = point.move.call(mover, delta)
+	if not field.has_point(next):
+		mover.age = point.lifetime
+		return
+	# Movers flow around larger placed objects, so none drifts inside an outline the goo cannot enter.
+	for solid in placed:
+		if solid.active and solid.collider_radius > 0.0 and solid.radius > food.radius:
+			var away := next - Vector2(solid.global_position.x, solid.global_position.z)
+			var clear := solid.collider_radius + food.radius
+			if away.length_squared() < clear * clear:
+				next += away.normalized() * (clear - away.length())
+	var step: Vector2 = next - mover.at
+	if step.length_squared() > 0.0000001:
+		food.rotation.y = atan2(-step.y, step.x)
+	var ground := Vector3(next.x, 0.0, next.y)
+	food.position = ground + Vector3.UP * (get_ground_height(ground) + point.kind.get("lift", 0.0))
+	mover.at = next
 
 func _pool(at: Vector3, extent: Vector2, color: Color, volume: float, threshold: float = 0.0, fabric: bool = false) -> LocalPool:
 	var pool := LocalPool.new()
@@ -275,4 +389,5 @@ func _walls() -> void:
 func _physics_process(delta: float) -> void:
 	_time += delta
 	_layout.step(delta)
+	_step_spawns(delta)
 	_rebin(ceili(foods.size() * delta / REBIN_SECONDS))
