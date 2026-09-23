@@ -1,7 +1,0 @@
-{
-  "mcpServers": {
-    "blender_gray_goo": {
-      "command": "./scripts/blender/server.sh"
-    }
-  }
-}

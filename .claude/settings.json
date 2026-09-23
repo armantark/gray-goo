@@ -1,7 +1,4 @@
 {
-  "enabledMcpjsonServers": [
-    "blender_gray_goo"
-  ],
   "permissions": {
     "deny": [
       "mcp__blender_gray_goo__disable_telemetry",
