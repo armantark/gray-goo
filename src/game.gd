@@ -99,7 +99,7 @@ func start_level(index: int) -> void:
 	world.build(index)
 	goo = GooProcedural.new() if hud.body_kind == "procedural" else GooBody.new()
 	add_child(goo)
-	goo.configure(world.config.start_position, world.config.initial_radius,
+	goo.configure(world.get_start(), world.config.initial_radius,
 		world.get_ground_height, world.get_obstacles, world.field)
 	_volume = pow(world.config.initial_radius, 3.0)
 	world.player_radius = goo.radius
