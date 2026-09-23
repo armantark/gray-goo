@@ -2,6 +2,9 @@ class_name GooCamera
 extends Node3D
 
 const TILT := deg_to_rad(70.0)
+# The view leads the steering by this fraction of its height, so food ahead shows up sooner.
+const LOOK_AHEAD := 0.14
+const JUMP_ZOOM_SECONDS := 1.3
 var camera: Camera3D
 var field: Rect2
 var subject: Node3D
@@ -11,6 +14,10 @@ var mouse_steering := false
 var _view_size := 10.0
 var _target_view := 10.0
 var _focus := Vector3.ZERO
+var _heading := Vector3.ZERO
+var _lead := Vector3.ZERO
+var _jump_from := 0.0
+var _jump_clock := -1.0
 var _ground_height: Callable
 
 func _ready() -> void:
@@ -36,12 +43,25 @@ func configure(bounds: Rect2, view_size: float, target: Node3D, ground: Callable
 func reveal(view_size: float) -> void:
 	_target_view = view_size
 
+# A size jump eases out on the real clock, so the zoom keeps its pace through the slow moment.
+func jump(view_size: float) -> void:
+	_jump_from = _view_size
+	_jump_clock = 0.0
+	_target_view = view_size
+
 func _process(delta: float) -> void:
 	if is_instance_valid(subject):
 		_update_camera(delta)
 
 func _update_camera(delta: float) -> void:
-	_view_size = lerpf(_view_size, _target_view, 1.0 - exp(-2.8 * delta))
+	if _jump_clock >= 0.0:
+		_jump_clock += delta / Engine.time_scale
+		var progress := minf(_jump_clock / JUMP_ZOOM_SECONDS, 1.0)
+		_view_size = lerpf(_jump_from, _target_view, smoothstep(0.0, 1.0, progress))
+		if progress >= 1.0:
+			_jump_clock = -1.0
+	else:
+		_view_size = lerpf(_view_size, _target_view, 1.0 - exp(-2.8 * delta))
 	var viewport := get_viewport().get_visible_rect().size
 	var aspect := viewport.x / viewport.y
 	var width_per_size := absf(cos(yaw)) * aspect + absf(sin(yaw)) / sin(TILT)
@@ -53,7 +73,10 @@ func _update_camera(delta: float) -> void:
 	var half_depth := camera.size / sin(TILT) * 0.5
 	var margin_x := absf(cos(yaw)) * half_width + absf(sin(yaw)) * half_depth
 	var margin_z := absf(sin(yaw)) * half_width + absf(cos(yaw)) * half_depth
-	var desired := subject.global_position
+	# Steering intent, not body velocity, drives the lead: the shell's velocity wobbles
+	# as it rolls, and following that wobble would shake the view.
+	_lead = _lead.lerp(_heading * camera.size * LOOK_AHEAD, 1.0 - exp(-2.2 * delta))
+	var desired := subject.global_position + _lead
 	var center := field.get_center()
 	var extent_x := maxf(0.0, field.size.x * 0.5 - margin_x)
 	var extent_z := maxf(0.0, field.size.y * 0.5 - margin_z)
@@ -75,6 +98,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			zoom = minf(1.3, zoom + 0.07)
 
 func movement_direction() -> Vector3:
+	_heading = _steering()
+	return _heading
+
+func _steering() -> Vector3:
 	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var right := camera.global_basis.x
 	var up := camera.global_basis.y
