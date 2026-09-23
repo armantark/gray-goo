@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Drives levels headless on a fixed 60 fps game clock, one process per level in parallel, as fast
 # as the CPU allows (about 2.3x real time each). Usage: scripts/route.sh [out_dir] [level ...]
-# Extra driver flags go in ROUTE_FLAGS, e.g. ROUTE_FLAGS="--route-seed=21".
+# Extra driver flags go in ROUTE_FLAGS, e.g. ROUTE_FLAGS="--seed=21".
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 out="${1:-builds/routes/latest}"
