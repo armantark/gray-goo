@@ -1,19 +1,113 @@
 extends RefCounted
 
-const Geometry = preload("res://src/levels/atomic_cosmic_geometry.gd")
-var world: GameWorld
-var supercluster: Food
-var fabric: LocalPool
-var filament: Node3D
-var _stars: Array[Dictionary] = []
-var _background: Array[Dictionary] = []
-var _galaxies: Array[Food] = []
-var _groups: Array[Dictionary] = []
+# One stretch of the cosmic web. Four filaments meet at the great node north-east of center, where
+# the Filament supercluster sits; three smaller nodes hold galaxy clusters, and thinner filaments run
+# on from them to the edges. Galaxy groups sit along the filaments and the voids between them stay
+# empty. The goo starts on an arm of the home galaxy in the Local group, on the long filament that
+# runs from the west cluster to the great node. Runaway stars fly out of the home galaxy's core, gas
+# falls into the Local group along its filament, and galaxies and groups stream along the filaments
+# toward the nodes.
+const NODE := Vector2(40.0, -20.0)
+const WEST := Vector2(-95.0, 35.0)
+const SOUTH_EAST := Vector2(115.0, 70.0)
+const NORTH := Vector2(-30.0, -95.0)
+const NODES := [NODE, WEST, SOUTH_EAST, NORTH]
+const LOCAL := Vector2(-45.0, 15.0)
+# The home galaxy's center: the Local group's first entry, which is not turned.
+const HOME := LOCAL + Vector2(-0.43, 0.09) * 7.0
+
+# Filaments, [width, points]. The four at the great node leave along the arms of its knot.
+const FILAMENTS := [
+	[9.0, [NODE, Vector2(14, -8), Vector2(-12, 4), LOCAL, Vector2(-72, 26), WEST]],
+	[8.0, [NODE, Vector2(30, -44), Vector2(8, -70), NORTH]],
+	[8.0, [NODE, Vector2(55, 12), Vector2(84, 42), SOUTH_EAST]],
+	[8.0, [NODE, Vector2(82, -38), Vector2(128, -42), Vector2(200, -66)]],
+	[6.0, [WEST, Vector2(-132, 30), Vector2(-200, 46)]],
+	[6.0, [WEST, Vector2(-98, 72), Vector2(-118, 155)]],
+	[6.0, [NORTH, Vector2(-88, -108), Vector2(-200, -117)]],
+	[5.0, [NORTH, Vector2(-8, -116), Vector2(18, -155)]],
+	[6.0, [SOUTH_EAST, Vector2(104, 104), Vector2(94, 155)]],
+	[5.0, [SOUTH_EAST, Vector2(148, 74), Vector2(200, 100)]],
+	[5.0, [WEST, Vector2(-92, -2), Vector2(-72, -52), NORTH]],
+]
+
+# Group forms, one galaxy per entry: [kind, offset and size in group sizes, turn in degrees].
+# Every form reaches just inside its group's size, so the group is as large as it looks.
+const LOCAL_GROUP := [["home_spiral", Vector2(-0.43, 0.09), 0.49, 20], ["rich_spiral", Vector2(0.45, -0.25), 0.4, 145],
+	["dwarf", Vector2(-0.05, 0.68), 0.16, 60], ["dwarf", Vector2(0.1, -0.75), 0.13, 200], ["spiral", Vector2(0.62, 0.45), 0.23, 280]]
+# A compact group: four galaxies close enough to touch.
+const COMPACT := [["spiral", Vector2(-0.4, -0.33), 0.44, 30], ["elliptical", Vector2(0.45, -0.28), 0.42, 0],
+	["spiral", Vector2(0.3, 0.5), 0.4, 200], ["dwarf", Vector2(-0.5, 0.55), 0.22, 80]]
+# A loose group around one elliptical.
+const LOOSE := [["elliptical", Vector2(0.05, -0.05), 0.4, 20], ["spiral", Vector2(-0.55, 0.35), 0.36, 110],
+	["dwarf", Vector2(0.62, 0.3), 0.2, 0], ["dwarf", Vector2(0.35, -0.68), 0.18, 300], ["elliptical", Vector2(-0.45, -0.55), 0.2, 60]]
+# Two spirals passing each other, with a dwarf between their tails.
+const PAIR := [["spiral", Vector2(-0.45, 0.1), 0.5, 60], ["spiral", Vector2(0.5, -0.15), 0.45, 250], ["dwarf", Vector2(0.05, 0.75), 0.2, 0]]
+# A cluster: a giant elliptical at the center, ringed by older galaxies.
+const CLUSTER := [["giant", Vector2.ZERO, 0.4, 0], ["elliptical", Vector2(0.66, 0.18), 0.24, 40],
+	["elliptical", Vector2(-0.25, 0.7), 0.22, 100], ["spiral", Vector2(-0.62, -0.3), 0.3, 10],
+	["elliptical", Vector2(0.22, -0.7), 0.2, 300], ["dwarf", Vector2(0.55, -0.55), 0.14, 0], ["dwarf", Vector2(-0.7, 0.35), 0.12, 0]]
+# The supercluster's galaxies lie along the knot's four arms, which run out along the filaments.
+const CORE := [["giant", Vector2.ZERO, 0.3, 0], ["elliptical", Vector2(-0.24, -0.49), 0.18, 30],
+	["elliptical", Vector2(0.5, -0.24), 0.18, 120], ["elliptical", Vector2(0.23, 0.5), 0.18, 210],
+	["elliptical", Vector2(-0.5, 0.22), 0.18, 300], ["dwarf", Vector2(-0.8, 0.35), 0.12, 0], ["dwarf", Vector2(0.35, 0.8), 0.12, 90]]
+
+# The stars and star-forming nebula of each arm of a rich spiral, [[kind, point, size], ...] and
+# [point, size]. Points are in the arm model's own units, where the arm arcs from (-0.7, -0.73) past
+# (0.5, -0.3) to (0.85, 0.7); its inner half runs beside the next arm, so stars keep to the outer
+# half. Blue giants stand alone: the starting goo must grow to eat them.
+const ARMS := [
+	[[["blue_giant", Vector2(0.84, 0.25), 0.5], ["yellow_star", Vector2(0.86, 0.66), 0.22]], [Vector2(0.36, -0.42), 0.64]],
+	[[["yellow_star", Vector2(0.55, -0.3), 0.2], ["blue_giant", Vector2(0.85, 0.45), 0.52]], [Vector2(0.12, -0.58), 0.55]],
+	[[["red_dwarf", Vector2(0.3, -0.46), 0.15], ["yellow_star", Vector2(0.82, 0.12), 0.22], ["red_dwarf", Vector2(0.86, 0.68), 0.16]],
+		[Vector2(0.6, -0.26), 0.5]],
+]
+# An open cluster, [kind, offset and size in cluster sizes], young and bright at its heart.
+const OPEN_CLUSTER := [["blue_giant", Vector2(0.05, 0.0), 0.3], ["yellow_star", Vector2(-0.6, -0.33), 0.22],
+	["red_dwarf", Vector2(0.55, -0.5), 0.2], ["yellow_star", Vector2(0.5, 0.55), 0.22], ["red_dwarf", Vector2(-0.45, 0.62), 0.18]]
+const STARS := {"red_dwarf": "Red dwarf star", "yellow_star": "Yellow star", "blue_giant": "Blue giant star"}
+# The arm model draws out to 1.288 times its manifest radius.
+const ARM_FIT := 1.288
+
+# [kind, at, turn in degrees, size]
+const PLACED := [
+	# The milestone at the great node, its knot's arms along the four filaments.
+	["supercluster", NODE, 0, 9.5],
+	# Clusters at the three smaller nodes.
+	["cluster", WEST, 30, 8.0],
+	["cluster", SOUTH_EAST, 200, 7.6],
+	["cluster", NORTH, 100, 7.2],
+	# The Local group, where the goo starts, and its neighbours along the long filament.
+	["local_group", LOCAL, 0, 7.0],
+	["compact_group", Vector2(-14, 5), 35, 5.4],
+	["loose_group", Vector2(-74, 27), 200, 6.0],
+	# Groups along the other filaments, fewer and smaller toward the edges.
+	["loose_group", Vector2(28, -46), 80, 5.6],
+	["compact_group", Vector2(6, -71), 150, 5.0],
+	["pair_group", Vector2(58, 15), 300, 6.2],
+	["compact_group", Vector2(86, 44), 10, 5.2],
+	["loose_group", Vector2(84, -38), 250, 6.0],
+	["compact_group", Vector2(136, -43), 120, 5.4],
+	["pair_group", Vector2(-138, 31), 20, 6.0],
+	["compact_group", Vector2(-100, 80), 260, 5.0],
+	["loose_group", Vector2(-92, -108), 170, 6.2],
+	["pair_group", Vector2(-84, -28), 70, 5.8],
+	["loose_group", Vector2(103, 108), 330, 5.4],
+	["compact_group", Vector2(152, 76), 200, 5.2],
+	["compact_group", Vector2(-6, -118), 45, 4.8],
+]
+
+var _world: GameWorld
+var _web: Node3D
+var _home: Food
+var _spinning: Array[Food] = []
+var _clusters: Array[Food] = []
+var _tier := 0
 
 func definition() -> Dictionary:
 	return {"title": "Cosmic Web", "meters_per_unit": 9.4607e15,
-		"initial_radius": 0.4, "goal_radius": 8.6, "start_position": Vector3(-36.5, 0, -12.8),
-		"accent": Color("e3c393"), "field": Rect2(-180, -155, 360, 270),
+		"initial_radius": 0.4, "goal_radius": 8.6, "start_position": Vector3(HOME.x, 0, HOME.y + 1.9),
+		"accent": Color("e3c393"), "field": Rect2(-180, -135, 360, 270),
 		"tiers": ["Stars", "Nebulae and clusters", "Galaxies", "Groups and clusters", "The web"],
 		"jumps": [{"radius": 0.4, "view_size": 9.0}, {"radius": 0.85, "view_size": 15.0},
 			{"radius": 1.75, "view_size": 25.0, "meters_per_unit": 1e20},
@@ -26,128 +120,149 @@ func definition() -> Dictionary:
 func ground_height(_point: Vector3) -> float:
 	return 0.0
 
-func build(scene_world: GameWorld) -> void:
-	world = scene_world
-	filament = Node3D.new()
-	filament.name = "VisibleCosmicFilament"
-	world.add_child(filament)
-	_build_filament()
-	supercluster = _whole(Vector2.ZERO, 180.0, 192.0, "Filament supercluster", 4)
-	supercluster.context_whole = filament
-	supercluster.milestone = true
-	_build_supercluster()
-	_build_outlying_filaments()
-	# The web itself is far larger than any goo, so mopping its fabric is what grows the goo
-	# from galaxies to the size of whole groups.
-	fabric = world._pool(Vector3(0, 0.035, 0), Vector2(59, 43), Color(0.1, 0.14, 0.2, 0.85), 520.0, 0.0, true)
-	fabric.min_tier = 3
-	_build_background()
+func build(world: GameWorld) -> void:
+	_world = world
+	_web = Node3D.new()
+	_web.name = "The filaments of the cosmic web"
+	world.add_child(_web)
+	for filament in FILAMENTS:
+		_filament(filament[1], filament[0])
+	var reason := "Galaxies gather where the web's filaments run and meet."
+	var kinds := {
+		"supercluster": {"label": "Filament supercluster", "tier": 4, "density": 0.18, "whole": _web,
+			"reason": "The great node, where four filaments of the web meet.", "build": _supercluster},
+		"cluster": {"label": "Galaxy cluster", "tier": 4, "density": 0.04, "whole": _web,
+			"reason": "Clusters sit where filaments of the web meet.", "build": _group.bind(CLUSTER, Color(0.3, 0.26, 0.2))},
+		"local_group": {"label": "Local galaxy group", "tier": 3, "density": 0.025, "whole": _web,
+			"reason": reason, "build": _group.bind(LOCAL_GROUP, Color(0.2, 0.24, 0.3))},
+		"compact_group": {"label": "Compact galaxy group", "tier": 3, "density": 0.025, "whole": _web,
+			"reason": reason, "build": _group.bind(COMPACT, Color(0.2, 0.24, 0.3))},
+		"loose_group": {"label": "Loose galaxy group", "tier": 3, "density": 0.025, "whole": _web,
+			"reason": reason, "build": _group.bind(LOOSE, Color(0.2, 0.24, 0.3))},
+		"pair_group": {"label": "Interacting galaxy pair", "tier": 3, "density": 0.025, "whole": _web,
+			"reason": reason, "build": _group.bind(PAIR, Color(0.2, 0.24, 0.3))},
+	}
+	world.place(PLACED, kinds)
+	_build_spawns()
 
-func _whole(at: Vector2, size: float, volume: float, label: String, tier: int, parent: Food = null) -> Food:
-	var food := world._add_food("", at, size, volume, label, false, tier, parent)
-	food.rotation = Vector3.ZERO
-	food.height = 0.4
-	return food
+# A soft band of light along hand-placed points, smoothed between them.
+func _filament(points: Array, width: float) -> void:
+	var line := PackedVector2Array()
+	for index in points.size() - 1:
+		for step in 12:
+			line.append(points[index].cubic_interpolate(points[index + 1], points[maxi(index - 1, 0)],
+				points[mini(index + 2, points.size() - 1)], step / 12.0))
+	line.append(points[-1])
+	var vertices := PackedVector3Array()
+	var uvs := PackedVector2Array()
+	var colors := PackedColorArray()
+	for index in line.size():
+		# Matter drains along filaments into the nodes, so a filament swells and brightens toward one.
+		var near := INF
+		for node in NODES:
+			near = minf(near, line[index].distance_to(node))
+		var swell := exp(-near / 30.0)
+		var along := (line[mini(index + 1, line.size() - 1)] - line[maxi(index - 1, 0)]).normalized()
+		var side := along.orthogonal() * width * (0.3 + 0.35 * swell)
+		for edge in [-1.0, 1.0]:
+			var point: Vector2 = line[index] + side * edge
+			vertices.append(Vector3(point.x, -0.3, point.y))
+			# The halo shader fades with distance from the UV center, so this fades across the band.
+			uvs.append(Vector2(0.5, 0.5 + edge * 0.5))
+			colors.append(Color(1.0, 1.0, 1.0, 0.35 + 0.65 * swell))
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_TEX_UV] = uvs
+	arrays[Mesh.ARRAY_COLOR] = colors
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLE_STRIP, arrays)
+	_web.add_child(_glow_node(mesh, Color(0.42, 0.5, 0.64)))
 
-func _filament_point(t: float) -> Vector3:
-	return Vector3(t * 49.0, 0.07, sin(t * 3.7) * 15.0 + t * 8.0)
-
-func _build_filament() -> void:
-	var points := PackedVector3Array()
-	for index in range(81):
-		points.append(_filament_point(index / 40.0 - 1.0))
-	_dust_path(filament, points, 1100, 1.5)
-	for index in [2, 4, 6]:
-		_build_branch(index)
-
-func _dust_path(parent: Node3D, points: PackedVector3Array, count: int, spread: float) -> void:
+func _glow(parent: Node3D, size: float, color: Color) -> void:
 	var plane := PlaneMesh.new()
-	plane.size = Vector2.ONE
-	var batch := MultiMesh.new()
-	batch.transform_format = MultiMesh.TRANSFORM_3D
-	batch.use_colors = true
-	batch.mesh = plane
-	batch.instance_count = count
-	for index in count:
-		var sample := world._rng.randf_range(0, points.size() - 1.001)
-		var point := points[int(sample)].lerp(points[int(sample) + 1], fmod(sample, 1.0))
-		point += Vector3(world._rng.randfn(0, spread), 0, world._rng.randfn(0, spread))
-		var size := world._rng.randf_range(0.4, 1.7)
-		batch.set_instance_transform(index, Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * size), point))
-		var tint := Color("8196aa") if index % 3 else Color("c0a88a")
-		tint.a = world._rng.randf_range(0.08, 0.25)
-		batch.set_instance_color(index, tint)
-	var dust := MultiMeshInstance3D.new()
-	dust.multimesh = batch
+	plane.size = Vector2.ONE * size
+	var glow := _glow_node(plane, color)
+	parent.add_child(glow)
+	glow.position.y = -0.2
+
+func _glow_node(mesh: Mesh, color: Color) -> MeshInstance3D:
+	var node := MeshInstance3D.new()
+	node.mesh = mesh
 	var material := ShaderMaterial.new()
 	material.shader = preload("res://shaders/star_halo.gdshader")
-	material.set_shader_parameter("color", Color.WHITE)
-	dust.material_override = material
-	dust.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	parent.add_child(dust)
+	material.set_shader_parameter("color", color)
+	node.material_override = material
+	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return node
 
-func _build_supercluster() -> void:
-	for index in range(28):
-		var point := _group_point(index)
-		var group := _whole(Vector2(point.x, point.z), 9.5, 6.3,
-			"Galaxy group " + str(index + 1), 3, supercluster)
-		group.rotation.y = 0.12 if index == 1 else world._rng.randf_range(-1.8, 1.8)
-		_groups.append({"food": group, "home": group.position, "phase": world._rng.randf_range(0, TAU)})
-		_build_group(group, index)
-		var knot := Geometry.backdrop_model(group.visual, "galaxy_group", Vector3(0, 0.03, 0), 1.8)
-		knot.name = "DiffuseGroupHalo"
-		group.part_consumed.connect(_group_changed.bind(knot))
-	Geometry.backdrop_model(supercluster.visual, "knot", Vector3(0, 0.07, 0), 4.0)
+# A group or cluster: its hot gas glows as far as its galaxies reach, and stays when they are eaten.
+func _group(group: Food, form: Array, gas: Color) -> void:
+	_composite(group)
+	_glow(group.visual, group.radius * 2.2, gas)
+	for entry in form:
+		_galaxy(group, entry[0], entry[1] * group.radius, entry[2] * group.radius, entry[3])
 
-func _build_group(group: Food, index: int) -> void:
-	var spiral := _spiral(group, Vector2(-4.2, 0) + _galaxy_offset(), index)
-	_galaxies.append(spiral)
-	var elliptical := world._add_food("elliptical_galaxy", Vector2(3.4, 3.6) + _galaxy_offset(), 2.3,
-		0.375, "Elliptical galaxy", false, 2, group)
-	var dwarf := world._add_food("dwarf_galaxy", Vector2(4.0, -4.1) + _galaxy_offset(), 1.4,
-		0.33, "Dwarf galaxy", false, 2, group)
-	_nonblocking(elliptical)
-	_nonblocking(dwarf)
-	_galaxies.append_array([elliptical, dwarf])
-	for galaxy in [spiral, elliptical, dwarf]:
-		galaxy.set_meta("spin", world._rng.randf_range(-0.028, 0.028))
-	_nebula(elliptical, Vector2(0.6, 0), 0.8, index * 3 + 1)
-	_nebula(dwarf, Vector2.ZERO, 0.7, index * 3 + 2)
-	_nebula(elliptical, Vector2(-0.9, -0.5), 0.75, index * 3 + 1)
-	_nebula(dwarf, Vector2(0.8, -0.6), 0.6, index * 3 + 2)
+func _supercluster(core: Food) -> void:
+	core.milestone = true
+	_group(core, CORE, Color(0.36, 0.32, 0.26))
+	# The knot's model reaches 1.08 times its manifest radius.
+	var knot := Art.model("knot", core.radius / 1.08)
+	core.visual.add_child(knot)
 
-func _spiral(group: Food, at: Vector2, seed_index: int) -> Food:
-	var galaxy := _whole(at, 4.2, 0.3, "Spiral galaxy", 2, group)
-	Geometry.backdrop_model(galaxy.visual, "galaxy_bulge", Vector3.ZERO, 0.92)
-	for index in range(3):
-		var arm := world._add_food("galaxy_arm", Vector2.ZERO, 3.5, 0.05,
-			"Spiral arm", false, 2, galaxy)
-		arm.rotation.y = index * TAU / 3.0
-		_nonblocking(arm)
-		if index < 2:
-			_nebula(arm, Vector2(1.7, 0.4), 1.25, seed_index * 3)
-	var hole := world._add_food("black_hole", Vector2(0.12, 0.15), 0.35,
-		0.045, "Black hole with accretion disk", false, 1, galaxy, 0.7)
-	hole.set_meta("accretion_disk", true)
-	galaxy.part_consumed.connect(_spiral_changed.bind(galaxy))
-	return galaxy
+func _galaxy(parent: Food, kind: String, at: Vector2, size: float, turn: float) -> void:
+	match kind:
+		"home_spiral", "rich_spiral", "spiral":
+			var galaxy := _part("", parent, at, size, 0.012, "Spiral galaxy", 2, turn)
+			_composite(galaxy)
+			galaxy.visual.add_child(Art.model("galaxy_bulge", size * 0.2))
+			var hole := _part("black_hole", galaxy, Vector2.ZERO, size * 0.16, 0.2, "Black hole with accretion disk", 1, 0)
+			hole.position.y = 0.05
+			for index in 3:
+				# Arms reach a little short of the galaxy, so the goo that can eat an arm cannot yet eat the galaxy.
+				var arm := _part("galaxy_arm", galaxy, Vector2.ZERO, size * 0.91, 0.005, "Spiral arm", 2, index * 120.0)
+				arm.visual.scale /= ARM_FIT
+				arm.height /= ARM_FIT
+				_nonblocking(arm)
+				if kind != "spiral":
+					_arm_stars(arm, arm.radius / ARM_FIT, ARMS[index])
+			galaxy.part_consumed.connect(_spiral_changed.bind(galaxy))
+			_spinning.append(galaxy)
+			if kind == "home_spiral":
+				_home = galaxy
+		"elliptical", "giant":
+			_nonblocking(_part("elliptical_galaxy", parent, at, size, 0.024,
+				"Giant elliptical galaxy" if kind == "giant" else "Elliptical galaxy", 2, turn))
+		"dwarf":
+			_nonblocking(_part("dwarf_galaxy", parent, at, size, 0.06, "Dwarf galaxy", 1, turn))
 
-func _nebula(parent: Food, at: Vector2, size: float, index: int) -> void:
-	var nebula := world._add_food("nebula", at, size, 0.025, "Stellar nursery nebula", false, 1, parent)
-	nebula.rotation = Vector3.ZERO
+# `unit` is the arm model's drawn scale, so the stars and nebula follow the arm's curve.
+func _arm_stars(arm: Food, unit: float, layout: Array) -> void:
+	for entry in layout[0]:
+		_part(entry[0], arm, entry[1] * unit, entry[2], 0.15, STARS[entry[0]], 0, 0, 0.025)
+	var nebula := _part("nebula", arm, layout[1][0] * unit, layout[1][1], 0.04, "Stellar nursery nebula", 1, 0)
 	_nonblocking(nebula)
-	var cluster := _whole(Vector2.ZERO, size * 0.82, 0.0165, "Open star cluster", 1, nebula)
+	var cluster := _part("", nebula, Vector2.ZERO, nebula.radius * 0.85, 0.0, "Open star cluster", 0, 0)
+	_composite(cluster)
 	# The cluster draws nothing but its stars, so it goes with the last one.
 	cluster.collect_when_empty = true
-	for star_index in range(9):
-		var lobe := Vector2(-0.28, 0.13) if star_index < 6 else Vector2(0.34, -0.22)
-		var scatter := Vector2(world._rng.randfn(0, 0.2), world._rng.randfn(0, 0.14))
-		var position := (lobe + scatter).limit_length(0.9) * size
-		var kind: String = ["red_dwarf", "yellow_star", "blue_giant"][star_index % 3]
-		var star_size: float = [0.115, 0.15, 0.2][star_index % 3]
-		var star := world._add_food(kind, position,
-			star_size, 0.00225, kind.replace("_", " ").capitalize(), false, 0, cluster, 0.025)
-		_stars.append({"food": star, "home": star.position, "phase": world._rng.randf_range(0, TAU), "speed": world._rng.randf_range(0.15, 0.3)})
+	_clusters.append(cluster)
+	for entry in OPEN_CLUSTER:
+		_part(entry[0], cluster, entry[1] * cluster.radius, entry[2] * cluster.radius, 0.15, STARS[entry[0]], 0, 0, 0.025)
+
+func _part(model: String, parent: Food, at: Vector2, size: float, density: float, label: String, tier: int, turn: float, lift: float = 0.0) -> Food:
+	var food := _world._add_food(model, at, size, density * size * size * size, label, false, tier, parent, lift)
+	food.rotation.y = deg_to_rad(turn)
+	return food
+
+# A whole drawn only by its parts and gas lies flat, so contact is judged at the plane of its galaxies.
+func _composite(food: Food) -> void:
+	food.height = 0.4
+
+func _nonblocking(food: Food) -> void:
+	food.collider_radius = 0.0
+	food.collision_layer = 0
+	food.collision_mask = 0
 
 func _spiral_changed(part: Food, galaxy: Food) -> void:
 	if part.model_name != "galaxy_arm":
@@ -158,138 +273,69 @@ func _spiral_changed(part: Food, galaxy: Food) -> void:
 			arms += 1
 	galaxy.title = "Bare galactic bulge" if arms == 0 else "Spiral galaxy · " + str(arms) + " arms"
 
-func _group_changed(_part: Food, halo: Node3D) -> void:
-	if is_instance_valid(halo):
-		halo.scale *= 0.86
+# Every mover is small enough to eat from the moment its view opens, so none blocks the goo.
+func _build_spawns() -> void:
+	_world.spawn({"kind": {"model": "yellow_star", "label": "Runaway star", "tier": 0, "density": 0.6,
+			"whole": _home, "reason": "The home galaxy's black hole flings stars out of its core.", "lift": 0.025},
+		"from": [HOME], "sizes": Vector2(0.16, 0.3), "tiers": Vector2i(0, 1),
+		"rate": 0.4, "limit": 5, "lifetime": 14.0, "move": _fling})
+	for source in [Vector2(-70, 25), Vector2(-20, 6)]:
+		_world.spawn({"kind": {"model": "nebula", "label": "Infalling gas cloud", "tier": 1, "density": 0.15,
+				"whole": _web, "reason": "Gas flows along the filament into the Local group."},
+			"from": [source], "sizes": Vector2(0.7, 1.0), "tiers": Vector2i(1, 2),
+			"rate": 0.15, "limit": 2, "lifetime": 40.0, "move": _infall})
+	for path in [[Vector2(-168, 41), Vector2(-132, 30), WEST], [Vector2(168, -56), Vector2(128, -42), Vector2(82, -38), NODE],
+			[Vector2(97, 124), Vector2(104, 104), SOUTH_EAST]]:
+		_world.spawn({"kind": {"model": "dwarf_galaxy", "label": "Satellite galaxy", "tier": 2, "density": 0.06,
+				"whole": _web, "reason": "Galaxies stream along the filament toward its node."},
+			"from": [path[0]], "sizes": Vector2(1.5, 2.05), "tiers": Vector2i(2, 3),
+			"rate": 0.12, "limit": 2, "lifetime": 60.0, "move": _stream.bind(path, 7.0)})
+	for path in [[Vector2(-166, -114), Vector2(-88, -108), NORTH], [Vector2(-3, -124), Vector2(-8, -116), NORTH],
+			[Vector2(167, 84), Vector2(148, 74), SOUTH_EAST], [Vector2(-114, 124), Vector2(-98, 72), WEST]]:
+		_world.spawn({"kind": {"model": "galaxy_group", "label": "Infalling galaxy group", "tier": 3, "density": 0.13,
+				"whole": _web, "reason": "Small groups fall along the filaments into the clusters."},
+			"from": [path[0]], "sizes": Vector2(2.8, 3.8), "tiers": Vector2i(3, 4),
+			"rate": 0.055, "limit": 2, "lifetime": 60.0, "move": _stream.bind(path, 12.0)})
+	for path in [[Vector2(-160, 38), Vector2(-132, 30), WEST, Vector2(-45, 15), NODE], [Vector2(160, -53), Vector2(128, -42), NODE],
+			[Vector2(98, 118), Vector2(104, 104), SOUTH_EAST, Vector2(55, 12), NODE]]:
+		_world.spawn({"kind": {"model": "galaxy_group", "label": "Infalling galaxy cluster", "tier": 4, "density": 0.05,
+				"whole": _web, "reason": "Whole clusters fall along the filaments toward the great node."},
+			"from": [path[0]], "sizes": Vector2(5.5, 7.0), "tiers": Vector2i(4, 4),
+			"rate": 0.035, "limit": 2, "lifetime": 60.0, "move": _stream.bind(path, 20.0)})
 
-func _build_background() -> void:
-	var background := Node3D.new()
-	background.name = "DistantCosmicWeb"
-	world.add_child(background)
-	_starfield(background)
-	for branch in range(5):
-		_background_filament(background, branch)
-	var fields := [Vector2(-215, -31), Vector2(-205, 155), Vector2(15, 165), Vector2(220, 35), Vector2(39, -198)]
-	for index in range(85):
-		var center: Vector2 = fields[index % fields.size()]
-		var scatter := Vector2(world._rng.randfn(0, 8), world._rng.randfn(0, 7)).limit_length(13)
-		var point := Vector3(center.x + scatter.x, world._rng.randf_range(-1, 3), center.y + scatter.y)
-		var kind := "yellow_star" if index % 3 == 0 else "red_dwarf"
-		var star := Geometry.backdrop_model(background, kind, point, world._rng.randf_range(0.055, 0.14))
-		_background.append({"node": star, "speed": 0.006})
-	for index in range(13):
-		var center: Vector2 = fields[(index + 1) % 3]
-		var scatter := Vector2(world._rng.randfn(0, 7), world._rng.randfn(0, 5)).limit_length(10)
-		var point := Vector3(center.x + scatter.x, 0.4, center.y + scatter.y)
-		var kind := "elliptical_galaxy" if index % 2 == 0 else "dwarf_galaxy"
-		var galaxy := Geometry.backdrop_model(background, kind, point, world._rng.randf_range(1.8, 3.4))
-		galaxy.rotation.y = world._rng.randf_range(-PI, PI)
-		_background.append({"node": galaxy, "speed": world._rng.randf_range(-0.016, 0.016)})
-	var overview := Geometry.backdrop_model(background, "galaxy_group", Vector3(-33.3, 0.06, -15.5), 2.1)
-	overview.name = "DistantProjectionOfFilamentSupercluster"
-	overview.set_meta("represents", supercluster)
+# Runaway stars leave the core in straight lines, each on its own heading.
+func _fling(mover: Dictionary, _delta: float) -> Vector2:
+	return mover.from + Vector2.from_angle(mover.seed * TAU) * (1.0 + mover.age * 2.4)
 
-func _starfield(parent: Node3D) -> void:
-	var plane := PlaneMesh.new()
-	plane.size = Vector2.ONE
-	var batch := MultiMesh.new()
-	batch.transform_format = MultiMesh.TRANSFORM_3D
-	batch.use_colors = true
-	batch.mesh = plane
-	batch.instance_count = 4800
-	for index in batch.instance_count:
-		var point := Vector3(world._rng.randf_range(-250, 250), 0.09, world._rng.randf_range(-225, 185))
-		var size := world._rng.randf_range(0.035, 0.12)
-		batch.set_instance_transform(index, Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * size), point))
-		var tint := Color("f5e3c4") if index % 4 == 0 else Color("cbd8e5")
-		tint.a = world._rng.randf_range(0.3, 0.8)
-		batch.set_instance_color(index, tint)
-	var stars := MultiMeshInstance3D.new()
-	stars.multimesh = batch
-	var material := ShaderMaterial.new()
-	material.shader = preload("res://shaders/star_halo.gdshader")
-	stars.material_override = material
-	stars.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	parent.add_child(stars)
+# Gas clouds drift toward the Local group and swirl into it.
+func _infall(mover: Dictionary, delta: float) -> Vector2:
+	var offset: Vector2 = mover.at - LOCAL
+	var inward := -offset.normalized()
+	var around := inward.orthogonal() * (0.6 if mover.seed > 0.5 else -0.6)
+	return mover.at + (inward + around) * 2.6 * delta
 
-func _background_filament(parent: Node3D, branch: int) -> void:
-	var starts := [Vector2(-260, -150), Vector2(-250, 180), Vector2(250, -220), Vector2(-255, -200), Vector2(-300, 30)]
-	var ends := [Vector2(-230, 240), Vector2(280, 220), Vector2(240, 235), Vector2(300, -220), Vector2(-245, -260)]
-	var points := PackedVector3Array()
-	for index in range(61):
-		var t := index / 60.0
-		var point: Vector2 = starts[branch].lerp(ends[branch], t)
-		point += Vector2(sin(t * 7.0 + branch), cos(t * 5.0 - branch)) * 9.0
-		points.append(Vector3(point.x, -0.2, point.y))
-	_dust_path(parent, points, 650, 2.2)
+# Movers follow a filament's points toward its node, each in its own lane beside the spine, and
+# circle the node once there instead of piling onto it.
+func _stream(mover: Dictionary, delta: float, path: Array, speed: float) -> Vector2:
+	var leg: int = mover.get("leg", 1)
+	var end: Vector2 = path[-1]
+	if leg == path.size() - 1 and mover.at.distance_to(end) < 14.0:
+		var orbit: Vector2 = end + (mover.at - end).normalized().rotated(0.6) * lerpf(6.0, 12.0, mover.seed)
+		return mover.at + (orbit - mover.at).limit_length(speed * delta)
+	if mover.at.distance_to(path[leg]) < 3.0 and leg < path.size() - 1:
+		leg += 1
+		mover.leg = leg
+	var lane: Vector2 = (path[leg] - path[leg - 1]).normalized().orthogonal() * (mover.seed - 0.5) * 5.0
+	return mover.at + (path[leg] + lane - mover.at).limit_length(speed * delta)
 
 func step(delta: float) -> void:
-	_step_groups(delta)
-	for item in _stars:
-		var star: Food = item.food
-		if not is_instance_valid(star) or not star.active:
-			continue
-		var home: Vector3 = item.home
-		var phase := world._time * float(item.speed) + float(item.phase)
-		star.position = home + Vector3(sin(phase) - sin(item.phase), 0, cos(phase * 0.83) - cos(float(item.phase) * 0.83)) * 0.11
-		star.visual.rotation.y += delta * 0.12
-	for item in _background:
-		item.node.rotation.y += delta * float(item.speed)
-
-func _nonblocking(food: Food) -> void:
-	food.collider_radius = 0.0
-	food.collision_layer = 0
-	food.collision_mask = 0
-
-func _galaxy_offset() -> Vector2:
-	return Vector2(world._rng.randfn(0, 0.75), world._rng.randfn(0, 0.65)).limit_length(1.2)
-
-func _group_point(index: int) -> Vector3:
-	var spine := [-0.96, -0.68, -0.68, -0.09, -0.09, 0.58, 0.58]
-	var offsets := [Vector2.ZERO, Vector2.ZERO, Vector2(-6, 15), Vector2.ZERO,
-		Vector2(14, -14), Vector2.ZERO, Vector2(13, 12)]
-	var local := index % 7
-	var patch: Vector3 = [Vector3.ZERO, Vector3(115, 0, -43), Vector3(-112, 0, 52), Vector3(5, 0, -105)][index / 7]
-	return _filament_point(spine[local]) + Vector3(offsets[local].x, 0, offsets[local].y) + patch
-
-func _build_branch(index: int) -> void:
-	var origins := {2: 1, 4: 3, 6: 5}
-	var region := (index / 7) * 7
-	var start := _group_point(region + origins[index % 7])
-	var end := _group_point(index)
-	var side := Vector3(-(end.z - start.z), 0, end.x - start.x) * 0.14
-	var points := PackedVector3Array()
-	for step_index in range(33):
-		var t := step_index / 32.0
-		points.append(start.lerp(end, t) + side * sin(t * PI))
-	_dust_path(filament, points, 220, 0.9)
-
-func _step_groups(delta: float) -> void:
-	for entry in _groups:
-		var group: Food = entry.food
-		if not group.active:
-			continue
-		var phase: float = entry.phase
-		var time := world._time
-		group.position = entry.home + Vector3(sin(time * 0.045 + phase) - sin(phase), 0,
-			cos(time * 0.035 + phase) - cos(phase)) * 0.55
-	for galaxy in _galaxies:
+	# A size jump retires a cluster's stars as detail; the cluster then shows nothing, so it retires too.
+	if _world.current_tier != _tier:
+		_tier = _world.current_tier
+		for cluster in _clusters:
+			if cluster._last_visible_part(null):
+				cluster.detail_hidden = true
+	for index in _spinning.size():
+		var galaxy := _spinning[index]
 		if galaxy.active:
-			galaxy.rotation.y += delta * float(galaxy.get_meta("spin"))
-
-func _build_outlying_filaments() -> void:
-	for patch in [Vector3(115, 0, -43), Vector3(-112, 0, 52), Vector3(5, 0, -105)]:
-		var points := PackedVector3Array()
-		for index in range(81):
-			points.append(_filament_point(index / 40.0 - 1.0) + patch)
-		_dust_path(filament, points, 1100, 1.5)
-		var inward := -1.0 if patch.x > 0 else 1.0
-		var start := _filament_point(-inward)
-		var finish: Vector3 = _filament_point(inward) + patch
-		var link := PackedVector3Array()
-		for index in range(33):
-			var t := index / 32.0
-			link.append(start.lerp(finish, t) + Vector3(0, 0, sin(t * PI) * 6.0))
-		_dust_path(filament, link, 300, 1.1)
-	for index in [9, 11, 13, 16, 18, 20, 23, 25, 27]:
-		_build_branch(index)
+			galaxy.rotation.y += delta * (0.02 if index % 2 else -0.02)

@@ -4,10 +4,11 @@ var _trials := 1
 var _seed := 9217
 var _randomized := false
 # Levels built from a placement table; tickets 09 to 11 add the other three.
-const HAND_PLACED := [1, 2]
+const HAND_PLACED := [1, 2, 3]
 # Seconds of spawn-point release each tier may draw on to reach its next jump, on top of the food
 # it already holds; about the time the route should spend in a view.
 const SUPPLY_SECONDS := 90.0
+const GLOW := preload("res://shaders/star_halo.gdshader")
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -96,16 +97,18 @@ func _check_placement(world: GameWorld, level: int) -> bool:
 	other.free()
 	return valid
 
-# Farthest horizontal reach of the food's own model and its parts' models, from its origin.
-func _drawn_reach(food: Food) -> float:
-	var reach := _mesh_reach(food, food.visual)
+# Farthest horizontal reach of the food's own model and every part's model, from its origin. A
+# galaxy group draws through its galaxies' arms, which are parts of parts.
+func _drawn_reach(food: Food, origin: Food = food) -> float:
+	var reach := _mesh_reach(origin, food.visual)
 	for part in food.parts:
-		reach = maxf(reach, _mesh_reach(food, part.visual))
+		reach = maxf(reach, _drawn_reach(part, origin))
 	return reach
 
+# A glow halo is light around a body, not its outline, so it does not count as drawn.
 func _mesh_reach(food: Food, node: Node) -> float:
 	var reach := 0.0
-	if node is MeshInstance3D:
+	if node is MeshInstance3D and not (node.material_override is ShaderMaterial and node.material_override.shader == GLOW):
 		var local: Transform3D = food.global_transform.affine_inverse() * node.global_transform
 		for surface in node.mesh.get_surface_count():
 			for vertex in node.mesh.surface_get_arrays(surface)[Mesh.ARRAY_VERTEX]:
