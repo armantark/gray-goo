@@ -57,7 +57,7 @@ const CORE := [["giant", Vector2.ZERO, 0.3, 0], ["elliptical", Vector2(-0.24, -0
 # (0.5, -0.3) to (0.85, 0.7); its inner half runs beside the next arm, so stars keep to the outer
 # half. Blue giants stand alone: the starting goo must grow to eat them.
 const ARMS := [
-	[[["blue_giant", Vector2(0.84, 0.25), 0.5], ["yellow_star", Vector2(0.86, 0.66), 0.22]], [Vector2(0.36, -0.42), 0.55]],
+	[[["blue_giant", Vector2(0.84, 0.25), 0.5], ["yellow_star", Vector2(0.86, 0.66), 0.22]], [Vector2(0.36, -0.42), 0.64]],
 	[[["yellow_star", Vector2(0.55, -0.3), 0.2], ["blue_giant", Vector2(0.85, 0.45), 0.52]], [Vector2(0.12, -0.58), 0.55]],
 	[[["red_dwarf", Vector2(0.3, -0.46), 0.15], ["yellow_star", Vector2(0.82, 0.12), 0.22], ["red_dwarf", Vector2(0.86, 0.68), 0.16]],
 		[Vector2(0.6, -0.26), 0.5]],
@@ -290,18 +290,18 @@ func _build_spawns() -> void:
 				"whole": _web, "reason": "Galaxies stream along the filament toward its node."},
 			"from": [path[0]], "sizes": Vector2(1.5, 2.05), "tiers": Vector2i(2, 3),
 			"rate": 0.12, "limit": 2, "lifetime": 60.0, "move": _stream.bind(path, 7.0)})
-	for path in [[Vector2(-166, -114), Vector2(-88, -108), NORTH], [Vector2(13, -124), Vector2(-8, -116), NORTH],
-			[Vector2(167, 93), Vector2(148, 74), SOUTH_EAST], [Vector2(-114, 124), Vector2(-98, 72), WEST]]:
+	for path in [[Vector2(-166, -114), Vector2(-88, -108), NORTH], [Vector2(-3, -124), Vector2(-8, -116), NORTH],
+			[Vector2(167, 84), Vector2(148, 74), SOUTH_EAST], [Vector2(-114, 124), Vector2(-98, 72), WEST]]:
 		_world.spawn({"kind": {"model": "galaxy_group", "label": "Infalling galaxy group", "tier": 3, "density": 0.13,
 				"whole": _web, "reason": "Small groups fall along the filaments into the clusters."},
 			"from": [path[0]], "sizes": Vector2(2.8, 3.8), "tiers": Vector2i(3, 4),
 			"rate": 0.055, "limit": 2, "lifetime": 60.0, "move": _stream.bind(path, 12.0)})
 	for path in [[Vector2(-160, 38), Vector2(-132, 30), WEST, Vector2(-45, 15), NODE], [Vector2(160, -53), Vector2(128, -42), NODE],
 			[Vector2(98, 118), Vector2(104, 104), SOUTH_EAST, Vector2(55, 12), NODE]]:
-		_world.spawn({"kind": {"model": "galaxy_group", "label": "Infalling galaxy cluster", "tier": 4, "density": 0.08,
+		_world.spawn({"kind": {"model": "galaxy_group", "label": "Infalling galaxy cluster", "tier": 4, "density": 0.05,
 				"whole": _web, "reason": "Whole clusters fall along the filaments toward the great node."},
 			"from": [path[0]], "sizes": Vector2(5.5, 7.0), "tiers": Vector2i(4, 4),
-			"rate": 0.022, "limit": 2, "lifetime": 60.0, "move": _stream.bind(path, 20.0)})
+			"rate": 0.035, "limit": 2, "lifetime": 60.0, "move": _stream.bind(path, 20.0)})
 
 # Runaway stars leave the core in straight lines, each on its own heading.
 func _fling(mover: Dictionary, _delta: float) -> Vector2:
