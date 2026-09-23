@@ -8,17 +8,16 @@ var filament: Node3D
 var _stars: Array[Dictionary] = []
 var _background: Array[Dictionary] = []
 var _galaxies: Array[Food] = []
-var _fabric_unlocked := false
 var _groups: Array[Dictionary] = []
 
 func definition() -> Dictionary:
 	return {"title": "Cosmic Web", "meters_per_unit": 9.4607e15,
-		"initial_radius": 0.4, "goal_radius": 9.5, "start_position": Vector3(-36.5, 0, -12.8),
+		"initial_radius": 0.4, "goal_radius": 8.6, "start_position": Vector3(-36.5, 0, -12.8),
 		"accent": Color("e3c393"), "field": Rect2(-180, -155, 360, 270),
 		"tiers": ["Stars", "Nebulae and clusters", "Galaxies", "Groups and clusters", "The web"],
 		"jumps": [{"radius": 0.4, "view_size": 9.0}, {"radius": 0.85, "view_size": 15.0},
 			{"radius": 1.75, "view_size": 25.0, "meters_per_unit": 1e20},
-			{"radius": 3.3, "view_size": 39.0, "meters_per_unit": 1e21},
+			{"radius": 3.2, "view_size": 39.0, "meters_per_unit": 1e21},
 			{"radius": 6.0, "view_size": 180.0, "meters_per_unit": 1e22}],
 		"background_color": Color("020407"), "ground_color": Color("0c1017"),
 		"key_color": Color("eee5d7"), "fill_color": Color("6c8199"),
@@ -38,9 +37,10 @@ func build(scene_world: GameWorld) -> void:
 	supercluster.milestone = true
 	_build_supercluster()
 	_build_outlying_filaments()
-	fabric = world._pool(Vector3(0, 0.035, 0), Vector2(59, 43), Color(0.1, 0.14, 0.2, 0.85), 450.0, 0.0, true)
-	fabric.min_tier = 99
-	fabric.minimum_radius = 6.0
+	# The web itself is far larger than any goo, so mopping its fabric is what grows the goo
+	# from galaxies to the size of whole groups.
+	fabric = world._pool(Vector3(0, 0.035, 0), Vector2(59, 43), Color(0.1, 0.14, 0.2, 0.85), 520.0, 0.0, true)
+	fabric.min_tier = 3
 	_build_background()
 
 func _whole(at: Vector2, size: float, volume: float, label: String, tier: int, parent: Food = null) -> Food:
@@ -233,9 +233,6 @@ func step(delta: float) -> void:
 		star.visual.rotation.y += delta * 0.12
 	for item in _background:
 		item.node.rotation.y += delta * float(item.speed)
-	if not _fabric_unlocked and (not is_instance_valid(supercluster) or not supercluster.active):
-		_fabric_unlocked = true
-		fabric.min_tier = 4
 
 func _nonblocking(food: Food) -> void:
 	food.collider_radius = 0.0

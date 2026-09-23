@@ -270,3 +270,43 @@ Cause: Sugar Water pays growth for objects the goo cannot see or could not eat, 
 2. Nucleons are goo-sized and oversized in value. A nucleon has radius 0.18, edible from the start radius 0.16 (0.16 × 1.2 = 0.192). A nursery nucleon gives 0.0095 = 2.32× the starting volume 0.004096; a molecule nucleon gives 0.006 = 1.46×. There are 1254 (694 protons, 560 neutrons). Even Sugar's smallest particle (0.00025) is 6.1% of the start volume; the first food elsewhere is under 1% (Tide plankton 0.0015 / 0.166375 = 0.90%, Skatepark bearing 0.0014 / 0.166375 = 0.84%).
 
 Bisect of the route at the same speed, with each commit's own driver forced to `movement_speed` 2.0: 7a04106 72.5999999999972 s, 615844e 171.716666666695 s, 08c4638 178.450000000034 s, f6c09b9 42.8333333333322 s. f6c09b9 added the last-part payout and lowered the molecule nucleons' threshold from 0.85 to 0.38. Undoing only the nucleon threshold gives 573.133333333141 s; undoing only the payout does not finish within 600 s (jumps at 80.48, 106.47, 544.65 s). Both changes together make the one-minute level. Ticket 02's eat rule then made nucleons edible from the first second regardless of threshold.
+
+## Sugar Water growth fix, doubled speed, and winnability, 2026-09-22
+
+Ticket 05 results. Speed: `BODY_LENGTHS_PER_SECOND` 4.0 → 8.0, and the browser default drops from its own 200% to 100%, so both builds default to 100%, equal to the old 200%. The slider range stays 10–200%. Muted native capture with an empty `user://` (`HOME=/tmp/goo05/home`, so the owner's saved 200% is untouched): `builds/growth-speed/hud/menu.png` shows `Movement speed · 100%` with the handle at 100, and no truncation.
+
+Fix for the cause above. `Food.remaining_volume` no longer adds an emptied container's own volume to the last part eaten; the container still leaves with that part, so no remnant food appears. In Sugar Water, molecules (water, sucrose) and nuclei have no body and hold no growth of their own. Every body grows the goo by `GROWTH_DENSITY × radius³`, and an atom's electron shell is a body that stays edible after losing its nucleus or electrons (it no longer hides, so its growth is not lost to nibbling). The level's whole body growth is 325.556443749995 × density. At density 0.22 that is 71.6, so goal radius 7.0 (volume 343) cannot be reached by honest meals. The goal becomes 3.85 and the last jump moves from radius 4.5 (view 90) to 2.5 (view 50). A nucleon is now worth 0.22 × 0.18³ = 0.00128, which is 31% of the starting goo instead of 232%.
+
+Sugar tuning on the final model, one route each, per-view seconds / meals (`builds/growth-speed/evidence/tune-*.summary`):
+
+| Density, goal, last jump (view) | Won, s | View 0 | View 1 | View 2 | View 3 | View 4 |
+|---|---|---|---|---|---|---|
+| 0.4, 4.6, 3.2 (64) | 80.1166666666634 | 34.18 / 106 | 21.40 / 153 | 3.20 / 14 | 4.60 / 31 | 16.73 / 48 |
+| 0.3, 4.2, 3.0 (60) | 114.033333333328 | 43.87 / 110 | 43.18 / 193 | 5.50 / 20 | 5.93 / 35 | 15.55 / 52 |
+| 0.25, 4.0, 2.9 (58) | 146.100000000008 | 43.12 / 129 | 73.78 / 262 | 6.60 / 21 | 5.30 / 35 | 17.30 / 45 |
+| 0.25, 4.0, 2.7 (54) | 141.283333333338 | 46.25 / 147 | 61.10 / 239 | 10.20 / 22 | 3.80 / 28 | 19.93 / 59 |
+| 0.25, 4.0, 2.5 (50) | 119.583333333328 | 40.47 / 136 | 50.15 / 222 | 6.15 / 20 | 2.75 / 17 | 20.07 / 60 |
+| 0.22, 3.85, 2.5 (50), chosen | 160.316666666686 | 55.42 / 160 | 65.78 / 279 | 13.27 / 23 | 6.72 / 31 | 19.13 / 67 |
+
+The 6 to 10 minute target is not met, and value tuning cannot meet it. The route spends about 0.25 to 0.6 s per meal at eight body lengths per second. Views 2 to 4 draw on about 213 atom shells and 48 waters, so they end after 14 to 67 meals whatever the density; the largest single meal on the chosen setting is 38% of the goo. Longer, even views need more objects in the atom and molecule views: ticket 08's spawn points and ticket 09's placed layout.
+
+Winnability, smallest changes under the eat rule:
+- Skatepark Bowl: everything except the milestone carries the goo to radius 3.629, but the `Big quarter pipe` at half-width 4.7 needs 3.917. It becomes 4.1 (edible from 3.417, still larger than every other ramp, whose largest is 3.876); its 38 growth then crosses the goal radius 4.3.
+- Cosmic Web: mesh reach matches the authored sizes (spiral galaxy 4.52 for 4.2, groups 8.44 to 9.53 for 9.5, supercluster 174.63 for 180), so no whole shrinks. Without spirals the Galaxies view reaches 3.2908, so jump 3 moves from 3.3 to 3.2. The fabric pool used to open only after the radius-180 supercluster (edible from 150), which no goo reaches. It now opens with the Groups and clusters view, its volume rises from 450 to 520, and the goal drops from 9.5 to 8.6. Everything smaller than a group plus the fabric reaches 8.26, which is past a group's 7.917.
+
+Route at the new 100%, headless, `--audio-driver Dummy --fixed-fps 60 --simulation-clock --speed=1.0 --limit=900`, final code (`builds/growth-speed/final/level-routes-speed-100.json`):
+
+| Level | Won | Play s | Jump 1 s | Jump 2 s | Jump 3 s | Jump 4 s | Final radius | Missed edible (eaten later in contact) | Edible-looking blocked / uneaten | Stalls (s total, longest) | Abandoned targets |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Sugar Water | true | 140.700000000004 | 52.0333333333317 | 103.566666666662 | 115.016666666661 | 118.283333333328 | 3.86066711295702 | 0 (0) | 0 / 14 | 0 (0.0, 0.0) | 0 |
+| Coral Colony Tide Pool | false (stuck, 30 s without growth) | 142.250000000005 | 5.01666666666665 | 18.4000000000002 | 37.0499999999992 | 59.5999999999979 | 3.81662355835981 | 0 (0) | 0 / 0 | 0 (0.0, 0.0) | 0 |
+| Skatepark Bowl | true | 72.7833333333305 | 7.46666666666665 | 13.0666666666669 | 49.1666666666652 | 60.1333333333312 | 4.41048078289988 | 0 (0) | 0 / 0 | 0 (0.0, 0.0) | 2 |
+| Cosmic Web | true | 300.116666666722 | 9.01666666666669 | 39.6666666666657 | 113.599999999995 | 217.250000000065 | 8.61882174441444 | 0 (0) | 0 / 0 | 0 (0.0, 0.0) | 0 |
+
+Tide Pool is logically unchanged by this ticket (same drive speed as the old 200%; it has no emptied containers). On this change it won 3 of 4 runs (113.449999999995, 113.849999999995 and 116.833333333328 s). In the stuck run the goo sat on the basin rim at `(-4.4645, 3.7416, -41.9830)` from 120 s, steering at the water's nearest point. At 9326913 it won 2 of 2 (123.383333333328 and 127.549999999994 s). Ticket 08 owns Tide Pool's layout.
+
+Checks on the final code: `WORLD_CHECK_OK=true` with `--trials=3`, `BODY_CHECK_OK=true checks=58`, `OBSTACLE_CHECK queries=420 pass=true`. The body check now drives its fixtures at `movement_speed` 0.5, which is the old four body lengths per second. At eight, `procedural larger object blocks` failed 3 of 3 runs: the procedural body slid around the can at center distance 1.49899971485138 and its skin test never fired (at four it touched). `shell contact bite crosses staged goal` also failed 1 of 3. The shell passes through the can's center at both speeds (closest 0.05165922641754 at eight, 0.3436638712883 at four), the ticket 02 finding. Ticket 03 owns both.
+
+Muted native view of Sugar Water's last view with 28 nuclei taken from nearby atoms: `builds/growth-speed/sugar-view-4-shells.png`. The emptied atoms stay as electron-shell rings, the readout shows `500 pm` and `goal 770 pm`, and nothing is truncated.
+
+Second-level findings, not fixed: `Food.milestone` is set in every level but never read. Sucrose (radius 17, goal 3.85) and the supercluster (180, goal 8.6) are milestones no goo can eat under the eat rule. The menu shows the all-caps captions `SLIDE TRAY`, `SPECIMEN SLIDE` and `NEAREST FOOD` from the HUD design. Unverified: native frame rate for the changed Sugar Water and Cosmic Web views, and the browser build (not re-exported).

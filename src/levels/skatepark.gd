@@ -223,7 +223,7 @@ func _build_pipes() -> void:
 		pipe.context_whole = _bowl
 		pipe.loose_reason = "Quarter pipes face the connected bowl and trick course."
 		pipe.rotation.y = atan2(at.y - BOWL_CENTER.y, BOWL_CENTER.x - at.x)
-	var final := _world._add_food("ramp", Vector2(-33, 7), 4.7, 38.0, "Big quarter pipe", false, 4)
+	var final := _world._add_food("ramp", Vector2(-33, 7), 4.1, 38.0, "Big quarter pipe", false, 4)
 	final.context_whole = _bowl
 	final.loose_reason = "The park's biggest quarter pipe anchors its western deck."
 	final.rotation.y = 0.0

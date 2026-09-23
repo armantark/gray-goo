@@ -199,3 +199,7 @@
 - 2026-09-22T22:53:42Z: every git commit prints `/Users/ArmanTarkhanian1/fleet/config/git/hooks/reference-transaction: line 28: /Users/ArmanTarkhanian1/Desktop/tasty planet clone/scripts/release-tag-deploy.sh: No such file or directory`; the commit still succeeds.
 2026-09-22 16:02 eat-rule ticket 02: a BSD sed -E substitution with & appended the match instead of replacing it on five _atom calls; a python exact-replace or an sed check with grep before writing avoids it.
 2026-09-22 16:44 eat-rule ticket 02: a wait loop keyed on the route report file returned at once because a killed run had already written a checkpoint JSON there; wait on the background task's exit line instead.
+2026-09-22 17:52 ticket 05: in zsh, `git show "$c:scripts/drive_levels.gd"` fails with `bad substitution` because `:s` after a variable is a history modifier; write `"${c}:scripts/..."`.
+2026-09-22 18:02 ticket 05: the HUD capture shows the owner's saved 200% instead of the default; running Godot with `HOME=/tmp/<dir>` gives an empty `user://`, so default-setting screenshots never touch the owner's `settings.cfg`.
+2026-09-22 18:03 ticket 05: `check_worlds.gd` TIER_BUDGET prints the radius where it stopped eating (just past the target), not the most the tier could reach, so it cannot show a budget's margin; sum volumes with a probe instead.
+2026-09-22 18:04 ticket 05: `check_bodies.gd` fixtures depend on drive speed; doubling the base speed failed `procedural larger object blocks` 3 of 3 runs, which looked like an eat-rule regression but is the body sliding past the can.
