@@ -97,7 +97,7 @@ func _move_core(dt: float, solids: Array) -> void:
 				normal = Vector3.RIGHT
 			var push := normal * (clearance - distance)
 			center += push
-			_flow_drive -= normal * minf(_flow_drive.dot(normal), 0.0)
+			_slide_along(normal)
 			if solid.has("body") and is_instance_valid(solid.body):
 				solid.body.apply_central_impulse(-push * 0.018 / maxf(dt, 0.001))
 		center.x = clampf(center.x, _field.position.x + core_radius, _field.end.x - core_radius)
@@ -162,7 +162,7 @@ func _shape_skin(solids: Array) -> void:
 		# Clip each radial ray against nearby cylinders. Keeping its direction avoids
 		# folding adjacent skin triangles across each other at an obstacle edge.
 		for solid in solids:
-			if point.y < float(solid.bottom) - skin or point.y > float(solid.top) + skin:
+			if point.y < float(solid.bottom) - skin:
 				continue
 			var ray := Vector2(point.x - global_position.x, point.z - global_position.z)
 			var from := Vector2(global_position.x - solid.center.x, global_position.z - solid.center.z)
