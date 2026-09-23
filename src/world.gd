@@ -8,6 +8,7 @@ var pools: Array[LocalPool] = []
 var player_radius := 0.5
 var _level := 0
 var current_tier := 0
+var _detail_tier := 0
 var _layout: RefCounted
 var _time := 0.0
 # Scatter and spawn timing draw on this stream. Placed objects set every turn and offset by hand
@@ -159,14 +160,33 @@ func advance_scale(tier_index: int) -> void:
 	for food in foods:
 		food.detail_hidden = food.tier < tier_index and food.radius < radius * 0.12
 		if food.detail_hidden:
-			if food.parent_food == null:
-				food.visual.hide()
-			food.set_highlighted(false)
-			food.collider_radius = 0.0
-			food.collision_layer = 0
-			food.collision_mask = 0
+			_hide_detail(food)
 	if config.jumps[tier_index].has("meters_per_unit"):
 		config.meters_per_unit = config.jumps[tier_index].meters_per_unit
+
+func _hide_detail(food: Food) -> void:
+	food.detail_hidden = true
+	if food.parent_food == null:
+		food.visual.hide()
+	food.set_highlighted(false)
+	food.collider_radius = 0.0
+	food.collision_layer = 0
+	food.collision_mask = 0
+
+# A container that draws only through its parts, such as a star cluster, shows nothing once a size
+# jump retires all its parts as detail, so it retires with them. This waits for the layout's step
+# after the jump, because a layout may redraw retired parts on the container itself, as Sugar Water
+# draws a nucleus's nucleons as one batch. Parts follow their container in `foods`, so a reverse
+# pass settles nested containers from the inside out.
+func _retire_empty_containers() -> void:
+	if _detail_tier == current_tier:
+		return
+	_detail_tier = current_tier
+	for index in range(foods.size() - 1, -1, -1):
+		var food := foods[index]
+		if food.active and not food.detail_hidden and not food.parts.is_empty() \
+				and food._last_visible_part(null) and not food.draws_itself():
+			_hide_detail(food)
 
 func _add_food(kind: String, at: Vector2, size: float, volume: float,
 		label: String, moving: bool = false, tier: int = 0, parent: Food = null, lift: float = 0.0) -> Food:
@@ -301,10 +321,10 @@ func _move(point: Dictionary, mover: Dictionary, delta: float) -> void:
 	food.position = ground + Vector3.UP * (get_ground_height(ground) + point.kind.get("lift", 0.0))
 	mover.at = next
 
-func _pool(at: Vector3, extent: Vector2, color: Color, volume: float, threshold: float = 0.0, fabric: bool = false) -> LocalPool:
+func _pool(at: Vector3, extent: Vector2, color: Color, volume: float, threshold: float = 0.0) -> LocalPool:
 	var pool := LocalPool.new()
 	add_child(pool)
-	pool.configure(at, extent, color, volume, threshold, fabric)
+	pool.configure(at, extent, color, volume, threshold)
 	pools.append(pool)
 	return pool
 
@@ -393,5 +413,6 @@ func _walls() -> void:
 func _physics_process(delta: float) -> void:
 	_time += delta
 	_layout.step(delta)
+	_retire_empty_containers()
 	_step_spawns(delta)
 	_rebin(ceili(foods.size() * delta / REBIN_SECONDS))

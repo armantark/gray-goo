@@ -198,7 +198,7 @@ func _consume_pools(delta: float) -> void:
 			contact = pool.last_contact
 		if portion > 0.0:
 			_add_growth(portion, pool.pigment, contact)
-			hud.show_meal("Spacetime fabric" if _level == 3 else "Water", "", pool.pigment)
+			hud.show_meal("Water", "", pool.pigment)
 
 func _update_scale() -> void:
 	var jumped := false
@@ -223,7 +223,7 @@ func _eat(food: Food) -> void:
 	var reward := _reward(portion)
 	var color := food.meal_color()
 	var point := food.center()
-	hud.show_meal(food.title, food.model_name, color)
+	hud.show_meal(food.title, food.model_name, color, food if food.model_name.is_empty() else null)
 	food.consume(goo, lerpf(0.3, 0.55, reward))
 	_add_growth(portion, color, point)
 	goo.pulse(reward)
@@ -295,7 +295,7 @@ func _process(delta: float) -> void:
 		for pool in world.pools:
 			if pool.is_edible(_tier, goo.radius):
 				target_position = pool.closest_point(goo.global_position)
-				target_name = "Spacetime fabric" if _level == 3 else "Water"
+				target_name = "Water"
 				target_reward = _reward(pool.remaining_volume)
 				break
 	if rig.mouse_steering:
