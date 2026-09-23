@@ -17,6 +17,7 @@ var _skipped := {}
 var _last_position := Vector3.ZERO
 var _progress_age := 0.0
 var _stalled := 0.0
+var _chased: Food
 var _last_volume := 0.0
 var _growth_age := 0.0
 # A level with no growth for this long is stuck; ending it saves minutes of an idle goo.
@@ -216,12 +217,21 @@ func _capture_view() -> void:
 	var path := _output.get_basename() + "-level-%d-tier-%d.png" % [_level, _tier]
 	root.get_texture().get_image().save_png(path)
 
+# Stall and growth ages measure the chase of one target, so they restart with each new target and
+# do not run while the goo waits with nothing to eat.
 func _check_stall(delta: float) -> void:
-	_growth_age += delta
 	if _game._volume > _last_volume + 0.0000001:
 		_last_volume = _game._volume
 		_growth_age = 0.0
 		_grew_at = _elapsed
+	if _target != _chased or not is_instance_valid(_target):
+		_chased = _target if is_instance_valid(_target) else null
+		_last_position = _game.goo.global_position
+		_progress_age = 0.0
+		_stalled = 0.0
+		_growth_age = 0.0
+		return
+	_growth_age += delta
 	_progress_age += delta
 	if _progress_age < 1.0:
 		return
@@ -338,6 +348,7 @@ func _finish_level() -> void:
 	_tier = 0
 	_previous_tick = Time.get_ticks_usec()
 	_target = null
+	_chased = null
 	_skipped.clear()
 	_stalled = 0.0
 	_last_volume = 0.0
