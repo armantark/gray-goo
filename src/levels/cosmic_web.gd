@@ -137,6 +137,8 @@ func _nebula(parent: Food, at: Vector2, size: float, index: int) -> void:
 	nebula.rotation = Vector3.ZERO
 	_nonblocking(nebula)
 	var cluster := _whole(Vector2.ZERO, size * 0.82, 0.0165, "Open star cluster", 1, nebula)
+	# The cluster draws nothing but its stars, so it goes with the last one.
+	cluster.collect_when_empty = true
 	for star_index in range(9):
 		var lobe := Vector2(-0.28, 0.13) if star_index < 6 else Vector2(0.34, -0.22)
 		var scatter := Vector2(world._rng.randfn(0, 0.2), world._rng.randfn(0, 0.14))

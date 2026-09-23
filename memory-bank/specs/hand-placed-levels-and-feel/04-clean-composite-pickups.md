@@ -4,8 +4,8 @@
 
 **Blocked by:** 02 Tasty Planet eat rule.
 
-**Status:** open
+**Status:** done
 
-- [ ] A command reproduces each composite fault the play-through or screenshots find, before the fix.
-- [ ] The body and eat check shows that eating a composite whole leaves no active parts.
-- [ ] Native screenshots before and after eating one composite in each level show no leftover parts.
+- [x] A command reproduces each composite fault the play-through or screenshots find, before the fix.
+- [x] The body and eat check shows that eating a composite whole leaves no active parts.
+- [x] Native screenshots before and after eating one composite in each level show no leftover parts.

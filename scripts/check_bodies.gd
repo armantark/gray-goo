@@ -67,12 +67,7 @@ func _run() -> void:
 		game.start_level(1)
 		game._switch_body(kind)
 		var edge_start := Vector3(game.world.field.end.x - initial_radius * 2.0, 0.0, 0.0)
-		var body_script: Script = game.goo.get_script()
-		game.goo.free()
-		game.goo = body_script.new()
-		game.add_child(game.goo)
-		game.goo.configure(edge_start, initial_radius, game.world.get_ground_height, game.world.get_obstacles, game.world.field)
-		game.rig.subject = game.goo
+		_place_body(game, edge_start, initial_radius)
 		Input.action_press("move_right")
 		var grounded := true
 		var bounded := true
@@ -87,6 +82,9 @@ func _run() -> void:
 		_check(bounded, kind + " skin stays inside field")
 		_check_eat_rule(game, kind)
 		print("BODY_CASE ", kind, " radius=", game.goo.radius, " position=", game.goo.global_position)
+	_check_composite_meals(game)
+	_check_empty_wholes(game)
+	_check_footprints(game)
 	game.free()
 	Engine.time_scale = 1.0
 	print("BODY_CHECK_OK=", _valid, " checks=", _checks)
@@ -114,6 +112,135 @@ func _check_eat_rule(game: Node3D, kind: String) -> void:
 	var solid: bool = game.world.get_obstacles(large.global_position, 0.0).any(
 		func(obstacle: Dictionary) -> bool: return obstacle.center == large.global_position)
 	_check(touched and large.active and solid, kind + " larger object blocks")
+
+# Parts act as their own food until the goo eats the whole, and the whole then takes every
+# surviving part once. Each case bites one part and then the whole by contact, in every level.
+func _check_composite_meals(game: Node3D) -> void:
+	for case in [[0, "Water molecule · H2O", "Hydrogen atom"], [1, "Coral head", "Living coral branch"],
+			[1, "Hermit crab", "Hermit crab shell"], [2, "Skater", "Skateboard"], [3, "Spiral galaxy", "Spiral arm"]]:
+		game.start_level(case[0])
+		var whole := _find(game, case[1])
+		var part := _find(game, case[2], whole)
+		var total := _level_volume(game)
+		# Emptied wholes leave with their last part and pay nothing, so only their own volume may vanish.
+		var forfeit := 0.0
+		for food in [whole] + _descendants(whole):
+			forfeit += food.volume if food.collect_when_empty else 0.0
+		_bite(game, part)
+		_check(not part.active and whole.active, case[2] + " is eaten apart from its " + case[1])
+		_bite(game, whole)
+		var left := _descendants(whole).filter(func(food: Food) -> bool: return food.active or food.is_visible_in_tree())
+		_check(not whole.active and not whole.is_visible_in_tree() and left.is_empty(), case[1] + " leaves no active or visible parts")
+		var lost := total - _level_volume(game)
+		_check(lost > -0.000001 and lost < forfeit + 0.000001, case[1] + " pays each part's growth at most once")
+		print("COMPOSITE_CASE ", case[1], " parts=", _descendants(whole).size(), " left=", left.size(), " unpaid=", lost)
+
+# A whole that draws nothing of its own goes with its last part instead of staying an invisible meal.
+func _check_empty_wholes(game: Node3D) -> void:
+	game.start_level(3)
+	var cluster: Food
+	for food in game.world.foods:
+		if food.title == "Open star cluster" and food.radius > game.goo.radius * GameWorld.EAT_MARGIN:
+			cluster = food
+			break
+	for star in cluster.parts:
+		if star.active:
+			_bite(game, star)
+	_check(not cluster.active, "an open star cluster goes with its last star")
+	# A nucleon that lost a quark collapses and hides its own body; once a size jump retires its
+	# other quarks as detail it shows nothing, so it no longer holds its nucleus on screen.
+	game.start_level(0)
+	var atom := _find(game, "Helium atom")
+	var nucleus := _find(game, "Helium nucleus", atom)
+	var collapsed: Food = nucleus.parts[0]
+	game._eat(collapsed.parts[0])
+	_place_body(game, game.goo.global_position, float(game.world.config.jumps[2].radius))
+	_settle(game)
+	for nucleon in nucleus.parts:
+		if nucleon.active and nucleon != collapsed:
+			game._eat(nucleon)
+	_check(not nucleus.active and not collapsed.active and atom.active, "a nucleus goes with its last visible nucleon, taking a collapsed one")
+
+# Size decides edibility, so these composites' footprints are what they draw.
+func _check_footprints(game: Node3D) -> void:
+	var worst := {}
+	for level in [0, 1]:
+		game.start_level(level)
+		for food in game.world.foods:
+			if food.title.ends_with(" nucleus") or food.title == "Hermit crab":
+				var drawn := _drawn_reach(food)
+				if absf(food.radius / drawn - 1.0) >= absf(worst.get(food.title, [1.0])[0] - 1.0):
+					worst[food.title] = [food.radius / drawn, food.radius, drawn]
+	for title in worst:
+		_check(absf(worst[title][0] - 1.0) < 0.12, "%s footprint %.3f matches its drawn %.3f" % [title, worst[title][1], worst[title][2]])
+
+func _find(game: Node3D, title: String, whole: Food = null) -> Food:
+	for food in game.world.foods:
+		if food.title == title and (whole == null or whole.is_ancestor_of(food)):
+			return food
+	push_error("BODY_CHECK_FAIL no " + title)
+	return null
+
+func _descendants(food: Food) -> Array[Food]:
+	var result: Array[Food] = []
+	for part in food.parts:
+		result.append(part)
+		result.append_array(_descendants(part))
+	return result
+
+# Growth held by the goo plus growth still on the field and in pools; meals move it, never create it.
+func _level_volume(game: Node3D) -> float:
+	var result: float = game._volume
+	for food in game.world.foods:
+		if food.parent_food == null:
+			result += food.remaining_volume()
+	for pool in game.world.pools:
+		result += pool.remaining_volume
+	return result
+
+# Sets a goo just large enough to eat the food down on it; the game's contact rule decides the meal.
+func _bite(game: Node3D, food: Food) -> void:
+	var radius := maxf(float(game.world.config.initial_radius), food.radius / GameWorld.EAT_MARGIN * 1.05)
+	_place_body(game, food.center(), radius)
+	game._physics_process(1.0 / 60.0)
+	_settle(game)
+
+# Lets meals land and scene motion, including detail changes after a size jump, catch up.
+func _settle(game: Node3D) -> void:
+	# The longest meal flight lasts 0.55 s.
+	for tick in 40:
+		game._physics_process(1.0 / 60.0)
+		game.world._physics_process(1.0 / 60.0)
+		for food in game.world.foods:
+			if food.is_physics_processing():
+				food._physics_process(1.0 / 60.0)
+
+func _place_body(game: Node3D, at: Vector3, radius: float) -> void:
+	var body_script: Script = game.goo.get_script()
+	game.goo.free()
+	game.goo = body_script.new()
+	game.add_child(game.goo)
+	game.goo.configure(at, radius, game.world.get_ground_height, game.world.get_obstacles, game.world.field)
+	game.rig.subject = game.goo
+
+# Farthest horizontal reach of the food's own model and its parts' models, from its origin.
+func _drawn_reach(food: Food) -> float:
+	var reach := _mesh_reach(food, food.visual)
+	for part in food.parts:
+		reach = maxf(reach, _mesh_reach(food, part.visual))
+	return reach
+
+func _mesh_reach(food: Food, node: Node) -> float:
+	var reach := 0.0
+	if node is MeshInstance3D:
+		var local: Transform3D = food.global_transform.affine_inverse() * node.global_transform
+		for surface in node.mesh.get_surface_count():
+			for vertex in node.mesh.surface_get_arrays(surface)[Mesh.ARRAY_VERTEX]:
+				var point: Vector3 = local * vertex
+				reach = maxf(reach, Vector2(point.x, point.z).length())
+	for child in node.get_children():
+		reach = maxf(reach, _mesh_reach(food, child))
+	return reach
 
 func _food_at_body(game: Node3D, volume: float) -> Food:
 	var at: Vector3 = game.goo.global_position
