@@ -182,12 +182,12 @@ def _loft(collection, name, rings, mats, material_for):
 
 
 def _sole_ring(x):
-    width, low = _shoe_half_width(x) * 1.08 + 0.03, _shoe_lift(x)
+    width, low = _shoe_half_width(x) * 1.04 + 0.018, _shoe_lift(x)
     ring = []
     for j in range(28):
         a = j * math.tau / 28
         c, s = math.cos(a), math.sin(a)
-        ring.append((x * 1.025, width * math.copysign(abs(c) ** 0.25, c), low + 0.09 + 0.09 * math.copysign(abs(s) ** 0.25, s)))
+        ring.append((x * 1.015, width * math.copysign(abs(c) ** 0.25, c), low + 0.09 + 0.09 * math.copysign(abs(s) ** 0.25, s)))
     return ring
 
 
@@ -209,9 +209,9 @@ def _shoe_body(collection):
     foxing = material("Shoe sole line", "#B44A3A")
     _loft(collection, "shoe_sole", [_sole_ring(x) for x in SHOE_STATIONS], [cream], lambda station: 0)
     _loft(collection, "shoe_upper", [_upper_ring(x) for x in SHOE_STATIONS], [canvas, suede], _shoe_panel)
-    line = [(x * 1.025, side * (_shoe_half_width(x) * 1.08 + 0.035), _shoe_lift(x) + 0.06)
+    line = [(x * 1.015, side * (_shoe_half_width(x) * 1.04 + 0.022), _shoe_lift(x) + 0.06)
             for side in (1, -1) for x in (SHOE_STATIONS if side > 0 else SHOE_STATIONS[::-1])]
-    curve_tube(collection, "shoe_sole_line", line, 0.03, foxing, cyclic=True)
+    curve_tube(collection, "shoe_sole_line", line, 0.026, foxing, cyclic=True)
 
 
 def _shoe_collar(collection):
@@ -238,11 +238,6 @@ def _shoe_collar(collection):
     top = _shoe_top(-0.97)
     loop = [(-0.985, 0, top - 0.1), (-1.005, 0, top - 0.02), (-0.97, 0, top + 0.03), (-0.92, 0, top + 0.01), (-0.9, 0, top - 0.03)]
     curve_tube(collection, "shoe_heel_tab", loop, 0.03, foxing)
-    seam = material("Shoe toe cap stitching", "#3A6391")
-    x = next(station for station in SHOE_STATIONS if station > 0.55)
-    stitch = [_shoe_upper_point(x, v, 1, 0.004) for v in SHOE_HEIGHTS[1:]]
-    stitch = stitch + [Vector((x, 0, _shoe_top(x) + 0.004))] + [point * Vector((1, -1, 1)) for point in reversed(stitch)]
-    curve_tube(collection, "shoe_toe_cap_seam", [tuple(point) for point in stitch], 0.006, seam)
 
 
 def _shoe_lace_strand(collection, x, sign, cream, eyelet):
@@ -255,7 +250,7 @@ def _shoe_lace_strand(collection, x, sign, cream, eyelet):
         point.z = max(point.z, _shoe_top(point.x) + 0.018 + 0.005 * sign * math.sin(t * math.pi))
         lace.append(point)
     lace.append(finish)
-    _ribbon(collection, "shoe_lace", lace, [Vector((0, 0, 1))] * 5, [0.012, 0.02, 0.02, 0.02, 0.012], cream)
+    curve_tube(collection, "shoe_lace", [tuple(point) for point in lace], 0.017, cream)
     for point in (start, finish):
         uv_sphere(collection, "shoe_eyelet", tuple(point), (0.022, 0.022, 0.006), eyelet, segments=12, rings=6)
 
@@ -271,6 +266,15 @@ def _shoe_bow(collection, cream):
         curve_tube(collection, "shoe_lace_tail", [tuple(point) for point in tail], 0.01, cream)
 
 
+def _shoe_facings(collection):
+    """A stitched facing on each side frames the lacing, as on a real canvas upper."""
+    facing = material("Shoe lace facings", "#4C7DB0", roughness=0.95)
+    xs = [-0.16 + 0.05 * i for i in range(10)]
+    for side in (-1, 1):
+        path = [_shoe_upper_point(x, 0.86, side, 0.003) for x in xs]
+        _ribbon(collection, "shoe_lace_facing", path, [_shoe_normal(x, 0.86, side) for x in xs], [0.035] * len(xs), facing)
+
+
 def _shoe_trim(collection):
     cream = material("Shoe laces", "#F4EEDC")
     tongue = material("Shoe tongue", "#3F6A9B", roughness=0.95)
@@ -280,6 +284,7 @@ def _shoe_trim(collection):
     path = [Vector((x, 0, _shoe_top(x) + 0.006 + 0.03 * max(0.0, -0.18 - x) / 0.12)) for x in xs]
     widths = [0.16 * (1 - abs(2 * i / 12 - 1) ** 4) ** 0.25 + 0.01 for i in range(13)]
     _ribbon(collection, "shoe_tongue", path, [Vector((0, 0, 1))] * 13, widths, tongue)
+    _shoe_facings(collection)
     for x in (-0.1, 0.06, 0.22):
         for sign in (-1, 1):
             _shoe_lace_strand(collection, x, sign, cream, eyelet)
