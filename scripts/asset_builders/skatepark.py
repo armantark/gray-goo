@@ -90,7 +90,7 @@ def _shoe_lift(x):
 
 
 def _shoe_top(x):
-    profile = [(-1.0, 0.48), (-0.85, 0.54), (-0.45, 0.52), (-0.12, 0.55), (0.2, 0.46), (0.55, 0.33), (0.85, 0.26), (1.0, 0.21)]
+    profile = [(-1.0, 0.48), (-0.85, 0.54), (-0.45, 0.52), (-0.12, 0.57), (0.2, 0.47), (0.55, 0.33), (0.85, 0.25), (1.0, 0.2)]
     for (x0, z0), (x1, z1) in zip(profile, profile[1:]):
         if x <= x1:
             return _shoe_lift(x) + z0 + (z1 - z0) * (x - x0) / (x1 - x0)
@@ -121,7 +121,7 @@ def _ribbon(collection, name, path, normals, half_widths, mat):
             faces.append((index * 2 - 2, index * 2 - 1, index * 2 + 1, index * 2))
     obj = mesh_object(collection, name, vertices, faces, mat)
     solidify = obj.modifiers.new("Printed thickness", "SOLIDIFY")
-    solidify.thickness = 0.008
+    solidify.thickness = 0.005
     solidify.offset = 1.0
     bpy.context.view_layer.objects.active = obj
     bpy.ops.object.modifier_apply(modifier=solidify.name)
@@ -134,14 +134,14 @@ def _loft_faces(ring_count, count, material_for):
         for j in range(count):
             a, b = i * count + j, i * count + (j + 1) % count
             faces.append((a, b, b + count, a + count))
-            panels.append(material_for(i, j))
+            panels.append(material_for(i))
     # Each end closes with a fan to the ring's center, stored after all ring vertices.
     for end, index in enumerate((0, ring_count - 1)):
         center = ring_count * count + end
         for j in range(count):
             a, b = index * count + j, index * count + (j + 1) % count
             faces.append((b, a, center) if index == 0 else (a, b, center))
-            panels.append(material_for(index, j))
+            panels.append(material_for(index))
     return faces, panels
 
 
@@ -174,7 +174,7 @@ def _loft(collection, name, rings, mats, material_for):
     obj = mesh_object(collection, name, vertices, faces, mats[0])
     for mat in mats[1:]:
         obj.data.materials.append(mat)
-    # Panels follow whole rings and rows, so their seams stay clean lines after subdivision.
+    # Panels follow whole rings, so their seams stay clean lines after subdivision.
     for polygon, panel in zip(obj.data.polygons, panels):
         polygon.material_index = panel
     _soften(obj, len(mats) > 1)
@@ -197,18 +197,17 @@ def _upper_ring(x):
     return right + [(x, 0.0, _shoe_top(x))] + left + [(x, 0.0, _shoe_lift(x) + 0.10)]
 
 
-def _shoe_panel(station, row):
+def _shoe_panel(station):
     x = SHOE_STATIONS[station]
-    low_row = row < 4 or row > len(SHOE_HEIGHTS) * 2 - 3
-    return 1 if x > 0.55 or (x < -0.6 and low_row) else 0
+    return 1 if x > 0.55 else 0
 
 
 def _shoe_body(collection):
     canvas = material("Shoe denim canvas", "#5B8CC2", roughness=0.9)
-    suede = material("Shoe suede panels", "#46739F", roughness=0.95)
+    suede = material("Shoe suede panels", "#4C7DB0", roughness=0.95)
     cream = material("Shoe rubber sole", "#EFE3C4", roughness=0.7)
     foxing = material("Shoe sole line", "#B44A3A")
-    _loft(collection, "shoe_sole", [_sole_ring(x) for x in SHOE_STATIONS], [cream], lambda station, row: 0)
+    _loft(collection, "shoe_sole", [_sole_ring(x) for x in SHOE_STATIONS], [cream], lambda station: 0)
     _loft(collection, "shoe_upper", [_upper_ring(x) for x in SHOE_STATIONS], [canvas, suede], _shoe_panel)
     line = [(x * 1.025, side * (_shoe_half_width(x) * 1.08 + 0.035), _shoe_lift(x) + 0.06)
             for side in (1, -1) for x in (SHOE_STATIONS if side > 0 else SHOE_STATIONS[::-1])]
@@ -220,20 +219,21 @@ def _shoe_collar(collection):
     lining = material("Shoe lining", "#2A3843")
     foxing = material("Shoe sole line", "#B44A3A")
     wall = material("Shoe inner wall", "#3E5B78")
-    uv_sphere(collection, "shoe_ankle_opening", (-0.5, 0, _shoe_top(-0.5) - 0.04), (0.27, 0.17, 0.06), lining)
+    uv_sphere(collection, "shoe_ankle_opening", (-0.45, 0, _shoe_top(-0.45) - 0.04), (0.33, 0.19, 0.06), lining)
 
     def rim(scale, drop):
         points = []
-        for i in range(24):
-            a = i * math.tau / 24
-            x = -0.5 + 0.34 * scale * math.cos(a)
+        # The collar stops at the throat on each side, leaving the tongue free.
+        for i in range(21):
+            a = 0.55 + i * (math.tau - 1.1) / 20
+            x = -0.45 + 0.4 * scale * math.cos(a)
             # The collar dips over the ankle bones and rises again at the heel.
-            points.append((x, 0.24 * scale * math.sin(a), _shoe_top(x) - drop - 0.03 * math.sin(a) ** 2))
+            points.append((x, 0.25 * scale * math.sin(a), _shoe_top(x) - drop - 0.03 * math.sin(a) ** 2))
         return points
 
     # A shaded inner wall between the padded lip and the dark lining gives the opening depth.
-    curve_tube(collection, "shoe_inner_wall", rim(0.9, 0.03), 0.028, wall, cyclic=True)
-    curve_tube(collection, "shoe_padded_collar", rim(1.0, 0.0), 0.032, canvas, cyclic=True)
+    curve_tube(collection, "shoe_inner_wall", rim(0.9, 0.03), 0.024, wall)
+    curve_tube(collection, "shoe_padded_collar", rim(1.0, 0.0), 0.024, canvas)
     # The pull tab is a fabric loop folded over the back of the collar.
     top = _shoe_top(-0.97)
     loop = [(-0.985, 0, top - 0.1), (-1.005, 0, top - 0.02), (-0.97, 0, top + 0.03), (-0.92, 0, top + 0.01), (-0.9, 0, top - 0.03)]
@@ -242,20 +242,20 @@ def _shoe_collar(collection):
     x = next(station for station in SHOE_STATIONS if station > 0.55)
     stitch = [_shoe_upper_point(x, v, 1, 0.004) for v in SHOE_HEIGHTS[1:]]
     stitch = stitch + [Vector((x, 0, _shoe_top(x) + 0.004))] + [point * Vector((1, -1, 1)) for point in reversed(stitch)]
-    curve_tube(collection, "shoe_toe_cap_seam", [tuple(point) for point in stitch], 0.01, seam)
+    curve_tube(collection, "shoe_toe_cap_seam", [tuple(point) for point in stitch], 0.006, seam)
 
 
 def _shoe_lace_strand(collection, x, sign, cream, eyelet):
-    start, finish = _shoe_upper_point(x, 0.86, sign, -0.004), _shoe_upper_point(x + 0.1, 0.86, -sign, -0.004)
+    start, finish = _shoe_upper_point(x, 0.86, sign, -0.004), _shoe_upper_point(x + 0.08, 0.86, -sign, -0.004)
     lace = [start]
     for t in (0.2, 0.5, 0.8):
         point = start.lerp(finish, t)
         # The strand leaves its eyelet and hugs the tongue; the two strands of a cross
         # sit at different heights so they read as woven.
-        point.z = max(point.z, _shoe_top(point.x) + 0.022 + 0.006 * sign * math.sin(t * math.pi))
+        point.z = max(point.z, _shoe_top(point.x) + 0.018 + 0.005 * sign * math.sin(t * math.pi))
         lace.append(point)
     lace.append(finish)
-    _ribbon(collection, "shoe_lace", lace, [Vector((0, 0, 1))] * 5, [0.022] * 5, cream)
+    _ribbon(collection, "shoe_lace", lace, [Vector((0, 0, 1))] * 5, [0.012, 0.02, 0.02, 0.02, 0.012], cream)
     for point in (start, finish):
         uv_sphere(collection, "shoe_eyelet", tuple(point), (0.022, 0.022, 0.006), eyelet, segments=12, rings=6)
 
@@ -269,7 +269,7 @@ def _shoe_trim(collection):
     path = [Vector((x, 0, _shoe_top(x) + 0.006 + 0.03 * max(0.0, -0.18 - x) / 0.12)) for x in xs]
     widths = [0.16 * (1 - abs(2 * i / 12 - 1) ** 4) ** 0.25 + 0.01 for i in range(13)]
     _ribbon(collection, "shoe_tongue", path, [Vector((0, 0, 1))] * 13, widths, tongue)
-    for x in (-0.09, 0.06, 0.21):
+    for x in (-0.1, 0.06, 0.22):
         for sign in (-1, 1):
             _shoe_lace_strand(collection, x, sign, cream, eyelet)
     # The stripe tapers at the heel and tucks under the sole edge at the midfoot.
@@ -278,7 +278,7 @@ def _shoe_trim(collection):
         # Corner cutting rounds the stripe's bends into one continuous swoop.
         stripe = [stripe[0]] + [point for a, b in zip(stripe, stripe[1:]) for point in (
             (0.75 * a[0] + 0.25 * b[0], 0.75 * a[1] + 0.25 * b[1]), (0.25 * a[0] + 0.75 * b[0], 0.25 * a[1] + 0.75 * b[1]))] + [stripe[-1]]
-    widths = [0.022 * min(1.0, 0.4 + index / 6) for index in range(len(stripe))]
+    widths = [0.022 * min(1.0, 0.4 + index / 6, 0.3 + (len(stripe) - 1 - index) / 5) for index in range(len(stripe))]
     for side in (-1, 1):
         path = [_shoe_upper_point(x, v, side, 0.006) for x, v in stripe]
         _ribbon(collection, "shoe_side_stripe", path, [_shoe_normal(x, v, side) for x, v in stripe], widths, cream)
