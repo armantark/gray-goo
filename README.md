@@ -116,12 +116,12 @@ python3 scripts/web_build.py serve
 
 Open http://127.0.0.1:8064/ and press Play. The export compresses WebAssembly and game data in place. Godot’s preloader decompresses them in the browser, so ordinary static servers work without custom response headers.
 
-Regenerate the four original MIDI and Ogg songs with Python dependencies managed by uv and FFmpeg on PATH:
+Each level has its own original jazz-band piece, written in LilyPond under `assets/source/music/`. Sugar Water plays a bright samba-jazz, the tide pool an upbeat bossa nova, the skatepark a soul-jazz boogaloo blues, and Cosmic Web a medium-up swing. The band is flute, trumpet, trombone, saxophones, piano, Rhodes, Hammond organ, guitars, mallets, drums and Latin percussion. MuseScore 4 renders it with Muse Sounds, and the free Larry Seyer Upright Acoustic Bass (Pianobook, SFZ) plays the upright bass through a small sample player. Each Ogg plays its intro once, then loops from its first rehearsal mark without an audible seam. The mute setting remains in effect when scenes change.
+
+Rebuild the music with MuseScore 4, Muse Sounds, LilyPond, sox and FFmpeg installed, and with the bass library unpacked under `.tooling/upright-bass/`:
 
 ```sh
 uv run scripts/build_music.py
 ```
 
-The music source contains four compositions and a synthesizer; it uses no sampled instruments or third-party music. Each scene selects its own Ogg loop; the mute setting remains in effect when scenes change. The soundtrack uses sax-led swing in Sugar Water, bossa nova in the tide pool, samba-jazz in the skatepark, and slower sax-led jazz in Cosmic Web. Numerical audio checks cover clipping and each loop boundary; listening quality remains a human judgment.
-
-Godot’s license and third-party notices are included under `licenses/` and in both exports. All models, textures, sound effects, and music were generated for this project. The project is shelved after this release.
+Godot’s license and third-party notices are included under `licenses/` and in both exports. All models, textures, sound effects, and music were generated for this project; the music uses sampled instruments from Muse Sounds and the Larry Seyer upright bass. The project is shelved after this release.
