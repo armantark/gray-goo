@@ -3,7 +3,6 @@ extends CanvasLayer
 
 signal scene_requested(index: int)
 signal pause_requested(paused: bool)
-signal body_requested(kind: String)
 signal music_changed(enabled: bool)
 
 # The HUD reads as labels on a microscope slide: paper cards with ink text over the dark scene.
@@ -26,7 +25,6 @@ var next_button: Button
 var hint_label: Label
 var pointer: FoodPointer
 var movement_speed := 1.0
-var body_kind := "shell"
 var music_enabled := true
 var _root: Control
 var _scene_index := 0
@@ -336,14 +334,13 @@ func _build_menu() -> void:
 	if error != OK and error != ERR_FILE_NOT_FOUND:
 		push_error("Could not load movement settings: %s" % error_string(error))
 	movement_speed = clampf(float(_settings.get_value("controls", "movement_speed", 1.0)), 0.1, 2.0)
-	body_kind = str(_settings.get_value("controls", "body", "shell"))
 	music_enabled = bool(_settings.get_value("audio", "music", true))
 	menu = _panel(_root)
 	menu.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	menu.offset_left = -260
 	menu.offset_right = 260
-	menu.offset_top = -328
-	menu.offset_bottom = 328
+	menu.offset_top = -298
+	menu.offset_bottom = 298
 	var column := _column(menu)
 	_label(column, "Gray Goo", 34)
 	for index in TITLES.size():
@@ -368,31 +365,6 @@ func _build_menu() -> void:
 		var save_error := _settings.save("user://settings.cfg")
 		if save_error != OK:
 			push_error("Could not save movement settings: %s" % error_string(save_error)))
-	var body_row := HBoxContainer.new()
-	body_row.add_theme_constant_override("separation", 16)
-	column.add_child(body_row)
-	var body_label := _label(body_row, "Body", 22)
-	body_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var bodies := OptionButton.new()
-	bodies.add_item("Shell")
-	bodies.add_item("Procedural")
-	bodies.select(1 if body_kind == "procedural" else 0)
-	bodies.custom_minimum_size = Vector2(230, 50)
-	bodies.add_theme_font_size_override("font_size", 22)
-	bodies.add_theme_color_override("font_color", PAPER)
-	bodies.add_theme_color_override("font_hover_color", PAPER)
-	bodies.add_theme_color_override("font_pressed_color", PAPER)
-	bodies.add_theme_stylebox_override("normal", _style(TEAL, 6))
-	bodies.add_theme_stylebox_override("hover", _style(TEAL.lightened(0.14), 6))
-	bodies.add_theme_stylebox_override("pressed", _style(TEAL.darkened(0.15), 6))
-	body_row.add_child(bodies)
-	bodies.item_selected.connect(func(index: int):
-		body_kind = "procedural" if index == 1 else "shell"
-		_settings.set_value("controls", "body", body_kind)
-		var save_error := _settings.save("user://settings.cfg")
-		if save_error != OK:
-			push_error("Could not save body setting: %s" % error_string(save_error))
-		body_requested.emit(body_kind))
 	_build_music_control(column)
 	var resume := _button(column, "Resume")
 	resume.pressed.connect(toggle_menu)
