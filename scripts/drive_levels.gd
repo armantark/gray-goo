@@ -384,8 +384,7 @@ func _finish_level() -> void:
 	for view in _views:
 		longest_gap = maxf(longest_gap, view.longest_meal_gap)
 		idle += view.no_target_seconds
-	result.merge({"views": _views.duplicate(true), "longest_meal_gap": longest_gap, "no_target_seconds": idle,
-		"momentum_ok": longest_gap <= MOMENTUM_SECONDS})
+	result.merge({"views": _views.duplicate(true), "longest_meal_gap": longest_gap, "no_target_seconds": idle})
 	result.merge(_contact_report())
 	_results.append(result)
 	print("ROUTE_RESULT ", JSON.stringify(result))
