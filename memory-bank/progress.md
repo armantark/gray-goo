@@ -259,3 +259,37 @@ Skatepark and Cosmic Web are unwinnable under the rule with their current conten
 Second-level findings, not fixed: in Skatepark the driver's 3 abandonments are the goo resting on top of quarter pipes (goo y 3.31 to 3.92, obstacle radius 3.078 and 3.762), and in the body check the shell body sometimes rolls over or through a first-tier can twice its radius (closest center distance 0.28 against collider 1.1 in one of two runs). The obstacle projection pushes deep particles up onto the obstacle top; that is ticket 03's collision work. `Hydrogen nucleus` has `radius` 0.8 while its visible nucleons span about 0.23, and `Hermit crab` has 0.9 while its shell reaches about 1.25; those authored sizes now decide edibility.
 
 Checks: `BODY_CHECK_OK=true checks=58` (adds a smaller last-tier rock eaten on contact and a larger first-tier can that the goo touches for 3 s without eating), `OBSTACLE_CHECK queries=420 pass=true`, `WORLD_CHECK_OK=false` for the two budgets above. Muted native views of Tide Pool at tiers 1 and 3: `builds/eat-rule/views-tier-0/level-1-tier-0.png`, `builds/eat-rule/views-tier-2/level-1-tier-2.png`.
+
+## Ticket 07: size jump and camera, 2026-09-22
+
+A size jump now has a slow moment, an eased zoom out, and a tier-name card. `game.gd` reuses the completion's `Engine.time_scale` curve through `_slow_moment(scale, seconds)`: a jump starts at 0.3 and eases back to 1 over 0.7 real seconds (the completion keeps 0.22 over 0.85). `GooCamera.jump` eases the view from its current size to the new view with a smoothstep over 1.3 real seconds; ordinary growth between jumps still follows `reveal`. The HUD shows the new tier name on a paper card (44 px, centered, 190 px from the top) that pops in over 0.25 s and fades out from 2.0 to 2.6 real seconds. It adds no eyebrow label or subtitle. The camera leads the steering intent by 0.14 of the view height, smoothed at rate 2.2 per second before the existing focus smoothing. It reads `camera.size`, so it scales with the player's zoom, and it is a world-space offset, so rotation is untouched. Several jumps crossed by one meal give one moment and name the last tier.
+
+Frame series: `scripts/capture_jump_camera.gd`, native muted window, `/Applications/Godot.app/Contents/MacOS/Godot --audio-driver Dummy --path . --resolution 1920x1080 --script scripts/capture_jump_camera.gd -- --output=res://builds/jump-camera`. It stages each level at 0.9 of its first jump radius, holds still for 2 s, drives up, then stages 1.03 of the radius so the ordinary game loop makes the jump. Output: `builds/jump-camera/level-<n>-jump-*.png`, `turn-*.png`, `camera.json`. Samples (real seconds after the jump frame):
+
+| Level | Tier name | Samples |
+|---|---|---|
+| Sugar Water | Formations | 0.00 s: scale 0.3, view 9.84, 0.20 s: scale 0.341, view 10.08, 0.46 s: scale 0.842, view 10.91, 0.76 s: scale 1.0, view 12.3, 1.11 s: scale 1.0, view 13.51, 1.60 s: scale 1.0, view 13.68, 2.31 s: scale 1.0, view 13.7 |
+| Coral Colony Tide Pool | Branches and shells | 0.00 s: scale 0.3, view 16.4, 0.20 s: scale 0.329, view 16.73, 0.47 s: scale 0.783, view 17.65, 0.75 s: scale 1.0, view 19.0, 1.12 s: scale 1.0, view 20.46, 1.62 s: scale 1.0, view 21.12, 2.32 s: scale 1.0, view 21.65 |
+| Skatepark Bowl | Boards and gear | 0.00 s: scale 0.3, view 17.22, 0.22 s: scale 0.344, view 17.61, 0.47 s: scale 0.783, view 18.53, 0.77 s: scale 1.0, view 20.03, 1.12 s: scale 1.0, view 21.4, 1.62 s: scale 1.0, view 21.62, 2.32 s: scale 1.0, view 21.63 |
+| Cosmic Web | Nebulae and clusters | 0.00 s: scale 0.3, view 12.3, 0.20 s: scale 0.329, view 12.55, 0.47 s: scale 0.783, view 13.24, 0.77 s: scale 1.0, view 14.33, 1.12 s: scale 1.0, view 15.34, 1.62 s: scale 1.0, view 15.49, 2.32 s: scale 1.0, view 15.5 |
+
+Turn series (Tide Pool, 3 s up, then right, 2.4 s traced): 144 frames, max camera acceleration 3.33874702453613 px/frame², 0 reversals of camera direction, final lead (2.073177, 0.0, -0.010498) world units, goo (-101.2086, -8.900818) px from screen center (behind its motion). The two frames above 2 px/frame² (2.99, 3.34 at 2.033 s and 2.05 s) are one uneven frame. An earlier version that saved PNGs during the series showed 37.55 and 42.0 px/frame² spikes; those were catch-up frames after each 0.3 s save, not camera shake.
+
+Route table: headless, `--audio-driver Dummy --fixed-fps 60`, `--simulation-clock --speed=2.0 --limit=300`, simulation seconds. Before is an untouched copy of 9326913 (`builds/jump-camera/routes/before-9326913.json`), after is this change (`builds/jump-camera/routes/level-routes-speed-200.json`). Slow moments run on the scaled clock, so they add almost nothing to simulation seconds.
+
+| Run | Level | Won | Play s | Jump 1 s | Jump 2 s | Jump 3 s | Jump 4 s | Final radius | Missed edible (eaten later in contact) | Stalls | Abandoned targets |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| before 9326913 | Sugar Water | true | 38.7999999999991 | 3.43333333333333 | 16.316666666667 | 17.2500000000003 | 25.1166666666665 | 7.03985292069618 | 0 (0) | 0 | 0 |
+| before 9326913 | Coral Colony Tide Pool | true | 108.466666666662 | 4.64999999999999 | 17.9833333333336 | 36.7333333333325 | 57.2666666666647 | 4.75557367280732 | 0 (0) | 0 | 0 |
+| before 9326913 | Skatepark Bowl | false (stuck, 30 s without growth) | 103.099999999995 | 7.78333333333331 | 13.4666666666669 | 40.9833333333323 | 61.1499999999978 | 3.62903917581583 | 0 (0) | 0 | 3 |
+| before 9326913 | Cosmic Web | false (stuck, 30 s without growth) | 146.916666666676 | 8.76666666666668 | 39.4333333333324 | none | none | 3.2908223724343 | 0 (0) | 0 | 0 |
+| after | Sugar Water | true | 34.873889301897 | 3.69999999999999 | 14.326805658808 | 15.4202779842825 | 21.7470836430899 | 7.03977927112266 | 0 (0) | 0 | 0 |
+| after | Coral Colony Tide Pool | false (stuck, 30 s without growth) | 143.740555968571 | 4.91666666666665 | 20.1101389921412 | 38.3536113176146 | 61.1137503097544 | 3.98795198822987 | 0 (0) | 0 | 0 |
+| after | Skatepark Bowl | false (stuck, 30 s without growth) | 102.007222635227 | 7.53333333333331 | 13.8601389921414 | 42.8369446509477 | 61.6137503097544 | 3.62903917581583 | 0 (0) | 0 | 2 |
+| after | Cosmic Web | false (stuck, 30 s without growth) | 147.953611317625 | 8.80000000000002 | 39.5768056588068 | none | none | 3.2908223724343 | 0 (0) | 0 | 0 |
+
+Tide Pool stuck in the first after run at radius 3.98795198822987, goo at (-0.28426, 3.791618, -40.303) on top of a rock, steering to the water. This is route variance, not this change: two more Tide Pool runs per side (`--start=1 --last=1`) gave base 118.016666666661 s stuck at 3.73438557317607 at (-2.152768, 3.749065, -39.32802), the same rock, and base 115.216666666661 s won; after 123.523889301892 s won and 117.307222635226 s won. Base code is not deterministic either (ticket 02 recorded 110.733333333328 s for the same commit). The goo resting on obstacle tops is ticket 03's collision work. Skatepark and Cosmic Web stay unwinnable on both sides, at the same radii, as ticket 02 recorded.
+
+Checks: `BODY_CHECK_OK=true checks=58`, `OBSTACLE_CHECK queries=420 pass=true`.
+
+Not verified: look-ahead with mouse steering, and with the player's manual rotation or zoom, in a live session. Rotation and zoom are covered only by design: the lead is a world-space offset scaled by `camera.size`, and it never writes yaw or zoom.

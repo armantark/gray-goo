@@ -43,6 +43,9 @@ var _meal_camera: Camera3D
 var _meal_model: Node3D
 var _meal_kind := ""
 var _mono := SystemFont.new()
+var _jump_card: PanelContainer
+var _jump_label: Label
+var _jump_age := INF
 
 class FoodPointer extends Control:
 	var position_on_screen := Vector2.ZERO
@@ -117,6 +120,7 @@ func _ready() -> void:
 	_build_completion()
 	_build_menu()
 	_build_last_meal()
+	_build_jump_card()
 
 func _build_slide_label() -> void:
 	var card := _panel(_root)
@@ -217,6 +221,18 @@ func _build_last_meal() -> void:
 	light.rotation_degrees = Vector3(-40, -25, 0)
 	_meal_view.add_child(light)
 	_last_meal.hide()
+
+func _build_jump_card() -> void:
+	var holder := CenterContainer.new()
+	holder.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	holder.offset_top = 190
+	holder.offset_bottom = 290
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.add_child(holder)
+	_jump_card = _panel(holder)
+	_jump_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_jump_label = _label(_jump_card, "", 44)
+	_jump_card.hide()
 
 func show_meal(title: String, kind: String, color: Color) -> void:
 	if _last_meal.visible and _meal_label.text == title and _meal_kind == kind:
@@ -401,6 +417,7 @@ func configure(index: int, config: Dictionary) -> void:
 	_config = config
 	_meters_per_unit = float(config.meters_per_unit)
 	_tier = -1
+	_jump_age = INF
 	title_label.text = config.title
 	_build_ladder(config.tiers)
 	gauge.flash = 0.0
@@ -417,6 +434,9 @@ func update_game(radius: float, initial: float, goal: float, tier: int, camera: 
 		_meters_per_unit = meters_per_unit
 		gauge.flash = 1.0
 	if tier != _tier:
+		if _tier >= 0:
+			_jump_label.text = _config.tiers[tier]
+			_jump_age = 0.0
 		_tier = tier
 		tier_label.text = "Tier %d of %d · %s" % [tier + 1, _rungs.size(), _config.tiers[tier]]
 		_paint_ladder()
@@ -461,6 +481,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func _process(delta: float) -> void:
+	# The card keeps real time, because it appears during the size jump's slow moment.
+	_jump_age += delta / Engine.time_scale
+	_jump_card.visible = _jump_age < 2.6 and not menu.visible
+	if _jump_card.visible:
+		var entry := smoothstep(0.0, 0.25, _jump_age)
+		_jump_card.modulate.a = entry * (1.0 - smoothstep(2.0, 2.6, _jump_age))
+		_jump_card.pivot_offset = _jump_card.size * 0.5
+		_jump_card.scale = Vector2.ONE * lerpf(0.85, 1.0, entry)
 	if gauge.flash > 0.0:
 		gauge.flash = maxf(gauge.flash - delta * 1.2, 0.0)
 		gauge.queue_redraw()

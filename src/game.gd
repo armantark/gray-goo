@@ -8,6 +8,8 @@ const MUSIC_TRACKS := [
 ]
 
 const BODY_LENGTHS_PER_SECOND := 4.0
+const JUMP_SLOW_SCALE := 0.3
+const JUMP_SLOW_SECONDS := 0.7
 var world: GameWorld
 var goo: GooBody
 var rig: GooCamera
@@ -16,7 +18,10 @@ var _volume := 0.0
 var _level := 0
 var _won := false
 var _tier := 0
-var _cinematic := -1.0
+# Real seconds into a slow moment, or -1. The time scale starts at _slow_scale and eases back to 1.
+var _slow_clock := -1.0
+var _slow_scale := 1.0
+var _slow_seconds := 0.0
 var _bite_sound: AudioStreamPlayer
 var _win_sound: AudioStreamPlayer
 var _music: AudioStreamPlayer
@@ -71,7 +76,7 @@ func start_level(index: int) -> void:
 	_last_frame_usec = 0
 	get_tree().paused = false
 	Engine.time_scale = 1.0
-	_cinematic = -1.0
+	_slow_clock = -1.0
 	_bite_sound.stop()
 	_win_sound.stop()
 	_music.stop()
@@ -174,16 +179,22 @@ func _consume_pools(delta: float) -> void:
 			hud.show_meal("Spacetime fabric" if _level == 3 else "Water", "", pool.pigment)
 
 func _update_scale() -> void:
+	var jumped := false
 	while _tier + 1 < world.config.jumps.size() and goo.radius >= float(world.config.jumps[_tier + 1].radius):
 		_tier += 1
+		jumped = true
 		world.advance_scale(_tier)
-		rig.reveal(float(world.config.jumps[_tier].view_size))
 		print("LEVEL_TIER ", _level, " ", _tier, " ", world.config.tiers[_tier])
 	var jump: Dictionary = world.config.jumps[_tier]
 	var growth_view: float = float(jump.view_size) * goo.radius / float(jump.radius)
 	if _tier + 1 < world.config.jumps.size():
 		growth_view = minf(growth_view, float(world.config.jumps[_tier + 1].view_size) * 0.82)
-	rig.reveal(growth_view)
+	if not jumped:
+		rig.reveal(growth_view)
+		return
+	rig.jump(growth_view)
+	if not _won:
+		_slow_moment(JUMP_SLOW_SCALE, JUMP_SLOW_SECONDS)
 
 func _eat(food: Food) -> void:
 	var portion := food.remaining_volume()
@@ -207,11 +218,27 @@ func _add_growth(portion: float, color: Color, point: Vector3) -> void:
 func _complete() -> void:
 	_won = true
 	goo.celebrate()
-	_cinematic = 0.0
-	Engine.time_scale = 0.22
+	_slow_moment(0.22, 0.85)
 	_win_sound.play()
 	_bite_particles(goo.global_position, goo.tint.lightened(0.3), 1.0)
 	print("LEVEL_COMPLETE ", _level, " volume=", _volume)
+
+func _slow_moment(scale: float, seconds: float) -> void:
+	_slow_clock = 0.0
+	_slow_scale = scale
+	_slow_seconds = seconds
+	Engine.time_scale = scale
+
+func _advance_slow_moment(delta: float) -> void:
+	if _slow_clock < 0.0:
+		return
+	_slow_clock += delta / Engine.time_scale
+	Engine.time_scale = lerpf(_slow_scale, 1.0, smoothstep(_slow_seconds * 0.25, _slow_seconds, _slow_clock))
+	if _slow_clock >= _slow_seconds:
+		Engine.time_scale = 1.0
+		_slow_clock = -1.0
+		if _won:
+			hud.show_completion()
 
 func _process(delta: float) -> void:
 	if not is_instance_valid(world):
@@ -221,13 +248,7 @@ func _process(delta: float) -> void:
 		if _last_frame_usec > 0:
 			_frame_times.append((now - _last_frame_usec) / 1000000.0)
 		_last_frame_usec = now
-	if _cinematic >= 0.0:
-		_cinematic += delta / Engine.time_scale
-		Engine.time_scale = lerpf(0.22, 1.0, smoothstep(0.2, 0.85, _cinematic))
-		if _cinematic >= 0.85:
-			Engine.time_scale = 1.0
-			_cinematic = -1.0
-			hud.show_completion()
+	_advance_slow_moment(delta)
 	var target := world.nearest_edible(goo.global_position, goo.radius)
 	if target != _highlighted_target:
 		if is_instance_valid(_highlighted_target):
