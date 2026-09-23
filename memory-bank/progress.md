@@ -629,11 +629,15 @@ Before this ticket, Tide Pool won in 119.823889301892 s (shell) and 113.02388930
 
 | Body | Run | Won | Play s | Jumps s | Missed edible | Stalls | Abandoned |
 |---|---|---|---|---|---|---|---|
-| shell | 1 | true | 472.0 | 93.3, 242.0, 322.4, 391.6 | 0 | 0 | 1 |
-| shell | 2 | true | 449.2 | 98.9, 229.3, 309.2, 365.7 | 0 | 0 | 0 |
-| procedural | 1 | true | 396.0 | 73.6, 161.9, 239.4, 324.1 | 0 | 0 | 1 |
-| procedural | 2 | true | 373.8 | 76.1, 166.0, 240.0, 304.5 | 0 | 0 | 0 |
+| shell | 1 | true | 472.3 | 101.6, 256.5, 334.6, 386.9 | 0 | 0 | 1 |
+| shell | 2 | true | 479.7 | 93.6, 244.1, 328.6, 390.7 | 0 | 0 | 1 |
+| procedural | 1 | true | 383.1 | 72.0, 161.2, 236.4, 302.4 | 0 | 0 | 3 |
+| procedural | 2 | true | 389.9 | 68.0, 155.9, 235.2, 307.3 | 0 | 0 | 1 |
+
+These are on the final code, after the review fixes; the runs just before them (same pacing) took 472.0 and 449.2 s (shell) and 396.0 and 373.8 s (procedural). Every abandoned target is a driver artifact, not a stall: the goo waits with no edible target (`target=pool`) for a mover, its still-time accumulates in `_stalled`, and the first target that appears is abandoned at once as "stalled" with no obstacle within reach.
 
 Performance, native `--resolution 1920x1080 --audio-driver Dummy`, `drive_levels.gd --limit=20 --performance`, HOME redirected: 59.8873318922632 fps (p95 18.373 ms) from the driver, 59.7423694904456 from the game, load averages 25.98 30.20 35.95 from other agents.
 
-**Second-level findings, not fixed.** The procedural body finishes Sugar Water about 20% faster than the shell (both bodies' first two views differ most: 74 vs 96 s in the first view), so the shortest procedural run is 13.8 s above the 6-minute floor. `check_worlds.gd --seed` does not vary a level's own spawn stream (`GameWorld.build` defaults to seed 7309). Abandoned targets remain (a far target not reached in 15 s), none with a stall.
+**Review** (GPT-6 Astra through Codex, read-only, xhigh). Fixed: water movers left two bond entries each in `_bonds` for good, and eaten nuclei stayed in `_nuclei`, so both lists grew all session (dead entries are now dropped); the solid sugars and bound nuclei were white meals, so their bite burst and goo tint did not match their colors (their pigment is now the volume-weighted mix of what they draw). No placement, footprint, or registry defects found.
+
+**Second-level findings, not fixed.** The procedural body finishes Sugar Water about 20% faster than the shell (the first two views differ most: 68 to 76 s against 94 to 102 s in the first view), so the shortest procedural run is 23.1 s above the 6-minute floor. The route driver's `_stalled` keeps counting while the goo idles without a target (see Routes). `check_worlds.gd --seed` does not vary a level's own spawn stream (`GameWorld.build` defaults to seed 7309). Abandoned targets remain (a far target not reached in 15 s), none with a stall.

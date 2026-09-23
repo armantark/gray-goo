@@ -170,6 +170,16 @@ func _shell(at: Vector2, size: float, label: String, parent: Food) -> Food:
 # apart before it has grown into it. Every sugar draws its atoms at the same spacing and size.
 func _solid_sugar(molecule: Food, atoms: Array) -> void:
 	molecule.visual.add_child(_space_filling(atoms, SUGAR_SPACING, SUGAR_HYDROGEN, false))
+	# The meal's color is its atoms' colors weighted by the volume each sphere draws.
+	var mix := Vector3.ZERO
+	var total := 0.0
+	for atom in atoms:
+		var weight := 1.0 if atom[1] == 1 else 3.375
+		var color := Color(COLORS[atom[1]])
+		mix += Vector3(color.r, color.g, color.b) * weight
+		total += weight
+	mix /= total
+	molecule.pigment = Color(mix.x, mix.y, mix.z)
 	molecule.height = 1.6
 	molecule.collider_radius = molecule.radius
 	_add_drift(molecule, 1.0, 0.012)
@@ -310,6 +320,7 @@ func _nucleus_of_size(nucleus: Food) -> void:
 func _bound_nucleus(nucleus: Food) -> void:
 	var nucleons := _nucleons_in(nucleus.radius)
 	nucleus.title = ELEMENTS[nucleons.x] + " nucleus"
+	nucleus.pigment = Art.food_color("proton").lerp(Art.food_color("neutron"), float(nucleons.y) / (nucleons.x + nucleons.y))
 	nucleus.volume = _growth(nucleus.radius)
 	nucleus.collider_radius = nucleus.radius
 	nucleus.height = NUCLEON_RADIUS * 2.0
@@ -507,11 +518,13 @@ func _step_orbits(delta: float) -> void:
 		electron.position = at
 
 
+# A bond goes for good once either of its atoms is eaten or leaves, so spawned water does not pile up here.
 func _step_bonds() -> void:
-	for entry in _bonds:
-		if not is_instance_valid(entry.visual):
-			continue
-		entry.visual.visible = is_instance_valid(entry.first) and is_instance_valid(entry.second) and entry.first.active and entry.second.active
+	for index in range(_bonds.size() - 1, -1, -1):
+		var entry := _bonds[index]
+		if not (entry.first.active and entry.second.active):
+			entry.visual.hide()
+			_bonds.remove_at(index)
 
 func _update_detail() -> void:
 	if _detail_tier == world.current_tier:
@@ -520,8 +533,10 @@ func _update_detail() -> void:
 	for food in world.foods:
 		if food.detail_hidden:
 			food.visual.hide()
-	for nucleus in _nuclei:
-		if not is_instance_valid(nucleus) or not nucleus.active:
+	for index in range(_nuclei.size() - 1, -1, -1):
+		var nucleus := _nuclei[index]
+		if not nucleus.active:
+			_nuclei.remove_at(index)
 			continue
 		_refresh_nucleus_proxy(nucleus)
 		for nucleon in nucleus.parts:
