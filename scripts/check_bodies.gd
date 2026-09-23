@@ -202,9 +202,9 @@ func _level_volume(game: Node3D) -> float:
 	var result: float = game._volume
 	for food in game.world.foods:
 		if food.parent_food == null:
-			result += food.remaining_volume()
+			result += game.world.growth(food)
 	for pool in game.world.pools:
-		result += pool.remaining_volume
+		result += pool.remaining_volume * game.world.growth_scale
 	return result
 
 # Sets a goo just large enough to eat the food down on it; the game's contact rule decides the meal.

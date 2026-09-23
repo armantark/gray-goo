@@ -16,8 +16,22 @@ var _time := 0.0
 var _rng := RandomNumberGenerator.new()
 var placed: Array[Food] = []
 var spawns: Array[Dictionary] = []
+# A meal grows the goo by the food's visible volume times this, so a level can last longer by
+# feeding less per meal instead of rationing its food.
+var growth_scale := 1.0
 # A mover that outlives its spawn point's lifetime shrinks away over this many seconds.
 const LEAVE_SECONDS := 0.8
+# A mover appears only this share of the view height, plus its own radius, beyond the view's edge,
+# so the camera's lead and a turn of the goo do not catch it popping into being.
+const RELEASE_MARGIN := 0.1
+# A spawn point whose mover never leaves the view tries again after this many seconds. A mover
+# released from a source in view is stepped along its path this many seconds at a time.
+const RELEASE_RETRY := 0.25
+const RELEASE_STEP := 0.1
+# From the view where an object is under this share of the goo's size at the jump, its inner
+# structure no longer reads, so a composite model the level lists under "simple" draws as one
+# simple shape. One mesh in place of several also cuts draw calls where specks are densest.
+const SIMPLE_SHARE := 0.3
 # The goo eats objects whose footprint radius is under its radius times this margin. Its skin
 # reaches at least 1.19 radii from its center while moving, so 1.2 keeps "smaller" true on screen.
 const EAT_MARGIN := 1.2
@@ -45,9 +59,12 @@ func build(level_index: int, random_seed: int = 7309) -> void:
 	_layout = layouts[level_index].new()
 	config = _layout.definition()
 	field = config.field
+	growth_scale = config.get("growth_scale", 1.0)
 	_lighting(config.background_color, config.key_color, config.fill_color)
 	_terrain(config.ground_color, config.get("visible_ground", true))
 	_layout.build(self)
+	for food in foods:
+		_simplify(food)
 	player_radius = float(config.initial_radius)
 	_reach = player_radius * EAT_MARGIN
 	_grown_past = _size_index(_reach)
@@ -154,6 +171,17 @@ func is_edible(food: Food, goo_radius: float) -> bool:
 	return is_instance_valid(food) and food.active and not food.detail_hidden and food.visual.visible \
 		and food.radius < goo_radius * EAT_MARGIN
 
+func growth(food: Food) -> float:
+	return food.remaining_volume() * growth_scale
+
+func is_simple(size: float) -> bool:
+	return size < float(config.jumps[current_tier].radius) * SIMPLE_SHARE
+
+func _simplify(food: Food) -> void:
+	var forms: Dictionary = config.get("simple", {})
+	if forms.has(food.model_name) and not food.simple and is_simple(food.radius):
+		food.simplify(forms[food.model_name])
+
 func advance_scale(tier_index: int) -> void:
 	current_tier = tier_index
 	var radius: float = config.jumps[tier_index].radius
@@ -161,6 +189,7 @@ func advance_scale(tier_index: int) -> void:
 		food.detail_hidden = food.tier < tier_index and food.radius < radius * 0.12
 		if food.detail_hidden:
 			_hide_detail(food)
+		_simplify(food)
 	if config.jumps[tier_index].has("meters_per_unit"):
 		config.meters_per_unit = config.jumps[tier_index].meters_per_unit
 
@@ -290,21 +319,54 @@ func _step_spawns(delta: float) -> void:
 				_move(point, mover, delta)
 		point.wait -= delta
 		if point.wait <= 0.0 and live < point.limit and current_tier >= point.tiers.x and current_tier <= point.tiers.y:
-			_release(point)
 			# Jittered, not exponential: at low rates an exponential gap left a minute with no movers.
-			point.wait = _rng.randf_range(0.5, 1.5) / point.rate
+			point.wait = _rng.randf_range(0.5, 1.5) / point.rate if _release(point) else RELEASE_RETRY
 
-func _release(point: Dictionary) -> void:
+# A mover starts out of the camera's view and travels in, so the player never sees food appear: a
+# stretch of edge picks a point on it outside the view, and a source in view sends its mover along
+# its own path, within the one tick, to where the path leaves the view.
+func _release(point: Dictionary) -> bool:
+	var size := _rng.randf_range(point.sizes.x, point.sizes.y)
 	var at: Vector2 = point.from[0].lerp(point.from[-1], _rng.randf())
-	var food := _make(point.kind, at, _rng.randf_range(point.sizes.x, point.sizes.y))
+	for attempt in (7 if point.from.size() > 1 else 0):
+		if not _in_view(at, size):
+			break
+		at = point.from[0].lerp(point.from[-1], _rng.randf())
+	var first := foods.size()
+	var food := _make(point.kind, at, size)
 	if point.kind.has("build"):
 		point.kind.build.call(food)
-	point.movers.append({"food": food, "age": 0.0, "from": at, "at": at, "seed": _rng.randf()})
+	for added in foods.slice(first):
+		_simplify(added)
+	var mover := {"food": food, "age": 0.0, "from": at, "at": at, "seed": _rng.randf()}
+	while _in_view(mover.at, size):
+		if mover.age >= point.lifetime:
+			_retire(food)
+			return false
+		_move(point, mover, RELEASE_STEP)
+		mover.age += RELEASE_STEP
+	point.movers.append(mover)
+	return true
+
+# Whether any of an object this size standing at `at` would show in the current camera's view. A
+# world built without a camera, as the budget check builds it, has no view to hide from, and the
+# camera never shows past the field's edge.
+func _in_view(at: Vector2, size: float) -> bool:
+	var camera := get_viewport().get_camera_3d()
+	if camera == null or not field.grow(size).has_point(at):
+		return false
+	var ground := Vector3(at.x, 0.0, at.y)
+	ground.y = get_ground_height(ground)
+	var screen := get_viewport().get_visible_rect()
+	var margin := (size + camera.size * RELEASE_MARGIN) / camera.size * screen.size.y
+	return screen.grow(margin).has_point(camera.unproject_position(ground))
 
 func _move(point: Dictionary, mover: Dictionary, delta: float) -> void:
 	var food: Food = mover.food
 	var next: Vector2 = point.move.call(mover, delta)
-	if not field.has_point(next):
+	# A source may stand beyond the field's edge, which the camera never shows; its mover leaves
+	# only when it crosses the edge on the way out.
+	if field.has_point(mover.at) and not field.has_point(next):
 		mover.age = point.lifetime
 		return
 	# Movers flow around larger placed objects, so none drifts inside an outline the goo cannot enter.

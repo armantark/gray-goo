@@ -45,6 +45,12 @@ var _stall_run := 0.0
 var _stalls: Array[float] = []
 var _long_stalls: Array[Dictionary] = []
 var _abandoned: Array[Dictionary] = []
+# Momentum measures, one entry per view: meals, the longest gap between meals (from the level's
+# start, and to its end), and seconds with no edible target within MOMENTUM_SECONDS of travel.
+const MOMENTUM_SECONDS := 4.0
+var _views: Array[Dictionary] = []
+var _meal_volume := 0.0
+var _meal_at := 0.0
 
 func _initialize() -> void:
 	call_deferred("_begin")
@@ -95,6 +101,7 @@ func _process(delta: float) -> bool:
 	_elapsed += delta if _simulation_clock else wall_delta
 	if _elapsed > 2.0:
 		_frames.append(wall_delta)
+	_record_momentum(delta if _simulation_clock else wall_delta)
 	_record_progress()
 	if _elapsed >= _next_capture:
 		_next_capture = INF
@@ -198,9 +205,36 @@ func _contact_report() -> Dictionary:
 		"stalls_over_two_seconds": over_two, "long_stalls": _long_stalls.duplicate(true),
 		"abandoned_targets": _abandoned.duplicate(true)}
 
+# Runs before the jump is recorded, so the meal that crosses a jump closes a gap in the view it ends.
+func _record_momentum(delta: float) -> void:
+	if _views.is_empty():
+		_views.append(_view_entry())
+		_meal_volume = _game._volume
+	var view: Dictionary = _views[-1]
+	if _game._volume > _meal_volume + 0.0000001:
+		_meal_volume = _game._volume
+		view.meals += 1
+		if _elapsed - _meal_at > view.longest_meal_gap:
+			view.longest_meal_gap = _elapsed - _meal_at
+			view.longest_gap_end = {"seconds": _elapsed, "at": str(_game.goo.global_position)}
+		_meal_at = _elapsed
+	var goo: GooBody = _game.goo
+	var reach: float = MOMENTUM_SECONDS * _game.BODY_LENGTHS_PER_SECOND * goo.radius * 2.0 * _game.hud.movement_speed
+	var target: Food = _game.world.nearest_edible(goo.global_position, goo.radius)
+	var in_reach := is_instance_valid(target) and target.center().distance_to(goo.global_position) <= reach
+	for pool in _game.world.pools:
+		in_reach = in_reach or pool.is_edible(_game._tier, goo.radius)
+	if not in_reach:
+		view.no_target_seconds += delta
+
+func _view_entry() -> Dictionary:
+	return {"tier": _game._tier, "start": _elapsed, "meals": 0, "longest_meal_gap": 0.0, "longest_gap_end": {},
+		"no_target_seconds": 0.0}
+
 func _record_progress() -> void:
 	if _game._tier != _tier:
 		_tier = _game._tier
+		_views.append(_view_entry())
 		_next_capture = _elapsed + 2.0
 		_jumps.append({"tier": _tier, "seconds": _elapsed, "radius": _game.goo.radius})
 		print("ROUTE_JUMP ", JSON.stringify(_jumps[-1]))
@@ -331,6 +365,15 @@ func _finish_level() -> void:
 		"p95_ms": _frames[int(_frames.size() * 0.95)] * 1000.0, "viewport": str(root.get_visible_rect().size),
 		"renderer": RenderingServer.get_current_rendering_method(), "speed_multiplier": _game.hud.movement_speed, "body": _game.hud.body_kind}
 	result["display_server"] = DisplayServer.get_name()
+	if not _views.is_empty():
+		_views[-1].longest_meal_gap = maxf(_views[-1].longest_meal_gap, _elapsed - _meal_at)
+	var longest_gap := 0.0
+	var idle := 0.0
+	for view in _views:
+		longest_gap = maxf(longest_gap, view.longest_meal_gap)
+		idle += view.no_target_seconds
+	result.merge({"views": _views.duplicate(true), "longest_meal_gap": longest_gap, "no_target_seconds": idle,
+		"momentum_ok": longest_gap <= MOMENTUM_SECONDS})
 	result.merge(_contact_report())
 	_results.append(result)
 	print("ROUTE_RESULT ", JSON.stringify(result))
@@ -366,4 +409,7 @@ func _finish_level() -> void:
 	_stalls.clear()
 	_long_stalls.clear()
 	_abandoned.clear()
+	_views.clear()
+	_meal_volume = 0.0
+	_meal_at = 0.0
 	_ending = false

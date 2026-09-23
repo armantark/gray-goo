@@ -13,11 +13,13 @@ const STRETCH := 1.2
 const FLOOR_RADIUS := 9.0
 const COPING_RADIUS := 19.0
 const DEPTH := 2.6
-# The north coping, where wind-blown litter tops the rim, and the west lip in front of the vert
-# pipe, where a skater's bail sends the board rolling into the bowl.
+# The north coping, where wind-blown litter tops the rim, and the deck beside the vert pipe, where
+# a skater's bail sends the board rolling into the bowl, out of view while the goo is in the bowl.
 const NORTH_COPING := [Vector2(2.6, -20.5), Vector2(25.4, -20.5)]
-const WEST_LIP := [Vector2(-8.5, -8.0), Vector2(-8.5, 0.0)]
-const GATE := [Vector2(46.0, 18.0), Vector2(46.0, 20.0)]
+const WEST_DECK := [Vector2(-29.0, 4.0), Vector2(-29.0, 9.0)]
+# The street beyond the east gate, past the field's edge, so the park's traffic comes in from out
+# of view even when the view takes in the whole park.
+const GATE := [Vector2(55.0, 18.0), Vector2(55.0, 20.0)]
 # The service lane runs from the gate along the bowl's south side to the west lip and back,
 # between the coping and the cone slalom.
 const LANE_END := 2.0
@@ -297,8 +299,8 @@ func _build_spawns() -> void:
 		"from": NORTH_COPING, "sizes": Vector2(0.16, 0.24), "tiers": Vector2i(0, 0),
 		"rate": 0.76, "limit": 6, "lifetime": 35.0, "move": _roll.bind(0.5, 0.6)})
 	_runaways = {"kind": {"model": "skateboard", "label": "Runaway skateboard", "tier": 1, "density": 0.06,
-			"whole": _bowl, "reason": "A skater bails on the vert pipe, and the board rolls away into the bowl."},
-		"from": WEST_LIP, "sizes": Vector2(0.8, 1.05), "tiers": Vector2i(1, 1),
+			"whole": _bowl, "reason": "A skater bails on the deck beside the vert pipe, and the board rolls away into the bowl."},
+		"from": WEST_DECK, "sizes": Vector2(0.8, 1.05), "tiers": Vector2i(1, 1),
 		"rate": 0.35, "limit": 3, "lifetime": 35.0, "move": _roll.bind(0.12, 0.0)}
 	_world.spawn(_runaways)
 	_world.spawn({"kind": {"model": "skater", "label": "Skater on foot", "tier": 2, "density": 0.11,

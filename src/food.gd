@@ -15,6 +15,7 @@ var active := true
 var detail_hidden := false
 var collect_when_empty := false
 var milestone := false
+var simple := false
 var parts: Array[Food] = []
 var parent_food: Food
 var context_whole: Node3D
@@ -79,6 +80,21 @@ func rename(label: String, color: Color) -> void:
 	title = label
 	pigment = color
 	Art.tint_model(visual, color)
+
+# Draws this object as one simple shape in place of its model: the named model, or a sphere in its
+# color. Visibility, highlight, and footprint carry over, so only the drawing changes.
+func simplify(form: String) -> void:
+	simple = true
+	var drawing: Node3D = Art.model(form, radius) if not form.is_empty() else Art.sphere(radius, pigment)
+	drawing.visible = visual.visible
+	visual.free()
+	visual = drawing
+	add_child(visual)
+	refresh_highlight()
+
+# Outlines a drawing the level has just rebuilt, if this object is the selected target.
+func refresh_highlight() -> void:
+	_highlight_visual(visual, _target_outline if _highlighted else null)
 
 func set_highlighted(enabled: bool) -> void:
 	enabled = enabled and active

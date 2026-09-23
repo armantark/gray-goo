@@ -34,7 +34,7 @@ func _run() -> void:
 	for arrow in [["small", _game._volume * 0.002], ["large", _game._volume * 0.3]]:
 		target.volume = arrow[1]
 		await create_timer(1.0).timeout
-		print("ARROW ", arrow[0], " target=", _game._highlighted_target.title, " reward=", _game._reward(target.remaining_volume()), " scale=", _game.hud.pointer.scale_factor)
+		print("ARROW ", arrow[0], " target=", _game._highlighted_target.title, " reward=", _game._reward(_game.world.growth(target)), " scale=", _game.hud.pointer.scale_factor)
 		await _shot("arrow-%s" % arrow[0], false)
 	target.volume = own_volume
 

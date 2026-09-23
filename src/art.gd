@@ -9,6 +9,7 @@ static var _manifest: Dictionary = {}
 static var _models: Dictionary = {}
 static var _materials: Dictionary = {}
 static var _outline: ShaderMaterial
+static var _sphere: SphereMesh
 
 static func ground_material(color: Color, grain_scale: float = 4.0, texture: Texture2D = null) -> ShaderMaterial:
 	var mat := ShaderMaterial.new()
@@ -107,6 +108,19 @@ static func food_color(model_name: String) -> Color:
 static func model_height(model_name: String, target_radius: float) -> float:
 	var info: Dictionary = manifest()[model_name]
 	return float(info["height"]) * target_radius / float(info["radius"])
+
+# A sphere of this radius resting on the ground, from one shared low-poly mesh.
+static func sphere(radius: float, color: Color) -> MeshInstance3D:
+	if _sphere == null:
+		_sphere = SphereMesh.new()
+		_sphere.radial_segments = 12
+		_sphere.rings = 6
+		_sphere.radius = 1.0
+		_sphere.height = 2.0
+	var node := mesh_node(_sphere, color)
+	node.scale = Vector3.ONE * radius
+	node.position.y = radius
+	return node
 
 static func mesh_node(mesh: Mesh, color: Color, glow: float = 0.0) -> MeshInstance3D:
 	var node := MeshInstance3D.new()
