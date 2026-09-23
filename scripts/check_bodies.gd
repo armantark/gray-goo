@@ -16,8 +16,7 @@ func _run() -> void:
 		game.start_level(1)
 		game._switch_body(kind)
 		# Fixtures sit where a four-body-length drive meets them. At the default eight, the
-		# procedural body slides past the larger can before its skin touches it, and the shell's
-		# staged final bite misses one run in three; ticket 03 owns that collision.
+		# shell's staged final bite misses one run in three.
 		game.hud.movement_speed = 0.5
 		var initial_radius: float = game.goo.radius
 		var initial_tint: Color = game.goo.tint
@@ -91,8 +90,8 @@ func _run() -> void:
 	quit(0 if _valid else 1)
 
 # Size decides edibility, not tier: a smaller rock from the last tier is eaten on first contact,
-# and a larger can from the first tier survives contact as an obstacle. Whether the body slides
-# cleanly along it is the collision check's concern.
+# and a larger can from the first tier survives contact as an obstacle. Driven straight at it,
+# the goo never gets its center inside or over the can's footprint, and slides around it.
 func _check_eat_rule(game: Node3D, kind: String) -> void:
 	game.start_level(1)
 	game._switch_body(kind)
@@ -100,18 +99,26 @@ func _check_eat_rule(game: Node3D, kind: String) -> void:
 	var small: Food = game.world._add_food("rock", Vector2(at.x, at.z), game.goo.radius * 0.5, 0.01, "Later-tier canary", false, 4)
 	game._physics_process(1.0 / 60.0)
 	_check(not small.active, kind + " smaller later-tier object is eaten on contact")
+	# At the default speed, where the shell used to roll over the can.
+	game.hud.movement_speed = 1.0
 	Input.action_press("move_up")
 	var heading: Vector3 = game.rig.movement_direction()
 	at = game.goo.global_position + heading * game.goo.radius * 3.0
 	var large: Food = game.world._add_food("trash_can", Vector2(at.x, at.z), game.goo.radius * 2.0, 0.01, "Larger canary", false, 0)
 	var touched := false
+	var clear := true
 	for tick in 180:
 		_tick(game)
-		touched = touched or game.goo.touches(large.center(), large.radius)
+		var offset: Vector3 = game.goo.global_position - large.global_position
+		# Contact with a wall is judged at the goo's own height, as the route driver's stall measure does.
+		touched = touched or game.goo.touches(large.global_position + Vector3.UP * offset.y, large.collider_radius * 1.05)
+		clear = clear and Vector2(offset.x, offset.z).length() > large.collider_radius
 	Input.action_release("move_up")
 	var solid: bool = game.world.get_obstacles(large.global_position, 0.0).any(
 		func(obstacle: Dictionary) -> bool: return obstacle.center == large.global_position)
 	_check(touched and large.active and solid, kind + " larger object blocks")
+	_check(clear, kind + " goo stays out of the larger object's footprint")
+	_check((game.goo.global_position - large.global_position).dot(heading) > 0.0, kind + " goo slides past the larger object")
 
 # Parts act as their own food until the goo eats the whole, and the whole then takes every
 # surviving part once. Each case bites one part and then the whole by contact, in every level.

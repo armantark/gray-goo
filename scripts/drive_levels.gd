@@ -28,6 +28,7 @@ var _simulation_clock := false
 var _route_seed := 0
 var _route_rng := RandomNumberGenerator.new()
 var _speed := 1.0
+var _body := ""
 # Contact measures. A contact lasts from the first physics tick the goo surface touches a
 # visible food footprint until the tick it stops touching.
 var _contacts := {}
@@ -41,6 +42,7 @@ var _looks_titles := {}
 var _forward_speed := 0.0
 var _stall_run := 0.0
 var _stalls: Array[float] = []
+var _long_stalls: Array[Dictionary] = []
 var _abandoned: Array[Dictionary] = []
 
 func _initialize() -> void:
@@ -62,6 +64,12 @@ func _begin() -> void:
 			_route_seed = int(arg.trim_prefix("--seed="))
 		elif arg.begins_with("--speed="):
 			_speed = float(arg.trim_prefix("--speed="))
+		elif arg.begins_with("--body="):
+			_body = arg.trim_prefix("--body=")
+	if _speed <= 0.0 or _body not in ["", "shell", "procedural"]:
+		push_error("Use --speed=<positive multiplier> and --body=shell|procedural")
+		quit(2)
+		return
 	_route_rng.seed = _route_seed
 	if _simulation_clock:
 		Engine.max_fps = 0
@@ -69,9 +77,11 @@ func _begin() -> void:
 	_game = load("res://main.tscn").instantiate()
 	root.add_child(_game)
 	current_scene = _game
-	if _level != 0:
+	# Speed and body are set for this run only, never saved, so routes do not depend on the owner's settings.
+	if not _body.is_empty():
+		_game.hud.body_kind = _body
+	if _level != 0 or not _body.is_empty():
 		_game.start_level(_level)
-	# Set for this run only, never saved, so routes do not depend on the owner's slider.
 	_game.hud.movement_speed = _speed
 	_previous_tick = Time.get_ticks_usec()
 
@@ -164,6 +174,11 @@ func _measure_stall(delta: float) -> void:
 func _end_stall() -> void:
 	if _stall_run >= 0.5:
 		_stalls.append(_stall_run)
+	if _stall_run > 2.0:
+		var goo: GooBody = _game.goo
+		_long_stalls.append({"seconds": _elapsed, "duration": _stall_run, "position": str(goo.global_position),
+			"radius": goo.radius, "target": _target.title if is_instance_valid(_target) else "pool",
+			"target_at": str(_destination()), "obstacles_within_reach": _obstacles_near(goo)})
 	_stall_run = 0.0
 
 func _contact_report() -> Dictionary:
@@ -179,7 +194,8 @@ func _contact_report() -> Dictionary:
 		"missed_titles": _missed_titles, "edible_looking_blocked": _looks_blocked,
 		"edible_looking_uneaten": _looks_uneaten, "edible_looking_titles": _looks_titles,
 		"stalls": _stalls.size(), "stall_seconds": total, "longest_stall": longest,
-		"stalls_over_two_seconds": over_two, "abandoned_targets": _abandoned.duplicate(true)}
+		"stalls_over_two_seconds": over_two, "long_stalls": _long_stalls.duplicate(true),
+		"abandoned_targets": _abandoned.duplicate(true)}
 
 func _record_progress() -> void:
 	if _game._tier != _tier:
@@ -225,17 +241,20 @@ func _check_stall(delta: float) -> void:
 
 func _abandon_evidence() -> Dictionary:
 	var goo: GooBody = _game.goo
+	return {"seconds": _elapsed, "reason": "stalled" if _stalled > 2.0 else "no growth for 15 seconds",
+		"position": str(goo.global_position), "radius": goo.radius, "tier": _tier,
+		"target": _target.title, "target_at": str(_target.center()), "target_radius": _target.radius,
+		"target_moving": not _target.freeze, "target_distance": _target.center().distance_to(goo.global_position),
+		"obstacles_within_reach": _obstacles_near(goo)}
+
+func _obstacles_near(goo: GooBody) -> Array:
 	var obstacles := []
 	for solid in _game.world.get_obstacles(goo.global_position, goo.radius * 2.2):
 		var food: Food = solid.get("body", null)
 		obstacles.append({"radius": solid.radius, "center": str(solid.center),
 			"distance": Vector2(solid.center.x - goo.global_position.x, solid.center.z - goo.global_position.z).length(),
 			"title": food.title if food != null else ""})
-	return {"seconds": _elapsed, "reason": "stalled" if _stalled > 2.0 else "no growth for 15 seconds",
-		"position": str(goo.global_position), "radius": goo.radius, "tier": _tier,
-		"target": _target.title, "target_at": str(_target.center()), "target_radius": _target.radius,
-		"target_moving": not _target.freeze, "target_distance": _target.center().distance_to(goo.global_position),
-		"obstacles_within_reach": obstacles}
+	return obstacles
 
 func _choose_target() -> void:
 	var nearest := INF
@@ -300,7 +319,7 @@ func _finish_level() -> void:
 		"play_seconds": _elapsed, "jumps": _jumps.duplicate(true), "radius": pow(_game._volume, 1.0 / 3.0),
 		"frames": _frames.size(), "measured_seconds": seconds, "average_fps": _frames.size() / seconds,
 		"p95_ms": _frames[int(_frames.size() * 0.95)] * 1000.0, "viewport": str(root.get_visible_rect().size),
-		"renderer": RenderingServer.get_current_rendering_method(), "speed_multiplier": _game.hud.movement_speed}
+		"renderer": RenderingServer.get_current_rendering_method(), "speed_multiplier": _game.hud.movement_speed, "body": _game.hud.body_kind}
 	result["display_server"] = DisplayServer.get_name()
 	result.merge(_contact_report())
 	_results.append(result)
@@ -334,5 +353,6 @@ func _finish_level() -> void:
 	_looks_titles = {}
 	_forward_speed = 0.0
 	_stalls.clear()
+	_long_stalls.clear()
 	_abandoned.clear()
 	_ending = false

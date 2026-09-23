@@ -467,3 +467,102 @@ Ticket 04 rebased onto master 639316b (tickets 05, 06, 07 merged). Ticket 05 mad
 - The water/electron-cloud case no longer applies (the oxygen shell stays visible). Its replacement drives the same fault through a collapsed nucleon: eat one quark of a Helium nucleon, jump to tier 2 so its other quarks retire, then eat the other three nucleons. With master's `src/food.gd` it fails (`BODY_CHECK_FAIL a nucleus goes with its last visible nucleon, taking a collapsed one`, log `builds/composites/check-bodies-master-food.log`); with this branch it passes.
 
 Checks, headless and muted: `BODY_CHECK_OK=true checks=80`, `WORLD_CHECK_OK=true`, `OBSTACLE_CHECK queries=420 pass=true` (logs `builds/composites/*-rebased-05.log`). Fresh native muted after-images in `builds/composites/after/`: the whole-eaten image of each level shows no leftover, floating, or sunken parts and no truncated text.
+
+## Ticket 03: smooth collision with large objects, 2026-09-22
+
+Cause. The shell body (`src/goo_body.gd`) pushed each particle out of an uneatable object's cylinder the shortest way. For a particle that reached deep into the object, the shortest way was up onto the object's top. The shell kept its full forward propulsion, so it bulged upward and rolled over the object, even a trash can taller than itself. With only the top rule removed, the shell climbed straight up the wall instead (probe: `max_lift/r=8.491`). Both bodies also stopped dead when driven straight at a round object: the procedural core removed only the inward part of its propulsion, and nothing turned it. The food physics bodies were ruled out as the cause: the goo has no physics body, and the probe reproduced the rolling over with a frozen can that Jolt never moves. Only loose (unfrozen) food feels the goo, through the shell's per-particle impulses; a minimum-mass (0.08) loose can was shoved `can_moved/r=20.617` before the fix and 4.409 to 8.225 after.
+
+Fix. An uneatable object's footprint is a wall at any height above its base, for both bodies (the procedural skin clip also stops ignoring points above the top). Propulsion into a pressed object loses its inward part and turns `SLIDE_TURN` 0.75 of it along the surface (`GooBody._slide_along`, used by both bodies). The shell takes each pressed object's normal from its body center, because a normal summed from particle pushes flipped every few frames when the reaching feet touched two coral branches at the Tide Pool start (one route run spent its whole level there).
+
+Red/green command: `/Applications/Godot.app/Contents/MacOS/Godot --headless --audio-driver Dummy --path . --script scripts/check_bodies.gd`. The "larger object blocks" case now drives at speed 1.0 (the new default) and also asserts `goo stays out of the larger object's footprint` and `goo slides past the larger object`; contact with the can is judged at the goo's own height, as the route driver's stall measure does. With master's bodies (rebased on d1ca332): 6 of 6 runs `BODY_CHECK_FAIL shell goo stays out of the larger object's footprint`. With this change: 8 of 8 runs `BODY_CHECK_OK=true checks=62`. `OBSTACLE_CHECK queries=420 pass=true`, `WORLD_CHECK_OK=true`.
+
+Real-frame probe (throwaway, headless, `--fixed-fps 60`, can radius 2 goo radii, other level food removed; `builds/collision/probe-red.txt`, `probe-green.txt` at the old speed 2.0, `probe-green-rebased-speed-1.txt`). min_gap/r is the closest the goo center came to the can's footprint edge; negative means over or through it.
+
+| Body | Approach | Before: min_gap/r, max_lift/r, final along/r | After: min_gap/r, max_lift/r, final along/r |
+|---|---|---|---|
+| shell | head-on, frozen | -1.539, 4.726, 65.1 (rolled over) | 0.918, 0.967, 46.77 (slid past) |
+| shell | offset 0.5, frozen | 0.373, 0.968, 50.35 | 0.983, 0.968, 49.38 |
+| procedural | head-on, frozen | 0.72, 0.815, -2.72 (stopped dead for 6 s) | 0.72, 0.815, 87.56 (slid past) |
+| procedural | offset 0.5, frozen | 0.72, 0.815, 88.77 | 0.72, 0.815, 90.05 |
+
+Open-ground max_lift/r is 0.985 (shell) and 0.815 (procedural), so after the fix neither body rises above its own height at the can.
+
+Routes, headless, `--audio-driver Dummy --fixed-fps 60 --simulation-clock --limit=300`, simulation seconds. Before the rebase, at `--speed=2.0` on the old base speed (the owner's pace). Before is master 9326913 (`builds/collision/before-routes-speed-200.json`); after is this change (`after-routes-speed-200.json`, `repeat-{1..4}-routes-speed-200.json`, `procedural-routes-speed-200.json`). Stalls are count (total s, longest s).
+
+| Run | Body | Level | Won | Play s | Final radius | Jumps s | Stalls | Over 2 s | Abandoned |
+|---|---|---|---|---|---|---|---|---|---|
+| before-routes-speed-200 | shell | Sugar Water | true | 35.6666666666659 | 7.03977927112266 | 3.49999999999999, 14.2833333333336, 15.3333333333337, 22.8666666666666 | 0 (0.0, 0.0) | 0 | 0 |
+| before-routes-speed-200 | shell | Coral Colony Tide Pool | false (stuck, 30 s without growth) | 148.283333333343 | 3.9084470843134 | 4.34999999999999, 18.0166666666669, 36.8166666666659, 58.549999999998 | 0 (0.0, 0.0) | 0 | 0 |
+| before-routes-speed-200 | shell | Skatepark Bowl | false (stuck, 30 s without growth) | 105.383333333329 | 3.62903917581583 | 6.54999999999998, 12.6000000000002, 41.8833333333322, 62.0166666666644 | 0 (0.0, 0.0) | 0 | 2 |
+| before-routes-speed-200 | shell | Cosmic Web | false (stuck, 30 s without growth) | 147.516666666676 | 3.2908223724343 | 8.93333333333336, 39.6666666666657 | 0 (0.0, 0.0) | 0 | 0 |
+| after-routes-speed-200 | shell | Sugar Water | true | 41.6333333333323 | 7.03985123921626 | 3.91666666666666, 16.716666666667, 20.3166666666668, 26.6666666666664 | 0 (0.0, 0.0) | 0 | 0 |
+| after-routes-speed-200 | shell | Coral Colony Tide Pool | true | 116.449999999995 | 4.74899179486412 | 6.89999999999998, 19.8000000000002, 39.4333333333324, 59.9499999999979 | 0 (0.0, 0.0) | 0 | 0 |
+| after-routes-speed-200 | shell | Skatepark Bowl | false (stuck, 30 s without growth) | 114.683333333328 | 3.62684091988365 | 8.86666666666669, 14.0500000000003, 57.9333333333313, 72.7999999999972 | 0 (0.0, 0.0) | 0 | 1 |
+| after-routes-speed-200 | shell | Cosmic Web | false (stuck, 30 s without growth) | 149.616666666678 | 3.29082237243429 | 8.68333333333334, 41.9499999999989 | 0 (0.0, 0.0) | 0 | 0 |
+| repeat-1-routes-speed-200 | shell | Coral Colony Tide Pool | true | 121.049999999994 | 4.76424714802267 | 8.43333333333333, 23.1666666666666, 44.1999999999988, 64.433333333331 | 1 (0.966666666666668, 0.966666666666668) | 0 | 0 |
+| repeat-1-routes-speed-200 | shell | Skatepark Bowl | false (stuck, 30 s without growth) | 116.516666666661 | 3.62903917581583 | 6.88333333333331, 13.8000000000003, 59.1333333333313, 78.0999999999969 | 1 (0.55, 0.55) | 0 | 1 |
+| repeat-2-routes-speed-200 | shell | Coral Colony Tide Pool | true | 111.849999999995 | 4.74352967857818 | 7.64999999999998, 20.8500000000001, 41.1999999999989, 62.9999999999977 | 0 (0.0, 0.0) | 0 | 0 |
+| repeat-2-routes-speed-200 | shell | Skatepark Bowl | false (stuck, 30 s without growth) | 114.083333333328 | 3.62903917581583 | 7.09999999999998, 13.7000000000003, 54.1499999999982, 73.1166666666638 | 1 (3.94999999999999, 3.94999999999999) | 1 | 1 |
+| repeat-3-routes-speed-200 | shell | Skatepark Bowl | false (stuck, 30 s without growth) | 113.083333333328 | 3.62903917581583 | 7.58333333333331, 13.0666666666669, 54.0166666666649, 68.3166666666641 | 0 (0.0, 0.0) | 0 | 1 |
+| repeat-4-routes-speed-200 | shell | Skatepark Bowl | false (stuck, 30 s without growth) | 113.249999999995 | 3.62684091988365 | 8.4, 13.1333333333336, 60.6999999999978, 70.8833333333306 | 1 (0.55, 0.55) | 0 | 1 |
+| procedural-routes-speed-200 | procedural | Sugar Water | true | 25.9499999999998 | 7.12575317204779 | 3.06666666666666, 11.4666666666668, 12.4333333333335, 17.1333333333336 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-routes-speed-200 | procedural | Coral Colony Tide Pool | true | 227.800000000073 | 4.74341486796181 | 3.86666666666666, 13.4000000000002, 25.5833333333332, 45.3166666666654 | 79 (88.8833333333335, 1.26666666666667) | 0 | 0 |
+| procedural-routes-speed-200 | procedural | Skatepark Bowl | false (stuck, 30 s without growth) | 90.6666666666628 | 3.62652159665323 | 5.43333333333332, 8.98333333333336, 42.4499999999989, 53.6999999999982 | 7 (11.1666666666667, 1.75) | 0 | 1 |
+| procedural-routes-speed-200 | procedural | Cosmic Web | false (stuck, 30 s without growth) | 102.199999999995 | 3.2908223724343 | 5.81666666666665, 24.7499999999999 | 0 (0.0, 0.0) | 0 | 0 |
+
+Before, the stall measure read 0 because the goo climbed over objects instead of pressing into them; the 2 Skatepark abandonments were the goo resting on quarter pipes (goo y 3.369311 and 3.043631). After, one of six shell Skatepark runs had a stall over two seconds: 3.95 s at goo `(47.16559, 1.771101, -26.82251)`, radius 2.6, pressed against the quarter pipe at `(43.0, 0.0, -24.0)` (collider 3.53) while steering at `Quarter pipe` `(40.0, 1.218781, -14.0)`. The goo's side touches the field edge at x 49 there, and the gap between the pipe and the edge (2.47) is narrower than the goo, so the driver's straight-line steering held it in a dead-end corner until its own no-movement rule gave up the target.
+
+After the rebase onto d1ca332 (base speed doubled by ticket 05, so `--speed=1.0` is the old 200% and `--speed=2.0` is four times the old default), files in `builds/collision/rebased/`:
+
+| Run | Body | Level | Won | Play s | Final radius | Jumps s | Stalls | Over 2 s | Abandoned |
+|---|---|---|---|---|---|---|---|---|---|
+| shell-speed-2.0 | shell | Sugar Water | true | 56.5905559685625 | 3.86633273013686 | 22.5166666666667, 39.6268056588068, 42.9869446509477, 44.8137503097554 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-2.0 | shell | Coral Colony Tide Pool | true | 99.09055596856 | 4.7506400442508 | 1.86666666666666, 9.97680565880782, 19.486944650949, 34.5804169764226 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-2.0 | shell | Skatepark Bowl | true | 35.023889301897 | 4.40064341486161 | 5.14999999999999, 7.52680565880773, 21.6536113176156, 31.1304169764228 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-2.0 | shell | Cosmic Web | true | 209.223889301956 | 8.61811095389038 | 4.34999999999999, 20.7434723254745, 49.1369446509473, 136.830416976424 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0 | shell | Sugar Water | true | 155.090555968579 | 3.86730998754897 | 49.0499999999985, 123.493472325469, 132.37027798428, 135.180416976423 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0 | shell | Coral Colony Tide Pool | true | 102.573889301893 | 4.7819157762424 | 5.59999999999999, 18.6601389921413, 38.5369446509479, 58.5304169764213 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0 | shell | Skatepark Bowl | true | 83.5405559685609 | 4.32931430453176 | 7.58333333333331, 13.4101389921413, 36.6536113176147, 75.7804169764202 | 1 (0.55, 0.55) | 0 | 2 |
+| shell-speed-1.0 | shell | Cosmic Web | false (300 s limit) | 300.007222635287 | 8.58560520868922 | 8.81666666666668, 39.7101389921401, 114.520277984277, 217.363750309822 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0-r2 | shell | Sugar Water | true | 110.957222635226 | 3.86620146326446 | 45.6166666666654, 78.2768056588046, 88.1036113176118, 91.7637503097527 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0-r2 | shell | Coral Colony Tide Pool | true | 107.557222635226 | 4.74911646129515 | 6.73333333333331, 19.3268056588079, 38.1702779842813, 59.7304169764212 | 1 (0.966666666666668, 0.966666666666668) | 0 | 0 |
+| shell-speed-1.0-r2 | shell | Skatepark Bowl | true | 70.4072226352283 | 4.34790800892743 | 7.09999999999998, 12.976805658808, 37.136944650948, 61.580416976421 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0-r2 | shell | Cosmic Web | false (300 s limit) | 300.007222635287 | 8.46985142022771 | 8.86666666666669, 39.7268056588068, 115.086944650944, 215.480416976487 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-speed-1.0 | procedural | Sugar Water | true | 73.8738893018949 | 3.85792776349651 | 29.7666666666663, 52.0601389921394, 56.486944650947, 58.6970836430879 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-speed-1.0 | procedural | Coral Colony Tide Pool | false (300 s limit) | 300.007222635287 | 3.97144611084503 | 3.58333333333333, 13.576805658808, 26.7702779842819, 45.8304169764219 | 141 (155.066666666667, 1.51666666666667) | 0 | 0 |
+| procedural-speed-1.0 | procedural | Skatepark Bowl | true | 42.8905559685632 | 4.41048078289988 | 5.49999999999999, 9.87680565880782, 28.0202779842818, 35.7804169764225 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-speed-1.0 | procedural | Cosmic Web | false (300 s limit) | 300.007222635287 | 7.95435115515838 | 5.84999999999998, 24.8934723254743, 75.3869446509458, 199.030416976474 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-tide-1 | procedural | Coral Colony Tide Pool | true | 120.457222635225 | 4.75257798608785 | 3.63333333333333, 11.9268056588079, 23.2536113176154, 40.9804169764222 | 1 (0.583333333333333, 0.583333333333333) | 0 | 0 |
+| procedural-tide-2 | procedural | Coral Colony Tide Pool | true | 119.107222635226 | 4.75589653740163 | 3.53333333333333, 13.2934723254747, 27.5036113176152, 45.5304169764219 | 2 (1.1, 0.583333333333333) | 0 | 0 |
+
+No run after the rebase had a stall over two seconds. The same procedural Tide Pool on master's bodies (`/tmp` copy, speed 1.0, three runs) won in 114.473889301892, 108.407222635226 and 147.25722263524 s, the last with a 22.05 s stall.
+
+Frames: short muted native captures at `--fixed-fps 30`, the goo driven at speed 1.0 (rebased) toward a can of twice its radius, offset 0.6 radii, other food removed: `builds/collision/frames/{shell,procedural}/f00000000.png` to `f00000093.png`, contact sheets `builds/collision/frames/shell-frames-8-42.png` and `procedural-frames-8-42.png` (every second frame 8 to 42, cropped). Both bodies flatten against the can, slide around its left side in one continuous direction, and leave it; no frame shows the goo inside or on top of the can, and no back-and-forth between frames. The shell's outline changes frame to frame with its ordinary gait, as on open ground.
+
+Driver: `scripts/drive_levels.gd` takes `--body=shell|procedural` for the run only (reported as `body`), rejects a non-positive `--speed` or an unknown body, and records `long_stalls` (time, duration, position, radius, target, obstacles within reach) for each stall over two seconds.
+
+Second-level findings, not fixed:
+- Skatepark `Practice cone` at (1, 28) stands inside the collider of the `Quarter pipe` at (2, 29) (collider 3.078, a circle around a ramp). The goo cannot reach it until it can eat the pipe, so the driver abandons it once in most Skatepark runs (`no growth for 15 seconds`). `Shoe` and `Water Bottle` sit inside the pipe at (40, -14) the same way. Before this change the goo reached them by climbing the ramp. Layout tickets should keep food out of larger objects' colliders.
+- Procedural body, Tide Pool: in 2 of 4 runs the driver's `pool` target is the nearest water cell inside the `Great coral crown` collider at (-1.5, -42) (collider 2.4), so the goo circles the crown in many short stalls (141 stalls, 155.066666666667 s total, longest 1.51666666666667, 300 s limit in one run).
+- `GooBody.touches(food.center(), food.radius)` aims at a point above the goo's center, so against an obstacle whose skin is clipped at its collider it reads false unless the skin pokes past it. The procedural body gliding along a larger object often does not count as touching it; Tide Pool anemones close on `touched`.
+
+Rechecked after rebasing onto master 7937c70 (tickets 04 and the color fix merged; level scripts changed): red on master's bodies 4 of 4 runs `BODY_CHECK_FAIL shell goo stays out of the larger object's footprint` (`checks=84`); green 6 of 6 runs `BODY_CHECK_OK=true checks=84`; `OBSTACLE_CHECK queries=420 pass=true`; `WORLD_CHECK_OK=true`. Routes in `builds/collision/final/`, same flags, no stall over two seconds in any level for either body at either speed:
+
+| Run | Body | Level | Won | Play s | Final radius | Jumps s | Stalls | Over 2 s | Abandoned |
+|---|---|---|---|---|---|---|---|---|---|
+| procedural-speed-1.0 | procedural | Sugar Water | true | 70.2905559685617 | 3.86635630689522 | 30.7499999999995, 49.1768056588063, 53.7869446509471, 55.6304169764215 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-speed-1.0 | procedural | Coral Colony Tide Pool | true | 113.023889301893 | 4.74903603615798 | 3.54999999999999, 13.7601389921413, 27.0369446509486, 45.4804169764219 | 1 (0.850000000000001, 0.850000000000001) | 0 | 0 |
+| procedural-speed-1.0 | procedural | Skatepark Bowl | true | 59.6905559685623 | 4.40877681637097 | 5.29999999999999, 8.79347232547443, 40.7369446509478, 51.6304169764216 | 7 (11.3, 1.83333333333333) | 0 | 1 |
+| procedural-speed-1.0 | procedural | Cosmic Web | false (300 s limit) | 300.007222635287 | 8.02184971278066 | 5.81666666666665, 25.5934723254742, 63.6869446509465, 187.697083643131 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-speed-2.0 | procedural | Sugar Water | true | 55.3572226352292 | 3.86821568213663 | 18.5500000000002, 42.3268056588066, 45.6202779842809, 47.2637503097553 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-speed-2.0 | procedural | Coral Colony Tide Pool | true | 102.09055596856 | 4.75703921482069 | 2.23333333333333, 9.4268056588078, 17.9702779842824, 34.6137503097559 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-speed-2.0 | procedural | Skatepark Bowl | true | 28.8572226352307 | 4.41048078289988 | 2.76666666666666, 5.86013899214107, 17.4036113176158, 24.0137503097565 | 1 (0.55, 0.55) | 0 | 0 |
+| procedural-speed-2.0 | procedural | Cosmic Web | true | 246.190555968652 | 8.60800767978397 | 3.74999999999999, 15.5601389921414, 38.9702779842812, 147.563750309766 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0 | shell | Sugar Water | true | 148.990555968575 | 3.85351995425843 | 56.6999999999981, 112.326805658803, 125.086944650943, 132.113750309754 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0 | shell | Coral Colony Tide Pool | true | 119.823889301892 | 4.84024511556851 | 6.24999999999998, 20.9601389921412, 41.0202779842811, 61.1470836430878 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0 | shell | Skatepark Bowl | true | 67.1738893018952 | 4.40982952260131 | 6.53333333333332, 13.3434723254747, 40.6702779842811, 55.3637503097547 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0 | shell | Cosmic Web | true | 297.573889301955 | 8.60460670409775 | 8.81666666666668, 41.2434723254733, 101.953611317611, 209.980416976483 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-2.0 | shell | Sugar Water | true | 52.0072226352294 | 3.86636134009852 | 18.7166666666669, 36.126805658807, 39.9536113176146, 41.5970836430889 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-2.0 | shell | Coral Colony Tide Pool | true | 92.4072226352271 | 4.78654980937901 | 3.06666666666666, 10.1601389921412, 20.8036113176156, 37.0970836430891 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-2.0 | shell | Skatepark Bowl | true | 44.4405559685631 | 4.36507081582129 | 5.19999999999999, 7.82680565880773, 27.6036113176152, 38.8304169764223 | 0 (0.0, 0.0) | 0 | 1 |
+| shell-speed-2.0 | shell | Cosmic Web | true | 203.423889301951 | 8.6188868788946 | 4.48333333333332, 19.2934723254746, 46.7702779842808, 133.863750309755 | 0 (0.0, 0.0) | 0 | 0 |

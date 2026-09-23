@@ -5,6 +5,8 @@ extends Node3D
 const SUBSTEPS := 2
 const SOLVER_ITERATIONS := 4
 const GRAY := Color(0.57, 0.61, 0.65)
+# Share of the propulsion blocked by an obstacle that turns along its surface.
+const SLIDE_TURN := 0.75
 const OUTLINE_SHADER := """
 shader_type spatial;
 render_mode unshaded, cull_front;
@@ -93,6 +95,7 @@ var _eye_body_velocity := Vector3.ZERO
 var _facing := Vector3(0, 0, 1)
 var _configured := false
 var _contact_radius: float = 0.0
+var _pressed: Array[Dictionary] = []
 
 func configure(start: Vector3, starting_radius: float, ground_height: Callable,
 		obstacles: Callable, field: Rect2) -> void:
@@ -203,6 +206,7 @@ func _step(dt: float) -> void:
 	if not desired.is_zero_approx():
 		turn = Basis(Vector3.UP.cross(desired).normalized(), travel_rate * 0.8 * dt)
 	var solids: Array = _obstacles.call(center, radius * 2.2)
+	_pressed.clear()
 	for i in _points.size():
 		_points[i] = center + (_points[i] - center) * growth
 		_previous[i] = center + (_previous[i] - center) * growth
@@ -239,7 +243,21 @@ func _step(dt: float) -> void:
 	for point in _points:
 		center += point
 	global_position = center / _points.size()
+	# Without this the pressed shell bulges upward and crawls up the obstacle. The normal comes
+	# from the body's center, not the particle pushes, because reaching feet make those noisy.
+	for solid in _pressed:
+		_slide_along(Vector3(global_position.x - solid.center.x, 0.0, global_position.z - solid.center.z).normalized())
 	_previous_dt = dt
+
+# Propulsion into an obstacle turns along its surface, so the goo slides around a large object
+# instead of stopping dead where it meets it head-on.
+func _slide_along(normal: Vector3) -> void:
+	var inward := _flow_drive.dot(normal)
+	if inward >= 0.0:
+		return
+	var tangent := _flow_drive - normal * inward
+	var side := tangent.normalized() if tangent.length_squared() > 0.000001 else normal.cross(Vector3.UP)
+	_flow_drive = (tangent - side * inward * SLIDE_TURN).limit_length(_speed * _drive.length())
 
 func _prepare_steps(dt: float, center: Vector3) -> void:
 	_swing_weights.fill(0.0)
@@ -380,16 +398,17 @@ func _project_obstacle(point: Vector3, solid: Dictionary, skin: float,
 	var distance := horizontal.length()
 	var solid_radius: float = float(solid.radius) + skin
 	var bottom: float = float(solid.bottom) - skin
-	var top: float = float(solid.top) + skin
-	if distance >= solid_radius or point.y < bottom or point.y > top:
+	if distance >= solid_radius or point.y < bottom:
 		return point
-	var push := Vector3.UP * (top - point.y)
+	# A larger object's footprint is a wall at any height, as it looks from the top-down camera.
+	# Pushing a deep particle up onto the object's top made the shell climb and roll over it.
+	var push := horizontal.normalized() * (solid_radius - distance)
+	if distance < 0.0001:
+		push = Vector3.RIGHT * solid_radius
 	if bottom > float(_ground_height.call(point)) + skin and point.y - bottom < push.length():
 		push = Vector3.DOWN * (point.y - bottom)
-	if solid_radius - distance < push.length():
-		push = horizontal.normalized() * (solid_radius - distance)
-		if distance < 0.0001:
-			push = Vector3.RIGHT * solid_radius
+	if last_iteration and push.y == 0.0 and not _pressed.has(solid):
+		_pressed.append(solid)
 	if last_iteration and solid.has("body"):
 		var body: RigidBody3D = solid.body
 		if is_instance_valid(body):
