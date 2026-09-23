@@ -4,7 +4,7 @@ Last staleness sweep: 2026-09-05
 
 ## Current state, 2026-09-23 10:35
 
-Sugar Water follows the owner's food mix and momentum rules: 178 hand-placed rows supply 76 to 81% of each view's growth, ten out-of-view spawn points the rest, growth scale 0.215, jumps at 0.16, 0.38, 0.85, 1.5, 2.1. Routes: shell 559.0 and 590.0 s; no missed meals or stalls; longest meal gap 5.8 to 7.2 s, over the 4 s gate. These ran while the shell moved at about half its commanded speed (see papercuts); the procedural body, since retired, ran 342.2 and 349.7 s. Tide Pool, Skatepark Bowl, and Cosmic Web still win on the new shared mechanics but are not rebalanced to the mix (their check shares print as not enforced). Evidence: `builds/evidence/momentum/`.
+Sugar Water follows the owner's food mix and momentum rules: 178 hand-placed rows supply 76 to 81% of each view's growth, ten out-of-view spawn points the rest, growth scale 0.215, jumps at 0.16, 0.38, 0.85, 1.5, 2.1. Routes: shell 559.0 and 590.0 s; no missed meals or stalls; longest meal gap 5.8 to 7.2 s, over the 4 s gate. These ran while the shell moved at about half its commanded speed; the procedural body, since retired, ran 342.2 and 349.7 s. The shell now reaches its commanded speed (see `systemPatterns.md`), so all four levels run shorter and need retuning: Sugar Water 317.2 s, Tide Pool 409.5 s, Skatepark 330.4 s, Cosmic Web 518.5 s, longest meal gaps 3.8, 18.9, 12.4, and 16.0 s (`scripts/route.sh`, 2026-09-23). Tide Pool, Skatepark Bowl, and Cosmic Web still win on the new shared mechanics but are not rebalanced to the mix (their check shares print as not enforced). Evidence: `builds/evidence/momentum/`.
 
 ## Previous state, 2026-09-23 01:15
 

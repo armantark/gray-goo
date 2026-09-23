@@ -96,6 +96,7 @@ var _facing := Vector3(0, 0, 1)
 var _configured := false
 var _contact_radius: float = 0.0
 var _pressed: Array[Dictionary] = []
+var _bond_pull := Vector3.ZERO
 
 func configure(start: Vector3, starting_radius: float, ground_height: Callable,
 		obstacles: Callable, field: Rect2) -> void:
@@ -224,6 +225,7 @@ func _step(dt: float) -> void:
 			_anchor_age[i] += dt * (travel_rate if moving else 0.35)
 	# Compliance scales with dt squared so a slow-motion step cannot release a full-speed spring.
 	var elasticity := pow(dt * Engine.physics_ticks_per_second * SUBSTEPS, 2.0)
+	var bond_release := float(moving)
 	for iteration in SOLVER_ITERATIONS:
 		_solve_edges(elasticity)
 		var reach_reaction := Vector3.ZERO
@@ -232,13 +234,17 @@ func _step(dt: float) -> void:
 			var extension := ((_swing_targets[i] - _points[i]) * _swing_weights[i] * reach_strength).limit_length(radius * maxf(3.0, travel_rate * 1.8) * dt / SOLVER_ITERATIONS)
 			_points[i] += extension
 			reach_reaction += extension
-		# Reaching deforms the same shell; only its floor bonds supply a net pull.
-		reach_reaction /= _points.size()
+		# Reaching deforms the same shell. While driven, floor bonds only bend it toward where it
+		# gripped, because their mean pull held the whole body to about half its commanded speed;
+		# released, they brake it. The last pass's pull carries into the next substep.
+		reach_reaction = reach_reaction / _points.size() + _bond_pull * bond_release
 		for i in _points.size():
 			_points[i] -= reach_reaction
 		_solve_volume(center, elasticity)
+		_bond_pull = Vector3.ZERO
 		for i in _points.size():
 			_solve_contact(i, solids, dt, iteration == SOLVER_ITERATIONS - 1)
+		_bond_pull = Vector3(_bond_pull.x, 0.0, _bond_pull.z) / _points.size()
 	center = Vector3.ZERO
 	for point in _points:
 		center += point
@@ -377,7 +383,9 @@ func _solve_contact(i: int, solids: Array, dt: float, last_iteration: bool) -> v
 			_attached[i] = 0
 			_release_time[i] = radius * 0.25 / maxf(_drive.length() * _speed, radius)
 		else:
-			point = point.lerp(_anchors[i], 0.68)
+			var held := point.lerp(_anchors[i], 0.68)
+			_bond_pull += held - point
+			point = held
 	elif _swing_weights[i] < 0.35 and (was_below or (planted and point.y - floor_y < radius * 0.12)) and (planted or _release_time[i] <= 0.0):
 		point.y = floor_y
 		_attached[i] = 1
