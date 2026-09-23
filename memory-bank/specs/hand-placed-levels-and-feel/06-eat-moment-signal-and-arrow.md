@@ -4,9 +4,11 @@
 
 **Blocked by:** 02 Tasty Planet eat rule.
 
-**Status:** claimed by opus-5.5 ticket agent
+**Orchestrator addition:** the HUD still shows all-caps eyebrow labels such as "SPECIMEN SLIDE" and "NEAREST FOOD". The owner wants decorative all-caps eyebrow labels and subtitle taglines stripped. Remove them in `src/hud.gd` where they are decorative, and keep the information that the player needs.
 
-- [ ] Native frame series show a small meal and a large meal with a clearly different response.
-- [ ] A native frame series shows objects signal at the moment the goo grows past their size.
-- [ ] Native screenshots show a small arrow for a small target and a large arrow for a large target.
-- [ ] Each level's 20-second native route still averages at least 58 frames per second at 1920 × 1080.
+**Status:** done
+
+- [x] Native frame series show a small meal and a large meal with a clearly different response.
+- [x] A native frame series shows objects signal at the moment the goo grows past their size.
+- [x] Native screenshots show a small arrow for a small target and a large arrow for a large target.
+- [x] Each level's 20-second native route still averages at least 58 frames per second at 1920 × 1080.
