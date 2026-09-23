@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 Tasty Planet eat rule.
 
-**Status:** open
+**Status:** claimed by opus-5.5 ticket agent
 
 - [ ] A command reproduces each composite fault the play-through or screenshots find, before the fix.
 - [ ] The body and eat check shows that eating a composite whole leaves no active parts.
