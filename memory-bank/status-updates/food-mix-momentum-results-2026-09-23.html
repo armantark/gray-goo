@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Results: food mix, momentum, and the shell body</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='9' r='6' fill='%23fbbf24'/%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #0c0e12; --surface: #161a21; --surface-2: #1e232c; --border: #2a3040;
+  --text: #e8ecf4; --text-dim: #8b95a8; --accent: #4f8cff; --accent-glow: rgba(79, 140, 255, 0.15);
+  --red: #ff5c5c; --green: #4ade80; --amber: #fbbf24; --purple: #a78bfa; --radius: 12px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Outfit, "Avenir Next", "Segoe UI", system-ui, sans-serif; line-height: 1.5; }
+main { max-width: 1000px; margin: 0 auto; padding: 40px 22px 64px; }
+.mono { font-family: "JetBrains Mono", "SF Mono", Menlo, monospace; }
+.badge { display: inline-block; padding: 4px 12px; border-radius: 999px; background: rgba(251, 191, 36, 0.14); color: var(--amber); font-size: 0.72rem; letter-spacing: 0.06em; }
+h1 { font-size: 2rem; margin: 14px 0 6px; }
+.sub { color: var(--text-dim); margin: 0 0 28px; max-width: 760px; }
+h2 { font-size: 1.1rem; margin: 34px 0 12px; }
+.feedback { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fb { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fb .said { font-size: 0.84rem; color: var(--text-dim); font-style: italic; }
+.fb .did { font-size: 0.84rem; border-left: 2px solid var(--green); padding-left: 10px; }
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--border); }
+th { color: var(--text-dim); font-size: 0.74rem; font-weight: 600; }
+td.num { font-family: "JetBrains Mono", Menlo, monospace; }
+.warn { color: var(--amber); }
+.shape { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.pane { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; text-align: center; }
+.pane .label { font-size: 0.7rem; color: var(--text-dim); letter-spacing: 0.06em; }
+.blob { margin: 16px auto 10px; height: 36px; background: #9aa3ad; border-radius: 999px; }
+.pane p { margin: 4px 0 0; font-size: 0.8rem; color: var(--text-dim); }
+.todo { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--amber); border-radius: var(--radius); padding: 14px 18px; }
+.todo li { font-size: 0.86rem; margin: 4px 0; }
+.foot { color: var(--text-dim); font-size: 0.78rem; margin-top: 36px; }
+@media (max-width: 800px) { .feedback, .shape { grid-template-columns: 1fr; } .fb { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+<span class="badge mono">COMPLETED · 2026-09-23</span>
+<h1>All four levels now feed you steadily, and the goo keeps its shape</h1>
+<p class="sub">This page covers your feedback after your first play of Sugar Water. Opus 5.5 agents rebuilt all four levels to the new rules. The rules are in <span class="mono">memory-bank/systemPatterns.md</span> under "Food mix and momentum". The macOS app is exported again from master.</p>
+
+<h2>Your feedback and the change</h2>
+<div class="feedback">
+  <div class="fb"><div class="said">"scattered edible objects to be like 80% of the required food … hand placed"</div><div class="did">Placed food now gives 73% to 85% of each view's growth in every level. The world check fails a level outside 70% to 90%.</div></div>
+  <div class="fb"><div class="said">"waiting around … until enough things to spawn is really boring"</div><div class="did">The play-through script now measures the longest wait between meals. Most waits are under 5 s.</div></div>
+  <div class="fb"><div class="said">"the spawns were supposed to be offscreen"</div><div class="did">Spawn points release food only outside the current camera view.</div></div>
+  <div class="fb"><div class="said">"Pad the time by making it feed you less size"</div><div class="did">Each level has a growth scale from 0.145 to 0.35. A meal gives that share of its volume.</div></div>
+  <div class="fb"><div class="said">"protons and neutrons and electrons should be simple spheres"</div><div class="did">After late size jumps, nucleons, snails, coral branches, skateboards, and spirals show as one simple shape.</div></div>
+  <div class="fb"><div class="said">"the procedural body sucks … retire it"</div><div class="did">It is removed, with its menu option. The shell is the only body.</div></div>
+  <div class="fb"><div class="said">"just run a simulated sped up run"</div><div class="did">Headless Godot slept 6.9 ms each frame. The script now turns that off, and <span class="mono">scripts/route.sh</span> runs all levels at once.</div></div>
+  <div class="fb"><div class="said">"Why is he being stretched so long"</div><div class="did">My speed fix left the rear grips on the ground. The grips now move with the body.</div></div>
+</div>
+
+<h2>Shape of the moving goo, from the drive probe</h2>
+<div class="shape">
+  <div class="pane"><div class="label mono">BEFORE THE SPEED FIX</div><div class="blob" style="width:34%"></div><p>57% of set speed, 1.6–1.75 widths long</p></div>
+  <div class="pane"><div class="label mono">SPEED FIX ONLY</div><div class="blob" style="width:86%"></div><p>97% of set speed, 3.3–4.3 widths long</p></div>
+  <div class="pane"><div class="label mono">NOW</div><div class="blob" style="width:35%;background:var(--green)"></div><p>100% of set speed, 1.5–1.8 widths long</p></div>
+</div>
+
+<h2>Final routes on master, two seeds</h2>
+<div class="tablewrap"><table>
+<tr><th>Level</th><th>Win time (seed 0 / 21)</th><th>Longest wait between meals</th><th>Missed meals</th><th>Stalls over 2 s</th></tr>
+<tr><td>Sugar Water</td><td class="num">410.5 / 427.5 s</td><td class="num">3.8 / 4.4 s</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td>Tide Pool</td><td class="num">406.1 / 410.5 s</td><td class="num">4.1 / <span class="warn">6.7 s</span></td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td>Skatepark Bowl</td><td class="num">411.5 / 431.6 s</td><td class="num">4.8 / 2.8 s</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td>Cosmic Web</td><td class="num">533.8 / 536.0 s</td><td class="num">3.8 / 4.3 s</td><td class="num">0</td><td class="num">0</td></tr>
+</table></div>
+<p style="font-size:0.8rem;color:var(--text-dim)">The play-through script measured these times on a fixed 60 fps game clock. Each level had 59.1 to 59.8 fps in a visible window at 1920 × 1080. The Tide Pool wait of 6.7 s happens early in the first view, when the goo chases drifting plankton across the pool.</p>
+
+<h2>What you must do</h2>
+<div class="todo"><ul>
+  <li>Play all four levels in <span class="mono">builds/Gray Goo.app</span>. The script cannot judge feel.</li>
+  <li>Decide about the coral: merge or delete branch <span class="mono">coral-crown</span>.</li>
+  <li>Before a public release, check the Muse Sounds and Larry Seyer bass licenses.</li>
+</ul></div>
+
+<p class="foot mono">master ac21428 · not pushed · evidence in builds/evidence/momentum/ and builds/evidence/stretch/</p>
+</main>
+</body>
+</html>
