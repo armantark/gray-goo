@@ -67,6 +67,7 @@ func _run() -> void:
 	_check_composite_meals(game)
 	_check_empty_wholes(game)
 	_check_footprints(game)
+	_check_motion(game)
 	game.free()
 	Engine.time_scale = 1.0
 	print("BODY_CHECK_OK=", _valid, " checks=", _checks)
@@ -164,6 +165,44 @@ func _check_footprints(game: Node3D) -> void:
 					worst[food.title] = [food.radius / drawn, food.radius, drawn]
 	for title in worst:
 		_check(absf(worst[title][0] - 1.0) < 0.12, "%s footprint %.3f matches its drawn %.3f" % [title, worst[title][1], worst[title][2]])
+
+# Straight drives on open ground at each size, in two headings, then a release. A speed fix once
+# passed on speed alone while the body stretched to over four widths, so length and slide are held
+# too. Lengths are in body widths, measured along the heading over the second, steady second.
+func _check_motion(game: Node3D) -> void:
+	game.start_level(1)
+	var open_ground := func(_at: Vector3, _reach: float) -> Array: return []
+	var center := Vector3(game.world.field.get_center().x, 0.0, game.world.field.get_center().y)
+	for radius: float in [0.2, 0.5, 1.0, 2.5]:
+		var width := radius * 2.0
+		var commanded: float = game.BODY_LENGTHS_PER_SECOND * width
+		var speed := INF
+		var length := 0.0
+		var slide := 0.0
+		for heading in [Vector3.RIGHT, Vector3.FORWARD]:
+			game.goo.free()
+			game.goo = GooBody.new()
+			game.add_child(game.goo)
+			game.goo.configure(center - heading * radius * 16.0, radius, game.world.get_ground_height, open_ground, game.world.field)
+			var mid: Vector3
+			for tick in 150:
+				game.goo.set_drive(heading if tick >= 30 else Vector3.ZERO, commanded if tick >= 30 else 0.0)
+				game.goo._physics_process(1.0 / 60.0)
+				if tick == 89:
+					mid = game.goo.global_position
+				if tick >= 90:
+					var along: Array = Array(game.goo._points).map(func(point: Vector3) -> float: return (point - game.goo.global_position).dot(heading))
+					length = maxf(length, (along.max() - along.min()) / width)
+			var released: Vector3 = game.goo.global_position
+			speed = minf(speed, (released - mid).dot(heading) / commanded)
+			for tick in 60:
+				game.goo.set_drive(Vector3.ZERO, 0.0)
+				game.goo._physics_process(1.0 / 60.0)
+			slide = maxf(slide, Vector2(game.goo.global_position.x - released.x, game.goo.global_position.z - released.z).length() / width)
+		print("MOTION_CASE radius=%.1f speed=%.3f length=%.2f slide=%.2f" % [radius, speed, length, slide])
+		_check(speed >= 0.9, "radius %.1f reaches %.2f of commanded speed" % [radius, speed])
+		_check(length <= 2.2, "radius %.1f stays %.2f widths long while driving" % [radius, length])
+		_check(slide <= 0.8, "radius %.1f slides %.2f body lengths after release" % [radius, slide])
 
 # A composite lookup skips same-named objects without parts, such as a settled atom drawn whole.
 func _find(game: Node3D, title: String, whole: Food = null, composite: bool = false) -> Food:

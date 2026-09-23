@@ -132,7 +132,7 @@ ffmpeg -i builds/goo-shell.avi -c:v libx264 -crf 20 -pix_fmt yuv420p -c:a aac -m
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script scripts/check_bodies.gd
 ```
 
-Require `BODY_CHECK_OK=true` from the body canary.
+Require `BODY_CHECK_OK=true` from the body canary. Among its checks, the goo drives straight on open ground at radii 0.2, 0.5, 1.0 and 2.5 and must reach at least 0.9 of its commanded speed, stay at most 2.2 widths long, and slide at most 0.8 body lengths after release.
 
 ## Browser build and music
 
