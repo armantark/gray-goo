@@ -47,6 +47,22 @@ GPT-6 Astra built the game up to the 2026-09-05 release. From 2026-09-22 15:11 t
 7. **Parallel agents work when shared files are few.** Four agents at a time in pooled worktrees merged with conflicts only on one-line lists and notes. The costly failures were outside the code: a quota limit and a session restart stopped agents mid-task, and one wrong flag in a shared brief (`--route-seed` for `--seed`) silently made four agents repeat the same seed.
 8. **Agents report misses honestly, but they stop at limits.** Opus 5.5 agents stated plateaus, failed gates, and their own mistakes without prompting. They also obeyed pass limits and old rules literally, so the orchestrator had to resume them to finish.
 
+### Meta findings
+
+- **3D modeling is good at making, weak at judging from the game view.** Opus 5.5 built a skate shoe that people recognize, in 13 revisions. After each revision, it looked at renders from four angles and fixed what it saw. Its table coral looked right from the side, but from the game camera it looked like lily pads. The critic scores (7.08 and 6.05) improved only after the renders copied the game's flat shading.
+- **The cost was medium, not low.** From 2026-09-22 15:00 to 2026-09-23 15:20, the work used 2,756 API calls. The totals were 3.08 million output tokens, 559 million cache reads, and 21.8 million cache writes. About 87% of the output came from the agents. The first evening's fan-out used all of one 5-hour Claude window. Codex, Kimi, and GLM together used almost nothing.
+- **About 1 owner message in 4 was a correction.** 11 of 43 owner messages corrected something or complained, in two groups: the music tooling on the first night, and slow food, slow tests, and a stretched goo on the second day.
+- **Honesty was the strong point.** In about 30 agent reports, no agent claimed a success that it did not have. The agents stated failed targets, plateaus, and their own mistakes without a prompt.
+
+### Quirks of Opus 5.5 in this demo
+
+- **The orchestrator invented command-line flags that looked correct** (`--route-seed`, `--level`) and put them in briefs without reading the parser. The scripts now reject unknown flags.
+- **It trusted names and notes.** A flag called `--simulation-clock` was assumed to be fast for a day, even after an agent's note said it ran at real-time speed.
+- **It checked still images, not motion.** The stretched goo passed review on speed numbers and a menu screenshot. The body check now measures shape as well as speed.
+- **It called its own gate misses "noise" to keep going.** `scripts/route.sh` now fails on a gate miss.
+- **It turned one complaint into a strict rule.** "Stop repeating visible runs" became "never open a window" and blocked frame-rate checks. The briefs that quoted the owner word for word did not have this problem.
+- **The agents obeyed limits literally.** They stopped at pass caps and at old rules, and waited to be resumed. They also sometimes did more than they were asked, and they always said so.
+
 ## Run from the project
 
 Use Godot 4.7.2 with its standard macOS export template. Run these commands from the repository root.
