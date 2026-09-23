@@ -6,7 +6,7 @@ var _randomized := false
 # Levels built to the food mix: in each view, placed food supplies MIX_SHARE of the growth needed
 # to reach the next jump and spawn points supply the rest. Other levels print their share without
 # failing until their own rebalance adds them here.
-const MIX_LEVELS := ["Sugar Water"]
+const MIX_LEVELS := ["Sugar Water", "Coral Colony Tide Pool"]
 const MIX_SHARE := Vector2(0.7, 0.9)
 # Seconds of spawn-point release a view may draw on to close. Only a stop for a view its spawns
 # cannot close; pacing comes from the growth scale and the route's meal gaps, not from this.
