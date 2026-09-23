@@ -4,7 +4,7 @@ var _trials := 1
 var _seed := 9217
 var _randomized := false
 # Levels built from a placement table; tickets 09 to 11 add the other three.
-const HAND_PLACED := [1]
+const HAND_PLACED := [1, 2]
 # Seconds of spawn-point release each tier may draw on to reach its next jump, on top of the food
 # it already holds; about the time the route should spend in a view.
 const SUPPLY_SECONDS := 90.0
