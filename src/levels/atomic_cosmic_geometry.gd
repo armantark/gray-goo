@@ -35,9 +35,3 @@ static func bond(parent: Node3D, start: Vector3, end: Vector3, width: float, col
 	var side := up.cross(Vector3.FORWARD).normalized()
 	node.basis = Basis(side, up, side.cross(up).normalized())
 	return node
-
-static func backdrop_model(parent: Node3D, kind: String, position: Vector3, size: float) -> Node3D:
-	var model := Art.model(kind, size)
-	parent.add_child(model)
-	model.position = position
-	return model

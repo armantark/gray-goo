@@ -63,7 +63,7 @@ func is_edible(tier: int, goo_radius: float) -> bool:
 	return remaining_volume > 0.00001 and tier >= min_tier and goo_radius >= minimum_radius
 
 func configure(at: Vector3, extent: Vector2, color: Color, volume: float,
-		final_threshold: float = 0.0, fabric: bool = false) -> void:
+		final_threshold: float = 0.0) -> void:
 	global_position = at
 	_extent = extent
 	_resolution = clampi(int(ceil(maxf(extent.x, extent.y) * 8.0)), 64, 384)
@@ -75,12 +75,8 @@ func configure(at: Vector3, extent: Vector2, color: Color, volume: float,
 	for z in range(_resolution + 1):
 		for x in range(_resolution + 1):
 			var p := Vector2(float(x) / _resolution * 2.0 - 1.0, float(z) / _resolution * 2.0 - 1.0)
-			var boundary: float
-			if fabric:
-				boundary = 1.0 - pow(absf(p.x), 6.0) - pow(absf(p.y), 6.0)
-			else:
-				var angle := atan2(p.y, p.x)
-				boundary = 0.9 + 0.07 * sin(angle * 3.0) + 0.035 * cos(angle * 5.0) - p.length()
+			var angle := atan2(p.y, p.x)
+			var boundary := 0.9 + 0.07 * sin(angle * 3.0) + 0.035 * cos(angle * 5.0) - p.length()
 			var amount := clampf(boundary * 14.0, 0.0, 1.0)
 			if amount <= EDGE:
 				amount = 0.0
@@ -93,9 +89,6 @@ func configure(at: Vector3, extent: Vector2, color: Color, volume: float,
 	var material := ShaderMaterial.new()
 	material.shader = preload("res://shaders/liquid.gdshader")
 	material.set_shader_parameter("pigment", color)
-	material.set_shader_parameter("fabric", fabric)
-	if fabric:
-		material.set_shader_parameter("albedo", load("res://assets/models/ground_space.png"))
 	material.set_shader_parameter("extent", extent)
 	material.set_shader_parameter("mask_threshold", EDGE)
 	_mask_texture = ImageTexture.create_from_image(Image.create_from_data(

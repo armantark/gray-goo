@@ -301,10 +301,10 @@ func _move(point: Dictionary, mover: Dictionary, delta: float) -> void:
 	food.position = ground + Vector3.UP * (get_ground_height(ground) + point.kind.get("lift", 0.0))
 	mover.at = next
 
-func _pool(at: Vector3, extent: Vector2, color: Color, volume: float, threshold: float = 0.0, fabric: bool = false) -> LocalPool:
+func _pool(at: Vector3, extent: Vector2, color: Color, volume: float, threshold: float = 0.0) -> LocalPool:
 	var pool := LocalPool.new()
 	add_child(pool)
-	pool.configure(at, extent, color, volume, threshold, fabric)
+	pool.configure(at, extent, color, volume, threshold)
 	pools.append(pool)
 	return pool
 
