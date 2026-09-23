@@ -150,12 +150,16 @@ func _build_animals() -> void:
 	for refuge in refuges:
 		var angle := _world._rng.randf_range(-PI, PI)
 		var at: Vector2 = refuge * HABITAT_SCALE + Vector2(_world._rng.randf_range(-1.2, 1.2), _world._rng.randf_range(-1.2, 1.2))
-		var crab := _world._add_food("", at, 0.9, 0.22, "Hermit crab", false, 2)
+		# The crab's origin sits between its body and the shell it drags, so its 1.0 footprint
+		# circle hugs both instead of reaching past the body to cover the shell.
+		var crab := _world._add_food("", at, 1.0, 0.22, "Hermit crab", false, 2)
 		crab.context_whole = _rim
 		crab.loose_reason = "The hermit crab forages between the pool's coral heads."
 		crab.rotation.y = angle
-		crab.visual.add_child(Art.model("crab_body", 0.72))
-		var shell := _world._add_food("hermit_shell", Vector2(0.0, -0.776), 0.475, 0.035, "Hermit crab shell", false, 1, crab)
+		var body := Art.model("crab_body", 0.72)
+		crab.visual.add_child(body)
+		body.position.z = 0.22
+		var shell := _world._add_food("hermit_shell", Vector2(0.0, -0.556), 0.475, 0.035, "Hermit crab shell", false, 1, crab)
 		shell.rotation.y = 0.0
 		crab.part_consumed.connect(_crab_changed.bind(crab))
 		_animals.append({"food": crab, "home": crab.position, "pace": _world._rng.randf_range(0.16, 0.27), "range": 2.3, "phase": angle, "kind": "walk"})

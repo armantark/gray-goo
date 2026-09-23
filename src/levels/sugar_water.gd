@@ -170,7 +170,9 @@ func _atom(parent: Food, at: Vector2, protons: int, neutrons: int, tier: int) ->
 	return atom
 
 func _nucleus(atom: Food, protons: int, neutrons: int) -> Food:
-	var nucleus := _whole(Vector2.ZERO, 0.8, ELEMENTS[protons] + " nucleus", 2, atom)
+	# The footprint is the packed nucleons it draws, so a hydrogen nucleus is as large as its one proton.
+	var reach := sqrt(float(protons + neutrons - 1)) * NUCLEON_RADIUS * 0.86 + NUCLEON_RADIUS
+	var nucleus := _whole(Vector2.ZERO, reach, ELEMENTS[protons] + " nucleus", 2, atom)
 	nucleus.set_meta("protons", protons)
 	nucleus.set_meta("neutrons", neutrons)
 	_nuclei.append(nucleus)

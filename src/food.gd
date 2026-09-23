@@ -122,9 +122,14 @@ func remaining_volume() -> float:
 
 func _last_visible_part(except: Food) -> bool:
 	for part in parts:
-		if is_instance_valid(part) and part.active and not part.detail_hidden and part != except:
+		if is_instance_valid(part) and part != except and part._shows():
 			return false
 	return true
+
+# A disassembled container, such as an electron cloud, shows only through its parts, so once a
+# size jump retires those parts as detail it no longer keeps its own whole on screen.
+func _shows() -> bool:
+	return active and not detail_hidden and (visual.visible or not _last_visible_part(null))
 
 func meal_color() -> Color:
 	var total := volume

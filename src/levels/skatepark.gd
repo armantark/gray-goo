@@ -115,6 +115,8 @@ func _add_board(at: Vector2, parent: Food = null) -> Food:
 	var board := _world._add_food("", at, 1.18 * BOARD_SCALE, 0.02, "Skateboard", false, 1, parent)
 	board.rotation.y = 0.0
 	board.height = 0.5 * BOARD_SCALE
+	# The board draws nothing of its own, so it goes with its last deck, truck, or wheel.
+	board.collect_when_empty = true
 	var deck := _world._add_food("board", Vector2.ZERO, 1.15 * BOARD_SCALE, 0.015, "Skate deck", false, 1, board, 0.22 * BOARD_SCALE)
 	deck.rotation.y = 0.0
 	for axle in [-1.0, 1.0]:
