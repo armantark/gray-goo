@@ -155,9 +155,9 @@
   },
   "shoe": {
     "path": "res://assets/models/shoe.glb",
-    "radius": 1.0,
-    "height": 0.88,
-    "color": "#657F98",
+    "radius": 1.042912,
+    "height": 0.603284,
+    "color": "#5B8CC2",
     "texture": "res://assets/models/shoe.png"
   },
   "water_bottle": {

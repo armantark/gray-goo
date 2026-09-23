@@ -154,7 +154,7 @@ def _soften(obj, split_panels):
     bpy.ops.mesh.normals_make_consistent(inside=False)
     bpy.ops.object.mode_set(mode="OBJECT")
     modifier = obj.modifiers.new("Soft loft", "SUBSURF")
-    modifier.levels = 2
+    modifier.levels = 1
     bpy.ops.object.modifier_apply(modifier=modifier.name)
     smooth(obj)
     if split_panels:

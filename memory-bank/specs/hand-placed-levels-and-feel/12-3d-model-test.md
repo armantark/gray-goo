@@ -4,12 +4,12 @@
 
 **Blocked by:** 08 Spawn points and the first hand-placed level, Tide Pool.
 
-**Status:** claimed by opus-5.5 ticket-12 agent
+**Status:** plateau. Astra's best was 7.08 (revs 10 and 11), below the 8.0 bar. Revs 11, 12, and 13 did not raise it. The rubric was not lowered. The shoe from rev 13 is exported on branch `ticket-12-model` for the owner to accept or drop.
 
-- [ ] Four-angle renders exist for each revision, and each revision has a short note of what Opus saw and changed.
+- [x] Four-angle renders exist for each revision, and each revision has a short note of what Opus saw and changed.
 - [ ] GPT-6 Astra scores the final revision above 8.0, and GLM 5.3 Flash gives a second vote. No Opus critic is used.
-- [ ] The export check passes for the new GLB, and a native game screenshot shows the model in place.
-- [ ] If three successive revisions do not raise the score, the plateau is reported with no lower rubric.
+- [x] The export check passes for the new GLB, and a native game screenshot shows the model in place.
+- [x] If three successive revisions do not raise the score, the plateau is reported with no lower rubric.
 
 ## Work log
 
@@ -37,3 +37,10 @@
 - **Rev 12.** Changed: the waist and heel are fuller and the ball is less bulbous, so the plan is no longer a peanut. The toe spring is stronger. A small bow with short tails ties the top crossing. The opening is longer, and the collar lip is thinner. The eyelets and the toe seam are close to the canvas value, so the strongest ink stays on the outside. The red sole line is thicker, so it survives at game size. Saw: the bow reads as tied laces in the three-quarter view, and the plan view is an even sneaker shape.
   - Critique of rev 12: Astra 6.90 (8, 6, 6, 6, 8), the second pass in a row without a gain over 7.08. The laces read as straps and are lost at game size. The sole is a flared platform, the plan is too oval, the upper reads as molded, and the collar rim is thick. GLM 6.50 (7, 6, 5, 7, 8): the heel has no identity, the laces are noise at game size, and the proportions drift between views. Astra's waist note reversed its rev-11 note: rev 11 said the plan was too pinched, and rev 12 asked for a clearer waist.
 - **Rev 13.** Changed: the sole sits closer to the upper, with a thinner and more even red line. The laces are round cords again, over a stitched facing on each side of the lacing. The raised toe seam is gone, so the toe cap is a color boundary only. Saw: from the side the shoe sits lower and less like a platform. The facings frame the laces, and at game size the lacing reads as a pale block between two darker bands.
+  - Critique of rev 13: Astra 6.98 (8, 6, 6, 6.5, 8), the third pass in a row without a gain over 7.08, so revision stopped here. Astra still asks for flatter lace crossings, a stronger waist, a cleaner sole band, and a flatter stripe. Its notes on laces and waist changed direction between passes, and its scores on unchanged dimensions moved by about 0.2, so the spread from 6.90 to 7.08 is within one critic's noise. GLM 7.20 (8, 7, 5, 8, 8).
+
+**Plateau.** Astra's scores by pass: rev 3 5.70, rev 7 6.50, rev 8 6.90, rev 9 6.70, rev 10 7.08, rev 11 7.08, rev 12 6.90, rev 13 6.98. GLM's votes: 6.20, 5.80, 6.80, 7.60, 7.60, 6.80, 6.50, 7.20. The dimensions that hold the score down are proportion and construction (6 to 6.5) and useful detail at game size (5 to 6). At about 50 px, a sneaker's lacing and opening are close to the limit of what the pixels can show.
+
+**Export and level.** The builder uses one subdivision level. Two levels made a 1.6 MB GLB with 36,917 vertices. One level gives 823,760 bytes and 18,097 vertices, which is close to the hermit crab, with no visible change. `render_model.py --export` wrote `assets/models/shoe.glb` and `shoe.png` and updated the manifest to radius 1.042912 and height 0.603284. The manifest color is now the canvas blue `#5B8CC2`. It then passed the round-trip export check (`VERIFY shoe meshes=1 vertices=18097`, `EXPORT_CHECK_OK shoe`). The Skatepark already places `shoe` gear, so no level code changed. A native capture (`builds/model-test/in-game/skatepark-tier-2.png` and the 4x crop `shoe-crop.png`) shows the shoe in a gear pile beside a water bottle and a helmet at tier 2. It reads as a sneaker: the opening, the lace bars, the red heel loop, and the cream and red sole rim are all visible. Headless Godot cannot draw a frame, so the capture ran in a native window for about 10 seconds with the Dummy audio driver.
+
+**Checks on the exported model:** `check_bodies.gd` BODY_CHECK_OK=true checks=84, `check_obstacles.gd` OBSTACLE_CHECK queries=420 pass=true, and `check_worlds.gd` WORLD_CHECK_OK=true with 4 of 4 world trials passing.
