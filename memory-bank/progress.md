@@ -545,3 +545,24 @@ Second-level findings, not fixed:
 - Skatepark `Practice cone` at (1, 28) stands inside the collider of the `Quarter pipe` at (2, 29) (collider 3.078, a circle around a ramp). The goo cannot reach it until it can eat the pipe, so the driver abandons it once in most Skatepark runs (`no growth for 15 seconds`). `Shoe` and `Water Bottle` sit inside the pipe at (40, -14) the same way. Before this change the goo reached them by climbing the ramp. Layout tickets should keep food out of larger objects' colliders.
 - Procedural body, Tide Pool: in 2 of 4 runs the driver's `pool` target is the nearest water cell inside the `Great coral crown` collider at (-1.5, -42) (collider 2.4), so the goo circles the crown in many short stalls (141 stalls, 155.066666666667 s total, longest 1.51666666666667, 300 s limit in one run).
 - `GooBody.touches(food.center(), food.radius)` aims at a point above the goo's center, so against an obstacle whose skin is clipped at its collider it reads false unless the skin pokes past it. The procedural body gliding along a larger object often does not count as touching it; Tide Pool anemones close on `touched`.
+
+Rechecked after rebasing onto master 7937c70 (tickets 04 and the color fix merged; level scripts changed): red on master's bodies 4 of 4 runs `BODY_CHECK_FAIL shell goo stays out of the larger object's footprint` (`checks=84`); green 6 of 6 runs `BODY_CHECK_OK=true checks=84`; `OBSTACLE_CHECK queries=420 pass=true`; `WORLD_CHECK_OK=true`. Routes in `builds/collision/final/`, same flags, no stall over two seconds in any level for either body at either speed:
+
+| Run | Body | Level | Won | Play s | Final radius | Jumps s | Stalls | Over 2 s | Abandoned |
+|---|---|---|---|---|---|---|---|---|---|
+| procedural-speed-1.0 | procedural | Sugar Water | true | 70.2905559685617 | 3.86635630689522 | 30.7499999999995, 49.1768056588063, 53.7869446509471, 55.6304169764215 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-speed-1.0 | procedural | Coral Colony Tide Pool | true | 113.023889301893 | 4.74903603615798 | 3.54999999999999, 13.7601389921413, 27.0369446509486, 45.4804169764219 | 1 (0.850000000000001, 0.850000000000001) | 0 | 0 |
+| procedural-speed-1.0 | procedural | Skatepark Bowl | true | 59.6905559685623 | 4.40877681637097 | 5.29999999999999, 8.79347232547443, 40.7369446509478, 51.6304169764216 | 7 (11.3, 1.83333333333333) | 0 | 1 |
+| procedural-speed-1.0 | procedural | Cosmic Web | false (300 s limit) | 300.007222635287 | 8.02184971278066 | 5.81666666666665, 25.5934723254742, 63.6869446509465, 187.697083643131 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-speed-2.0 | procedural | Sugar Water | true | 55.3572226352292 | 3.86821568213663 | 18.5500000000002, 42.3268056588066, 45.6202779842809, 47.2637503097553 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-speed-2.0 | procedural | Coral Colony Tide Pool | true | 102.09055596856 | 4.75703921482069 | 2.23333333333333, 9.4268056588078, 17.9702779842824, 34.6137503097559 | 0 (0.0, 0.0) | 0 | 0 |
+| procedural-speed-2.0 | procedural | Skatepark Bowl | true | 28.8572226352307 | 4.41048078289988 | 2.76666666666666, 5.86013899214107, 17.4036113176158, 24.0137503097565 | 1 (0.55, 0.55) | 0 | 0 |
+| procedural-speed-2.0 | procedural | Cosmic Web | true | 246.190555968652 | 8.60800767978397 | 3.74999999999999, 15.5601389921414, 38.9702779842812, 147.563750309766 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0 | shell | Sugar Water | true | 148.990555968575 | 3.85351995425843 | 56.6999999999981, 112.326805658803, 125.086944650943, 132.113750309754 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0 | shell | Coral Colony Tide Pool | true | 119.823889301892 | 4.84024511556851 | 6.24999999999998, 20.9601389921412, 41.0202779842811, 61.1470836430878 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0 | shell | Skatepark Bowl | true | 67.1738893018952 | 4.40982952260131 | 6.53333333333332, 13.3434723254747, 40.6702779842811, 55.3637503097547 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-1.0 | shell | Cosmic Web | true | 297.573889301955 | 8.60460670409775 | 8.81666666666668, 41.2434723254733, 101.953611317611, 209.980416976483 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-2.0 | shell | Sugar Water | true | 52.0072226352294 | 3.86636134009852 | 18.7166666666669, 36.126805658807, 39.9536113176146, 41.5970836430889 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-2.0 | shell | Coral Colony Tide Pool | true | 92.4072226352271 | 4.78654980937901 | 3.06666666666666, 10.1601389921412, 20.8036113176156, 37.0970836430891 | 0 (0.0, 0.0) | 0 | 0 |
+| shell-speed-2.0 | shell | Skatepark Bowl | true | 44.4405559685631 | 4.36507081582129 | 5.19999999999999, 7.82680565880773, 27.6036113176152, 38.8304169764223 | 0 (0.0, 0.0) | 0 | 1 |
+| shell-speed-2.0 | shell | Cosmic Web | true | 203.423889301951 | 8.6188868788946 | 4.48333333333332, 19.2934723254746, 46.7702779842808, 133.863750309755 | 0 (0.0, 0.0) | 0 | 0 |
