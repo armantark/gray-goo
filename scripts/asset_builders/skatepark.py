@@ -107,10 +107,10 @@ def _shoe_normal(x, v, side):
     return normal if normal.length > 0 else Vector((0, 0, 1))
 
 
-def _ribbon(collection, name, path, normals, half_width, mat):
+def _ribbon(collection, name, path, normals, half_widths, mat):
     """A thin flat strip laid on a surface, for trim that should read as printed rather than tubular."""
     vertices, faces = [], []
-    for index, (point, normal) in enumerate(zip(path, normals)):
+    for index, (point, normal, half_width) in enumerate(zip(path, normals, half_widths)):
         tangent = path[min(index + 1, len(path) - 1)] - path[max(index - 1, 0)]
         across = tangent.cross(normal).normalized() * half_width
         vertices += [tuple(point - across), tuple(point + across)]
@@ -118,7 +118,7 @@ def _ribbon(collection, name, path, normals, half_width, mat):
             faces.append((index * 2 - 2, index * 2 - 1, index * 2 + 1, index * 2))
     obj = mesh_object(collection, name, vertices, faces, mat)
     solidify = obj.modifiers.new("Printed thickness", "SOLIDIFY")
-    solidify.thickness = 0.012
+    solidify.thickness = 0.008
     solidify.offset = 1.0
     bpy.context.view_layer.objects.active = obj
     bpy.ops.object.modifier_apply(modifier=solidify.name)
@@ -214,7 +214,7 @@ def _shoe_body(collection):
 
 def _shoe_collar(collection):
     canvas = material("Shoe denim canvas", "#5B8CC2", roughness=0.9)
-    lining = material("Shoe lining", "#1F2A33")
+    lining = material("Shoe lining", "#2A3843")
     foxing = material("Shoe sole line", "#B44A3A")
     uv_sphere(collection, "shoe_ankle_opening", (-0.5, 0, _shoe_top(-0.5) - 0.04), (0.3, 0.2, 0.06), lining)
     rim = []
@@ -224,7 +224,30 @@ def _shoe_collar(collection):
         # The collar dips over the ankle bones and rises again at the heel.
         rim.append((x, 0.24 * math.sin(a), _shoe_top(x) - 0.005 - 0.03 * math.sin(a) ** 2))
     curve_tube(collection, "shoe_padded_collar", rim, 0.022, canvas, cyclic=True)
-    box(collection, "shoe_heel_tab", (-0.985, 0, _shoe_top(-0.985) - 0.04), (0.03, 0.08, 0.09), foxing, 0.02)
+    # The pull tab is a fabric loop folded over the back of the collar.
+    top = _shoe_top(-0.97)
+    loop = [(-0.985, 0, top - 0.13), (-1.01, 0, top - 0.02), (-0.975, 0, top + 0.05), (-0.92, 0, top + 0.03), (-0.9, 0, top - 0.03)]
+    curve_tube(collection, "shoe_heel_tab", loop, 0.03, foxing)
+    seam = material("Shoe toe cap stitching", "#233F5E")
+    x = next(station for station in SHOE_STATIONS if station > 0.55)
+    stitch = [_shoe_upper_point(x, v, 1, 0.004) for v in SHOE_HEIGHTS[1:]]
+    stitch = stitch + [Vector((x, 0, _shoe_top(x) + 0.004))] + [point * Vector((1, -1, 1)) for point in reversed(stitch)]
+    curve_tube(collection, "shoe_toe_cap_seam", [tuple(point) for point in stitch], 0.01, seam)
+
+
+def _shoe_lace_strand(collection, x, sign, cream, eyelet):
+    start, finish = _shoe_upper_point(x, 0.86, sign, -0.004), _shoe_upper_point(x + 0.1, 0.86, -sign, -0.004)
+    lace = [start]
+    for t in (0.2, 0.5, 0.8):
+        point = start.lerp(finish, t)
+        # The strand leaves its eyelet and hugs the tongue; the two strands of a cross
+        # sit at different heights so they read as woven.
+        point.z = max(point.z, _shoe_top(point.x) + 0.012 + 0.006 * sign * math.sin(t * math.pi))
+        lace.append(point)
+    lace.append(finish)
+    _ribbon(collection, "shoe_lace", lace, [Vector((0, 0, 1))] * 5, [0.022] * 5, cream)
+    for point in (start, finish):
+        uv_sphere(collection, "shoe_eyelet", tuple(point), (0.028, 0.028, 0.01), eyelet, segments=12, rings=6)
 
 
 def _shoe_trim(collection):
@@ -232,21 +255,17 @@ def _shoe_trim(collection):
     tongue = material("Shoe tongue", "#3F6A9B", roughness=0.95)
     eyelet = material("Shoe eyelets", "#26343F", metallic=0.3)
     # The tongue is a soft pad that lies along the instep and tucks into the throat.
-    pad = uv_sphere(collection, "shoe_tongue", (0.0, 0, _shoe_top(0.0) + 0.012), (0.3, 0.16, 0.03), tongue)
+    pad = uv_sphere(collection, "shoe_tongue", (0.0, 0, _shoe_top(0.0) + 0.004), (0.3, 0.16, 0.02), tongue)
     pad.rotation_euler.y = math.atan2(_shoe_top(-0.3) - _shoe_top(0.3), 0.6)
-    for x in (-0.08, 0.05, 0.18):
+    for x in (-0.09, 0.06, 0.21):
         for sign in (-1, 1):
-            start, finish = _shoe_upper_point(x, 0.86, sign, -0.004), _shoe_upper_point(x + 0.11, 0.86, -sign, -0.004)
-            middle = (start + finish) / 2
-            # The two strands of a cross sit at different heights so they read as woven, not merged.
-            middle.z = _shoe_top(middle.x) + 0.065 + 0.012 * sign
-            curve_tube(collection, "shoe_lace", [tuple(start), tuple(middle), tuple(finish)], 0.02, cream)
-            for point in (start, finish):
-                uv_sphere(collection, "shoe_eyelet", tuple(point), (0.032, 0.032, 0.012), eyelet, segments=12, rings=6)
-    stripe = [(-0.6, 0.37), (-0.45, 0.38), (-0.25, 0.45), (0.0, 0.58), (0.16, 0.7), (0.27, 0.58), (0.3, 0.42), (0.32, 0.3)]
+            _shoe_lace_strand(collection, x, sign, cream, eyelet)
+    # The stripe tapers at the heel and tucks under the sole edge at the midfoot.
+    stripe = [(-0.6, 0.37), (-0.45, 0.38), (-0.25, 0.45), (0.0, 0.58), (0.16, 0.7), (0.27, 0.58), (0.3, 0.38), (0.32, 0.12)]
+    widths = [0.008, 0.016, 0.022, 0.024, 0.024, 0.024, 0.024, 0.024]
     for side in (-1, 1):
-        path = [_shoe_upper_point(x, v, side, 0.008) for x, v in stripe]
-        _ribbon(collection, "shoe_side_stripe", path, [_shoe_normal(x, v, side) for x, v in stripe], 0.03, cream)
+        path = [_shoe_upper_point(x, v, side, 0.006) for x, v in stripe]
+        _ribbon(collection, "shoe_side_stripe", path, [_shoe_normal(x, v, side) for x, v in stripe], widths, cream)
 
 
 def build_shoe(collection):
