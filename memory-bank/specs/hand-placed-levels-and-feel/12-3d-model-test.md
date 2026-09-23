@@ -4,7 +4,7 @@
 
 **Blocked by:** 08 Spawn points and the first hand-placed level, Tide Pool.
 
-**Status:** plateau. Astra's best was 7.08 (revs 10 and 11), below the 8.0 bar. Revs 11, 12, and 13 did not raise it. The rubric was not lowered. The shoe from rev 13 is exported on branch `ticket-12-model` for the owner to accept or drop.
+**Status:** plateau. Astra's best was 7.08 (revs 10 and 11), below the 8.0 bar. Revs 11, 12, and 13 did not raise it. The rubric was not lowered. The orchestrator merged the rev 13 shoe to master (a75f1ef) because it clearly beats the old three-sphere shoe. A second run through the live Blender MCP built a Tide Pool table coral that plateaued at 6.05; it waits unmerged on branch `coral-crown` for the owner.
 
 - [x] Four-angle renders exist for each revision, and each revision has a short note of what Opus saw and changed.
 - [ ] GPT-6 Astra scores the final revision above 8.0, and GLM 5.3 Flash gives a second vote. No Opus critic is used.

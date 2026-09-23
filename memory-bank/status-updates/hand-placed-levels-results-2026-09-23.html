@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Results: hand-placed levels and game feel</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='9' r='6' fill='%234ade80'/%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #0c0e12; --surface: #161a21; --surface-2: #1e232c; --border: #2a3040;
+  --text: #e8ecf4; --text-dim: #8b95a8; --accent: #4f8cff; --accent-glow: rgba(79, 140, 255, 0.15);
+  --red: #ff5c5c; --green: #4ade80; --amber: #fbbf24; --purple: #a78bfa; --radius: 12px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Outfit, "Avenir Next", "Segoe UI", system-ui, sans-serif; line-height: 1.5; }
+main { max-width: 1080px; margin: 0 auto; padding: 40px 22px 64px; }
+.mono { font-family: "JetBrains Mono", "SF Mono", Menlo, monospace; }
+.badge { display: inline-block; padding: 4px 12px; border-radius: 999px; background: rgba(74, 222, 128, 0.14); color: var(--green); font-size: 0.72rem; letter-spacing: 0.06em; }
+h1 { font-size: 2rem; margin: 14px 0 6px; }
+.sub { color: var(--text-dim); margin: 0 0 30px; max-width: 780px; }
+a { color: var(--accent); }
+h2 { font-size: 1.1rem; margin: 38px 0 14px; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
+.chart .row { display: grid; grid-template-columns: 130px 1fr; gap: 12px; align-items: center; margin: 12px 0; }
+.chart .name { font-size: 0.88rem; }
+.track { position: relative; height: 38px; background: var(--surface-2); border-radius: 6px; overflow: hidden; }
+.band { position: absolute; top: 0; bottom: 0; left: 60%; width: 40%; background: rgba(74, 222, 128, 0.08); border-left: 1px dashed rgba(74, 222, 128, 0.5); }
+.bar { position: absolute; left: 0; height: 11px; border-radius: 3px; }
+.before { top: 4px; background: var(--red); opacity: 0.8; }
+.shell { top: 16px; background: var(--green); }
+.proc { top: 28px; height: 7px; background: var(--accent); }
+.bar span { position: absolute; left: calc(100% + 6px); top: -3px; font-size: 0.68rem; color: var(--text-dim); white-space: nowrap; font-family: "JetBrains Mono", Menlo, monospace; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.76rem; color: var(--text-dim); margin-top: 8px; }
+.legend i { display: inline-block; width: 12px; height: 8px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+.gates { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.gate { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
+.gate .num { font-size: 1.5rem; font-weight: 700; color: var(--green); }
+.gate p { margin: 4px 0 0; color: var(--text-dim); font-size: 0.82rem; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card h3 { margin: 0 0 8px; font-size: 0.98rem; }
+.card p, .card li { font-size: 0.86rem; color: var(--text-dim); }
+.card ul { padding-left: 18px; margin: 6px 0 0; }
+.score { display: flex; align-items: center; gap: 10px; margin: 10px 0 4px; }
+.meter { flex: 1; height: 8px; background: var(--surface-2); border-radius: 4px; position: relative; }
+.meter b { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+.meter .bar8 { position: absolute; left: 80%; top: -4px; bottom: -4px; border-left: 2px solid var(--text); }
+.tag { display: inline-block; font-size: 0.66rem; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--text-dim); font-family: "JetBrains Mono", Menlo, monospace; margin: 2px 4px 2px 0; }
+.todo { border-left: 3px solid var(--amber); }
+.todo h3 { color: var(--amber); }
+.risk { border-left: 3px solid var(--purple); }
+table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+.tablewrap { overflow-x: auto; }
+th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--border); }
+th { color: var(--text-dim); font-weight: 600; font-size: 0.74rem; }
+.foot { color: var(--text-dim); font-size: 0.78rem; margin-top: 40px; }
+@media (max-width: 900px) { .gates { grid-template-columns: 1fr 1fr; } .grid2 { grid-template-columns: 1fr; } .chart .row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+<span class="badge mono">COMPLETED · 2026-09-23</span>
+<h1>All four levels are placed by hand and last six to nine minutes</h1>
+<p class="sub">Opus 5.5 wrote all the code in 14 tickets. Each level is now one designed place with spawn points for moving food. The goo eats on first contact and slides along what it cannot eat. Compare this page with the <a href="https://b26t4r49k9fu.postplan.dev">plan page</a>. The spec is now in <span class="mono">memory-bank/specs/done/hand-placed-levels-and-feel/</span>.</p>
+
+<h2>Time to win each level at 100% speed</h2>
+<div class="panel chart">
+  <div class="row"><div class="name">Sugar Water</div><div class="track"><div class="band"></div>
+    <div class="bar before" style="width:7.1%"><span>42.8 s</span></div>
+    <div class="bar shell" style="width:80.7%"><span>484.2 s</span></div>
+    <div class="bar proc" style="width:65.5%"><span>392.7 s</span></div></div></div>
+  <div class="row"><div class="name">Tide Pool</div><div class="track"><div class="band"></div>
+    <div class="bar before" style="width:19%"><span>about 114 s</span></div>
+    <div class="bar shell" style="width:75.8%"><span>454.7 s</span></div>
+    <div class="bar proc" style="width:61.1%"><span>366.4 s</span></div></div></div>
+  <div class="row"><div class="name">Skatepark Bowl</div><div class="track"><div class="band"></div>
+    <div class="bar before" style="width:10.2%"><span>60.9 s</span></div>
+    <div class="bar shell" style="width:69.8%"><span>419.0 s</span></div>
+    <div class="bar proc" style="width:62.6%"><span>375.6 s</span></div></div></div>
+  <div class="row"><div class="name">Cosmic Web</div><div class="track"><div class="band"></div>
+    <div class="bar before" style="width:49.1%"><span>294.4 s</span></div>
+    <div class="bar shell" style="width:88.5%"><span>531.2 s</span></div>
+    <div class="bar proc" style="width:67.8%"><span>406.8 s</span></div></div></div>
+  <div class="legend"><span><i style="background:var(--red)"></i>Before the layout ticket</span><span><i style="background:var(--green)"></i>Shell body, now</span><span><i style="background:var(--accent)"></i>Procedural body, now</span><span><i style="background:rgba(74,222,128,0.3)"></i>Target: 6 to 10 minutes</span></div>
+  <p class="mono" style="font-size:0.7rem;color:var(--text-dim);margin:10px 0 0">The automatic route driver measured these times in simulated seconds on the final code. The Sugar Water "before" value is the first measurement of the day. The procedural body is about 20% faster, so its margin over 6 minutes is small.</p>
+</div>
+
+<h2>Gates</h2>
+<div class="gates">
+  <div class="gate"><div class="num mono">0</div><p>Edible objects that the goo touched and did not eat, in all 8 final routes.</p></div>
+  <div class="gate"><div class="num mono">0</div><p>Stalls over 2 seconds against an object. The longest stall was 0.60 s.</p></div>
+  <div class="gate"><div class="num mono">59.2–59.9</div><p>Average fps for each level at 1920 × 1080 in a native window. The gate is 58.</p></div>
+  <div class="gate"><div class="num mono">85 · 420 · 12</div><p>Body checks, obstacle queries, and world trials. All pass.</p></div>
+</div>
+
+<h2>What changed for the player</h2>
+<div class="grid2">
+  <div class="card"><h3>Eating and collision</h3><ul>
+    <li>The goo eats any object that looks smaller than itself, on first contact. Objects that look larger block it.</li>
+    <li>The goo slides along large objects and does not stick or climb over them.</li>
+    <li>When you eat a composite whole, its remaining parts go with it. Parts do not fall through the ground.</li>
+    <li>Level 1 food gave far too much growth. Emptied molecules paid growth twice. This is fixed.</li>
+  </ul></div>
+  <div class="card"><h3>Feel</h3><ul>
+    <li>The default speed is two times the old default.</li>
+    <li>Each meal pulls in with a sound, a pulse, and a burst. Big meals are bigger.</li>
+    <li>An object flashes when it becomes edible. The arrow grows when its target gives more food.</li>
+    <li>A size jump has a short slow moment, a smooth zoom out, and the tier name. The camera looks ahead.</li>
+    <li>The "last eaten" card now shows composites such as the skateboard.</li>
+  </ul></div>
+  <div class="card"><h3>Levels</h3><ul>
+    <li><b>Sugar Water:</b> a gamma ray splits at the start. Particle tracks carry atoms, and the sucrose is the last big meal.</li>
+    <li><b>Tide Pool:</b> a rock rim, a coral colony around the crown, and animals in groups along the south side.</li>
+    <li><b>Skatepark Bowl:</b> the bowl with litter in its gutter, benches with gear piles, a street plaza, and vehicles that drive in and park.</li>
+    <li><b>Cosmic Web:</b> four filaments meet at the great node. Galaxies stream along them. The spacetime fabric is removed.</li>
+  </ul></div>
+  <div class="card"><h3>Music and builds</h3><ul>
+    <li>Four new bossa nova, samba, and jazz tracks, played by Muse Sounds with brass and a sampled upright bass.</li>
+    <li>Skaters no longer turn brown when you eat part of them.</li>
+    <li>The macOS app, the download zip, and the browser build are exported again. A browser play of each level showed no errors and no cut-off text.</li>
+  </ul></div>
+</div>
+
+<h2>3D model test</h2>
+<div class="grid2">
+  <div class="card"><h3>Skate shoe · in master</h3>
+    <p>13 revisions, seen from four angles each time. It replaced three squashed spheres.</p>
+    <div class="score"><span class="mono" style="font-size:0.8rem">Astra 7.08</span><div class="meter"><b style="width:70.8%;background:var(--amber)"></b><span class="bar8"></span></div></div>
+    <p>It did not reach 8.0. I merged it because it is much better than the old shoe.</p>
+    <span class="tag">builds/model-test/rev-13/</span></div>
+  <div class="card todo"><h3>Table coral for Tide Pool · you decide</h3>
+    <p>Built live through the Blender connection, 21 revisions. From the game camera, the top reads as purple lily pads.</p>
+    <div class="score"><span class="mono" style="font-size:0.8rem">Astra 6.05</span><div class="meter"><b style="width:60.5%;background:var(--red)"></b><span class="bar8"></span></div></div>
+    <p>It is not merged. Merge branch <span class="mono">coral-crown</span> or delete it.</p>
+    <span class="tag">builds/model-test/coral/in-game/final-coral-crop.png</span></div>
+</div>
+<p style="font-size:0.84rem;color:var(--text-dim)">Result: Opus 5.5 can build clean, recognizable models, and both reached a plateau below 8.0. The weak points were proportion and detail at game size. Astra's scores also moved by about 0.2 on parts that did not change.</p>
+
+<h2>What you must do</h2>
+<div class="grid2">
+  <div class="card todo"><h3>Actions</h3><ul>
+    <li>Set the speed slider to 100% one time. Your saved 200% is now four times the old speed.</li>
+    <li>Decide about the coral: merge or delete branch <span class="mono">coral-crown</span>.</li>
+    <li>Before a public release, check the Muse Sounds and Larry Seyer bass licenses.</li>
+    <li>Approve or refuse the memory bank staleness sweep. It is 18 days late.</li>
+  </ul></div>
+  <div class="card risk"><h3>Not verified</h3><ul>
+    <li>The frame rate in the browser was not measured.</li>
+    <li>Local Pinchtab cannot take screenshots (error -32000). The browser play ran on the MacBook Pro.</li>
+    <li>Godot prints "1 resources still in use at exit" at shutdown. Play is not affected.</li>
+    <li>In Cosmic Web, bright stars can sit behind the controls hint and make it harder to read.</li>
+  </ul></div>
+</div>
+
+<h2>Blender connection</h2>
+<div class="panel"><p style="margin:0;font-size:0.86rem;color:var(--text-dim)">It did not work because Claude Code never approved the project server, and T3 Code does not show the approval prompt. Also, no script opened Blender again. It is now registered at local scope, and <span class="mono">scripts/blender/open_session.sh</span> opens Blender. A new thread gets the three allowed tools. A thread that is already open gets them through <span class="mono">claude -p</span>.</p></div>
+
+<h2>Tickets</h2>
+<div class="tablewrap"><table>
+<tr><th>#</th><th>Ticket</th><th>Result</th></tr>
+<tr><td class="mono">01</td><td>Measure missed meals and stalls</td><td>Done</td></tr>
+<tr><td class="mono">02–05</td><td>Eat rule, collision, composites, Level 1 growth and speed</td><td>Done</td></tr>
+<tr><td class="mono">06–07</td><td>Eat moment, signal, arrow, size jump, camera</td><td>Done</td></tr>
+<tr><td class="mono">08–11</td><td>Spawn points and the four hand-placed levels</td><td>Done</td></tr>
+<tr><td class="mono">12</td><td>3D model test</td><td>Plateau at 7.08. The shoe is in master.</td></tr>
+<tr><td class="mono">13</td><td>Release check</td><td>Done</td></tr>
+<tr><td class="mono">14</td><td>New soundtrack</td><td>Done</td></tr>
+</table></div>
+
+<p class="foot mono">2026-09-23 · master, not pushed · evidence in builds/evidence/</p>
+</main>
+</body>
+</html>
