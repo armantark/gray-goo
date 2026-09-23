@@ -14,7 +14,6 @@ const ACTIONS := ["move_up", "move_right", "move_down", "move_left"]
 var _game: Node3D
 var _elapsed := 0.0
 var _duration := 18.0
-var _body := "shell"
 var _output := "/tmp/body-verify-motion.json"
 var _phase := ""
 var _markers: Array[Dictionary] = []
@@ -30,14 +29,12 @@ var _finished := false
 func _initialize() -> void:
 	_fixed_frame = not Engine.get_write_movie_path().is_empty()
 	for argument in OS.get_cmdline_user_args():
-		if argument.begins_with("--body="):
-			_body = argument.trim_prefix("--body=")
-		elif argument.begins_with("--duration="):
+		if argument.begins_with("--duration="):
 			_duration = argument.trim_prefix("--duration=").to_float()
 		elif argument.begins_with("--output="):
 			_output = argument.trim_prefix("--output=")
-	if _body not in ["shell", "procedural"] or _duration < 16.0:
-		push_error("Use --body=shell|procedural and --duration=<seconds>, at least 16 seconds for the full route")
+	if _duration < 16.0:
+		push_error("Use --duration=<seconds>, at least 16 seconds for the full route")
 		quit(2)
 		return
 	call_deferred("_start")
@@ -48,7 +45,6 @@ func _start() -> void:
 	root.add_child(_game)
 	current_scene = _game
 	_game.start_level(1)
-	_game._switch_body(_body)
 	# Reproducible comparison overrides are transient; never invoke HUD persistence.
 	_game.goo._step_random.seed = ROUTE_SEED
 	_game.goo._ooze_phases = Vector3(_game.goo._step_random.randf_range(0.0, TAU), _game.goo._step_random.randf_range(0.0, TAU), _game.goo._step_random.randf_range(0.0, TAU))
@@ -110,7 +106,7 @@ func _finish() -> void:
 	for duration in ordered:
 		seconds += duration
 	var fixture_eaten := is_instance_valid(_fixture) and not _fixture.active and is_instance_valid(_fixture._meal_target)
-	var report := {"body": _body, "scene": "Coral Colony Tide Pool", "seed": ROUTE_SEED,
+	var report := {"scene": "Coral Colony Tide Pool", "seed": ROUTE_SEED,
 		"simulation_seconds": _elapsed, "frames": _frames, "warmup_seconds": WARMUP,
 		"evidence_kind": "native_wall_clock" if native_measurement else "fixed_frame_visual" if _fixed_frame else "headless_simulation",
 		"viewport": str(root.get_visible_rect().size), "renderer": RenderingServer.get_current_rendering_method(),

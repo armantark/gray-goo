@@ -4,7 +4,7 @@ Last staleness sweep: 2026-09-05
 
 ## Current state, 2026-09-23 10:35
 
-Sugar Water follows the owner's food mix and momentum rules: 178 hand-placed rows supply 76 to 81% of each view's growth, ten out-of-view spawn points the rest, growth scale 0.215, jumps at 0.16, 0.38, 0.85, 1.5, 2.1. Routes: procedural 342.2 and 349.7 s (just under the 360 s floor), shell 559.0 and 590.0 s; no missed meals or stalls; longest meal gap 4.2 to 4.7 s procedural, 5.8 to 7.2 s shell, over the 4 s gate. The shell body moves at about half its commanded speed (see papercuts), so with constant momentum both bodies cannot fit 360 to 600 s at once. Tide Pool, Skatepark Bowl, and Cosmic Web still win on the new shared mechanics but are not rebalanced to the mix (their check shares print as not enforced). Evidence: `builds/evidence/momentum/`.
+Sugar Water follows the owner's food mix and momentum rules: 178 hand-placed rows supply 76 to 81% of each view's growth, ten out-of-view spawn points the rest, growth scale 0.215, jumps at 0.16, 0.38, 0.85, 1.5, 2.1. Routes: shell 559.0 and 590.0 s; no missed meals or stalls; longest meal gap 5.8 to 7.2 s, over the 4 s gate. These ran while the shell moved at about half its commanded speed; the procedural body, since retired, ran 342.2 and 349.7 s. The shell now reaches its commanded speed (see `systemPatterns.md`), so all four levels run shorter and need retuning: Sugar Water 317.2 s, Tide Pool 409.5 s, Skatepark 330.4 s, Cosmic Web 518.5 s, longest meal gaps 3.8, 18.9, 12.4, and 16.0 s (`scripts/route.sh`, 2026-09-23). Tide Pool, Skatepark Bowl, and Cosmic Web still win on the new shared mechanics but are not rebalanced to the mix (their check shares print as not enforced). Evidence: `builds/evidence/momentum/`.
 
 ## Previous state, 2026-09-23 01:15
 
@@ -40,9 +40,9 @@ Every consumed item contributes to goal size. Completion depends on size, not a 
 
 The interview settled: the root structure rule, five tiers and four jumps per demo level at about ten minutes each, Sugar Water (sucrose in water) as the subatomic level, tide pool, skatepark, and cosmic web ladders, textures on every model, 3D backgrounds, realistic space, a constant body-length speed law with smoothing, and the specimen readout HUD with a ladder strip. The contract for Astra is `docs/design/level-contract.md`. Fable owns speed and HUD. The user dispatched Astra with the plan on 2026-09-05. The speed law landed first so Astra's playthrough timings use it. Astra completed the level rebuild and released the checkout on 2026-09-05; the runtime hand-off is `docs/design/level-runtime-handoff.md` and results are at https://2c8gwk9dw7m5.postplan.dev . Fable rebuilt the HUD and fixed the Sugar Water contact bottleneck on 2026-09-05.
 
-## Goo body second option
+## Goo body
 
-The user judges the simulated shell semi-decent but glitchy and wants a procedural skin over a simple core as a second body, with a `Body` toggle in the settings menu so both can be compared in game. The brief for Astra's next round is `plans/goo-body-brief.md`. It runs after the level rebuild, in the same checkout, one owner at a time.
+The shell is the only goo body. The procedural second body and its `Body` menu option were retired on 2026-09-23 as a failed experiment (see `systemPatterns.md`).
 
 ## Performance after the grid fix
 
@@ -50,7 +50,7 @@ Ordinary Sugar Water movement ran at `10.9985906405953` FPS (`131.81` ms p95) on
 
 ## HUD
 
-The specimen readout HUD is live: paper slide label with a log-scale dial that flashes on calibration jumps, five-rung ladder strip from `config.tiers` and `world.current_tier`, specimen card for the last meal, light-year units from a tenth of a light year up, and a slide-tray menu. `scripts/capture_hud.gd` captures the meal, completion, and menu states; `scripts/inspect_levels.gd` captures the twenty tier views. The `Body` toggle from `plans/goo-body-brief.md` is implemented.
+The specimen readout HUD is live: paper slide label with a log-scale dial that flashes on calibration jumps, five-rung ladder strip from `config.tiers` and `world.current_tier`, specimen card for the last meal, light-year units from a tenth of a light year up, and a slide-tray menu. `scripts/capture_hud.gd` captures the meal, completion, and menu states; `scripts/inspect_levels.gd` captures the twenty tier views.
 
 ## Verification and communication boundaries
 
@@ -66,7 +66,7 @@ The user reviewed the September 4 ten-second clip and requested slower movement,
 
 ## Final release state, 2026-09-05
 
-The final shipping slice is complete in source. The procedural body remains an optional comparison; do not claim that its grip motion was accepted. Live Blender refinement covers the hermit crab, skater, and skateboard. Runtime board assemblies now use a uniform 0.5 deck scale with the rider’s feet lowered to match. The eating repair removes the initial miniature molecule, retires tiny targets, gives equal-size particles equal thresholds, and collects depleted sugar structures through their last visible constituent.
+The final shipping slice is complete in source. Live Blender refinement covers the hermit crab, skater, and skateboard. Runtime board assemblies now use a uniform 0.5 deck scale with the rider’s feet lowered to match. The eating repair removes the initial miniature molecule, retires tiny targets, gives equal-size particles equal thresholds, and collects depleted sugar structures through their last visible constituent.
 
 Each level now has its own original MIDI/Ogg song: Particle Shuffle (sax-led swing), Tidepool Bossa, Skatepark Samba, and Cosmic Drift (slower sax). The Music switch persists across launches and scene changes. The renderer synthesizes the instruments and uses no third-party soundfont. The Mac app preserves the saved movement speed; fresh browser settings default to 200%. The browser uses Compatibility without sun cast shadows because its additive shadow pass bleached the custom toon materials. Native Mobile keeps shadows. Small landscape canvas and menu were checked after reload; phone controls are not verified.
 

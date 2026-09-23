@@ -29,7 +29,6 @@ var _simulation_clock := false
 var _route_seed := 0
 var _route_rng := RandomNumberGenerator.new()
 var _speed := 1.0
-var _body := ""
 # Contact measures. A contact lasts from the first physics tick the goo surface touches a
 # visible food footprint until the tick it stops touching.
 var _contacts := {}
@@ -72,10 +71,8 @@ func _begin() -> void:
 			_route_seed = int(arg.trim_prefix("--seed="))
 		elif arg.begins_with("--speed="):
 			_speed = float(arg.trim_prefix("--speed="))
-		elif arg.begins_with("--body="):
-			_body = arg.trim_prefix("--body=")
-	if _speed <= 0.0 or _body not in ["", "shell", "procedural"]:
-		push_error("Use --speed=<positive multiplier> and --body=shell|procedural")
+	if _speed <= 0.0:
+		push_error("Use --speed=<positive multiplier>")
 		quit(2)
 		return
 	_route_rng.seed = _route_seed
@@ -87,10 +84,8 @@ func _begin() -> void:
 	_game = load("res://main.tscn").instantiate()
 	root.add_child(_game)
 	current_scene = _game
-	# Speed and body are set for this run only, never saved, so routes do not depend on the owner's settings.
-	if not _body.is_empty():
-		_game.hud.body_kind = _body
-	if _level != 0 or not _body.is_empty():
+	# Speed is set for this run only, never saved, so routes do not depend on the owner's settings.
+	if _level != 0:
 		_game.start_level(_level)
 	_game.hud.movement_speed = _speed
 	_previous_tick = Time.get_ticks_usec()
@@ -367,7 +362,7 @@ func _finish_level() -> void:
 		"play_seconds": _elapsed, "jumps": _jumps.duplicate(true), "radius": pow(_game._volume, 1.0 / 3.0),
 		"frames": _frames.size(), "measured_seconds": seconds, "average_fps": _frames.size() / seconds,
 		"p95_ms": _frames[int(_frames.size() * 0.95)] * 1000.0, "viewport": str(root.get_visible_rect().size),
-		"renderer": RenderingServer.get_current_rendering_method(), "speed_multiplier": _game.hud.movement_speed, "body": _game.hud.body_kind}
+		"renderer": RenderingServer.get_current_rendering_method(), "speed_multiplier": _game.hud.movement_speed}
 	result["display_server"] = DisplayServer.get_name()
 	if not _views.is_empty():
 		_views[-1].longest_meal_gap = maxf(_views[-1].longest_meal_gap, _elapsed - _meal_at)

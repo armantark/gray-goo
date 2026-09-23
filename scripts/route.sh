@@ -21,6 +21,6 @@ for level in "${levels[@]}"; do
 import json, sys
 for line in sys.stdin:
     d = json.loads(line)
-    print(f"{d[\"title\"]}: won={d[\"won\"]} {d[\"play_seconds\"]:.1f} s, missed={d[\"missed_edible_contacts\"]}, "
-          f"stalls>2s={d[\"stalls_over_two_seconds\"]}, longest meal gap={d.get(\"longest_meal_gap\", 0):.1f} s")'
+    print("%s: won=%s %.1f s, missed=%s, stalls>2s=%s, longest meal gap=%.1f s" % (d["title"], d["won"],
+          d["play_seconds"], d["missed_edible_contacts"], d["stalls_over_two_seconds"], d.get("longest_meal_gap", 0)))'
 done
