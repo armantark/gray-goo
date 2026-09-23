@@ -3,10 +3,8 @@ extends SceneTree
 var _trials := 1
 var _seed := 9217
 var _randomized := false
-# Levels built to the food mix: in each view, placed food supplies MIX_SHARE of the growth needed
-# to reach the next jump and spawn points supply the rest. Other levels print their share without
-# failing until their own rebalance adds them here.
-const MIX_LEVELS := ["Sugar Water", "Coral Colony Tide Pool", "Skatepark Bowl"]
+# Food mix: in each view, placed food supplies MIX_SHARE of the growth needed to reach the next
+# jump and spawn points supply the rest.
 const MIX_SHARE := Vector2(0.7, 0.9)
 # Seconds of spawn-point release a view may draw on to close. Only a stop for a view its spawns
 # cannot close; pacing comes from the growth scale and the route's meal gaps, not from this.
@@ -166,9 +164,9 @@ func _check_ladder(world: GameWorld) -> bool:
 		var closes := volume + 0.00001 >= pow(target, 3.0)
 		var share := placed_growth / (pow(target, 3.0) - start)
 		var mixed := share >= MIX_SHARE.x and share <= MIX_SHARE.y
-		valid = valid and closes and (mixed or config.title not in MIX_LEVELS)
+		valid = valid and closes and mixed
 		print("TIER_BUDGET ", config.title, " tier=", tier, " radius=", pow(volume, 1.0 / 3.0), " target=", target, " closes=", closes,
-			" placed_share=", snappedf(share, 0.001), " mix=", "pass" if mixed else "fail" if config.title in MIX_LEVELS else "not-enforced",
+			" placed_share=", snappedf(share, 0.001), " mix=", "pass" if mixed else "fail",
 			" spawn_seconds=", supplied)
 	return valid
 
