@@ -22,7 +22,7 @@ func _run() -> void:
 	var meal := _food_at_body(game, initial_volume * 0.4)
 	game._physics_process(1.0 / 60.0)
 	_check(not meal.active and meal._meal_target == game.goo, "ordinary contact starts a meal")
-	_check(game._volume >= initial_volume + meal.volume - 0.00001, "meal adds volume")
+	_check(game._volume >= initial_volume + meal.volume * game.world.growth_scale - 0.00001, "meal adds volume")
 	_check(not game.goo.tint.is_equal_approx(initial_tint), "meal deposits pigment")
 	var deposited_tint: Color = game.goo.tint
 	for tick in 120:
