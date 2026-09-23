@@ -17,10 +17,12 @@ const DEPTH := 2.6
 # pipe, where a skater's bail sends the board rolling into the bowl.
 const NORTH_COPING := [Vector2(2.6, -20.5), Vector2(25.4, -20.5)]
 const WEST_LIP := [Vector2(-8.5, -8.0), Vector2(-8.5, 0.0)]
-const GATE := [Vector2(48.5, 18.0), Vector2(48.5, 20.0)]
+const GATE := [Vector2(46.0, 18.0), Vector2(46.0, 20.0)]
 # The service lane runs from the gate along the bowl's south side to the west lip and back,
 # between the coping and the cone slalom.
 const LANE_END := 2.0
+# The two parking bays inside the gate, north of the lane.
+const PARKING := [Vector2(44.0, 4.0), Vector2(44.0, 11.0)]
 # A rider's board is this share of the rider's footprint, and the rider's figure this share.
 const RIDER_BOARD := 0.79
 const RIDER_FIGURE := 0.98
@@ -125,6 +127,7 @@ var _bowl: Node3D
 var _street: Node3D
 var _boards: Array[Dictionary] = []
 var _riders: Array[Dictionary] = []
+var _next_bay := 0
 var _time := 0.0
 
 func definition() -> Dictionary:
@@ -290,7 +293,7 @@ func _build_spawns() -> void:
 	_world.spawn({"kind": {"model": "bottle_cap", "label": "Blown bottle cap", "tier": 0, "density": 0.5,
 			"whole": _bowl, "reason": "Wind off the street blows litter over the north coping, and it rolls down into the bowl."},
 		"from": NORTH_COPING, "sizes": Vector2(0.16, 0.24), "tiers": Vector2i(0, 0),
-		"rate": 0.8, "limit": 6, "lifetime": 35.0, "move": _roll.bind(0.5, 0.6)})
+		"rate": 0.76, "limit": 6, "lifetime": 35.0, "move": _roll.bind(0.5, 0.6)})
 	_world.spawn({"kind": {"model": "skateboard", "label": "Runaway skateboard", "tier": 1, "density": 0.06,
 			"whole": _bowl, "reason": "A skater bails on the vert pipe, and the board rolls away into the bowl."},
 		"from": WEST_LIP, "sizes": Vector2(0.8, 1.05), "tiers": Vector2i(1, 1),
@@ -302,11 +305,11 @@ func _build_spawns() -> void:
 	_world.spawn({"kind": {"model": "parked_car", "label": "Park service cart", "tier": 3, "density": 0.07,
 			"whole": _street, "reason": "The park's service cart drives in through the east gate to empty the trash cans."},
 		"from": GATE, "sizes": Vector2(2.3, 2.7), "tiers": Vector2i(3, 3),
-		"rate": 0.12, "limit": 2, "lifetime": 40.0, "move": _drive})
+		"rate": 0.115, "limit": 2, "lifetime": 40.0, "move": _drive})
 	_world.spawn({"kind": {"model": "parked_car", "label": "Park maintenance truck", "tier": 4, "density": 0.07,
 			"whole": _street, "reason": "The maintenance truck drives in through the east gate to work on the ramps."},
 		"from": GATE, "sizes": Vector2(3.0, 3.5), "tiers": Vector2i(4, 4),
-		"rate": 0.1, "limit": 2, "lifetime": 40.0, "move": _drive})
+		"rate": 0.093, "limit": 2, "lifetime": 40.0, "move": _drive})
 
 # Litter and runaway boards roll under gravity on the bowl's walls from a push toward its center,
 # and settle at the given friction. The wind off the street pushes light litter on to the south
@@ -326,13 +329,13 @@ func _walk(mover: Dictionary, delta: float) -> Vector2:
 	var step: Vector2 = (goal - mover.at).limit_length(1.8 * delta)
 	return mover.at + step + step.orthogonal() * sin(mover.age * 6.0) * 0.15
 
-# Service vehicles drive west along the lane to the west lip, turn, and drive back to park by the
-# gate until their work is done.
+# Service vehicles drive west along the lane to the west lip, turn, and drive back to park in the
+# next free bay by the gate until their work is done.
 func _drive(mover: Dictionary, delta: float) -> Vector2:
-	var lane: float = mover.from.y
-	if mover.at.x <= LANE_END + 0.5:
-		mover["back"] = true
-	var goal := Vector2(GATE[0].x - 3.0, lane + 3.5) if mover.get("back", false) else Vector2(LANE_END, lane)
+	if mover.at.x <= LANE_END + 0.5 and not mover.has("bay"):
+		mover["bay"] = PARKING[_next_bay]
+		_next_bay = (_next_bay + 1) % PARKING.size()
+	var goal: Vector2 = mover.get("bay", Vector2(LANE_END, mover.from.y))
 	return mover.at + (goal - mover.at).limit_length(3.5 * delta)
 
 func _slope(at: Vector2) -> Vector2:
