@@ -610,3 +610,36 @@ Before this ticket, Tide Pool won in 119.823889301892 s (shell) and 113.02388930
 **Second-level findings, not fixed.** The asset manifest's `radius` is half the bounding-box width, not the mesh reach, so several models draw past their footprint (hermit shell 1.337, crab body 1.155, periwinkle 1.14, sea star 1.123, plankton 1.071, boulder 1.05); Tide Pool corrects with `fit`, the other levels do not. The route driver steers straight at its target, so any notch between two blockers holds it; level layouts must avoid notches until the driver paths.
 
 **3D model the layout needs most:** the Great coral crown. Five crossed `coral_fan` models read as a rosette from above but as flat fans at the game's tilt; a dedicated table-coral or branching crown with a top-down silhouette would make the milestone read at every view.
+
+## Ticket 11: hand-placed Cosmic Web, 2026-09-22
+
+**Design.** One stretch of the cosmic web, field 360 × 270 (`Rect2(-180, -135, 360, 270)`). Four filaments meet at the great node (40, -20), where the Filament supercluster (9.5, milestone) sits under a `knot` model whose four arms run out along those filaments. Clusters sit at three smaller nodes (west 8.0, south-east 7.6, north 7.2), and thinner filaments run from them to the edges; the voids between stay empty. 16 galaxy groups in four hand-made forms (Local, compact, loose, interacting pair) sit along the filaments. 20 placed rows, 295 foods at build. Filaments are hand-placed control points smoothed into soft bands that swell and brighten toward the nodes (the `star_halo` shader across a triangle strip). Groups and clusters glow with hot gas as far as their galaxies reach, and the glow stays after the galaxies are eaten. The goo starts on an arm of the home spiral in the Local group. Rich spirals (home and companion) carry their own stars, nebulae and open clusters on the outer half of each arm, a different layout per arm; the inner half of each arm runs beside the next arm, and stars placed there landed inside a neighbour's cluster. Spawn points: runaway stars flung in straight lines from the home galaxy's core (views 1–2), gas clouds swirling into the Local group from two points on its filament (2–3), satellite galaxies (3–4), galaxy groups (4–5) and galaxy clusters (5) streaming along filaments from the field edges to the nodes, where they circle instead of piling up. Every mover is edible when its view opens. The spacetime-fabric pool is gone (see systemPatterns.md). The supercluster becomes edible at radius 7.92 and is the planned last meal.
+
+**Critique history** (`builds/layout/cosmic-web/pass-N/`, top-down `tier-T/plain.png` and `map.png`, tier views `views/`).
+- Pass 0, the old scatter: four copies of one sine filament, 28 identical groups, 4800 random background stars, a rounded rectangle of fabric in the middle.
+- Pass 1: reads as a web (nodes, filaments, voids), but filaments were even bright tubes like a subway map, and the fabric rectangle was the one machine-made shape. Changed: filaments taper and brighten toward nodes; fabric removed.
+- Pass 2: good web view. Every arm of a rich spiral carried the same stars, so the early views showed an obvious three-way copy (three blue giants and three identical clusters around the black hole). The arrow read "Nearest · Open star cluster" from the Galaxies view on, pointing at a cluster whose stars had been hidden as detail (pass 0 had the same bug). Changed: a star layout per arm; a cluster whose stars are all hidden retires at the size jump.
+- Pass 3: arms read as one spiral with stars trailing along them. Two stream sources sat 10–15 units off their filaments. Changed: moved onto the filaments.
+- Pass 4 (final): sources on filaments; no truncated text in any image.
+- Route-driven changes: stream movers larger than the goo piled on the south-east node and held the procedural body for 38.88 s, so movers are edible from release and circle their node. A blue giant 0.9 units from the home black hole held the goo for 3.07 s at radius 0.425, so it moved out along its arm and black holes shrank to 0.16 of their galaxy. Late in the Web view the goo waited about 15 s with nothing to eat, so clusters now arrive more often and each pays less. Movers released at the field edge were abandoned by the driver, so sources start about 10 units inside.
+
+**Shared changes.** `scripts/check_worlds.gd`: `HAND_PLACED := [1, 3]`; drawn reach now recurses through nested parts (a group draws through its galaxies' arms); meshes with the `star_halo` shader are not counted as drawn (a star's glow plane is 3.54 × its radius). Tide Pool still passes (`placed=60 foods=221`).
+
+**Checks, final code e5aa0a5** (headless, `--audio-driver Dummy`): `BODY_CHECK_OK=true checks=84`, `OBSTACLE_CHECK queries=420 pass=true`, `WORLD_CHECK_OK=true` with `--trials=3`, `PLACEMENT_IDENTICAL Cosmic Web placed=20 foods=295 pass=true`, no FOOTPRINT_MISMATCH, FOOD_INSIDE_LARGER or MISSING_WHOLE. Budget (first trial, radius and spawn seconds): tier 0 0.85012264107218 (0), 1 1.76145846417494 (0), 2 3.20262577224527 (84), 3 6.02374274469023 (87), 4 8.69665655600554 (87).
+
+**Routes**, `--fixed-fps 60 --simulation-clock --speed=1.0 --limit=900`, e5aa0a5, route seeds 0 and 21. All won, 0 missed edible contacts, 0 stalls.
+
+| Body | Seed | Play s | Jumps s | Final radius | Abandoned |
+|---|---|---|---|---|---|
+| shell | 0 | 500.607222635105 | 108.0, 214.7, 325.1, 415.6 | 8.68441415920171 | 0 |
+| shell | 21 | 519.607222635088 | 126.2, 226.4, 334.2, 423.1 | 8.70885436006403 | 0 |
+| procedural | 0 | 384.623889301876 | 66.5, 127.9, 218.1, 306.4 | 8.69768408604686 | 0 |
+| procedural | 21 | 375.940555968551 | 59.3, 130.0, 210.3, 295.9 | 8.70413725678998 | 1 |
+
+The one abandon (procedural, seed 21, 334.04 s, radius 7.38, at (-142.13, 3.30, -124.49) by the north field edge) came between two stream arrivals; no obstacle was in reach and the route went on to eat the supercluster last. The driver's stall and no-growth timers keep counting while it has no target, so the first target after a dry spell can be abandoned at once. Two runs one step earlier (before the first arm's nebula grew from 0.55 to 0.64) gave shell 525.72 / 514.21 s and procedural 405.69 / 407.67 s.
+
+**Performance**, native window 1920 × 1080, Mobile renderer, 20-second route: shell 59.3975557157114 fps (p95 18.423 ms), procedural 59.6462329214802 fps (p95 18.683 ms) (`builds/layout/cosmic-web/perf/`).
+
+**Review.** GPT-6 Astra (Codex, xhigh, read-only) on `master...HEAD` at e5aa0a5: no real defects found in placement determinism, reachability and footprints, mover behaviour, or the shared check changes.
+
+**Second-level findings, not fixed.** `game.gd` still names the pool "Spacetime fabric" when `_level == 3`; that branch is now unreachable. `world.advance_scale` hides detail by radius only, so any container drawn only by its parts can outlive them as an invisible edible; Cosmic Web retires its clusters itself, and a general fix belongs in `world.gd`. `src/levels/atomic_cosmic_geometry.gd` is now used only by Sugar Water.
