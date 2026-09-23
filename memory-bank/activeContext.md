@@ -2,9 +2,9 @@
 
 Last staleness sweep: 2026-09-05
 
-## Current state, 2026-09-23 10:35
+## Current state, 2026-09-23 13:50
 
-Sugar Water follows the owner's food mix and momentum rules: 178 hand-placed rows supply 76 to 81% of each view's growth, ten out-of-view spawn points the rest, growth scale 0.215, jumps at 0.16, 0.38, 0.85, 1.5, 2.1. Routes: shell 559.0 and 590.0 s; no missed meals or stalls; longest meal gap 5.8 to 7.2 s, over the 4 s gate. These ran while the shell moved at about half its commanded speed; the procedural body, since retired, ran 342.2 and 349.7 s. The shell now reaches its commanded speed (see `systemPatterns.md`), so all four levels run shorter and need retuning: Sugar Water 317.2 s, Tide Pool 409.5 s, Skatepark 330.4 s, Cosmic Web 518.5 s, longest meal gaps 3.8, 18.9, 12.4, and 16.0 s (`scripts/route.sh`, 2026-09-23). Tide Pool, Skatepark Bowl, and Cosmic Web still win on the new shared mechanics but are not rebalanced to the mix (their check shares print as not enforced). Evidence: `builds/evidence/momentum/`.
+All four levels follow the owner's food mix and momentum rules (systemPatterns "Food mix and momentum"): hand-placed edible scatter supplies 73 to 85% of each view's growth, spawns release out of view, levels last by a per-level growth scale, and small composites draw as one simple shape after late jumps. The procedural body is retired; the shell moves at its full commanded speed with its grips following the body, so it no longer stretches. Final routes on master 14cebcb (`scripts/route.sh`, seeds 0 and 21): Sugar Water 410.5/427.5 s, Tide Pool 406.1/410.5 s, Skatepark Bowl 411.5/431.6 s, Cosmic Web 533.8/536.0 s; zero missed meals, zero stalls over 2 s; longest meal gaps 2.8 to 6.7 s (Tide Pool seed 21 worst). Open: the owner's playtest of all four levels, the unmerged `coral-crown` branch, the license check, and the overdue staleness sweep.
 
 ## Previous state, 2026-09-23 01:15
 
