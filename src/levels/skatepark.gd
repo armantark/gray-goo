@@ -4,9 +4,10 @@ extends RefCounted
 # street to the north blows litter over its north coping, and the litter rolls down and gathers
 # in the south gutter. Riders carve laps on its walls. The park's big vert quarter pipe stands on
 # the bowl's west lip, where skaters drop in, with spectator benches, gear piles, and shade trees
-# on the deck behind it. A street course fills the south plaza: a cone slalom, three grind rails,
-# and two quarter pipes facing each other. A line of pipes backs onto the north fence. Skaters
-# and the park's service vehicles come in through the gate in the east fence.
+# on the decks and the lawn behind it. A street course fills the south plaza: practice cones
+# knocked out of their slalom line, three grind rails, and two quarter pipes facing each other.
+# Pipes and rails back onto the north fence. Skaters and the park's service vehicles come in
+# through the gate in the east fence.
 const BOWL := Vector2(14.0, -4.0)
 # The bowl is an ellipse this many times wider east to west than north to south.
 const STRETCH := 1.2
@@ -16,6 +17,8 @@ const DEPTH := 2.6
 # The north coping, where wind-blown litter tops the rim, and the deck beside the vert pipe, where
 # a skater's bail sends the board rolling into the bowl, out of view while the goo is in the bowl.
 const NORTH_COPING := [Vector2(2.6, -20.5), Vector2(25.4, -20.5)]
+# The north fence, where the same wind blows litter through on to the lawn and the north deck.
+const NORTH_FENCE := [Vector2(-40.0, -44.0), Vector2(40.0, -44.0)]
 const WEST_DECK := [Vector2(-29.0, 4.0), Vector2(-29.0, 9.0)]
 # The street beyond the east gate, past the field's edge, so the park's traffic comes in from out
 # of view even when the view takes in the whole park.
@@ -60,58 +63,174 @@ const PLACED := [
 	["rider", Vector2(26.0, -12.4), 110, 1.4],
 	["rider", Vector2(16.4, 7.3), 200, 1.3],
 	["rider", Vector2(1.6, 4.7), 290, 1.35],
-	# Spectator benches on the west lip, north and south of the vert pipe, turned to the bowl, each
-	# with a trash can behind it and a rider's gear pile and board in front.
+	# More litter the wind dropped over the north coping, still on the north wall, and pieces that
+	# rolled on across the floor and up the east and west walls before settling.
+	["cap", Vector2(11.2, -15.8), 80, 0.19],
+	["pebble", Vector2(12.6, -17.4), 0, 0.15],
+	["bolt", Vector2(8.3, -13.9), 215, 0.14],
+	["cap", Vector2(19.4, -16.3), 330, 0.2],
+	["pebble", Vector2(22.1, -14.9), 40, 0.17],
+	["bearing", Vector2(16.9, -14.3), 0, 0.15],
+	["cap", Vector2(6.1, -10.2), 150, 0.18],
+	["pebble", Vector2(3.1, -8.7), 290, 0.16],
+	["bolt", Vector2(2.4, -2.2), 65, 0.13],
+	["cap", Vector2(3.8, 0.6), 10, 0.17],
+	["pebble", Vector2(10.7, 5.2), 180, 0.17],
+	["bearing", Vector2(12.4, 4.1), 0, 0.14],
+	["cap", Vector2(13.9, 5.6), 275, 0.2],
+	["bolt", Vector2(21.6, 4.9), 120, 0.15],
+	["pebble", Vector2(23.9, 3.2), 95, 0.14],
+	["cap", Vector2(25.7, 0.3), 45, 0.18],
+	["bearing", Vector2(26.8, -3.5), 0, 0.16],
+	["bolt", Vector2(25.3, -7.8), 300, 0.14],
+	["pebble", Vector2(24.4, -10.1), 205, 0.16],
+	["cap", Vector2(29.5, -9.2), 160, 0.19],
+	["pebble", Vector2(30.6, 2.8), 25, 0.15],
+	["bolt", Vector2(-1.6, -6.4), 250, 0.14],
+	["cap", Vector2(-3.3, -10.9), 115, 0.18],
+	["pebble", Vector2(14.9, -9.1), 330, 0.15],
+	["cap", Vector2(18.3, -7.7), 195, 0.18],
+	["bolt", Vector2(10.3, -1.5), 85, 0.13],
+	["cap", Vector2(7.2, -17.9), 250, 0.17],
+	["pebble", Vector2(15.8, -19.6), 70, 0.16],
+	["bolt", Vector2(24.2, -17.8), 5, 0.15],
+	["cap", Vector2(31.9, -6.1), 225, 0.18],
+	["pebble", Vector2(33.2, -1.4), 140, 0.15],
+	["bearing", Vector2(28.6, 6.9), 0, 0.15],
+	["cap", Vector2(18.9, 10.6), 310, 0.19],
+	["bolt", Vector2(7.9, 9.4), 175, 0.14],
+	["pebble", Vector2(-4.6, 1.9), 35, 0.16],
+	["cap", Vector2(-6.1, -4.8), 100, 0.18],
+	["bearing", Vector2(0.2, -14.4), 0, 0.14],
+	["bolt", Vector2(19.6, -11.9), 265, 0.13],
+	# A second board on the floor, and more riders, the older ones bigger, on laps of their own.
+	["board", Vector2(21.4, -1.8), 115, 1.2],
+	["rider", Vector2(30.8, -2.2), 60, 1.45],
+	["rider", Vector2(9.6, -15.2), 170, 1.5],
+	["rider", Vector2(-0.9, -1.1), 330, 1.65],
+	["rider", Vector2(27.9, 6.8), 250, 1.75],
+	["rider", Vector2(6.4, 11.2), 140, 1.85],
+	# The deck north of the vert pipe: a spectator bench turned to the bowl, its trash can, and a
+	# rider's gear pile and board in front of it, with caps dropped around the bench.
 	["bench", Vector2(-10.0, -20.0), 65, 2.1],
 	["trash_can", Vector2(-16.0, -23.0), 0, 1.0],
 	["helmet", Vector2(-6.5, -18.6), 40, 0.7],
 	["shoe", Vector2(-4.8, -16.7), 300, 0.6],
 	["water_bottle", Vector2(-7.6, -16.2), 0, 0.5],
 	["board", Vector2(-3.5, -20.8), 150, 1.25],
-	["bench", Vector2(-10.0, 12.0), 115, 2.1],
-	["trash_can", Vector2(-16.0, 15.0), 0, 1.0],
-	["shoe", Vector2(-6.8, 9.0), 80, 0.6],
-	["helmet", Vector2(-5.0, 10.8), 210, 0.7],
-	["water_bottle", Vector2(-7.9, 11.4), 0, 0.5],
-	["board", Vector2(-3.5, 14.6), 20, 1.25],
-	# The shaded lawn behind the vert pipe: two trees, a bench under each looking east, a can.
+	["dropped_cap", Vector2(-12.9, -17.4), 20, 0.18],
+	["dropped_cap", Vector2(-14.6, -19.8), 245, 0.2],
+	["dropped_cap", Vector2(-6.1, -22.7), 130, 0.18],
+	["helmet", Vector2(-18.2, -15.6), 190, 0.65],
+	# The deck south of it, where a bench sits closer to the coping and a rider dumped a board by
+	# the pipe on the way in.
+	["bench", Vector2(-7.2, 13.8), 130, 1.9],
+	["trash_can", Vector2(-13.1, 17.9), 0, 1.1],
+	["shoe", Vector2(-3.9, 10.1), 290, 0.55],
+	["helmet", Vector2(-1.6, 12.9), 210, 0.75],
+	["water_bottle", Vector2(-9.6, 18.4), 0, 0.5],
+	["board", Vector2(-11.6, 9.3), 55, 1.15],
+	["dropped_cap", Vector2(-5.4, 17.2), 170, 0.17],
+	["shoe", Vector2(-21.3, 12.6), 65, 0.6],
+	# The shaded lawn behind the vert pipe: three trees, benches under them, cans, and gear and
+	# boards left on the grass.
 	["tree", Vector2(-36.0, -28.0), 40, 4.4],
-	["bench", Vector2(-28.0, -20.0), 90, 2.0],
-	["trash_can", Vector2(-28.0, -13.5), 0, 1.0],
+	["tree", Vector2(-40.2, -7.5), 300, 4.6],
 	["tree", Vector2(-37.0, 8.0), 160, 4.2],
-	["bench", Vector2(-28.0, 28.0), 90, 2.0],
-	["water_bottle", Vector2(-24.3, 26.6), 0, 0.5],
-	["helmet", Vector2(-24.4, 29.4), 120, 0.7],
-	# The pipe line along the north fence: two quarter pipes facing the bowl and a flat rail
-	# between them, with boards dropped on the way in.
-	["pipe", Vector2(-8.0, -35.0), 270, 3.4],
-	["rail", Vector2(12.0, -36.0), 0, 3.0],
-	["pipe", Vector2(32.0, -35.0), 270, 3.6],
+	["bench", Vector2(-26.4, -21.7), 75, 2.0],
+	["trash_can", Vector2(-29.8, -14.9), 0, 1.0],
+	["dropped_cap", Vector2(-22.4, -24.9), 15, 0.18],
+	["dropped_cap", Vector2(-27.8, -18.1), 280, 0.17],
+	["bench", Vector2(-25.8, 4.6), 105, 1.8],
+	["trash_can", Vector2(-26.9, -4.6), 0, 1.4],
+	["helmet", Vector2(-31.6, -3.2), 45, 0.7],
+	["board", Vector2(-31.8, 15.8), 200, 1.3],
+	["shoe", Vector2(-33.8, -15.2), 140, 0.65],
+	["helmet", Vector2(-22.8, -27.6), 355, 0.65],
+	["board", Vector2(-20.9, -31.3), 250, 1.3],
+	["board", Vector2(-41.0, -19.4), 20, 1.3],
+	["bench", Vector2(-30.2, 24.5), 105, 2.4],
+	["dropped_cap", Vector2(-33.4, 27.6), 90, 0.18],
+	["trash_can", Vector2(-35.4, 21.9), 0, 1.2],
+	["water_bottle", Vector2(-25.1, 27.9), 0, 0.5],
+	["helmet", Vector2(-26.9, 29.6), 120, 0.7],
+	["water_bottle", Vector2(-38.6, 19.3), 0, 0.55],
+	["dropped_cap", Vector2(-31.8, 20.9), 60, 0.19],
+	# The north fence: a small quarter pipe in the lawn's corner, a low ledge rail, two quarter pipes
+	# facing the bowl with a flat rail and a bench between them, and boards and gear dropped on the
+	# way in. A bench and its can look over the north coping.
+	["pipe", Vector2(-39.5, -39.8), 30, 2.9],
+	["rail", Vector2(-26.0, -38.5), 350, 2.4],
+	["bench", Vector2(0.6, -38.8), 10, 1.8],
+	["trash_can", Vector2(6.8, -40.9), 0, 1.15],
+	["board", Vector2(13.6, -40.3), 290, 1.25],
+	["bench", Vector2(15.6, -26.3), 160, 1.8],
+	["trash_can", Vector2(8.4, -25.6), 0, 1.35],
+	["rail", Vector2(27.6, -26.6), 25, 2.2],
+	["water_bottle", Vector2(6.1, -28.6), 0, 0.5],
+	["helmet", Vector2(26.4, -31.6), 250, 0.7],
+	["pipe", Vector2(-9.5, -36.5), 270, 3.3],
+	["rail", Vector2(10.5, -33.2), 12, 3.0],
+	["pipe", Vector2(29.8, -37.2), 255, 3.7],
 	["board", Vector2(-1.5, -30.0), 200, 1.25],
-	["board", Vector2(24.0, -30.5), 340, 1.25],
-	# The east deck by the gate: one bench looking west over the bowl, its can, and a lost shoe.
-	["bench", Vector2(43.0, -8.0), 270, 2.0],
-	["trash_can", Vector2(43.0, -15.0), 0, 1.0],
+	["board", Vector2(21.2, -29.1), 340, 1.2],
+	["shoe", Vector2(-14.1, -29.4), 110, 0.6],
+	["helmet", Vector2(3.1, -35.4), 30, 0.7],
+	["water_bottle", Vector2(37.9, -30.8), 0, 0.5],
+	# The north-east corner: a quarter pipe angled at the bowl under a shade tree.
+	["pipe", Vector2(39.8, -26.4), 200, 3.2],
+	["tree", Vector2(43.6, -39.2), 70, 4.3],
+	# The east deck by the gate: one bench looking west over the bowl, its can, and a rider's
+	# scattered gear.
+	["bench", Vector2(42.1, -9.3), 260, 2.3],
+	["dropped_cap", Vector2(45.9, -11.6), 55, 0.18],
+	["dropped_cap", Vector2(38.4, -10.9), 195, 0.17],
+	["shoe", Vector2(33.1, -17.6), 320, 0.6],
+	["trash_can", Vector2(44.8, -16.4), 0, 1.05],
 	["shoe", Vector2(39.6, -6.5), 150, 0.6],
-	# The south plaza's street course, south of the service lane: a cone slalom, three grind rails
-	# at easy angles, two quarter pipes facing each other, and benches along the far edge.
-	["cone", Vector2(-8.0, 28.0), 0, 0.9],
-	["cone", Vector2(-3.0, 28.0), 0, 0.9],
-	["cone", Vector2(2.0, 28.0), 0, 0.9],
-	["cone", Vector2(7.0, 28.0), 0, 0.9],
-	["cone", Vector2(12.0, 28.0), 0, 0.9],
-	["rail", Vector2(-22.0, 35.0), 10, 2.7],
-	["rail", Vector2(0.0, 37.0), 0, 3.2],
-	["rail", Vector2(22.0, 35.0), 350, 2.9],
-	["pipe", Vector2(-35.0, 33.0), 0, 3.4],
-	["pipe", Vector2(40.0, 27.0), 180, 3.5],
-	["board", Vector2(-14.0, 30.0), 80, 1.25],
-	["bench", Vector2(-12.0, 42.0), 180, 2.0],
-	["trash_can", Vector2(-4.0, 43.0), 0, 1.0],
-	["bench", Vector2(14.0, 42.0), 180, 2.0],
-	["helmet", Vector2(10.4, 40.2), 300, 0.7],
-	["shoe", Vector2(17.8, 40.0), 20, 0.6],
-	["tree", Vector2(36.0, 42.0), 250, 4.2],
+	["helmet", Vector2(36.9, -13.8), 85, 0.7],
+	["board", Vector2(46.4, -3.2), 95, 1.2],
+	["water_bottle", Vector2(40.8, -19.9), 0, 0.5],
+	# The south plaza's street course, south of the service lane: practice cones knocked out of
+	# their slalom line, three grind rails at easy angles, two quarter pipes facing each other, and
+	# benches, cans, and trees along the far edge.
+	["cone", Vector2(-17.6, 25.3), 0, 0.85],
+	["cone", Vector2(-9.3, 27.1), 0, 0.9],
+	["cone", Vector2(-2.1, 29.6), 0, 0.85],
+	["cone", Vector2(4.6, 26.4), 0, 0.95],
+	["cone", Vector2(6.9, 31.8), 0, 0.8],
+	["cone", Vector2(13.8, 28.9), 0, 0.9],
+	["cone", Vector2(19.4, 25.8), 0, 1.0],
+	["cone", Vector2(-12.8, 34.9), 0, 0.9],
+	["cone", Vector2(10.8, 24.2), 0, 0.85],
+	["cone", Vector2(25.6, 30.7), 0, 0.95],
+	["board", Vector2(-21.4, 22.2), 140, 1.2],
+	["board", Vector2(29.4, 24.6), 30, 1.2],
+	["shoe", Vector2(-2.8, 24.1), 160, 0.55],
+	["water_bottle", Vector2(22.9, 28.4), 0, 0.5],
+	["rail", Vector2(-23.4, 31.9), 18, 2.6],
+	["rail", Vector2(-1.2, 39.4), 356, 3.2],
+	["rail", Vector2(18.3, 33.6), 334, 2.9],
+	["pipe", Vector2(-35.6, 31.2), 15, 3.4],
+	["pipe", Vector2(40.5, 28.8), 190, 3.5],
+	["board", Vector2(-13.2, 30.8), 80, 1.25],
+	["bench", Vector2(-11.4, 43.1), 175, 2.0],
+	["trash_can", Vector2(-3.2, 44.6), 0, 1.0],
+	["bench", Vector2(15.3, 41.2), 190, 2.1],
+	["trash_can", Vector2(24.8, 40.9), 0, 1.1],
+	["bench", Vector2(31.2, 35.8), 215, 1.9],
+	["helmet", Vector2(9.6, 38.7), 300, 0.7],
+	["shoe", Vector2(18.9, 38.7), 20, 0.6],
+	["water_bottle", Vector2(-15.8, 40.4), 0, 0.5],
+	["shoe", Vector2(-7.6, 45.1), 235, 0.6],
+	["dropped_cap", Vector2(2.3, 42.1), 100, 0.18],
+	["dropped_cap", Vector2(-18.7, 37.6), 310, 0.17],
+	["dropped_cap", Vector2(27.9, 38.4), 205, 0.19],
+	["dropped_cap", Vector2(12.1, 44.9), 35, 0.18],
+	["dropped_cap", Vector2(-9.2, 40.1), 250, 0.17],
+	["dropped_cap", Vector2(17.9, 44.6), 140, 0.2],
+	["tree", Vector2(-26.8, 43.2), 130, 4.0],
+	["tree", Vector2(34.8, 42.6), 250, 4.2],
 ]
 
 # The street north of the park fence: [at, turn in degrees, size].
@@ -133,6 +252,7 @@ var _riders: Array[Dictionary] = []
 var _parked: Array[Food] = [null, null, null, null]
 var _runaways: Dictionary
 var _time := 0.0
+var _detail_tier := 0
 
 func definition() -> Dictionary:
 	return {"title": "Skatepark Bowl", "meters_per_unit": 0.25,
@@ -144,7 +264,8 @@ func definition() -> Dictionary:
 		"tiers": ["Litter in the gutter", "Boards and gear", "Skaters and furniture", "Rails and pipes", "The park"],
 		"jumps": [{"radius": 0.55, "view_size": 16.0}, {"radius": 0.85, "view_size": 21.0},
 			{"radius": 1.4, "view_size": 30.0}, {"radius": 2.3, "view_size": 41.0},
-			{"radius": 3.0, "view_size": 53.0}]}
+			{"radius": 3.0, "view_size": 53.0}],
+		"growth_scale": 0.3}
 
 func ground_height(point: Vector3) -> float:
 	var distance := _bowl_distance(Vector2(point.x, point.z))
@@ -163,31 +284,33 @@ func build(world: GameWorld) -> void:
 	var hardware := "Hardware shaken loose from riders' trucks rolls down into the bowl's gutter."
 	var gear := "Skaters leave their gear by the benches before they ride."
 	var kinds := {
-		"big_pipe": {"model": "ramp", "label": "Big vert quarter pipe", "tier": 4, "density": 0.07, "whole": _bowl,
+		"big_pipe": {"model": "ramp", "label": "Big vert quarter pipe", "tier": 4, "density": 0.21, "whole": _bowl,
 			"reason": "The park's biggest quarter pipe stands on the bowl's west lip, where skaters drop in.",
 			"fit": 1.25, "build": func(pipe: Food) -> void: pipe.milestone = true},
-		"cap": {"model": "bottle_cap", "label": "Bottle cap", "tier": 0, "density": 0.35, "whole": _bowl, "reason": litter},
-		"pebble": {"model": "pebble", "label": "Pebble", "tier": 0, "density": 0.35, "whole": _bowl, "reason": litter},
-		"bolt": {"model": "bolt", "label": "Bolt", "tier": 0, "density": 0.35, "whole": _bowl, "reason": hardware},
-		"bearing": {"model": "bearing", "label": "Bearing", "tier": 0, "density": 0.35, "whole": _bowl, "reason": hardware},
+		"cap": {"model": "bottle_cap", "label": "Bottle cap", "tier": 0, "density": 0.85, "whole": _bowl, "reason": litter},
+		"pebble": {"model": "pebble", "label": "Pebble", "tier": 0, "density": 0.85, "whole": _bowl, "reason": litter},
+		"bolt": {"model": "bolt", "label": "Bolt", "tier": 0, "density": 0.85, "whole": _bowl, "reason": hardware},
+		"bearing": {"model": "bearing", "label": "Bearing", "tier": 0, "density": 0.85, "whole": _bowl, "reason": hardware},
+		"dropped_cap": {"model": "bottle_cap", "label": "Bottle cap", "tier": 0, "density": 0.85, "whole": _bowl,
+			"reason": "Spectators drop bottle caps around the benches."},
 		"board": {"label": "Skateboard", "tier": 1, "density": 0.01, "whole": _bowl,
 			"reason": "A rider left this board while resting.", "build": _loose_board},
-		"rider": {"label": "Skater", "tier": 2, "density": 0.04, "whole": _bowl,
+		"rider": {"label": "Skater", "tier": 2, "density": 0.09, "whole": _bowl,
 			"reason": "This skater carves laps on the bowl's walls.", "build": _rider},
-		"helmet": {"model": "helmet", "label": "Helmet", "tier": 1, "density": 0.025, "whole": _bowl, "reason": gear},
-		"shoe": {"model": "shoe", "label": "Shoe", "tier": 1, "density": 0.025, "whole": _bowl, "reason": gear},
-		"water_bottle": {"model": "water_bottle", "label": "Water bottle", "tier": 1, "density": 0.025, "whole": _bowl, "reason": gear},
-		"cone": {"model": "cone", "label": "Practice cone", "tier": 1, "density": 0.012, "whole": _bowl,
+		"helmet": {"model": "helmet", "label": "Helmet", "tier": 1, "density": 0.04, "whole": _bowl, "reason": gear},
+		"shoe": {"model": "shoe", "label": "Shoe", "tier": 1, "density": 0.04, "whole": _bowl, "reason": gear},
+		"water_bottle": {"model": "water_bottle", "label": "Water bottle", "tier": 1, "density": 0.04, "whole": _bowl, "reason": gear},
+		"cone": {"model": "cone", "label": "Practice cone", "tier": 1, "density": 0.03, "whole": _bowl,
 			"reason": "The cones mark a slalom line across the plaza.", "fit": 1.362},
-		"bench": {"model": "bench", "label": "Park bench", "tier": 2, "density": 0.055, "whole": _bowl,
+		"bench": {"model": "bench", "label": "Park bench", "tier": 2, "density": 0.2, "whole": _bowl,
 			"reason": "Benches face the bowl and the street course for spectators."},
-		"trash_can": {"model": "trash_can", "label": "Park trash can", "tier": 2, "density": 0.04, "whole": _bowl,
+		"trash_can": {"model": "trash_can", "label": "Park trash can", "tier": 2, "density": 0.1, "whole": _bowl,
 			"reason": "Each trash can stands by a bench."},
-		"rail": {"label": "Grind rail", "tier": 3, "density": 0.02, "whole": _bowl,
+		"rail": {"label": "Grind rail", "tier": 3, "density": 0.07, "whole": _bowl,
 			"reason": "The grind rail belongs to the park's street course.", "build": _rail},
-		"pipe": {"model": "ramp", "label": "Quarter pipe", "tier": 3, "density": 0.065, "whole": _bowl,
+		"pipe": {"model": "ramp", "label": "Quarter pipe", "tier": 3, "density": 0.2, "whole": _bowl,
 			"reason": "Quarter pipes face each other across the street course and line the north fence.", "fit": 1.25},
-		"tree": {"model": "tree", "label": "Shade tree", "tier": 4, "density": 0.07, "whole": _bowl,
+		"tree": {"model": "tree", "label": "Shade tree", "tier": 4, "density": 0.21, "whole": _bowl,
 			"reason": "Shade trees stand over the park's benches."},
 	}
 	world.place(PLACED, kinds)
@@ -225,7 +348,7 @@ func _board_parts(board: Food) -> void:
 	var scale := board.radius / 1.18
 	board.height = 0.5 * scale
 	board.collect_when_empty = true
-	var deck := _world._add_food("board", Vector2.ZERO, 1.15 * scale, 0.025 * pow(1.15 * scale, 3.0), "Skate deck", false, 1, board, 0.22 * scale)
+	var deck := _world._add_food("board", Vector2.ZERO, 1.15 * scale, 0.05 * pow(1.15 * scale, 3.0), "Skate deck", false, 1, board, 0.22 * scale)
 	deck.rotation.y = 0.0
 	for axle in [-1.0, 1.0]:
 		var truck := _world._add_food("truck", Vector2(axle * 0.68, 0) * scale, 0.34 * scale, 0.05 * pow(0.34 * scale, 3.0), "Skateboard truck", false, 1, board, 0.11 * scale)
@@ -296,25 +419,29 @@ func _rail_changed(part: Food, rail: Food) -> void:
 func _build_spawns() -> void:
 	_world.spawn({"kind": {"model": "bottle_cap", "label": "Blown bottle cap", "tier": 0, "density": 0.5,
 			"whole": _bowl, "reason": "Wind off the street blows litter over the north coping, and it rolls down into the bowl."},
-		"from": NORTH_COPING, "sizes": Vector2(0.16, 0.24), "tiers": Vector2i(0, 0),
-		"rate": 0.76, "limit": 6, "lifetime": 35.0, "move": _roll.bind(0.5, 0.6)})
-	_runaways = {"kind": {"model": "skateboard", "label": "Runaway skateboard", "tier": 1, "density": 0.06,
+		"from": NORTH_COPING, "sizes": Vector2(0.16, 0.24),
+		"tiers": Vector2i(0, 1), "rate": 1.0, "limit": 7, "lifetime": 35.0, "move": _roll.bind(0.5, 0.6)})
+	_world.spawn({"kind": {"model": "bottle_cap", "label": "Blown bottle cap", "tier": 0, "density": 0.5,
+			"whole": _bowl, "reason": "Wind off the street blows litter through the north fence."},
+		"from": NORTH_FENCE, "sizes": Vector2(0.16, 0.24),
+		"tiers": Vector2i(0, 1), "rate": 0.4, "limit": 4, "lifetime": 35.0, "move": _roll.bind(0.5, 0.6)})
+	_runaways = {"kind": {"model": "skateboard", "label": "Runaway skateboard", "tier": 1, "density": 0.1,
 			"whole": _bowl, "reason": "A skater bails on the deck beside the vert pipe, and the board rolls away into the bowl."},
-		"from": WEST_DECK, "sizes": Vector2(0.8, 1.05), "tiers": Vector2i(1, 1),
-		"rate": 0.35, "limit": 3, "lifetime": 35.0, "move": _roll.bind(0.12, 0.0)}
+		"from": WEST_DECK, "sizes": Vector2(0.8, 1.05), "tiers": Vector2i(1, 3),
+		"rate": 0.55, "limit": 4, "lifetime": 35.0, "move": _roll.bind(0.12, 0.0)}
 	_world.spawn(_runaways)
 	_world.spawn({"kind": {"model": "skater", "label": "Skater on foot", "tier": 2, "density": 0.11,
 			"whole": _bowl, "reason": "Skaters walk in through the east gate to ride the park."},
-		"from": GATE, "sizes": Vector2(1.45, 1.7), "tiers": Vector2i(2, 2),
-		"rate": 0.2, "limit": 3, "lifetime": 40.0, "move": _walk})
+		"from": GATE, "sizes": Vector2(1.45, 1.7), "tiers": Vector2i(2, 4),
+		"rate": 0.5, "limit": 5, "lifetime": 40.0, "move": _walk})
 	_world.spawn({"kind": {"model": "parked_car", "label": "Park service cart", "tier": 3, "density": 0.07,
 			"whole": _street, "reason": "The park's service cart drives in through the east gate to empty the trash cans."},
-		"from": GATE, "sizes": Vector2(2.3, 2.7), "tiers": Vector2i(3, 3),
-		"rate": 0.115, "limit": 2, "lifetime": 40.0, "move": _drive})
-	_world.spawn({"kind": {"model": "parked_car", "label": "Park maintenance truck", "tier": 4, "density": 0.07,
+		"from": GATE, "sizes": Vector2(2.3, 2.7), "tiers": Vector2i(3, 4),
+		"rate": 0.25, "limit": 2, "lifetime": 40.0, "move": _drive})
+	_world.spawn({"kind": {"model": "parked_car", "label": "Park maintenance truck", "tier": 4, "density": 0.1,
 			"whole": _street, "reason": "The maintenance truck drives in through the east gate to work on the ramps."},
 		"from": GATE, "sizes": Vector2(3.0, 3.5), "tiers": Vector2i(4, 4),
-		"rate": 0.093, "limit": 2, "lifetime": 40.0, "move": _drive})
+		"rate": 0.2, "limit": 2, "lifetime": 40.0, "move": _drive})
 
 # Litter and runaway boards roll under gravity on the bowl's walls from a push toward its center,
 # and settle at the given friction. The wind off the street pushes light litter on to the south
@@ -396,6 +523,12 @@ func _concrete_material(color: Color) -> StandardMaterial3D:
 
 func step(delta: float) -> void:
 	_time += delta
+	if _detail_tier != _world.current_tier:
+		_detail_tier = _world.current_tier
+		for item in _boards:
+			_one_piece(item.food)
+		for item in _riders:
+			_one_piece(item.board)
 	for item in _boards:
 		_step_board(item, delta)
 	for item in _riders:
@@ -404,6 +537,20 @@ func step(delta: float) -> void:
 	for mover in _runaways.movers:
 		if mover.food.active:
 			_align_to_ground(mover.food)
+
+# Once a board's trucks are specks, an untouched board draws as one skateboard and goes down in one
+# bite: its parts leave the level and their volume moves to the board. A board already missing a
+# part keeps drawing what is left of it.
+func _one_piece(board: Food) -> void:
+	var truck: Food = board.parts[1]
+	if not board.active or board.simple or not _world.is_simple(truck.radius) \
+			or board.parts.any(func(part: Food) -> bool: return not part.active):
+		return
+	board.volume = board.remaining_volume()
+	for part in board.parts:
+		_world._retire(part)
+	board.collect_when_empty = false
+	board.simplify("skateboard")
 
 func _step_rider(item: Dictionary) -> void:
 	var rider: Food = item.food
