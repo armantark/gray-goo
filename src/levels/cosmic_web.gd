@@ -156,7 +156,7 @@ func _spiral_changed(part: Food, galaxy: Food) -> void:
 	for child in galaxy.parts:
 		if is_instance_valid(child) and child.active and child.model_name == "galaxy_arm":
 			arms += 1
-	galaxy.rename("Bare galactic bulge" if arms == 0 else "Spiral galaxy · " + str(arms) + " arms", Color("cbbfaa"))
+	galaxy.title = "Bare galactic bulge" if arms == 0 else "Spiral galaxy · " + str(arms) + " arms"
 
 func _group_changed(_part: Food, halo: Node3D) -> void:
 	if is_instance_valid(halo):

@@ -150,16 +150,16 @@ func _board_changed(part: Food, board: Food) -> void:
 		board.set_meta("lost_wheel", true)
 		board.rotation.x = signf(part.position.z) * 0.28
 		board.rotation.z = -signf(part.position.x) * 0.12
-		board.rename("Tipped skateboard", Color("d99b79"))
+		board.title = "Tipped skateboard"
 	elif part.model_name == "board":
-		board.rename("Skateboard trucks and wheels", Color("a8b4be"))
+		board.title = "Skateboard trucks and wheels"
 	elif part.model_name == "truck":
 		board.set_meta("lost_wheel", true)
 		board.rotation.z = -signf(part.position.x) * 0.25
 
 func _rider_changed(part: Food, rider: Food) -> void:
 	if part.title == "Skateboard" or part.model_name.is_empty():
-		rider.rename("Standing skater", Color("dfa179"))
+		rider.title = "Standing skater"
 		rider.visual.get_child(0).position.y = 0.0
 
 func _build_furniture() -> void:
@@ -211,7 +211,7 @@ func _rail_changed(part: Food, rail: Food) -> void:
 	var bar: Node3D = rail.visual.get_child(0)
 	bar.rotation.z = -signf(part.position.x) * 0.24
 	bar.position.y = 0.58
-	rail.rename("Tilted grind rail", Color("8f9aa0"))
+	rail.title = "Tilted grind rail"
 
 func _build_pipes() -> void:
 	var positions := [Vector2(-32, -23), Vector2(-4, -31), Vector2(40, -14),

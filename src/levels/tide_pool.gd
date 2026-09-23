@@ -171,7 +171,7 @@ func _build_animals() -> void:
 	_build_fish_refuge()
 
 func _crab_changed(_part: Food, crab: Food) -> void:
-	crab.rename("Hermit crab without its shell", Color("ef9b69"))
+	crab.title = "Hermit crab without its shell"
 
 func _add_anemone(parent: Food, at: Vector2) -> void:
 	var anemone := _world._add_food("anemone", at, 0.66, 0.16, "Sea anemone", false, 2, parent)
