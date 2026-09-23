@@ -4,7 +4,7 @@
 
 **Blocked by:** 03 Smooth collision with large objects; 04 Clean composite pickups; 05 Level 1 growth bug and double default speed.
 
-**Status:** open
+**Status:** claimed by opus-5.5 ticket agent
 
 - [ ] The world check shows that two builds with different seeds place identical objects, and that every placed object names a whole.
 - [ ] The growth-budget check includes spawn points and passes for every tier.
