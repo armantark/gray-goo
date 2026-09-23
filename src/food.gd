@@ -135,6 +135,22 @@ func draws_itself() -> bool:
 func _shows() -> bool:
 	return active and not detail_hidden and (visual.visible or not _last_visible_part(null))
 
+# What this food draws, its own model with every uneaten part, in its own frame, for the
+# last-meal card. A composite such as a skateboard draws only through its parts.
+func portrait() -> Node3D:
+	var drawing := Node3D.new()
+	_copy_drawing(drawing, Transform3D.IDENTITY)
+	return drawing
+
+func _copy_drawing(drawing: Node3D, frame: Transform3D) -> void:
+	var copy := visual.duplicate() as Node3D
+	copy.transform = frame * visual.transform
+	_highlight_visual(copy, null)
+	drawing.add_child(copy)
+	for part in parts:
+		if is_instance_valid(part) and part.active:
+			part._copy_drawing(drawing, frame * part.transform)
+
 func meal_color() -> Color:
 	var total := volume
 	var combined := Vector3(pigment.r, pigment.g, pigment.b) * volume

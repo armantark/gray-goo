@@ -229,7 +229,7 @@ func _build_jump_card() -> void:
 	_jump_label = _label(_jump_card, "", 44)
 	_jump_card.hide()
 
-func show_meal(title: String, kind: String, color: Color) -> void:
+func show_meal(title: String, kind: String, color: Color, composite: Food = null) -> void:
 	if _last_meal.visible and _meal_label.text == title and _meal_kind == kind:
 		return
 	_meal_label.text = title
@@ -237,7 +237,12 @@ func show_meal(title: String, kind: String, color: Color) -> void:
 	if is_instance_valid(_meal_model):
 		_meal_model.free()
 	var height := 0.3
-	if kind.is_empty():
+	if composite != null:
+		var fit := 0.8 / composite.radius
+		_meal_model = composite.portrait()
+		_meal_model.scale = Vector3.ONE * fit
+		height = composite.height * fit
+	elif kind.is_empty():
 		var liquid := SphereMesh.new()
 		liquid.radius = 0.8
 		liquid.height = height

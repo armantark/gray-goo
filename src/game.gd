@@ -223,7 +223,7 @@ func _eat(food: Food) -> void:
 	var reward := _reward(portion)
 	var color := food.meal_color()
 	var point := food.center()
-	hud.show_meal(food.title, food.model_name, color)
+	hud.show_meal(food.title, food.model_name, color, food if food.model_name.is_empty() else null)
 	food.consume(goo, lerpf(0.3, 0.55, reward))
 	_add_growth(portion, color, point)
 	goo.pulse(reward)
