@@ -8,6 +8,10 @@ const MUSIC_TRACKS := [
 ]
 
 const BODY_LENGTHS_PER_SECOND := 4.0
+# Meal feedback and the arrow read a reward as its share of the goo's volume on a log scale,
+# from a speck worth SMALL_MEAL of the goo to a feast worth BIG_MEAL or more.
+const SMALL_MEAL := 0.002
+const BIG_MEAL := 0.25
 var world: GameWorld
 var goo: GooBody
 var rig: GooCamera
@@ -21,6 +25,7 @@ var _bite_sound: AudioStreamPlayer
 var _win_sound: AudioStreamPlayer
 var _music: AudioStreamPlayer
 var _last_sound := 0
+var _last_sound_reward := 0.0
 var _frame_times := PackedFloat64Array()
 var _record_performance := false
 var _last_frame_usec := 0
@@ -136,6 +141,7 @@ func _physics_process(delta: float) -> void:
 	if not is_instance_valid(world):
 		return
 	world.player_radius = goo.radius
+	_signal_newly_edible()
 	# Speed is a constant number of body lengths per second, so a speck and a giant feel the same.
 	goo.set_drive(rig.movement_direction(), BODY_LENGTHS_PER_SECOND * goo.radius * 2.0 * hud.movement_speed)
 	_consume_foods()
@@ -156,6 +162,22 @@ func _consume_foods() -> void:
 	for food in meals:
 		if food.active:
 			_eat(food)
+
+func _signal_newly_edible() -> void:
+	var grown := world.newly_edible(goo.radius)
+	if grown.is_empty():
+		return
+	var flash := StandardMaterial3D.new()
+	flash.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	flash.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	flash.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	flash.albedo_color = Color(1.0, 0.93, 0.62, 0.85)
+	create_tween().tween_property(flash, "albedo_color:a", 0.0, 0.5).set_ease(Tween.EASE_IN)
+	for food in grown:
+		food.signal_edible(flash)
+
+func _reward(portion: float) -> float:
+	return clampf(log(portion / (_volume * SMALL_MEAL)) / log(BIG_MEAL / SMALL_MEAL), 0.0, 1.0)
 
 func _consume_pools(delta: float) -> void:
 	for pool in world.pools:
@@ -187,16 +209,22 @@ func _update_scale() -> void:
 
 func _eat(food: Food) -> void:
 	var portion := food.remaining_volume()
+	var reward := _reward(portion)
 	var color := food.meal_color()
 	var point := food.center()
 	hud.show_meal(food.title, food.model_name, color)
-	food.consume(goo)
+	food.consume(goo, lerpf(0.3, 0.55, reward))
 	_add_growth(portion, color, point)
-	_bite_particles(point, color, clampf(portion / _volume, 0.02, 1.0))
-	if Time.get_ticks_msec() - _last_sound > 65:
-		_bite_sound.pitch_scale = clampf(1.3 - food.radius * 0.12 + randf_range(-0.1, 0.1), 0.55, 1.4)
+	goo.pulse(reward)
+	_bite_particles(point, color, reward)
+	# Rapid small bites share one sound; a bigger bite always gets its own.
+	var now := Time.get_ticks_msec()
+	if now - _last_sound > 65 or reward > _last_sound_reward + 0.2:
+		_bite_sound.volume_db = lerpf(-19.0, -5.0, reward)
+		_bite_sound.pitch_scale = lerpf(1.35, 0.6, reward) + randf_range(-0.06, 0.06)
 		_bite_sound.play()
-		_last_sound = Time.get_ticks_msec()
+		_last_sound = now
+		_last_sound_reward = reward
 
 func _add_growth(portion: float, color: Color, point: Vector3) -> void:
 	var fraction := portion / _volume
@@ -237,38 +265,46 @@ func _process(delta: float) -> void:
 			_highlighted_target.set_highlighted(true)
 	var target_position := Vector3.ZERO
 	var target_name := ""
+	var target_reward := 0.0
 	if is_instance_valid(target):
 		target_position = target.center()
 		target_name = target.title
+		target_reward = _reward(target.remaining_volume())
 	else:
 		for pool in world.pools:
 			if pool.is_edible(_tier, goo.radius):
 				target_position = pool.closest_point(goo.global_position)
 				target_name = "Spacetime fabric" if _level == 3 else "Water"
+				target_reward = _reward(pool.remaining_volume)
 				break
 	if rig.mouse_steering:
 		goo.gaze_screen_position = get_viewport().get_mouse_position()
 	else:
 		goo.gaze_screen_position = rig.camera.unproject_position(target_position if not target_name.is_empty() else goo.global_position)
 	hud.update_game(pow(_volume, 1.0 / 3.0), world.config.initial_radius,
-		world.config.goal_radius, world.current_tier, rig.camera, goo.global_position, target_position, target_name)
+		world.config.goal_radius, world.current_tier, rig.camera, goo.global_position, target_position, target_name, target_reward)
 
 func _bite_particles(point: Vector3, color: Color, strength: float) -> void:
 	var particles := CPUParticles3D.new()
-	particles.amount = 8 + int(strength * 12.0)
+	# Speeds and gravity follow the goo's size, so a burst reads the same in every view.
+	particles.amount = 6 + int(strength * 30.0)
 	particles.one_shot = true
-	particles.explosiveness = 1.0
-	particles.lifetime = 0.4 + strength * 0.3
-	particles.direction = Vector3.UP
-	particles.spread = 80.0
-	particles.gravity = Vector3(0, -5, 0)
-	particles.initial_velocity_min = 0.7 + strength
-	particles.initial_velocity_max = 1.8 + strength * 2.0
+	# A one-shot CPUParticles3D with explosiveness exactly 1.0 emits nothing in Godot 4.7.2.
+	particles.explosiveness = 0.95
+	particles.lifetime = 0.35 + strength * 0.45
+	# Droplets spray out of the bite and upward, which reads from the top-down camera.
+	var outward := point - goo.global_position
+	outward.y = 0.0
+	particles.direction = (outward.normalized() + Vector3.UP).normalized()
+	particles.spread = 55.0
+	particles.gravity = Vector3(0, -6.0, 0) * goo.radius
+	particles.initial_velocity_min = goo.radius * (0.8 + strength * 1.6)
+	particles.initial_velocity_max = goo.radius * (1.8 + strength * 3.2)
 	particles.scale_amount_min = 0.5
 	particles.scale_amount_max = 1.1
 	particles.color = color
 	var droplet := SphereMesh.new()
-	droplet.radius = goo.radius * 0.055
+	droplet.radius = goo.radius * lerpf(0.05, 0.12, strength)
 	droplet.height = droplet.radius * 2.0
 	droplet.radial_segments = 8
 	droplet.rings = 4

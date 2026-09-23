@@ -38,6 +38,10 @@ func absorb(at: Vector3, color: Color, fraction: float) -> void:
 	_bite_amount = minf(0.35, sqrt(maxf(fraction, 0.0)) * 0.4)
 	_squash_speed -= minf(fraction * 3.0, 1.2)
 
+func pulse(strength: float) -> void:
+	_celebration = maxf(_celebration, 0.55 * strength)
+	_squash_speed += lerpf(0.4, 3.0, strength)
+
 func celebrate() -> void:
 	_celebration = 1.0
 	_squash_speed = -4.0

@@ -199,3 +199,4 @@
 - 2026-09-22T22:53:42Z: every git commit prints `/Users/ArmanTarkhanian1/fleet/config/git/hooks/reference-transaction: line 28: /Users/ArmanTarkhanian1/Desktop/tasty planet clone/scripts/release-tag-deploy.sh: No such file or directory`; the commit still succeeds.
 2026-09-22 16:02 eat-rule ticket 02: a BSD sed -E substitution with & appended the match instead of replacing it on five _atom calls; a python exact-replace or an sed check with grep before writing avoids it.
 2026-09-22 16:44 eat-rule ticket 02: a wait loop keyed on the route report file returned at once because a killed run had already written a checkpoint JSON there; wait on the background task's exit line instead.
+2026-09-23T01:02:14Z eat-feel ticket 06: the meal burst never rendered; a one-shot CPUParticles3D with explosiveness exactly 1.0 emits nothing in Godot 4.7.2 (0.9 and 0.0 render), found with colored control emitters in a native window.
