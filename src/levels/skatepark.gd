@@ -103,6 +103,24 @@ const PLACED := [
 	["cap", Vector2(-6.1, -4.8), 100, 0.18],
 	["bearing", Vector2(0.2, -14.4), 0, 0.14],
 	["bolt", Vector2(19.6, -11.9), 265, 0.13],
+	["cap", Vector2(9.1, -8.3), 35, 0.17],
+	["pebble", Vector2(16.4, -3.1), 200, 0.15],
+	["bolt", Vector2(20.7, -5.2), 110, 0.14],
+	["cap", Vector2(5.3, -6.9), 285, 0.18],
+	["bearing", Vector2(22.9, -9.6), 0, 0.15],
+	["pebble", Vector2(27.4, -10.8), 15, 0.16],
+	["cap", Vector2(29.9, -1.1), 160, 0.17],
+	["bolt", Vector2(24.6, 7.8), 240, 0.14],
+	["pebble", Vector2(15.1, 9.8), 300, 0.16],
+	["cap", Vector2(9.8, 7.9), 75, 0.19],
+	["bearing", Vector2(2.1, 6.4), 0, 0.15],
+	["bolt", Vector2(-2.8, -1.3), 185, 0.13],
+	["cap", Vector2(0.9, -11.8), 220, 0.18],
+	["pebble", Vector2(4.4, -16.1), 55, 0.16],
+	["cap", Vector2(13.1, -12.7), 330, 0.17],
+	["bolt", Vector2(18.2, -13.6), 20, 0.14],
+	["pebble", Vector2(31.4, -13.2), 265, 0.15],
+	["cap", Vector2(34.2, 4.2), 140, 0.18],
 	# A second board on the floor, and more riders, the older ones bigger, on laps of their own.
 	["board", Vector2(21.4, -1.8), 115, 1.2],
 	["rider", Vector2(30.8, -2.2), 60, 1.45],
@@ -231,6 +249,46 @@ const PLACED := [
 	["dropped_cap", Vector2(17.9, 44.6), 140, 0.2],
 	["tree", Vector2(-26.8, 43.2), 130, 4.0],
 	["tree", Vector2(34.8, 42.6), 250, 4.2],
+	# Grit the service carts track in from the street, strewn along the lane south of the bowl.
+	["grit", Vector2(-1.4, 19.9), 40, 0.16],
+	["grit", Vector2(2.7, 22.3), 190, 0.15],
+	["grit", Vector2(6.2, 17.8), 305, 0.18],
+	["grit", Vector2(11.9, 19.6), 90, 0.16],
+	["grit", Vector2(14.6, 21.9), 230, 0.17],
+	["grit", Vector2(17.4, 16.9), 10, 0.15],
+	["grit", Vector2(23.8, 18.4), 145, 0.18],
+	["grit", Vector2(28.6, 20.7), 275, 0.16],
+	["grit", Vector2(33.9, 17.1), 60, 0.17],
+	# A busy day's leftovers across the park: boards dropped between runs, gear kicked off, and caps.
+	["board", Vector2(4.2, -21.6), 310, 1.2],
+	["board", Vector2(-6.8, -25.4), 45, 1.25],
+	["board", Vector2(-20.6, -12.1), 165, 1.2],
+	["board", Vector2(-35.0, -19.0), 280, 1.25],
+	["board", Vector2(-18.9, 14.6), 20, 1.25],
+	["board", Vector2(33.0, -21.0), 120, 1.2],
+	["board", Vector2(45.0, -31.0), 235, 1.15],
+	["board", Vector2(3.1, 32.9), 95, 1.2],
+	["board", Vector2(11.6, 34.4), 350, 1.2],
+	["board", Vector2(-35.2, 41.3), 60, 1.15],
+	["cone", Vector2(-7.4, 33.8), 0, 0.9],
+	["cone", Vector2(23.4, 22.9), 0, 0.85],
+	["cone", Vector2(-17.2, 30.6), 0, 0.95],
+	["helmet", Vector2(-12.4, -26.8), 150, 0.7],
+	["shoe", Vector2(11.9, -29.6), 75, 0.6],
+	["water_bottle", Vector2(30.8, -15.4), 0, 0.5],
+	["helmet", Vector2(-23.9, 17.6), 260, 0.65],
+	["shoe", Vector2(-39.2, -1.6), 305, 0.6],
+	["water_bottle", Vector2(27.8, 34.3), 0, 0.5],
+	["helmet", Vector2(-5.8, 36.1), 20, 0.7],
+	["shoe", Vector2(37.1, -3.1), 190, 0.55],
+	["water_bottle", Vector2(-1.9, -33.4), 0, 0.5],
+	["helmet", Vector2(20.4, -23.5), 95, 0.65],
+	["dropped_cap", Vector2(-33.1, -10.8), 120, 0.18],
+	["dropped_cap", Vector2(-19.7, -35.2), 40, 0.17],
+	["dropped_cap", Vector2(38.9, -3.4), 290, 0.18],
+	["dropped_cap", Vector2(19.8, 40.4), 175, 0.17],
+	["dropped_cap", Vector2(-14.3, 46.1), 65, 0.18],
+	["dropped_cap", Vector2(0.8, 26.9), 230, 0.17],
 ]
 
 # The street north of the park fence: [at, turn in degrees, size].
@@ -253,6 +311,8 @@ var _parked: Array[Food] = [null, null, null, null]
 var _runaways: Dictionary
 var _time := 0.0
 var _detail_tier := 0
+# The one-piece skateboard model's texture with its red deck repainted in the placed boards' deck color.
+var _deck_texture: Texture2D
 
 func definition() -> Dictionary:
 	return {"title": "Skatepark Bowl", "meters_per_unit": 0.25,
@@ -265,7 +325,7 @@ func definition() -> Dictionary:
 		"jumps": [{"radius": 0.55, "view_size": 16.0}, {"radius": 0.85, "view_size": 21.0},
 			{"radius": 1.4, "view_size": 30.0}, {"radius": 2.3, "view_size": 41.0},
 			{"radius": 3.0, "view_size": 53.0}],
-		"growth_scale": 0.3}
+		"growth_scale": 0.19}
 
 func ground_height(point: Vector3) -> float:
 	var distance := _bowl_distance(Vector2(point.x, point.z))
@@ -279,38 +339,41 @@ func _bowl_distance(at: Vector2) -> float:
 func build(world: GameWorld) -> void:
 	_world = world
 	_build_bowl()
+	_paint_deck()
 	_build_street()
 	var litter := "Wind off the street blows litter over the north coping, and it rolls down into the bowl's gutter."
 	var hardware := "Hardware shaken loose from riders' trucks rolls down into the bowl's gutter."
 	var gear := "Skaters leave their gear by the benches before they ride."
 	var kinds := {
-		"big_pipe": {"model": "ramp", "label": "Big vert quarter pipe", "tier": 4, "density": 0.21, "whole": _bowl,
+		"big_pipe": {"model": "ramp", "label": "Big vert quarter pipe", "tier": 4, "density": 0.336, "whole": _bowl,
 			"reason": "The park's biggest quarter pipe stands on the bowl's west lip, where skaters drop in.",
 			"fit": 1.25, "build": func(pipe: Food) -> void: pipe.milestone = true},
-		"cap": {"model": "bottle_cap", "label": "Bottle cap", "tier": 0, "density": 0.85, "whole": _bowl, "reason": litter},
-		"pebble": {"model": "pebble", "label": "Pebble", "tier": 0, "density": 0.85, "whole": _bowl, "reason": litter},
-		"bolt": {"model": "bolt", "label": "Bolt", "tier": 0, "density": 0.85, "whole": _bowl, "reason": hardware},
-		"bearing": {"model": "bearing", "label": "Bearing", "tier": 0, "density": 0.85, "whole": _bowl, "reason": hardware},
-		"dropped_cap": {"model": "bottle_cap", "label": "Bottle cap", "tier": 0, "density": 0.85, "whole": _bowl,
+		"cap": {"model": "bottle_cap", "label": "Bottle cap", "tier": 0, "density": 0.94, "whole": _bowl, "reason": litter},
+		"pebble": {"model": "pebble", "label": "Pebble", "tier": 0, "density": 0.94, "whole": _bowl, "reason": litter},
+		"bolt": {"model": "bolt", "label": "Bolt", "tier": 0, "density": 0.94, "whole": _bowl, "reason": hardware},
+		"bearing": {"model": "bearing", "label": "Bearing", "tier": 0, "density": 0.94, "whole": _bowl, "reason": hardware},
+		"grit": {"model": "pebble", "label": "Pebble", "tier": 0, "density": 0.94, "whole": _bowl,
+			"reason": "The service carts track grit in from the street along the lane."},
+		"dropped_cap": {"model": "bottle_cap", "label": "Bottle cap", "tier": 0, "density": 0.94, "whole": _bowl,
 			"reason": "Spectators drop bottle caps around the benches."},
 		"board": {"label": "Skateboard", "tier": 1, "density": 0.01, "whole": _bowl,
 			"reason": "A rider left this board while resting.", "build": _loose_board},
-		"rider": {"label": "Skater", "tier": 2, "density": 0.09, "whole": _bowl,
+		"rider": {"label": "Skater", "tier": 2, "density": 0.139, "whole": _bowl,
 			"reason": "This skater carves laps on the bowl's walls.", "build": _rider},
-		"helmet": {"model": "helmet", "label": "Helmet", "tier": 1, "density": 0.04, "whole": _bowl, "reason": gear},
-		"shoe": {"model": "shoe", "label": "Shoe", "tier": 1, "density": 0.04, "whole": _bowl, "reason": gear},
-		"water_bottle": {"model": "water_bottle", "label": "Water bottle", "tier": 1, "density": 0.04, "whole": _bowl, "reason": gear},
-		"cone": {"model": "cone", "label": "Practice cone", "tier": 1, "density": 0.03, "whole": _bowl,
+		"helmet": {"model": "helmet", "label": "Helmet", "tier": 1, "density": 0.083, "whole": _bowl, "reason": gear},
+		"shoe": {"model": "shoe", "label": "Shoe", "tier": 1, "density": 0.083, "whole": _bowl, "reason": gear},
+		"water_bottle": {"model": "water_bottle", "label": "Water bottle", "tier": 1, "density": 0.083, "whole": _bowl, "reason": gear},
+		"cone": {"model": "cone", "label": "Practice cone", "tier": 1, "density": 0.035, "whole": _bowl,
 			"reason": "The cones mark a slalom line across the plaza.", "fit": 1.362},
-		"bench": {"model": "bench", "label": "Park bench", "tier": 2, "density": 0.2, "whole": _bowl,
+		"bench": {"model": "bench", "label": "Park bench", "tier": 2, "density": 0.347, "whole": _bowl,
 			"reason": "Benches face the bowl and the street course for spectators."},
-		"trash_can": {"model": "trash_can", "label": "Park trash can", "tier": 2, "density": 0.1, "whole": _bowl,
+		"trash_can": {"model": "trash_can", "label": "Park trash can", "tier": 2, "density": 0.127, "whole": _bowl,
 			"reason": "Each trash can stands by a bench."},
-		"rail": {"label": "Grind rail", "tier": 3, "density": 0.07, "whole": _bowl,
+		"rail": {"label": "Grind rail", "tier": 3, "density": 0.098, "whole": _bowl,
 			"reason": "The grind rail belongs to the park's street course.", "build": _rail},
-		"pipe": {"model": "ramp", "label": "Quarter pipe", "tier": 3, "density": 0.2, "whole": _bowl,
+		"pipe": {"model": "ramp", "label": "Quarter pipe", "tier": 3, "density": 0.313, "whole": _bowl,
 			"reason": "Quarter pipes face each other across the street course and line the north fence.", "fit": 1.25},
-		"tree": {"model": "tree", "label": "Shade tree", "tier": 4, "density": 0.21, "whole": _bowl,
+		"tree": {"model": "tree", "label": "Shade tree", "tier": 4, "density": 0.336, "whole": _bowl,
 			"reason": "Shade trees stand over the park's benches."},
 	}
 	world.place(PLACED, kinds)
@@ -348,7 +411,7 @@ func _board_parts(board: Food) -> void:
 	var scale := board.radius / 1.18
 	board.height = 0.5 * scale
 	board.collect_when_empty = true
-	var deck := _world._add_food("board", Vector2.ZERO, 1.15 * scale, 0.05 * pow(1.15 * scale, 3.0), "Skate deck", false, 1, board, 0.22 * scale)
+	var deck := _world._add_food("board", Vector2.ZERO, 1.15 * scale, 0.065 * pow(1.15 * scale, 3.0), "Skate deck", false, 1, board, 0.22 * scale)
 	deck.rotation.y = 0.0
 	for axle in [-1.0, 1.0]:
 		var truck := _world._add_food("truck", Vector2(axle * 0.68, 0) * scale, 0.34 * scale, 0.05 * pow(0.34 * scale, 3.0), "Skateboard truck", false, 1, board, 0.11 * scale)
@@ -420,7 +483,7 @@ func _build_spawns() -> void:
 	_world.spawn({"kind": {"model": "bottle_cap", "label": "Blown bottle cap", "tier": 0, "density": 0.5,
 			"whole": _bowl, "reason": "Wind off the street blows litter over the north coping, and it rolls down into the bowl."},
 		"from": NORTH_COPING, "sizes": Vector2(0.16, 0.24),
-		"tiers": Vector2i(0, 1), "rate": 1.0, "limit": 7, "lifetime": 35.0, "move": _roll.bind(0.5, 0.6)})
+		"tiers": Vector2i(0, 1), "rate": 1.4, "limit": 8, "lifetime": 35.0, "move": _roll.bind(0.5, 0.6)})
 	_world.spawn({"kind": {"model": "bottle_cap", "label": "Blown bottle cap", "tier": 0, "density": 0.5,
 			"whole": _bowl, "reason": "Wind off the street blows litter through the north fence."},
 		"from": NORTH_FENCE, "sizes": Vector2(0.16, 0.24),
@@ -428,12 +491,12 @@ func _build_spawns() -> void:
 	_runaways = {"kind": {"model": "skateboard", "label": "Runaway skateboard", "tier": 1, "density": 0.1,
 			"whole": _bowl, "reason": "A skater bails on the deck beside the vert pipe, and the board rolls away into the bowl."},
 		"from": WEST_DECK, "sizes": Vector2(0.8, 1.05), "tiers": Vector2i(1, 3),
-		"rate": 0.55, "limit": 4, "lifetime": 35.0, "move": _roll.bind(0.12, 0.0)}
+		"rate": 0.7, "limit": 4, "lifetime": 35.0, "move": _roll.bind(0.12, 0.0)}
 	_world.spawn(_runaways)
 	_world.spawn({"kind": {"model": "skater", "label": "Skater on foot", "tier": 2, "density": 0.11,
 			"whole": _bowl, "reason": "Skaters walk in through the east gate to ride the park."},
 		"from": GATE, "sizes": Vector2(1.45, 1.7), "tiers": Vector2i(2, 4),
-		"rate": 0.5, "limit": 5, "lifetime": 40.0, "move": _walk})
+		"rate": 0.8, "limit": 8, "lifetime": 40.0, "move": _walk})
 	_world.spawn({"kind": {"model": "parked_car", "label": "Park service cart", "tier": 3, "density": 0.07,
 			"whole": _street, "reason": "The park's service cart drives in through the east gate to empty the trash cans."},
 		"from": GATE, "sizes": Vector2(2.3, 2.7), "tiers": Vector2i(3, 4),
@@ -551,6 +614,27 @@ func _one_piece(board: Food) -> void:
 		_world._retire(part)
 	board.collect_when_empty = false
 	board.simplify("skateboard")
+	for mesh: MeshInstance3D in board.visual.find_children("*", "MeshInstance3D", true, false):
+		for surface in mesh.mesh.get_surface_count():
+			mesh.set_surface_override_material(surface, Art.material(Color.WHITE, 0.0, _deck_texture))
+
+# The skateboard model paints its deck red and a placed board's deck is teal, so the one-piece form
+# repaints the red, keeping its shading, and the board keeps its color across the jump. Built once
+# with the level, so the jump does not stall on it.
+func _paint_deck() -> void:
+	var model := Art.model("skateboard", 1.0)
+	var mesh: MeshInstance3D = model.find_children("*", "MeshInstance3D", true, false)[0]
+	var image: Image = (mesh.mesh.surface_get_material(0) as StandardMaterial3D).albedo_texture.get_image()
+	model.free()
+	image.decompress()
+	var red := Art.food_color("skateboard")
+	var deck := Art.food_color("board")
+	for y in image.get_height():
+		for x in image.get_width():
+			var texel := image.get_pixel(x, y)
+			if absf(texel.r - red.r) + absf(texel.g - red.g) + absf(texel.b - red.b) < 0.3:
+				image.set_pixel(x, y, deck * (texel.get_luminance() / red.get_luminance()))
+	_deck_texture = ImageTexture.create_from_image(image)
 
 func _step_rider(item: Dictionary) -> void:
 	var rider: Food = item.food
