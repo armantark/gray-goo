@@ -3,12 +3,14 @@ from __future__ import annotations
 
 import math
 import bpy
+from mathutils import Vector
 from .geometry import (
     box,
     curve_tube,
     cylinder_between,
     ico_sphere,
     material,
+    mesh_object,
     move_to_collection,
     smooth,
     torus,
@@ -69,16 +71,183 @@ def build_helmet(collection):
     curve_tube(collection, "helmet_strap", [(-0.57, 0, 0.20), (-0.24, 0, -0.25), (0.30, 0, -0.25), (0.60, 0, 0.20)], 0.045, rim)
 
 
+SHOE_STATIONS = [math.sin(u * math.pi / 2) for u in [-0.97 + 1.94 * i / 30 for i in range(31)]]
+SHOE_HEIGHTS = [0.0, 0.2, 0.4, 0.55, 0.7, 0.8, 0.88, 0.94, 0.98]
+
+
+def _shoe_half_width(x):
+    ball = 0.07 * math.exp(-((x - 0.35) / 0.35) ** 2)
+    waist = 0.05 * math.exp(-((x + 0.15) / 0.28) ** 2)
+    return (0.37 + ball - waist) * (1 - abs(x) ** 3) ** (1 / 3)
+
+
+def _shoe_lift(x):
+    # Toe spring and a slightly rounded heel keep the sole from reading as a flat slab.
+    return 0.10 * max(0.0, (x - 0.45) / 0.55) ** 2 + 0.03 * max(0.0, (-x - 0.7) / 0.3) ** 2
+
+
+def _shoe_top(x):
+    profile = [(-1.0, 0.50), (-0.85, 0.55), (-0.45, 0.53), (-0.15, 0.52), (0.2, 0.45), (0.55, 0.36), (0.85, 0.29), (1.0, 0.24)]
+    for (x0, z0), (x1, z1) in zip(profile, profile[1:]):
+        if x <= x1:
+            return _shoe_lift(x) + z0 + (z1 - z0) * (x - x0) / (x1 - x0)
+    return _shoe_lift(x) + profile[-1][1]
+
+
+def _shoe_upper_point(x, v, side, offset=0.0):
+    bottom = _shoe_lift(x) + 0.10
+    width = _shoe_half_width(x) * (1 - v ** 6) ** (1 / 6)
+    return Vector((x, side * (width + offset), bottom + v * (_shoe_top(x) - bottom)))
+
+
+def _shoe_normal(x, v, side):
+    along = _shoe_upper_point(x + 0.01, v, side) - _shoe_upper_point(x - 0.01, v, side)
+    up = _shoe_upper_point(x, min(v + 0.01, 1.0), side) - _shoe_upper_point(x, max(v - 0.01, 0.0), side)
+    normal = along.cross(up).normalized() * side
+    return normal if normal.length > 0 else Vector((0, 0, 1))
+
+
+def _ribbon(collection, name, path, normals, half_width, mat):
+    """A thin flat strip laid on a surface, for trim that should read as printed rather than tubular."""
+    vertices, faces = [], []
+    for index, (point, normal) in enumerate(zip(path, normals)):
+        tangent = path[min(index + 1, len(path) - 1)] - path[max(index - 1, 0)]
+        across = tangent.cross(normal).normalized() * half_width
+        vertices += [tuple(point - across), tuple(point + across)]
+        if index:
+            faces.append((index * 2 - 2, index * 2 - 1, index * 2 + 1, index * 2))
+    obj = mesh_object(collection, name, vertices, faces, mat)
+    solidify = obj.modifiers.new("Printed thickness", "SOLIDIFY")
+    solidify.thickness = 0.012
+    solidify.offset = 1.0
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.modifier_apply(modifier=solidify.name)
+    return obj
+
+
+def _loft_faces(ring_count, count, material_for):
+    faces, panels = [], []
+    for i in range(ring_count - 1):
+        for j in range(count):
+            a, b = i * count + j, i * count + (j + 1) % count
+            faces.append((a, b, b + count, a + count))
+            panels.append(material_for(i, j))
+    # Each end closes with a fan to the ring's center, stored after all ring vertices.
+    for end, index in enumerate((0, ring_count - 1)):
+        center = ring_count * count + end
+        for j in range(count):
+            a, b = index * count + j, index * count + (j + 1) % count
+            faces.append((b, a, center) if index == 0 else (a, b, center))
+            panels.append(material_for(index, j))
+    return faces, panels
+
+
+def _soften(obj, split_panels):
+    bpy.ops.object.select_all(action="DESELECT")
+    bpy.context.view_layer.objects.active = obj
+    obj.select_set(True)
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_all(action="SELECT")
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+    bpy.ops.object.mode_set(mode="OBJECT")
+    modifier = obj.modifiers.new("Soft loft", "SUBSURF")
+    modifier.levels = 2
+    bpy.ops.object.modifier_apply(modifier=modifier.name)
+    smooth(obj)
+    if split_panels:
+        # Each panel becomes its own UV island, so the baked atlas keeps a crisp seam.
+        bpy.ops.object.mode_set(mode="EDIT")
+        bpy.ops.mesh.select_all(action="SELECT")
+        bpy.ops.mesh.separate(type="MATERIAL")
+        bpy.ops.object.mode_set(mode="OBJECT")
+
+
+def _loft(collection, name, rings, mats, material_for):
+    """Join cross-section rings into a capped, subdivided tube along X."""
+    count = len(rings[0])
+    vertices = [tuple(point) for ring in rings for point in ring]
+    vertices += [tuple(sum((Vector(point) for point in ring), Vector()) / count) for ring in (rings[0], rings[-1])]
+    faces, panels = _loft_faces(len(rings), count, material_for)
+    obj = mesh_object(collection, name, vertices, faces, mats[0])
+    for mat in mats[1:]:
+        obj.data.materials.append(mat)
+    # Panels follow whole rings and rows, so their seams stay clean lines after subdivision.
+    for polygon, panel in zip(obj.data.polygons, panels):
+        polygon.material_index = panel
+    _soften(obj, len(mats) > 1)
+    return obj
+
+
+def _sole_ring(x):
+    width, low = _shoe_half_width(x) * 1.08 + 0.03, _shoe_lift(x)
+    ring = []
+    for j in range(28):
+        a = j * math.tau / 28
+        c, s = math.cos(a), math.sin(a)
+        ring.append((x * 1.025, width * math.copysign(abs(c) ** 0.25, c), low + 0.09 + 0.09 * math.copysign(abs(s) ** 0.25, s)))
+    return ring
+
+
+def _upper_ring(x):
+    right = [_shoe_upper_point(x, v, 1) for v in SHOE_HEIGHTS]
+    left = [_shoe_upper_point(x, v, -1) for v in reversed(SHOE_HEIGHTS)]
+    return right + [(x, 0.0, _shoe_top(x))] + left + [(x, 0.0, _shoe_lift(x) + 0.10)]
+
+
+def _shoe_panel(station, row):
+    x = SHOE_STATIONS[station]
+    low_row = row < 4 or row > len(SHOE_HEIGHTS) * 2 - 3
+    return 1 if x > 0.55 or (x < -0.6 and low_row) else 0
+
+
+def _shoe_body(collection):
+    canvas = material("Shoe denim canvas", "#5B8CC2", roughness=0.9)
+    suede = material("Shoe suede panels", "#35608F", roughness=0.95)
+    cream = material("Shoe rubber sole", "#EFE3C4", roughness=0.7)
+    foxing = material("Shoe sole line", "#B44A3A")
+    _loft(collection, "shoe_sole", [_sole_ring(x) for x in SHOE_STATIONS], [cream], lambda station, row: 0)
+    _loft(collection, "shoe_upper", [_upper_ring(x) for x in SHOE_STATIONS], [canvas, suede], _shoe_panel)
+    line = [(x * 1.025, side * (_shoe_half_width(x) * 1.08 + 0.035), _shoe_lift(x) + 0.06)
+            for side in (1, -1) for x in (SHOE_STATIONS if side > 0 else SHOE_STATIONS[::-1])]
+    curve_tube(collection, "shoe_sole_line", line, 0.02, foxing, cyclic=True)
+
+
+def _shoe_collar(collection):
+    canvas = material("Shoe denim canvas", "#5B8CC2", roughness=0.9)
+    lining = material("Shoe lining", "#2E3E4A")
+    foxing = material("Shoe sole line", "#B44A3A")
+    uv_sphere(collection, "shoe_ankle_opening", (-0.5, 0, _shoe_top(-0.5) - 0.04), (0.3, 0.2, 0.06), lining)
+    rim = []
+    for i in range(24):
+        a = i * math.tau / 24
+        x = -0.5 + 0.34 * math.cos(a)
+        # The collar dips over the ankle bones and rises again at the heel.
+        rim.append((x, 0.24 * math.sin(a), _shoe_top(x) - 0.005 - 0.03 * math.sin(a) ** 2))
+    curve_tube(collection, "shoe_padded_collar", rim, 0.03, canvas, cyclic=True)
+    box(collection, "shoe_heel_tab", (-0.985, 0, _shoe_top(-0.985) - 0.04), (0.03, 0.08, 0.09), foxing, 0.02)
+
+
+def _shoe_trim(collection):
+    cream = material("Shoe laces", "#F4EEDC")
+    tongue = material("Shoe tongue", "#2E4B6E", roughness=0.95)
+    # The tongue is a soft pad that lies along the instep and lifts out of the ankle opening.
+    pad = uv_sphere(collection, "shoe_tongue", (-0.02, 0, _shoe_top(-0.02) + 0.03), (0.3, 0.15, 0.035), tongue)
+    pad.rotation_euler.y = math.atan2(_shoe_top(-0.3) - _shoe_top(0.25), 0.55) + 0.1
+    # Straight ladder lacing stays legible as separate bars at the game's 50 px size.
+    for x in (-0.06, 0.05, 0.16, 0.27):
+        bar = [_shoe_upper_point(x, v, side) + Vector((0, 0, 0.004)) for side, v in ((-1, 0.86), (0, 0.0), (1, 0.86))]
+        bar[1] = Vector((x, 0.0, _shoe_top(x) + 0.05))
+        curve_tube(collection, "shoe_lace", [tuple(point) for point in bar], 0.024, cream)
+    stripe = [(-0.72, 0.36), (-0.5, 0.38), (-0.25, 0.45), (0.0, 0.58), (0.16, 0.7), (0.27, 0.58), (0.3, 0.42), (0.32, 0.3)]
+    for side in (-1, 1):
+        path = [_shoe_upper_point(x, v, side, 0.008) for x, v in stripe]
+        _ribbon(collection, "shoe_side_stripe", path, [_shoe_normal(x, v, side) for x, v in stripe], 0.03, cream)
+
+
 def build_shoe(collection):
-    fabric = material("Shoe canvas", "#657F98")
-    cream = material("Shoe rubber sole", "#E7DCC1")
-    lace = material("Shoe laces", "#EEE7D7")
-    uv_sphere(collection, "shoe_sole", (0, 0, 0.12), (1.0, 0.42, 0.15), cream)
-    uv_sphere(collection, "shoe_upper", (0.05, 0, 0.32), (0.85, 0.38, 0.29), fabric)
-    uv_sphere(collection, "shoe_ankle", (-0.51, 0, 0.49), (0.34, 0.35, 0.36), fabric)
-    for i in range(4):
-        x = -0.20 + i * 0.19
-        cylinder_between(collection, "shoe_lace", (x, -0.20, 0.61), (x + 0.08, 0.20, 0.61), 0.026, lace, vertices=12)
+    _shoe_body(collection)
+    _shoe_collar(collection)
+    _shoe_trim(collection)
 
 
 def build_water_bottle(collection):
