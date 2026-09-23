@@ -292,7 +292,7 @@ func _make(kind: Dictionary, at: Vector2, size: float) -> Food:
 # are live. Each starts at a random point between the ends of `from` (one point for a fixed
 # source, two for a stretch of edge) with a size within `sizes`, and leaves after `lifetime`
 # seconds or on crossing the field edge. `move` takes the mover ({"food", "age", "from", "at",
-# "seed" in 0..1}) and the step, and returns its next ground position; the mover faces along it.
+# "seed" in 0..1, "toward" the view's ground center when it was released}) and the step, and returns its next ground position; the mover faces along it.
 func spawn(point: Dictionary) -> void:
 	point.merge({"movers": [], "wait": 0.0})
 	spawns.append(point)
@@ -338,7 +338,7 @@ func _release(point: Dictionary) -> bool:
 		point.kind.build.call(food)
 	for added in foods.slice(first):
 		_simplify(added)
-	var mover := {"food": food, "age": 0.0, "from": at, "at": at, "seed": _rng.randf()}
+	var mover := {"food": food, "age": 0.0, "from": at, "at": at, "seed": _rng.randf(), "toward": _view_center()}
 	while _in_view(mover.at, size):
 		if mover.age >= point.lifetime:
 			_retire(food)
@@ -347,6 +347,15 @@ func _release(point: Dictionary) -> bool:
 		mover.age += RELEASE_STEP
 	point.movers.append(mover)
 	return true
+
+# Where the camera's view meets the ground, or the field's center in a world built without a camera.
+func _view_center() -> Vector2:
+	var camera := get_viewport().get_camera_3d()
+	if camera == null:
+		return field.get_center()
+	var forward := -camera.global_basis.z
+	var ground := camera.global_position + forward * (-camera.global_position.y / forward.y)
+	return Vector2(ground.x, ground.z)
 
 # Whether any of an object this size standing at `at` would show in the current camera's view. A
 # world built without a camera, as the budget check builds it, has no view to hide from, and the

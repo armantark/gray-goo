@@ -45,8 +45,9 @@ var _stall_run := 0.0
 var _stalls: Array[float] = []
 var _long_stalls: Array[Dictionary] = []
 var _abandoned: Array[Dictionary] = []
-# Momentum measures, one entry per view: meals, the longest gap between meals (from the level's
-# start, and to its end), and seconds with no edible target within MOMENTUM_SECONDS of travel.
+# Momentum measures, one entry per view: meals (frames in which the goo grew), the longest gap
+# between meals (from the level's start, and to its end), credited to the view where it ends, and
+# seconds with no edible target within MOMENTUM_SECONDS of travel.
 const MOMENTUM_SECONDS := 4.0
 var _views: Array[Dictionary] = []
 var _meal_volume := 0.0
@@ -223,7 +224,8 @@ func _record_momentum(delta: float) -> void:
 	var target: Food = _game.world.nearest_edible(goo.global_position, goo.radius)
 	var in_reach := is_instance_valid(target) and target.center().distance_to(goo.global_position) <= reach
 	for pool in _game.world.pools:
-		in_reach = in_reach or pool.is_edible(_game._tier, goo.radius)
+		in_reach = in_reach or (pool.is_edible(_game._tier, goo.radius)
+			and pool.closest_point(goo.global_position).distance_to(goo.global_position) <= reach)
 	if not in_reach:
 		view.no_target_seconds += delta
 

@@ -128,7 +128,7 @@ func _check_composite_meals(game: Node3D) -> void:
 		game.start_level(case[0])
 		# Spawn points add food as the level runs; this case audits one composite in a closed level.
 		game.world.spawns.clear()
-		var whole := _find(game, case[1])
+		var whole := _find(game, case[1], null, true)
 		var part := _find(game, case[2], whole)
 		var total := _level_volume(game)
 		# Emptied wholes leave with their last part and pay nothing, so only their own volume may vanish.
@@ -159,7 +159,7 @@ func _check_empty_wholes(game: Node3D) -> void:
 	# A nucleon that lost a quark collapses and hides its own body; once a size jump retires its
 	# other quarks as detail it shows nothing, so it no longer holds its nucleus on screen.
 	game.start_level(0)
-	var atom := _find(game, "Helium atom")
+	var atom := _find(game, "Helium atom", null, true)
 	var nucleus := _find(game, "Helium nucleus", atom)
 	var collapsed: Food = nucleus.parts[0]
 	game._eat(collapsed.parts[0])
@@ -183,9 +183,10 @@ func _check_footprints(game: Node3D) -> void:
 	for title in worst:
 		_check(absf(worst[title][0] - 1.0) < 0.12, "%s footprint %.3f matches its drawn %.3f" % [title, worst[title][1], worst[title][2]])
 
-func _find(game: Node3D, title: String, whole: Food = null) -> Food:
+# A composite lookup skips same-named objects without parts, such as a settled atom drawn whole.
+func _find(game: Node3D, title: String, whole: Food = null, composite: bool = false) -> Food:
 	for food in game.world.foods:
-		if food.title == title and (whole == null or whole.is_ancestor_of(food)):
+		if food.title == title and (whole == null or whole.is_ancestor_of(food)) and not (composite and food.parts.is_empty()):
 			return food
 	push_error("BODY_CHECK_FAIL no " + title)
 	return null

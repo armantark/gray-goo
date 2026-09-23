@@ -122,7 +122,7 @@ func signal_edible(flash: Material) -> void:
 	tween.tween_callback(func(): _highlight_visual(visual, _target_outline if _highlighted else null))
 
 func _highlight_visual(node: Node, material: Material) -> void:
-	if node is MeshInstance3D:
+	if node is GeometryInstance3D:
 		node.material_overlay = material
 	for child in node.get_children():
 		_highlight_visual(child, material)
