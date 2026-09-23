@@ -4,7 +4,7 @@
 
 **Blocked by:** 08 Spawn points and the first hand-placed level, Tide Pool.
 
-**Status:** open
+**Status:** claimed by opus-5.5 ticket-09 agent
 
 - [ ] The world check passes the identical-placement, named-whole, and growth-budget checks for Sugar Water.
 - [ ] Opus reviews the top-down image and every tier view, and writes what it changed after each review in `memory-bank/progress.md`.
