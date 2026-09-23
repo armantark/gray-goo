@@ -101,8 +101,6 @@ var _world: GameWorld
 var _web: Node3D
 var _home: Food
 var _spinning: Array[Food] = []
-var _clusters: Array[Food] = []
-var _tier := 0
 
 func definition() -> Dictionary:
 	return {"title": "Cosmic Web", "meters_per_unit": 9.4607e15,
@@ -246,7 +244,6 @@ func _arm_stars(arm: Food, unit: float, layout: Array) -> void:
 	_composite(cluster)
 	# The cluster draws nothing but its stars, so it goes with the last one.
 	cluster.collect_when_empty = true
-	_clusters.append(cluster)
 	for entry in OPEN_CLUSTER:
 		_part(entry[0], cluster, entry[1] * cluster.radius, entry[2] * cluster.radius, 0.15, STARS[entry[0]], 0, 0, 0.025)
 
@@ -329,12 +326,6 @@ func _stream(mover: Dictionary, delta: float, path: Array, speed: float) -> Vect
 	return mover.at + (path[leg] + lane - mover.at).limit_length(speed * delta)
 
 func step(delta: float) -> void:
-	# A size jump retires a cluster's stars as detail; the cluster then shows nothing, so it retires too.
-	if _world.current_tier != _tier:
-		_tier = _world.current_tier
-		for cluster in _clusters:
-			if cluster._last_visible_part(null):
-				cluster.detail_hidden = true
 	for index in _spinning.size():
 		var galaxy := _spinning[index]
 		if galaxy.active:

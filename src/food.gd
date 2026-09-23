@@ -126,6 +126,10 @@ func _last_visible_part(except: Food) -> bool:
 			return false
 	return true
 
+func draws_itself() -> bool:
+	return visual.visible and (visual is GeometryInstance3D
+		or not visual.find_children("*", "GeometryInstance3D", true, false).is_empty())
+
 # A disassembled container, such as an electron cloud, shows only through its parts, so once a
 # size jump retires those parts as detail it no longer keeps its own whole on screen.
 func _shows() -> bool:
