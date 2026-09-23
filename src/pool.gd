@@ -42,7 +42,8 @@ func set_basin(height_at: Callable) -> void:
 	_dirty = true
 
 func _lower_surface() -> void:
-	if _basin_heights.is_empty() or remaining_volume <= 0.0:
+	# Mopping leaves float residue once every cell is dry; below this the pool is empty, as in is_edible.
+	if _basin_heights.is_empty() or remaining_volume <= 0.00001:
 		return
 	var lowest_wet := _initial_surface
 	for index in _fill.size():
