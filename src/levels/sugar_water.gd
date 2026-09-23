@@ -2,6 +2,9 @@ extends RefCounted
 
 const Geometry = preload("res://src/levels/atomic_cosmic_geometry.gd")
 const NUCLEON_RADIUS := 0.18
+# Each food grows the goo by its visible volume times this density, so a meal's reward always
+# matches the size the goo sees it swallow.
+const GROWTH_DENSITY := 0.22
 const ELEMENTS := ["Nothing", "Hydrogen", "Helium", "Lithium", "Beryllium", "Boron", "Carbon", "Nitrogen", "Oxygen"]
 const COLORS := ["4b5366", "eef0df", "e8d0ab", "c1a3ba", "a1bfaa", "c8a381", "677582", "6087ae", "d87569"]
 var world: GameWorld
@@ -22,12 +25,12 @@ var _drifters: Array[Dictionary] = []
 
 func definition() -> Dictionary:
 	return {"title": "Sugar Water", "meters_per_unit": 1e-15,
-		"initial_radius": 0.16, "goal_radius": 7.0, "start_position": Vector3(-25, 0, 17),
+		"initial_radius": 0.16, "goal_radius": 3.85, "start_position": Vector3(-25, 0, 17),
 		"accent": Color("f1c78a"), "field": Rect2(-96, -75, 192, 150),
 		"tiers": ["Particle soup", "Formations", "Small nuclei", "Atoms", "Molecules"],
 		"jumps": [{"radius": 0.16, "view_size": 5.0}, {"radius": 0.38, "view_size": 12.0},
 			{"radius": 0.85, "view_size": 20.0}, {"radius": 1.8, "view_size": 34.0, "meters_per_unit": 1e-11},
-			{"radius": 4.5, "view_size": 90.0, "meters_per_unit": 1e-10}],
+			{"radius": 2.5, "view_size": 50.0, "meters_per_unit": 1e-10}],
 		"background_color": Color("0b1622"), "ground_color": Color("263644"),
 		"key_color": Color("e4ebe8"), "fill_color": Color("8da4bb"),
 		"ground_texture": "res://assets/models/ground_particle.png"}
@@ -50,8 +53,16 @@ func build(scene_world: GameWorld) -> void:
 	_build_nursery()
 	_build_background()
 
-func _whole(at: Vector2, size: float, volume: float, label: String, tier: int, parent: Food = null) -> Food:
-	var food := world._add_food("", at, size, volume, label, false, tier, parent)
+func _growth(size: float) -> float:
+	return GROWTH_DENSITY * pow(size, 3.0)
+
+func _food(kind: String, at: Vector2, size: float, label: String, tier: int, parent: Food = null, lift: float = 0.0) -> Food:
+	return world._add_food(kind, at, size, _growth(size), label, false, tier, parent, lift)
+
+# Molecules and nuclei have no body of their own: their growth is the parts they hold, and they
+# leave with their last visible part.
+func _whole(at: Vector2, size: float, label: String, tier: int, parent: Food = null) -> Food:
+	var food := world._add_food("", at, size, 0.0, label, false, tier, parent)
 	food.rotation = Vector3.ZERO
 	food.height = 0.36
 	food.collect_when_empty = true
@@ -59,8 +70,16 @@ func _whole(at: Vector2, size: float, volume: float, label: String, tier: int, p
 		food.context_whole = drop
 	return food
 
+# An atom's electron shell is a body: it grows the goo by its own size and stays edible after
+# the goo takes its nucleus or electrons, like a board after its wheels.
+func _shell(at: Vector2, size: float, label: String, tier: int, parent: Food = null) -> Food:
+	var atom := _whole(at, size, label, tier, parent)
+	atom.volume = _growth(size)
+	atom.collect_when_empty = false
+	return atom
+
 func _build_sucrose() -> void:
-	sucrose = _whole(Vector2(6, -5), 17.0, 40.0, "Sucrose molecule · C12H22O11", 4)
+	sucrose = _whole(Vector2(6, -5), 17.0, "Sucrose molecule · C12H22O11", 4)
 	sucrose.milestone = true
 	_add_drift(sucrose, 1.0, 0.012, 0.006)
 	var atoms: Array[Food] = []
@@ -128,7 +147,7 @@ func _build_water() -> void:
 		sites.append(center + Vector2(world._rng.randfn(0, 15), world._rng.randfn(0, 12)).limit_length(24))
 	for site in sites:
 		var at: Vector2 = site + Vector2(world._rng.randfn(0, 0.8), world._rng.randfn(0, 0.8))
-		var water := _whole(at, 3.7, 4.5, "Water molecule · H2O", 4)
+		var water := _whole(at, 3.7, "Water molecule · H2O", 4)
 		var oxygen := _atom(water, Vector2.ZERO, 8, 8, 3)
 		for side in [-1, 1]:
 			var hydrogen := _atom(water, Vector2(side * 2.25, 1.65), 1, 0, 3)
@@ -140,7 +159,7 @@ func _build_water() -> void:
 
 func _atom(parent: Food, at: Vector2, protons: int, neutrons: int, tier: int) -> Food:
 	var atom_radius := 0.8 if protons <= 2 else 1.45
-	var atom := _whole(at, atom_radius, 0.6, ELEMENTS[protons] + " atom", tier, parent)
+	var atom := _shell(at, atom_radius, ELEMENTS[protons] + " atom", tier, parent)
 	atom.set_meta("protons", protons)
 	atom.set_meta("electrons", protons)
 	var nucleus := _nucleus(atom, protons, neutrons)
@@ -151,7 +170,7 @@ func _atom(parent: Food, at: Vector2, protons: int, neutrons: int, tier: int) ->
 	return atom
 
 func _nucleus(atom: Food, protons: int, neutrons: int) -> Food:
-	var nucleus := _whole(Vector2.ZERO, 0.8, 0.018, ELEMENTS[protons] + " nucleus", 2, atom)
+	var nucleus := _whole(Vector2.ZERO, 0.8, ELEMENTS[protons] + " nucleus", 2, atom)
 	nucleus.set_meta("protons", protons)
 	nucleus.set_meta("neutrons", neutrons)
 	_nuclei.append(nucleus)
@@ -160,8 +179,8 @@ func _nucleus(atom: Food, protons: int, neutrons: int) -> Food:
 		var angle := index * 2.39996
 		var distance := sqrt(float(index)) * NUCLEON_RADIUS * 0.86
 		var kind := "proton" if proton else "neutron"
-		var nucleon := world._add_food(kind, Vector2.from_angle(angle) * distance, NUCLEON_RADIUS,
-			0.006, kind.capitalize(), false, 1, nucleus, (index % 3) * 0.035)
+		var nucleon := _food(kind, Vector2.from_angle(angle) * distance, NUCLEON_RADIUS,
+			kind.capitalize(), 1, nucleus, (index % 3) * 0.035)
 		nucleon.set_meta("proton", proton)
 	return nucleus
 
@@ -175,8 +194,8 @@ func _add_electrons(atom: Food, count: int, atom_radius: float) -> void:
 		ring.name = "ElectronShellRing"
 		for index in range(shells[shell]):
 			var phase: float = TAU * index / shells[shell] + shell * 0.4
-			var electron := world._add_food("electron", Vector2.from_angle(phase) * orbit_radius,
-				0.065, 0.00025, "Orbital electron", false, 0, atom, 0.1)
+			var electron := _food("electron", Vector2.from_angle(phase) * orbit_radius,
+				0.065, "Orbital electron", 0, atom, 0.1)
 			_orbits.append({"food": electron, "radius": orbit_radius, "phase": phase, "speed": 0.65 + shell * 0.2})
 
 func _nucleus_changed(part: Food, nucleus: Food, atom: Food) -> void:
@@ -198,7 +217,7 @@ func _nucleus_changed(part: Food, nucleus: Food, atom: Food) -> void:
 func _build_nursery() -> void:
 	for index in range(16):
 		var at := _nursery_point(index)
-		var shell := _whole(at, 1.3, 0.0, "Hydrogen atom" if index % 2 == 0 else "Helium atom", 3)
+		var shell := _shell(at, 1.3, "Hydrogen atom" if index % 2 == 0 else "Helium atom", 3)
 		shell.rotation.y = world._rng.randf_range(-PI, PI)
 		_add_drift(shell, 0.35, 0.035)
 		var count := 1 if index % 2 == 0 else 2
@@ -208,12 +227,11 @@ func _build_nursery() -> void:
 		shell.part_consumed.connect(_atom_changed.bind(shell))
 		for nucleon in nucleus.parts:
 			nucleon.tier = 1
-			nucleon.volume = 0.0095
 			_clumps.append({"food": nucleon, "home": nucleon.position})
 			_bind_quarks(nucleon, 3, index)
 	for index in range(12):
 		var at := _nursery_point(index + 4)
-		var pion := world._add_food("pion", at, 0.21, 0.0095, "Pion", false, 1)
+		var pion := _food("pion", at, 0.21, "Pion", 1)
 		_add_drift(pion, 0.45, 0.09)
 		pion.context_whole = drop
 		pion.loose_reason = "Quark and antiquark condense together in the drop."
@@ -226,10 +244,10 @@ func _bind_quarks(nucleon: Food, count: int, phase: int) -> void:
 	nucleon.collect_when_empty = true
 	for index in range(count):
 		var at := Vector2.from_angle(TAU * index / count) * 0.23
-		var quark := world._add_food("quark", at, 0.075, 0.00025, "Bound quark", false, 0, nucleon)
+		var quark := _food("quark", at, 0.075, "Bound quark", 0, nucleon)
 		quark.rename("Bound quark", Color(["ed7169", "77bba0", "719ed6"][index % 3]))
 		_formations.append({"food": quark, "home": at, "phase": phase * 0.4 + index})
-	var gluon := world._add_food("gluon", Vector2.ZERO, 0.06, 0.0002, "Binding gluon", false, 0, nucleon)
+	var gluon := _food("gluon", Vector2.ZERO, 0.06, "Binding gluon", 0, nucleon)
 	_particles.append({"food": gluon, "home": Vector2.ZERO, "phase": float(phase), "kind": "gluon"})
 	nucleon.part_consumed.connect(_collapse_nucleon.bind(nucleon))
 
@@ -249,8 +267,7 @@ func _add_free_particle(index: int) -> void:
 	var kinds := ["quark", "quark", "quark", "photon", "electron", "positron", "gluon"]
 	var kind: String = kinds[index % kinds.size()]
 	var at := _nursery_point(index)
-	var particle := world._add_food(kind, at, 0.06 if kind != "quark" else 0.075,
-		0.00025, kind.capitalize(), false, 0)
+	var particle := _food(kind, at, 0.06 if kind != "quark" else 0.075, kind.capitalize(), 0)
 	particle.context_whole = drop
 	particle.loose_reason = "Thermal particle soup in the water drop."
 	if kind == "quark":
@@ -291,12 +308,8 @@ func _step_orbits(delta: float) -> void:
 			continue
 		orbit.phase += delta * float(orbit.speed)
 		var at := electron.position
-		if electron.parent_food.get_meta("electron_cloud", false):
-			at.x = sin(orbit.phase * 0.73) * float(orbit.radius) * 0.62
-			at.z = cos(orbit.phase * 1.17) * float(orbit.radius) * 0.48
-		else:
-			at.x = cos(orbit.phase) * float(orbit.radius)
-			at.z = sin(orbit.phase) * float(orbit.radius)
+		at.x = cos(orbit.phase) * float(orbit.radius)
+		at.z = sin(orbit.phase) * float(orbit.radius)
 		electron.position = at
 
 func _step_particles() -> void:
@@ -355,7 +368,7 @@ func _update_detail() -> void:
 
 func _build_free_hosts() -> void:
 	for index in range(8):
-		var shell := _whole(_nursery_point(index + 8), 0.9, 0.0, "Forming hydrogen atom", 3)
+		var shell := _shell(_nursery_point(index + 8), 0.9, "Forming hydrogen atom", 3)
 		shell.rotation.y = world._rng.randf_range(-PI, PI)
 		_add_drift(shell, 0.35, 0.025)
 		var nucleus := _nucleus(shell, 1, 0)
@@ -365,7 +378,6 @@ func _build_free_hosts() -> void:
 		var proton: Food = nucleus.parts[0]
 		proton.collect_when_empty = true
 		proton.tier = 1
-		proton.volume = 0.0095
 		proton.part_consumed.connect(_collapse_nucleon.bind(proton))
 		_free_hosts.append(proton)
 
@@ -480,12 +492,8 @@ func _atom_changed(_part: Food, atom: Food) -> void:
 		if part.model_name == "electron":
 			electrons += 1
 	atom.set_meta("electrons", electrons)
-	if has_nucleus:
-		return
-	if electrons > 0:
+	if not has_nucleus:
 		atom.title = "Electron cloud"
-	atom.set_meta("electron_cloud", true)
-	atom.visual.hide()
 
 func _nursery_point(index: int) -> Vector2:
 	var centers := [Vector2(-25, 17), Vector2(-12, 12), Vector2(-15, 29), Vector2(-33, 30)]

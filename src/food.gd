@@ -100,20 +100,13 @@ func _highlight_visual(node: Node, material: Material) -> void:
 	for child in node.get_children():
 		_highlight_visual(child, material)
 
-func remaining_volume(include_empty_parents: bool = true) -> float:
+func remaining_volume() -> float:
 	if not active:
 		return 0.0
 	var result := volume
 	for part in parts:
 		if is_instance_valid(part):
-			result += part.remaining_volume(false)
-	if include_empty_parents:
-		var child := self
-		var parent := parent_food
-		while is_instance_valid(parent) and parent.active and parent.collect_when_empty and parent._last_visible_part(child):
-			result += parent.remaining_volume(false) - child.remaining_volume(false)
-			child = parent
-			parent = parent.parent_food
+			result += part.remaining_volume()
 	return result
 
 func _last_visible_part(except: Food) -> bool:
@@ -127,7 +120,7 @@ func meal_color() -> Color:
 	var combined := Vector3(pigment.r, pigment.g, pigment.b) * volume
 	for part in parts:
 		if is_instance_valid(part) and part.active:
-			var portion := part.remaining_volume(false)
+			var portion := part.remaining_volume()
 			var color := part.meal_color()
 			combined += Vector3(color.r, color.g, color.b) * portion
 			total += portion
@@ -154,6 +147,8 @@ func consume(target: Node3D) -> void:
 	set_physics_process(true)
 	if model_name == "board":
 		_snap_board()
+	# An emptied container leaves with its last visible part but pays no growth: the goo
+	# grows only from what it could eat, never from a whole that still looks larger.
 	if is_instance_valid(parent_food) and parent_food.active and parent_food.collect_when_empty and parent_food._last_visible_part(self):
 		parent_food.consume(target)
 
