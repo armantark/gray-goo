@@ -76,9 +76,9 @@ SHOE_HEIGHTS = [0.0, 0.2, 0.4, 0.55, 0.7, 0.8, 0.88, 0.94, 0.98]
 
 
 def _shoe_half_width(x):
-    ball = 0.07 * math.exp(-((x - 0.35) / 0.35) ** 2)
-    waist = 0.07 * math.exp(-((x + 0.15) / 0.28) ** 2)
-    heel = 0.04 * math.exp(-((x + 0.8) / 0.25) ** 2)
+    ball = 0.05 * math.exp(-((x - 0.35) / 0.35) ** 2)
+    waist = 0.045 * math.exp(-((x + 0.15) / 0.28) ** 2)
+    heel = 0.03 * math.exp(-((x + 0.8) / 0.25) ** 2)
     # A rounder heel and a squarer toe, like a real last.
     end = (1 - x * x) ** 0.5 if x < 0 else (1 - x ** 3) ** (1 / 3)
     return (0.37 + ball - waist - heel) * end
@@ -86,7 +86,7 @@ def _shoe_half_width(x):
 
 def _shoe_lift(x):
     # Toe spring and a slightly rounded heel keep the sole from reading as a flat slab.
-    return 0.10 * max(0.0, (x - 0.45) / 0.55) ** 2 + 0.03 * max(0.0, (-x - 0.7) / 0.3) ** 2
+    return 0.14 * max(0.0, (x - 0.45) / 0.55) ** 2 + 0.03 * max(0.0, (-x - 0.7) / 0.3) ** 2
 
 
 def _shoe_top(x):
@@ -211,7 +211,7 @@ def _shoe_body(collection):
     _loft(collection, "shoe_upper", [_upper_ring(x) for x in SHOE_STATIONS], [canvas, suede], _shoe_panel)
     line = [(x * 1.025, side * (_shoe_half_width(x) * 1.08 + 0.035), _shoe_lift(x) + 0.06)
             for side in (1, -1) for x in (SHOE_STATIONS if side > 0 else SHOE_STATIONS[::-1])]
-    curve_tube(collection, "shoe_sole_line", line, 0.02, foxing, cyclic=True)
+    curve_tube(collection, "shoe_sole_line", line, 0.03, foxing, cyclic=True)
 
 
 def _shoe_collar(collection):
@@ -219,26 +219,26 @@ def _shoe_collar(collection):
     lining = material("Shoe lining", "#2A3843")
     foxing = material("Shoe sole line", "#B44A3A")
     wall = material("Shoe inner wall", "#3E5B78")
-    uv_sphere(collection, "shoe_ankle_opening", (-0.45, 0, _shoe_top(-0.45) - 0.04), (0.33, 0.19, 0.06), lining)
+    uv_sphere(collection, "shoe_ankle_opening", (-0.42, 0, _shoe_top(-0.42) - 0.04), (0.37, 0.19, 0.06), lining)
 
     def rim(scale, drop):
         points = []
         # The collar stops at the throat on each side, leaving the tongue free.
         for i in range(21):
             a = 0.55 + i * (math.tau - 1.1) / 20
-            x = -0.45 + 0.4 * scale * math.cos(a)
+            x = -0.42 + 0.44 * scale * math.cos(a)
             # The collar dips over the ankle bones and rises again at the heel.
             points.append((x, 0.25 * scale * math.sin(a), _shoe_top(x) - drop - 0.03 * math.sin(a) ** 2))
         return points
 
     # A shaded inner wall between the padded lip and the dark lining gives the opening depth.
     curve_tube(collection, "shoe_inner_wall", rim(0.9, 0.03), 0.024, wall)
-    curve_tube(collection, "shoe_padded_collar", rim(1.0, 0.0), 0.024, canvas)
+    curve_tube(collection, "shoe_padded_collar", rim(1.0, 0.0), 0.018, canvas)
     # The pull tab is a fabric loop folded over the back of the collar.
     top = _shoe_top(-0.97)
     loop = [(-0.985, 0, top - 0.1), (-1.005, 0, top - 0.02), (-0.97, 0, top + 0.03), (-0.92, 0, top + 0.01), (-0.9, 0, top - 0.03)]
     curve_tube(collection, "shoe_heel_tab", loop, 0.03, foxing)
-    seam = material("Shoe toe cap stitching", "#233F5E")
+    seam = material("Shoe toe cap stitching", "#3A6391")
     x = next(station for station in SHOE_STATIONS if station > 0.55)
     stitch = [_shoe_upper_point(x, v, 1, 0.004) for v in SHOE_HEIGHTS[1:]]
     stitch = stitch + [Vector((x, 0, _shoe_top(x) + 0.004))] + [point * Vector((1, -1, 1)) for point in reversed(stitch)]
@@ -260,10 +260,21 @@ def _shoe_lace_strand(collection, x, sign, cream, eyelet):
         uv_sphere(collection, "shoe_eyelet", tuple(point), (0.022, 0.022, 0.006), eyelet, segments=12, rings=6)
 
 
+def _shoe_bow(collection, cream):
+    """A small bow with short tails at the top crossing, so the lacing reads as tied."""
+    knot = Vector((-0.06, 0, _shoe_top(-0.06) + 0.03))
+    uv_sphere(collection, "shoe_lace_knot", tuple(knot), (0.028, 0.026, 0.018), cream, segments=12, rings=8)
+    for side in (-1, 1):
+        loop = [knot + Vector((dx, side * dy, 0.004)) for dx, dy in ((0.0, 0.02), (-0.05, 0.05), (-0.09, 0.07), (-0.07, 0.11), (-0.02, 0.06))]
+        curve_tube(collection, "shoe_lace_loop", [tuple(point) for point in loop], 0.012, cream)
+        tail = [knot + Vector((dx, side * dy, dz)) for dx, dy, dz in ((0.01, 0.02, 0.0), (0.06, 0.06, -0.01), (0.1, 0.07, -0.02))]
+        curve_tube(collection, "shoe_lace_tail", [tuple(point) for point in tail], 0.01, cream)
+
+
 def _shoe_trim(collection):
     cream = material("Shoe laces", "#F4EEDC")
     tongue = material("Shoe tongue", "#3F6A9B", roughness=0.95)
-    eyelet = material("Shoe eyelets", "#26343F", metallic=0.3)
+    eyelet = material("Shoe eyelets", "#2F4A66")
     # The tongue follows the instep and lifts slightly where it meets the ankle opening.
     xs = [-0.3 + 0.6 * i / 12 for i in range(13)]
     path = [Vector((x, 0, _shoe_top(x) + 0.006 + 0.03 * max(0.0, -0.18 - x) / 0.12)) for x in xs]
@@ -272,6 +283,7 @@ def _shoe_trim(collection):
     for x in (-0.1, 0.06, 0.22):
         for sign in (-1, 1):
             _shoe_lace_strand(collection, x, sign, cream, eyelet)
+    _shoe_bow(collection, cream)
     # The stripe tapers at the heel and tucks under the sole edge at the midfoot.
     stripe = [(-0.5, 0.38), (-0.3, 0.41), (-0.05, 0.52), (0.15, 0.68), (0.28, 0.55), (0.31, 0.3), (0.32, 0.1)]
     for _ in range(3):
