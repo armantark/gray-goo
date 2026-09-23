@@ -258,3 +258,34 @@ Later Gemini rounds, with the full band (opinions; it repeatedly misdescribes st
 - Gemini's claims of a "cut", "choke" or "dip" at every wrap conflict with the seam measurements and spectrograms. The one real wrap defect found (Cosmic Web's clock drift) came from measurement, not from Gemini.
 
 Not verifiable here: any Muse Sounds render, and therefore realism, final balance, file size and loudness of the shipped Oggs; how MuseScore will map the imported instruments onto Muse Sounds; the free Muse Sounds licence and the Larry Seyer licence for game use; micro-timing (MuseScore's MIDI import quantizes, so only velocity accents carry groove); how Godot honours `loop_offset` in play (not tested in the running game).
+
+### Muse Sounds unblocked, 2026-09-22 ~17:25 PDT
+
+Root cause, as reported by the orchestrator: Muse Hub was 2.6.0; macOS needs 3.1.1+. The owner installed Muse Hub 3.3.1. Verification by the orchestrator, headless: `mscore -o /tmp/tpt.wav /tmp/tpt.musicxml` logged "MuseSampler successfully inited: ... version: 0.105.8" and "Successfully initialized sampler". My own run at 17:26:16 logged `MuseSamplerResolver::init | MuseSampler successfully inited: /Users/ArmanTarkhanian1/Library/Application Support/MuseSampler/lib/libMuseSamplerCoreLib.dylib, version: 0.105.8` and `MuseSamplerWrapper::initSampler | Successfully initialized sampler, sampleRate: 44100, blockSize: 1024`.
+
+Owner decision: no more Gemini listening passes; the owner listens and judges.
+
+### Final soundtrack rendered with Muse Sounds, 2026-09-22 17:57 PDT
+
+Every part except the upright bass renders with Muse Sounds. The bass is the Larry Seyer SFZ through scripts/sfz_player.py. How the Muse mapping was made to work:
+- MuseScore imports GM MIDI into templates. `orff-alto-glockenspiel` and `agogo-bells` fell back to MS Basic, `electric-piano` resolves to Dream Piano, and a mixed conga or hands staff imports as `percussion-synthesizer`, which plays the GM Drum Kit.
+- Fixes: the imported .mscz is patched so orff-alto-glockenspiel becomes glockenspiel (`pitched-percussion.glockenspiel`) and percussion-synthesizer becomes congas (`drum.group.congas`). Skatepark's hands staff was split into separate Tambourine and Claps staves, which import as `tambourine` and `hand-clap`. Suitcase Piano (Muse Hub id 172) and Agogos (192) are pinned as explicit audiosettings tracks.
+- `--sound-profile` discards pinned tracks (`--tracks-diff` listed Suitcase Piano under oldTracks and Dream Piano under newTracks). A score saved with the MuseSounds profile renders byte-identically without the flag (residual -219.1 dB), so finals render without it. A render with Suitcase pinned matched the default everywhere the Rhodes rests (-141.25 dB over 0-9 s, -103.66 dB over 90-100 s).
+- Coverage: rendering one isolated note per drum pitch the scores use gave an attack rise of 11.1 dB (mid tom) to 166.3 dB, so every pitch sounds in Big Kit, Agogos, Congas, Maracas, Tambourine and Clap.
+- Muse Sounds never sounds the probe click at 0.0 s and plays some clicks quieter (425 of 466 found at 20% of peak in Skatepark). Click-by-click tracking locked onto noise and fitted +183 to -2777 ms. Nearest-onset tracking that skips missing clicks fixed it. With Muse Sounds, MuseScore is 0.84-0.91 ms late in 4/4, and in 12/8 runs from -0.42 ms to -365.51 ms.
+
+Part mapping (every part `muse_sampler_sound_pack`; the build asserts it, and each render's log shows "MuseSampler successfully inited" and "Successfully initialized sampler"):
+- Sugar Water: flute → Flute 1; glockenspiel → Glockenspiel; trumpet → Trumpet; trombone → Trombone; piano → Grand Piano; drumset → Big Kit; maracas → Maracas; agogo-bells → Agogos.
+- Tide Pool: trumpet → Trumpet; trombone → Trombone; marimba → Marimba; guitar-nylon → Acoustic Nylon; electric-piano → Suitcase Piano; drumset → Big Kit.
+- Skatepark: trumpet → Trumpet; tenor sax → Tenor Sax; trombone → Trombone; hammond-organ → Hammond Organ; electric-guitar → Electric LP - Clean; drumset → Big Kit; congas → Congas; tambourine → Tambourine; hand-clap → Clap.
+- Cosmic Web: trumpet → Trumpet; alto sax → Alto Sax; tenor sax → Tenor Sax; trombone → Trombone; celesta → Celesta; piano (two staves) → Grand Piano; drumset → Big Kit.
+
+Finals (assets/audio, report in builds/music/report.json):
+- particle_shuffle.ogg "Dissolve": 153.600816 s, loop_offset 9.600839, loop 143.999977 s, -16.0 LUFS, -2.8 dBTP, 2,453,595 bytes. Seam: last 50 ms -20.36 vs pre-loop -20.21 dBFS; 5 ms residual -23.44 vs interior -22.75 dB; step 0.01321 vs p99 0.03394. Bass gain -7.9 dB.
+- tidepool_bossa.ogg "Low Tide Glimmer": 144.001043 s, loop_offset 12.000862, loop 132.000181 s, -16.0 LUFS, -1.9 dBTP, 2,331,551 bytes. Seam: -16.03 vs -15.9; -32.23 vs -27.59; 0.00401 vs 0.02165. Bass -7.3 dB.
+- skatepark_samba.ogg "Coping Stones": 152.000862 s, loop_offset 8.000862, loop 144.0 s, -16.1 LUFS, -1.7 dBTP, 2,580,793 bytes. Seam: -24.65 vs -24.46; -20.1 vs -21.58; 0.0206 vs 0.07754. Bass -8.4 dB.
+- cosmic_drift.ogg "Filament": 137.873243 s, loop_offset 7.660431, loop 130.212812 s, -16.1 LUFS, -1.8 dBTP, 2,232,922 bytes. Seam: -24.16 vs -23.93; -27.34 vs -26.2; 0.00726 vs 0.03236. Bass -8.6 dB.
+- Loudness spread 0.1 LU. The largest Ogg is 2,580,793 bytes, far below the 25 MiB web limit; the web pck was not rebuilt.
+- Uncompressed 24-bit copies: builds/music/final-{sugar_water,tide_pool,skatepark_bowl,cosmic_web}.wav (40,642,856, 38,102,756, 40,219,508 and 36,481,340 bytes).
+
+Not verified: listening quality (the owner judges); game use under the free Muse Sounds licence and the Larry Seyer licence; `loop_offset` in the running game; the web export size with the new Oggs.

@@ -29,6 +29,8 @@ import math
 from pathlib import Path
 import re
 import subprocess
+import time
+import zipfile
 
 import mido
 import numpy as np
@@ -53,7 +55,7 @@ UPRIGHT_TRANSPOSE = 12
 BASS_PROGRAM = 32
 # Bass stem loudness relative to the rest of the band, in LU.
 BASS_RELATIVE_LU = -7.0
-# Gemini heard uneven booming low notes that masked the kick, and too little fingerboard definition.
+# Tames the uneven low notes that masked the kick and adds fingerboard definition.
 BASS_EQ = ("equalizer", "110", "1q", "-3", "equalizer", "1400", "1.2q", "+3")
 ATTACK_LEVEL = .2
 PROBE_REACH_MS = 15
@@ -71,6 +73,16 @@ PIECES = {
     "tidepool_bossa": ("tide_pool", "Low Tide Glimmer", ("reverb", "45", "50", "80", "100", "15")),
     "skatepark_samba": ("skatepark_bowl", "Coping Stones", ("reverb", "25", "50", "55", "80", "8")),
     "cosmic_drift": ("cosmic_web", "Filament", ("reverb", "80", "40", "100", "100", "30")),
+}
+# Imported templates that Muse Sounds does not play, and the template that it does.
+RETARGET = {
+    "orff-alto-glockenspiel": ("glockenspiel", "pitched-percussion.glockenspiel"),
+    "percussion-synthesizer": ("congas", "drum.group.congas"),
+}
+# Templates whose default Muse sound is wrong or missing: (pack, sound, Muse Hub id, playback setup).
+OVERRIDES = {
+    "electric-piano": ("Muse Keys", "Suitcase Piano", "172", "keyboards.piano.electric"),
+    "agogo-bells": ("Muse Percussion", "Agogos", "192", "percussion.agogo"),
 }
 
 
@@ -101,14 +113,75 @@ def timeline(midi_path):
     return start, elapsed
 
 
-def render(midi, wav, sounds):
+def render(midi, wav, sounds, retarget=None, overrides=None):
+    """Render a MIDI file with MuseScore and return the sound each part played.
+
+    The MIDI is imported to a score that keeps the sound profile, parts that import
+    as the wrong instrument are retargeted, and parts with several Muse sounds get
+    an explicit one. The render runs without --sound-profile, because that flag
+    would replace the explicit choices.
+    """
     profile, final = SOUNDS[sounds]
     if final:
         roots = (Path("/Library/Application Support"), Path.home() / "Library/Application Support")
         assert any((root / MUSE_SAMPLER).exists() for root in roots), "Muse Sounds is not installed"
+    score = WORK / (midi.stem + ".mscz")
+    run(MSCORE, "--sound-profile", profile, "-o", str(score), str(midi))
+    retune(score, retarget or {}, (overrides or {}) if final else {})
+    mapping = sound_map(score, profile)
+    if final:
+        stray = {part: sound for part, sound in mapping.items() if sound[2] != "muse_sampler_sound_pack"}
+        assert not stray, ("parts not on Muse Sounds", stray)
     job = WORK / (midi.stem + "-job.json")
-    job.write_text(json.dumps([{"in": str(midi), "out": str(wav)}]))
-    run(MSCORE, "--sound-profile", profile, "-j", str(job))
+    job.write_text(json.dumps([{"in": str(score), "out": str(wav)}]))
+    began = time.time()
+    run(MSCORE, "-j", str(job))
+    if final:
+        assert_sampler_log(began)
+    return mapping
+
+
+def retune(score, retarget, overrides):
+    """Patch the imported score: retarget instrument templates and pin explicit Muse sounds."""
+    with zipfile.ZipFile(score) as archive:
+        files = {name: archive.read(name) for name in archive.namelist()}
+    [name] = [name for name in files if name.endswith(".mscx")]
+    text = files[name].decode()
+    for old, (new, sound) in retarget.items():
+        text = re.sub(rf'<Instrument id="{old}">(.*?)<instrumentId>[^<]*',
+                      lambda m: f'<Instrument id="{new}">{m.group(1)}<instrumentId>{sound}', text, flags=re.S)
+    settings = json.loads(files["audiosettings.json"])
+    for part, template in re.findall(r'<Part id="(\d+)">.*?<Instrument id="([^"]+)">', text, flags=re.S):
+        if template in overrides:
+            pack, sound, uid, setup = overrides[template]
+            meta = {"attributes": {"museCategory": pack, "museName": sound, "musePack": pack, "museUID": uid,
+                                   "museVendorName": "", "playbackSetupData": setup},
+                    "hasNativeEditorSupport": False, "id": f"{pack}\\{sound}\\{uid}",
+                    "type": "muse_sampler_sound_pack", "vendor": "MuseSounds"}
+            settings["tracks"].append({"instrumentId": template, "partId": part,
+                                       "in": {"resourceMeta": meta, "unitConfiguration": {}}})
+    files[name], files["audiosettings.json"] = text.encode(), json.dumps(settings).encode()
+    with zipfile.ZipFile(score, "w", zipfile.ZIP_DEFLATED) as archive:
+        for file, data in files.items():
+            archive.writestr(file, data)
+
+
+def sound_map(score, profile):
+    """{part: (template, sound, resource type)}: the profile's choice unless the score pins one."""
+    report = score.with_suffix(".tracks.json")
+    run(MSCORE, "--sound-profile", profile, "--tracks-diff", str(report), "-o", str(score.with_suffix(".mp3")), str(score))
+    tracks = json.loads(report.read_text())
+    chosen = {t["partId"]: t for t in tracks["newTracks"] if t["partId"] != "999"}
+    chosen.update({t["partId"]: t for t in tracks["oldTracks"] if t["partId"] in chosen})
+    return {part: (t["instrumentId"], t["name"], t["type"]) for part, t in sorted(chosen.items(), key=lambda i: int(i[0]))}
+
+
+def assert_sampler_log(began):
+    """MuseScore writes one log per run; the render's must show Muse Sounds starting."""
+    logs = Path.home() / "Library/Application Support/MuseScore/MuseScore4/logs"
+    latest = max((log for log in logs.glob("*.log") if log.stat().st_mtime >= began), key=lambda log: log.stat().st_mtime)
+    text = latest.read_text(errors="replace")
+    assert "MuseSampler successfully inited" in text and "Successfully initialized sampler" in text, latest
 
 
 def track_notes(track):
@@ -143,7 +216,7 @@ def split_bass(midi_path, name):
     return *paths, notes
 
 
-def probe(bass_midi, name):
+def probe(bass_midi, name, sounds):
     """Fit MuseScore's timeline from a side-stick click at every bass note start.
 
     MuseScore sounds events a few milliseconds late in 4/4, and in 12/8 its clock
@@ -161,26 +234,34 @@ def probe(bass_midi, name):
         previous = t
     probe_midi, probe_wav = WORK / (name + "-probe.midi"), WORK / (name + "-probe.wav")
     mido.MidiFile(type=1, ticks_per_beat=midi.ticks_per_beat, tracks=[midi.tracks[0], clicks]).save(probe_midi)
-    render(probe_midi, probe_wav, "ms-basic")
+    render(probe_midi, probe_wav, sounds)
     audio, _ = sf.read(probe_wav, dtype="float32", always_2d=True)
-    level = np.abs(audio).max(axis=1)
-    # Follow the drift click by click: search near where the last click's lateness predicts.
-    lateness, nominal, measured = 0.0, [], []
-    for t in starts:
-        seconds = mido.tick2second(t, midi.ticks_per_beat, tempo)
-        reach = PROBE_REACH_MS / 1000 * (4 if not measured else 1)
-        low = max(round((seconds + lateness - reach) * RATE), 0)
-        window = level[low:round((seconds + lateness + reach) * RATE)]
-        first = low + int(np.argmax(window >= ATTACK_LEVEL * window.max()))
-        lateness = first / RATE - seconds
-        nominal.append(seconds)
-        measured.append(lateness)
-    nominal, measured = np.array(nominal), np.array(measured)
+    onsets = click_onsets(np.abs(audio).max(axis=1))
+    nominal = [mido.tick2second(t, midi.ticks_per_beat, tempo) for t in starts]
+    nearest = lambda t: onsets[np.argmin(np.abs(onsets - t))]
+    # Some clicks never sound (Muse Sounds drops the first), so follow the drift from
+    # onset to onset and skip any click with no onset near where the drift predicts.
+    lateness = float(np.median([nearest(t) - t for t in nominal[:8]]))
+    matched = []
+    for t in nominal:
+        found = nearest(t + lateness)
+        if abs(found - t - lateness) < PROBE_REACH_MS / 1000:
+            lateness = found - t
+            matched.append((t, lateness))
+    assert len(matched) > .8 * len(nominal), ("probe clicks found", len(matched), len(nominal))
+    nominal, measured = (np.array(column) for column in zip(*matched))
     fit = np.polyfit(nominal, measured, 1)
     keep = np.abs(measured - np.polyval(fit, nominal)) < PROBE_OUTLIER_MS / 1000
     fit = np.polyfit(nominal[keep], measured[keep], 1)
     points = np.linspace(nominal[0], nominal[-1], 5)
     return (lambda t: t + np.polyval(fit, t)), [round(float(np.polyval(fit, t)) * 1000, 2) for t in points]
+
+
+def click_onsets(level):
+    """Seconds at which the level first crosses ATTACK_LEVEL of its peak, at least 50 ms apart."""
+    above = np.flatnonzero(level >= ATTACK_LEVEL * level.max())
+    firsts = above[np.insert(np.diff(above) > RATE // 20, 0, True)]
+    return firsts / RATE
 
 
 def mix_bass(band_wav, notes, to_mscore, name):
@@ -252,7 +333,10 @@ def cut_loop(mastered, start, end, name, ogg):
     run("sox", str(mastered), str(parts[1]), "trim", f"{reference}s", f"{fade + hold}s", "fade", "h", f"{fade}s")
     run("sox", "-m", "-v", "1", str(parts[0]), "-v", "1", str(parts[1]), str(parts[2]))
     run("sox", str(mastered), str(parts[3]), "trim", "0s", f"{split}s")
-    run("sox", str(parts[3]), str(parts[2]), "-C", OGG_QUALITY, str(ogg))
+    # The owner auditions this uncompressed copy; the game plays the Ogg encoded from it.
+    final = WORK / f"final-{name}.wav"
+    run("sox", str(parts[3]), str(parts[2]), "-b", "24", str(final))
+    run("sox", str(final), "-C", OGG_QUALITY, str(ogg))
     return split + fade + hold
 
 
@@ -319,8 +403,8 @@ def build(slug, sounds, output):
     midi, pages = engrave(name)
     band_midi, bass_midi, notes = split_bass(midi, name)
     band = WORK / (name + "-band.wav")
-    render(band_midi, band, sounds)
-    to_mscore, lateness = probe(bass_midi, name)
+    sound_parts = render(band_midi, band, sounds, RETARGET, OVERRIDES)
+    to_mscore, lateness = probe(bass_midi, name, sounds)
     start, end = (round(to_mscore(seconds) * RATE) for seconds in timeline(midi))
     rendered, bass_gain = mix_bass(band, notes, to_mscore, name)
     mastered = master(rendered, start, end, reverb, name)
@@ -340,7 +424,7 @@ def build(slug, sounds, output):
               "source": str((SOURCE / (name + ".ly")).relative_to(ROOT)),
               "score_pages": [str(page.relative_to(ROOT)) for page in pages],
               "duration_seconds": end / RATE, "integrated_lufs": final_lufs, "true_peak_dbfs": final_peak,
-              "ogg_bytes": ogg.stat().st_size, **seam, "mscore_lateness_ms": lateness, "bass_gain_db": bass_gain}
+              "ogg_bytes": ogg.stat().st_size, **seam, "mscore_lateness_ms": lateness, "sounds_by_part": sound_parts, "bass_gain_db": bass_gain}
     (WORK / (name + "-report.json")).write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({slug: report}), flush=True)
     return report
@@ -361,7 +445,7 @@ def main():
     if len(reports) == len(PIECES):
         spread = max(r["integrated_lufs"] for r in reports.values()) - min(r["integrated_lufs"] for r in reports.values())
         assert spread <= 2, ("loudness spread", spread)
-        (output / "report.json").write_text(json.dumps(reports, indent=2) + "\n")
+        (WORK / ("report.json" if output == OUTPUT else "preview/report.json")).write_text(json.dumps(reports, indent=2) + "\n")
     print("MUSIC_OK", flush=True)
 
 

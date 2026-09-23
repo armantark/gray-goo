@@ -165,7 +165,9 @@ stopTime = \drummode {
   << { cymr8 cymr cymr cymr cymr cymr cymr cymr } \\ { bd8 r8 r8 sn8 r2 } >>
 }
 bluesKit = \drummode { \crash \repeat unfold 10 \groove \fill }
-hands = \drummode { << { \repeat unfold 8 tamb8 } \\ { r4 hc4 r4 hc4 } >> }
+% One instrument per staff, so MuseScore's MIDI import names each one and Muse Sounds plays it.
+tambourineBar = \drummode { \repeat unfold 8 tamb8 }
+clapBar = \drummode { r4 hc4 r4 hc4 }
 
 organ = {
   \global <>\p
@@ -211,9 +213,13 @@ kit = \drummode {
   \bluesKit \bluesKit \bluesKit
   \groove \groove \groove \fill
 }
-clapping = \drummode {
+tambourine = \drummode {
   \meter <>\pp
-  R1*4 \repeat unfold 24 \hands R1*8 R1*12 \repeat unfold 24 \hands R1*4
+  R1*4 \repeat unfold 24 \tambourineBar R1*8 R1*12 \repeat unfold 24 \tambourineBar R1*4
+}
+claps = \drummode {
+  \meter <>\pp
+  R1*4 \repeat unfold 24 \clapBar R1*8 R1*12 \repeat unfold 24 \clapBar R1*4
 }
 % Boogaloo conga tumbao: slap on two, open tones pushing into the next bar.
 tumbao = \drummode { r8 cgh cghm4 r8 cgh cgl cgl }
@@ -240,8 +246,10 @@ congas = \drummode {
       { \kit }
     \new DrumStaff \with { instrumentName = "Congas" }
       { \congas }
-    \new DrumStaff \with { instrumentName = "Hands" }
-      { \clapping }
+    \new DrumStaff \with { instrumentName = "Tambourine" }
+      { \tambourine }
+    \new DrumStaff \with { instrumentName = "Claps" }
+      { \claps }
   >>
   \layout { }
   \midi { }
