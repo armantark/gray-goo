@@ -6,7 +6,7 @@ const SUBSTEPS := 2
 const SOLVER_ITERATIONS := 4
 const GRAY := Color(0.57, 0.61, 0.65)
 # Share of the propulsion blocked by an obstacle that turns along its surface.
-const SLIDE_TURN := 0.5
+const SLIDE_TURN := 0.75
 const OUTLINE_SHADER := """
 shader_type spatial;
 render_mode unshaded, cull_front;
@@ -95,7 +95,7 @@ var _eye_body_velocity := Vector3.ZERO
 var _facing := Vector3(0, 0, 1)
 var _configured := false
 var _contact_radius: float = 0.0
-var _obstacle_push := Vector3.ZERO
+var _pressed: Array[Dictionary] = []
 
 func configure(start: Vector3, starting_radius: float, ground_height: Callable,
 		obstacles: Callable, field: Rect2) -> void:
@@ -206,7 +206,7 @@ func _step(dt: float) -> void:
 	if not desired.is_zero_approx():
 		turn = Basis(Vector3.UP.cross(desired).normalized(), travel_rate * 0.8 * dt)
 	var solids: Array = _obstacles.call(center, radius * 2.2)
-	_obstacle_push = Vector3.ZERO
+	_pressed.clear()
 	for i in _points.size():
 		_points[i] = center + (_points[i] - center) * growth
 		_previous[i] = center + (_previous[i] - center) * growth
@@ -239,12 +239,14 @@ func _step(dt: float) -> void:
 		_solve_volume(center, elasticity)
 		for i in _points.size():
 			_solve_contact(i, solids, dt, iteration == SOLVER_ITERATIONS - 1)
-	# Without this the pressed shell bulges upward and crawls up the obstacle.
-	_slide_along(_obstacle_push.normalized())
 	center = Vector3.ZERO
 	for point in _points:
 		center += point
 	global_position = center / _points.size()
+	# Without this the pressed shell bulges upward and crawls up the obstacle. The normal comes
+	# from the body's center, not the particle pushes, because reaching feet make those noisy.
+	for solid in _pressed:
+		_slide_along(Vector3(global_position.x - solid.center.x, 0.0, global_position.z - solid.center.z).normalized())
 	_previous_dt = dt
 
 # Propulsion into an obstacle turns along its surface, so the goo slides around a large object
@@ -405,8 +407,8 @@ func _project_obstacle(point: Vector3, solid: Dictionary, skin: float,
 		push = Vector3.RIGHT * solid_radius
 	if bottom > float(_ground_height.call(point)) + skin and point.y - bottom < push.length():
 		push = Vector3.DOWN * (point.y - bottom)
-	if last_iteration:
-		_obstacle_push += Vector3(push.x, 0.0, push.z)
+	if last_iteration and push.y == 0.0 and not _pressed.has(solid):
+		_pressed.append(solid)
 	if last_iteration and solid.has("body"):
 		var body: RigidBody3D = solid.body
 		if is_instance_valid(body):
