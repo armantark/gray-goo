@@ -4,10 +4,13 @@ var _trials := 1
 var _seed := 9217
 var _randomized := false
 # Levels built from a placement table; tickets 09 to 11 add the other three.
-const HAND_PLACED := [1]
+const HAND_PLACED := [0, 1]
 # Seconds of spawn-point release each tier may draw on to reach its next jump, on top of the food
 # it already holds; about the time the route should spend in a view.
 const SUPPLY_SECONDS := 90.0
+# Whole-second steps release at most one mover per step and round every wait up to the next
+# second, which undercounts a spawn point's stated rate by up to a fifth; quarter seconds do not.
+const SUPPLY_STEP := 0.25
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -145,8 +148,8 @@ func _check_ladder(world: GameWorld) -> bool:
 			changed = gained > 0.0
 			volume += gained
 			if not changed and not world.spawns.is_empty() and supplied < SUPPLY_SECONDS:
-				world._physics_process(1.0)
-				supplied += 1.0
+				world._physics_process(SUPPLY_STEP)
+				supplied += SUPPLY_STEP
 				changed = true
 		var closes := volume + 0.00001 >= pow(target, 3.0)
 		valid = valid and closes

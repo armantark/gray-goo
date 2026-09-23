@@ -193,10 +193,12 @@ func _add_food(kind: String, at: Vector2, size: float, volume: float,
 		_grown_past += 1
 	return food
 
-# A spawned mover that was eaten or has left the level leaves every registry, so the scans
+# A spawned mover that was eaten or has left the level leaves every registry with its parts, so the scans
 # stay the size of the live level. Like any meal it keeps its node until the level is freed,
 # because the driver and the HUD may still hold it.
 func _retire(food: Food) -> void:
+	for part in food.parts:
+		_retire(part)
 	food.active = false
 	food.hide()
 	food.set_physics_process(false)
@@ -275,6 +277,8 @@ func _step_spawns(delta: float) -> void:
 func _release(point: Dictionary) -> void:
 	var at: Vector2 = point.from[0].lerp(point.from[-1], _rng.randf())
 	var food := _make(point.kind, at, _rng.randf_range(point.sizes.x, point.sizes.y))
+	if point.kind.has("build"):
+		point.kind.build.call(food)
 	point.movers.append({"food": food, "age": 0.0, "from": at, "at": at, "seed": _rng.randf()})
 
 func _move(point: Dictionary, mover: Dictionary, delta: float) -> void:
