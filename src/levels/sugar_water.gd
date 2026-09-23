@@ -2,17 +2,19 @@ extends RefCounted
 
 # One drop of sugar water. A gamma ray struck the drop's south-west side, and the goo starts on the
 # vertex where it split. Particles fly out of the vertex, and atoms condense along the four tracks
-# of the shower: forming atoms near the vertex, heavier bare nuclei and loose hydrogen farther out.
-# The sucrose molecule, the milestone, floats across the drop inside its hydration shell, and
-# the rest of the water holds itself together in hydrogen-bonded chains and rings, each molecule's
-# hydrogens pointing at its neighbor's oxygen. More water diffuses in from the drop's rim toward
-# the sucrose as the goo grows.
+# of the shower: new atoms near the vertex, bound nuclei and loose hydrogen farther out. Across the
+# drop floats the sucrose, the milestone, and between them the glucose and fructose of one sucrose
+# that water has already split. Water diffuses in from the rim: beside the sugar it circles as its
+# hydration shell, far from it it only jostles.
 
 const Geometry = preload("res://src/levels/atomic_cosmic_geometry.gd")
 const NUCLEON_RADIUS := 0.18
 # A new atom's nucleons stand this many times farther apart than in a settled nucleus, so each
 # one's quarks sit clear of its neighbors.
 const LOOSE := 2.0
+# Sugars draw each atom as a sphere this far apart per unit of the sucrose layout, hydrogen this big.
+const SUGAR_SPACING := 0.2
+const SUGAR_HYDROGEN := 0.45
 # Each food grows the goo by its visible volume times this density, so a meal's reward always
 # matches the size the goo sees it swallow.
 const GROWTH_DENSITY := 0.22
@@ -43,8 +45,11 @@ const TRACKS := [
 
 # [kind, at, turn in degrees, size]
 const PLACED := [
-	# The milestone, across the drop from the vertex.
+	# The milestone, across the drop from the vertex, and the halves of one sucrose that water has
+	# already split, drifting apart in the middle of the drop.
 	["sucrose", SUCROSE, 20, 4.2],
+	["glucose", Vector2(-12.0, -22.0), 70, 2.56],
+	["fructose", Vector2(10.0, 14.0), 200, 2.7],
 	# Newly formed atoms along the tracks, nearest the vertex, where the goo starts among them.
 	["new_hydrogen", Vector2(-41.1, 28.0), 0, 1.3],
 	["new_helium", Vector2(-40.7, 31.2), 120, 1.3],
@@ -69,7 +74,6 @@ const BACKDROP := [
 ]
 
 var world: GameWorld
-var sucrose: Food
 var drop: Node3D
 var _orbits: Array[Dictionary] = []
 var _gluons: Array[Dictionary] = []
@@ -116,6 +120,10 @@ func build(scene_world: GameWorld) -> void:
 	var kinds := {
 		"sucrose": {"label": "Sucrose molecule · C12H22O11", "tier": 4, "density": GROWTH_DENSITY, "whole": drop,
 			"reason": "The dissolved sugar floats across the drop from the vertex.", "build": _build_sucrose},
+		"glucose": {"label": "Glucose molecule · C6H12O6", "tier": 3, "density": GROWTH_DENSITY, "whole": drop,
+			"reason": "Water split one sucrose, and its glucose and fructose drift apart.", "build": _solid_sugar.bind(_sugar_half(true))},
+		"fructose": {"label": "Fructose molecule · C6H12O6", "tier": 3, "density": GROWTH_DENSITY, "whole": drop,
+			"reason": "Water split one sucrose, and its glucose and fructose drift apart.", "build": _solid_sugar.bind(_sugar_half(false))},
 		"new_hydrogen": {"label": "Hydrogen atom", "tier": 3, "density": NEW_CLOUD_DENSITY, "whole": drop,
 			"reason": reason, "build": _new_atom.bind(1, 0)},
 		"new_helium": {"label": "Helium atom", "tier": 3, "density": NEW_CLOUD_DENSITY, "whole": drop,
@@ -157,22 +165,33 @@ func _shell(at: Vector2, size: float, label: String, parent: Food) -> Food:
 	atom.collect_when_empty = false
 	return atom
 
-# The sugar is one solid milestone: a space-filling model of all 45 atoms, too big to eat until the
-# Molecules view and a wall until then. Its atoms are not separate meals, so no goo can take the
-# sugar apart before it has grown into it.
+# Each sugar is one solid object: a space-filling model of all its atoms, a wall to any goo smaller
+# than itself and then one meal. Its atoms are not separate meals, so no goo can take the sugar
+# apart before it has grown into it. Every sugar draws its atoms at the same spacing and size.
+func _solid_sugar(molecule: Food, atoms: Array) -> void:
+	molecule.visual.add_child(_space_filling(atoms, SUGAR_SPACING, SUGAR_HYDROGEN, false))
+	molecule.height = 1.6
+	molecule.collider_radius = molecule.radius
+	_add_drift(molecule, 1.0, 0.012)
+
 func _build_sucrose(molecule: Food) -> void:
-	sucrose = molecule
-	sucrose.milestone = true
-	var atoms := _sucrose_atoms()
-	var extent := 0.0
+	molecule.milestone = true
+	_solid_sugar(molecule, _sucrose_atoms())
+
+# Water splits sucrose at its bridging oxygen: the glucose keeps that oxygen and caps it with a
+# hydrogen, and the fructose gains a hydroxyl where the bridge was. Each half centres on itself.
+func _sugar_half(glucose: bool) -> Array:
+	var whole := _sucrose_atoms()
+	var bridge: Vector2 = whole[14][0]
+	var atoms := whole.filter(func(atom: Array) -> bool: return (atom[0].x < 0.5) == glucose)
+	if glucose:
+		atoms.append([bridge + Vector2(1.75, 0.0), 1])
+	else:
+		atoms.append_array([[bridge - Vector2(0.3, 0.0), 8], [bridge - Vector2(2.05, 0.0), 1]])
+	var center := Vector2.ZERO
 	for atom in atoms:
-		extent = maxf(extent, atom[0].length())
-	var hydrogen := 0.45
-	sucrose.visual.add_child(_space_filling(atoms, (sucrose.radius - hydrogen) / extent, hydrogen, false))
-	sucrose.height = 1.6
-	sucrose.collider_radius = sucrose.radius
-	sucrose.set_meta("formula", "C12H22O11")
-	_add_drift(sucrose, 1.0, 0.012)
+		center += atom[0] / atoms.size()
+	return atoms.map(func(atom: Array) -> Array: return [atom[0] - center, atom[1]])
 
 # [at, protons] for each of sucrose's atoms: a six-ring and a five-ring joined by one oxygen, with
 # their hydroxyl groups and hydrogens.
@@ -380,13 +399,15 @@ func _build_spawns() -> void:
 	var fusing := "Nucleons fuse into nuclei at the ends of the shower's tracks and drift on."
 	for tip in [NORTH_TIP, SOUTH_TIP, WEST_TIP]:
 		_world_spawn("", "Nucleus", 2, fusing, [tip], Vector2(0.5, 0.78), Vector2i(1, 1), 0.085, 3, 45.0, _drift_on, _nucleus_of_size)
-	for tip in [WEST_TIP, SOUTH_TIP]:
+	# The west track goes on releasing hydrogen, more slowly, through the Atoms view, until the goo
+	# can eat the sugars.
+	for source in [[WEST_TIP, 2, 0.24], [SOUTH_TIP, 2, 0.24], [WEST_TIP, 3, 0.09]]:
 		_world_spawn("", "Hydrogen atom", 3, "A nucleus catches a stray electron at the end of its track.",
-			[tip], Vector2(0.8, 0.9), Vector2i(2, 2), 0.24, 4, 60.0, _wander, _light_atom.bind(1, 0))
+			[source[0]], Vector2(0.8, 0.9), Vector2i(source[1], source[1]), source[2], 4, 60.0, _wander, _light_atom.bind(1, 0))
 	var diffusing := "Bulk water diffuses in from the drop's rim toward the sugar."
-	_world_spawn("", "Water molecule · H2O", 4, diffusing, NORTH_RIM, Vector2(3.7, 3.7), Vector2i(4, 4), 0.26, 4, 80.0, _diffuse, _water)
+	_world_spawn("", "Water molecule · H2O", 4, diffusing, NORTH_RIM, Vector2(3.7, 3.7), Vector2i(4, 4), 0.31, 4, 80.0, _diffuse, _water)
 	for rim in [SOUTH_RIM, WEST_RIM]:
-		_world_spawn("", "Water molecule · H2O", 4, diffusing, rim, Vector2(3.7, 3.7), Vector2i(3, 4), 0.065, 3, 80.0, _jostle, _water)
+		_world_spawn("", "Water molecule · H2O", 4, diffusing, rim, Vector2(3.7, 3.7), Vector2i(3, 4), 0.02, 3, 80.0, _jostle, _water)
 
 func _world_spawn(model: String, label: String, tier: int, reason: String, from: Array, sizes: Vector2,
 		tiers: Vector2i, rate: float, limit: int, lifetime: float, move: Callable, composite: Callable = Callable()) -> void:
