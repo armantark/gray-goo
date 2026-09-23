@@ -305,6 +305,9 @@ func _choose_target() -> void:
 	for food in _game.world.foods:
 		if not _game.world.is_edible(food, _game.goo.radius) or _skipped.get(food.get_instance_id(), 0.0) > _elapsed:
 			continue
+		# Movers that enter from past the field edge are out of the goo's reach until they cross it.
+		if not _game.world.field.has_point(Vector2(food.center().x, food.center().z)):
+			continue
 		var distance: float = food.center().distance_squared_to(_game.goo.global_position)
 		if _route_seed != 0:
 			distance *= _route_rng.randf_range(0.75, 1.25)
