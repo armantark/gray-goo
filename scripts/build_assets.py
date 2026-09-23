@@ -119,7 +119,7 @@ MODEL_COLORS = {
     "pebble": "#A7A18E",
     "truck": "#A8B4BE",
     "helmet": "#DEA754",
-    "shoe": "#657F98",
+    "shoe": "#5B8CC2",
     "water_bottle": "#92BFCC",
     "skater": "#5B9F92",
     "bench": "#B49169",
