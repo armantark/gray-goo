@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** open
+**Status:** claimed by opus-5.5 ticket agent
 
 - [ ] A native frame series of one jump in each level shows the slow moment, the zoom, and the tier name with no truncation.
 - [ ] A native frame series of a turn shows the camera look ahead with no shake.
