@@ -8,6 +8,7 @@ var _level := 0
 var _last_level := 3
 var _elapsed := 0.0
 var _previous_tick := 0
+var _level_started := 0
 var _next_progress := 15.0
 var _next_capture := 2.0
 var _frames := PackedFloat64Array()
@@ -73,6 +74,15 @@ func _begin() -> void:
 		push_error("Use --speed=<positive multiplier>")
 		quit(2)
 		return
+	# Headless Godot sleeps between frames, so without a fixed frame rate simulated time runs no
+	# faster than wall time. Godot hides its own flags from get_cmdline_args and has no query for a
+	# fixed frame rate, so the check reads this process's command line.
+	var command := []
+	OS.execute("ps", ["-o", "command=", "-p", str(OS.get_process_id())], command)
+	if _simulation_clock and not command[0].get_slice(" -- ", 0).split(" ").has("--fixed-fps"):
+		push_error("--simulation-clock needs the engine flag --fixed-fps 60; run routes through scripts/route.sh")
+		quit(2)
+		return
 	_route_rng.seed = _route_seed
 	if _simulation_clock:
 		Engine.max_fps = 0
@@ -87,6 +97,7 @@ func _begin() -> void:
 		_game.start_level(_level)
 	_game.hud.movement_speed = _speed
 	_previous_tick = Time.get_ticks_usec()
+	_level_started = _previous_tick
 
 func _process(delta: float) -> bool:
 	if _game == null or _ending:
@@ -360,7 +371,8 @@ func _finish_level() -> void:
 		"stuck": _elapsed - _grew_at >= GIVE_UP_SECONDS, "position": str(_game.goo.global_position),
 		"clock": "simulation" if _simulation_clock else "wall",
 		"route_seed": _route_seed,
-		"play_seconds": _elapsed, "jumps": _jumps.duplicate(true), "radius": pow(_game._volume, 1.0 / 3.0),
+		"play_seconds": _elapsed, "simulated_per_wall_second": _elapsed * 1000000.0 / (Time.get_ticks_usec() - _level_started),
+		"jumps": _jumps.duplicate(true), "radius": pow(_game._volume, 1.0 / 3.0),
 		"frames": _frames.size(), "measured_seconds": seconds, "average_fps": _frames.size() / seconds,
 		"p95_ms": _frames[int(_frames.size() * 0.95)] * 1000.0, "viewport": str(root.get_visible_rect().size),
 		"renderer": RenderingServer.get_current_rendering_method(), "speed_multiplier": _game.hud.movement_speed}
@@ -390,6 +402,7 @@ func _finish_level() -> void:
 	_jumps.clear()
 	_tier = 0
 	_previous_tick = Time.get_ticks_usec()
+	_level_started = _previous_tick
 	_target = null
 	_chased = null
 	_skipped.clear()

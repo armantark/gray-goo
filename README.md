@@ -101,7 +101,7 @@ Each level result also counts missed edible contacts (the goo touches food the g
 
 `--seed=439` varies target choices reproducibly. The driver retries another target if it stops moving or makes no growth for 15 seconds, so it cannot chase an inaccessible moving part forever. After 30 seconds without growth it ends the level and reports it as `stuck`.
 
-For routine eat-rule and timing runs, use `scripts/route.sh <out_dir> [level ...]`. It runs one headless process per level in parallel on a fixed 60 fps game clock, about 2.3 times faster than real time, and prints each level's time, missed meals, stalls, and longest gap between meals. Add `ROUTE_FLAGS="--seed=21"` for another seed. Those reports use simulation seconds. They do not establish native completion time or render performance.
+For routine eat-rule and timing runs, use `scripts/route.sh <out_dir> [level ...]`. It runs one headless process per level in parallel on a fixed 60 fps game clock, about 2.3 times faster than real time, and prints each level's time, missed meals, stalls, and longest gap between meals. Add `ROUTE_FLAGS="--seed=21"` for another seed. Those reports use simulation seconds, and each result's `simulated_per_wall_second` shows how much faster than real time the run went. The driver refuses `--simulation-clock` without the engine's `--fixed-fps 60`, which `route.sh` passes. They do not establish native completion time or render performance.
 
 Inspect untouched scenes at all five sizes and measure their uncapped render performance:
 
