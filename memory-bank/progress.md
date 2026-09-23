@@ -636,7 +636,7 @@ Before this ticket, Tide Pool won in 119.823889301892 s (shell) and 113.02388930
 
 These are on the final code, after the review fixes; the runs just before them (same pacing) took 472.0 and 449.2 s (shell) and 396.0 and 373.8 s (procedural). Every abandoned target is a driver artifact, not a stall: the goo waits with no edible target (`target=pool`) for a mover, its still-time accumulates in `_stalled`, and the first target that appears is abandoned at once as "stalled" with no obstacle within reach.
 
-Performance, native `--resolution 1920x1080 --audio-driver Dummy`, `drive_levels.gd --limit=20 --performance`, HOME redirected: 59.8873318922632 fps (p95 18.373 ms) from the driver, 59.7423694904456 from the game, load averages 25.98 30.20 35.95 from other agents.
+Performance, native `--resolution 1920x1080 --audio-driver Dummy`, `drive_levels.gd --limit=20 --performance`, HOME redirected: 59.8873318922632 fps (p95 18.373 ms) from the driver, 59.7423694904456 from the game, load averages 25.98 30.20 35.95 from other agents. Measured on 6043718, before the review fixes, which only remove per-tick work.
 
 **Review** (GPT-6 Astra through Codex, read-only, xhigh). Fixed: water movers left two bond entries each in `_bonds` for good, and eaten nuclei stayed in `_nuclei`, so both lists grew all session (dead entries are now dropped); the solid sugars and bound nuclei were white meals, so their bite burst and goo tint did not match their colors (their pigment is now the volume-weighted mix of what they draw). No placement, footprint, or registry defects found.
 
