@@ -7,7 +7,7 @@ const MUSIC_TRACKS := [
 	"res://assets/audio/cosmic_drift.ogg",
 ]
 
-const BODY_LENGTHS_PER_SECOND := 4.0
+const BODY_LENGTHS_PER_SECOND := 8.0
 var world: GameWorld
 var goo: GooBody
 var rig: GooCamera

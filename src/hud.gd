@@ -319,7 +319,7 @@ func _build_menu() -> void:
 	var error := _settings.load("user://settings.cfg")
 	if error != OK and error != ERR_FILE_NOT_FOUND:
 		push_error("Could not load movement settings: %s" % error_string(error))
-	movement_speed = clampf(float(_settings.get_value("controls", "movement_speed", 2.0 if OS.has_feature("web") else 1.0)), 0.1, 2.0)
+	movement_speed = clampf(float(_settings.get_value("controls", "movement_speed", 1.0)), 0.1, 2.0)
 	body_kind = str(_settings.get_value("controls", "body", "shell"))
 	music_enabled = bool(_settings.get_value("audio", "music", true))
 	menu = _panel(_root)
