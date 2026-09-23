@@ -4,7 +4,7 @@
 
 **Blocked by:** 06 Eat moment, edible signal, and arrow; 07 Size jump and camera; 09 Hand-placed Sugar Water; 10 Hand-placed Skatepark Bowl; 11 Hand-placed Cosmic Web; 12 3D model test; 14 New soundtrack.
 
-**Status:** open
+**Status:** claimed by opus-5.5 ticket-13 agent
 
 - [ ] The macOS export and the browser export complete without engine errors.
 - [ ] Each level's 20-second native route averages at least 58 frames per second at 1920 × 1080.
