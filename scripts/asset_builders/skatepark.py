@@ -214,7 +214,7 @@ def _shoe_body(collection):
 
 def _shoe_collar(collection):
     canvas = material("Shoe denim canvas", "#5B8CC2", roughness=0.9)
-    lining = material("Shoe lining", "#2E3E4A")
+    lining = material("Shoe lining", "#1F2A33")
     foxing = material("Shoe sole line", "#B44A3A")
     uv_sphere(collection, "shoe_ankle_opening", (-0.5, 0, _shoe_top(-0.5) - 0.04), (0.3, 0.2, 0.06), lining)
     rim = []
@@ -223,22 +223,27 @@ def _shoe_collar(collection):
         x = -0.5 + 0.34 * math.cos(a)
         # The collar dips over the ankle bones and rises again at the heel.
         rim.append((x, 0.24 * math.sin(a), _shoe_top(x) - 0.005 - 0.03 * math.sin(a) ** 2))
-    curve_tube(collection, "shoe_padded_collar", rim, 0.03, canvas, cyclic=True)
+    curve_tube(collection, "shoe_padded_collar", rim, 0.022, canvas, cyclic=True)
     box(collection, "shoe_heel_tab", (-0.985, 0, _shoe_top(-0.985) - 0.04), (0.03, 0.08, 0.09), foxing, 0.02)
 
 
 def _shoe_trim(collection):
     cream = material("Shoe laces", "#F4EEDC")
-    tongue = material("Shoe tongue", "#2E4B6E", roughness=0.95)
-    # The tongue is a soft pad that lies along the instep and lifts out of the ankle opening.
-    pad = uv_sphere(collection, "shoe_tongue", (-0.02, 0, _shoe_top(-0.02) + 0.03), (0.3, 0.15, 0.035), tongue)
-    pad.rotation_euler.y = math.atan2(_shoe_top(-0.3) - _shoe_top(0.25), 0.55) + 0.1
-    # Straight ladder lacing stays legible as separate bars at the game's 50 px size.
-    for x in (-0.06, 0.05, 0.16, 0.27):
-        bar = [_shoe_upper_point(x, v, side) + Vector((0, 0, 0.004)) for side, v in ((-1, 0.86), (0, 0.0), (1, 0.86))]
-        bar[1] = Vector((x, 0.0, _shoe_top(x) + 0.05))
-        curve_tube(collection, "shoe_lace", [tuple(point) for point in bar], 0.024, cream)
-    stripe = [(-0.72, 0.36), (-0.5, 0.38), (-0.25, 0.45), (0.0, 0.58), (0.16, 0.7), (0.27, 0.58), (0.3, 0.42), (0.32, 0.3)]
+    tongue = material("Shoe tongue", "#3F6A9B", roughness=0.95)
+    eyelet = material("Shoe eyelets", "#26343F", metallic=0.3)
+    # The tongue is a soft pad that lies along the instep and tucks into the throat.
+    pad = uv_sphere(collection, "shoe_tongue", (0.0, 0, _shoe_top(0.0) + 0.012), (0.3, 0.16, 0.03), tongue)
+    pad.rotation_euler.y = math.atan2(_shoe_top(-0.3) - _shoe_top(0.3), 0.6)
+    for x in (-0.08, 0.05, 0.18):
+        for sign in (-1, 1):
+            start, finish = _shoe_upper_point(x, 0.86, sign, -0.004), _shoe_upper_point(x + 0.11, 0.86, -sign, -0.004)
+            middle = (start + finish) / 2
+            # The two strands of a cross sit at different heights so they read as woven, not merged.
+            middle.z = _shoe_top(middle.x) + 0.065 + 0.012 * sign
+            curve_tube(collection, "shoe_lace", [tuple(start), tuple(middle), tuple(finish)], 0.02, cream)
+            for point in (start, finish):
+                uv_sphere(collection, "shoe_eyelet", tuple(point), (0.032, 0.032, 0.012), eyelet, segments=12, rings=6)
+    stripe = [(-0.6, 0.37), (-0.45, 0.38), (-0.25, 0.45), (0.0, 0.58), (0.16, 0.7), (0.27, 0.58), (0.3, 0.42), (0.32, 0.3)]
     for side in (-1, 1):
         path = [_shoe_upper_point(x, v, side, 0.008) for x, v in stripe]
         _ribbon(collection, "shoe_side_stripe", path, [_shoe_normal(x, v, side) for x, v in stripe], 0.03, cream)

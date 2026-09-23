@@ -72,18 +72,6 @@ def stage(background):
     scene.world.use_nodes = True
     scene.world.node_tree.nodes["Background"].inputs[0].default_value = rgba(background)
     scene.world.node_tree.nodes["Background"].inputs[1].default_value = 0.9
-    scene.render.use_freestyle = True
-    scene.render.line_thickness_mode = "ABSOLUTE"
-    for layer in scene.view_layers:
-        layer.use_freestyle = True
-        lineset = layer.freestyle_settings.linesets[0] if layer.freestyle_settings.linesets else layer.freestyle_settings.linesets.new("Outline")
-        lineset.select_by_visibility = True
-        lineset.select_silhouette = True
-        lineset.select_border = False
-        lineset.select_crease = False
-        lineset.linestyle.color = (0.055, 0.08, 0.10)
-        # Line widths below are multiplied by the line style thickness of 3; the game ink is 2.5 px at 1080p.
-        lineset.linestyle.thickness = 3.0
     for name, direction, energy, color in (
         ("Key", (-0.5, 0.7, -1.0), 3.2, "#FFF0D0"),
         ("Fill", (0.8, -0.4, -0.3), 1.0, "#98DCFF"),
@@ -102,14 +90,69 @@ def stage(background):
     return camera
 
 
-def render(camera, center, direction, scale, size, line, path):
+def toon(collection):
+    """Match the game's look: its three light bands on the baked albedo, and an inverted-hull ink outline."""
+    ink = bpy.data.materials.new("Review ink")
+    ink.use_nodes = True
+    ink.use_backface_culling = True
+    ink.node_tree.nodes["Principled BSDF"].inputs["Base Color"].default_value = (0.004, 0.007, 0.01, 1)
+    ink.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value = 1.0
+    hulls = []
+    for obj in collection.all_objects:
+        if obj.type != "MESH":
+            continue
+        for slot in obj.material_slots:
+            slot.material = banded(slot.material)
+        obj.data.materials.append(ink)
+        hull = obj.modifiers.new("Ink hull", "SOLIDIFY")
+        hull.use_flip_normals = True
+        hull.use_rim = False
+        hull.offset = 1.0
+        hull.material_offset = len(obj.data.materials) - 1
+        hulls.append(hull)
+    return hulls
+
+
+def banded(original):
+    mat = bpy.data.materials.new(original.name + " toon")
+    mat.use_nodes = True
+    nodes, links = mat.node_tree.nodes, mat.node_tree.links
+    nodes.clear()
+    texture = nodes.new("ShaderNodeTexImage")
+    texture.image = next(node.image for node in original.node_tree.nodes if node.type == "TEX_IMAGE")
+    light = nodes.new("ShaderNodeBsdfDiffuse")
+    to_rgb = nodes.new("ShaderNodeShaderToRGB")
+    bands = nodes.new("ShaderNodeValToRGB")
+    bands.color_ramp.interpolation = "CONSTANT"
+    bands.color_ramp.elements[0].color = (0.2, 0.2, 0.2, 1)
+    bands.color_ramp.elements[1].position = 0.55
+    bands.color_ramp.elements[1].color = (1, 1, 1, 1)
+    middle = bands.color_ramp.elements.new(0.05)
+    middle.color = (0.65, 0.65, 0.65, 1)
+    multiply = nodes.new("ShaderNodeMixRGB")
+    multiply.blend_type = "MULTIPLY"
+    multiply.inputs[0].default_value = 1.0
+    emission = nodes.new("ShaderNodeEmission")
+    output = nodes.new("ShaderNodeOutputMaterial")
+    links.new(light.outputs[0], to_rgb.inputs[0])
+    links.new(to_rgb.outputs["Color"], bands.inputs["Fac"])
+    links.new(texture.outputs["Color"], multiply.inputs[1])
+    links.new(bands.outputs["Color"], multiply.inputs[2])
+    links.new(multiply.outputs[0], emission.inputs["Color"])
+    links.new(emission.outputs[0], output.inputs["Surface"])
+    return mat
+
+
+def render(camera, center, direction, scale, size, hulls, path):
     scene = bpy.context.scene
+    for hull in hulls:
+        # The game's ink is 2.5 px wide at any zoom, so the hull follows the pixel scale.
+        hull.thickness = 2.5 * scale / size
     camera.location = center + direction.normalized() * 20
     camera.rotation_quaternion = (-direction).to_track_quat("-Z", "Y")
     camera.data.ortho_scale = scale
     camera.data.clip_end = 100
     scene.render.resolution_x = scene.render.resolution_y = size
-    scene.render.line_thickness = line
     scene.render.filepath = str(path)
     bpy.ops.render.render(write_still=True)
     print(f"RENDERED {path}")
@@ -120,10 +163,11 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     collection = build(args.model, args.export)
     camera = stage(args.background)
+    hulls = toon(collection)
     low, high = assets.collection_bounds(collection)
     center, extent = (low + high) / 2, max(high - low)
     for view, direction in VIEWS.items():
-        render(camera, center, direction, extent * 1.3, 1024, 1.0, args.output / f"{args.model}-{view}.png")
+        render(camera, center, direction, extent * 1.3, 1024, hulls, args.output / f"{args.model}-{view}.png")
 
     ground = new_collection("Game ground")
     mesh_object(ground, "Concrete", [(-9, -9, 0), (9, -9, 0), (9, 9, 0), (-9, 9, 0)], [(0, 1, 2, 3)], material("Game concrete", args.ground))
@@ -132,7 +176,7 @@ def main():
     # Godot's camera sits toward +Z at yaw 0, which is Blender's -Y after the glTF Y-up conversion.
     game_direction = Vector((0, -math.cos(GAME_TILT), math.sin(GAME_TILT)))
     game_path = args.output / f"{args.model}-game.png"
-    render(camera, center, game_direction, GAME_PIXELS / pixels_per_unit, GAME_PIXELS, 0.8, game_path)
+    render(camera, center, game_direction, GAME_PIXELS / pixels_per_unit, GAME_PIXELS, hulls, game_path)
     subprocess.run(["magick", str(game_path), "-filter", "point", "-resize", "400%", str(args.output / f"{args.model}-game-x4.png")], check=True)
     print(f"MODEL_REVIEW_OK {args.model} game_pixels_across={2 * radius * pixels_per_unit:.1f}")
 
