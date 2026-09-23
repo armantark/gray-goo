@@ -25,11 +25,11 @@ const PLACED := [
 	["crown", Vector2(6.0, -26.0), 12, 4.4],
 	# The colony rings the reef on the deep end's lip. Four heads close around the start, a pair
 	# and then single heads spaced out along the lip, and an older patch against the west wall.
-	["coral_bush", Vector2(-6.5, -20.0), 20, 2.1],
+	["coral_head", Vector2(-8.0, -21.0), 20, 2.0],
 	["coral_head", Vector2(-10.5, -15.0), 75, 1.8],
 	["coral_spray", Vector2(-2.5, -9.5), 200, 1.7],
 	["coral_head", Vector2(3.5, -13.0), 310, 1.9],
-	["coral_bush", Vector2(13.0, -15.0), 45, 2.2],
+	["coral_head", Vector2(13.0, -15.0), 45, 2.1],
 	["coral_spray", Vector2(19.0, -20.5), 160, 1.8],
 	["coral_head", Vector2(27.0, -30.0), 115, 1.8],
 	["coral_head", Vector2(18.0, -38.0), 15, 2.0],
@@ -58,6 +58,12 @@ const PLACED := [
 	["snail", Vector2(-47.3, 15.9), 85, 1.35],
 	["snail", Vector2(19.6, -31.8), 195, 1.25],
 	["snail", Vector2(3.9, 17.3), 160, 1.3],
+	["snail", Vector2(-38.1, -20.9), 110, 0.95],
+	["snail", Vector2(15.2, -19.8), 245, 0.95],
+	["snail", Vector2(-16.6, 9.8), 5, 0.9],
+	["snail", Vector2(-28.5, -33.9), 290, 1.3],
+	["snail", Vector2(40.1, 7.3), 175, 1.25],
+	["snail", Vector2(13.6, 43.9), 60, 1.3],
 	# Periwinkles graze in small bands: below the start, along the colony's east lip, west of it,
 	# under the cliff, out on the south-west sand, over the middle, and at the west waterline.
 	["periwinkle", Vector2(0.8, -5.3), 35, 0.55],
@@ -103,6 +109,10 @@ const PLACED := [
 	["periwinkle", Vector2(-3.4, 3.7), 180, 0.6],
 	["periwinkle", Vector2(-27.4, -8.9), 55, 0.64],
 	["periwinkle", Vector2(36.4, -9.1), 240, 0.61],
+	["periwinkle", Vector2(-14.9, -13.8), 130, 0.63],
+	["periwinkle", Vector2(12.3, -8.4), 265, 0.58],
+	["periwinkle", Vector2(-30.9, -4.3), 20, 0.66],
+	["periwinkle", Vector2(-3.9, -33.9), 200, 0.6],
 	# Empty shells the waves carried over the spill, strewn across the south sand.
 	["seashell", Vector2(14.1, 30.9), 70, 1.3],
 	["seashell", Vector2(5.8, 26.4), 190, 1.15],
@@ -117,6 +127,9 @@ const PLACED := [
 	["seashell", Vector2(0.9, 34.4), 165, 1.3],
 	["seashell", Vector2(44.3, -12.7), 300, 1.5],
 	["seashell", Vector2(29.3, 11.2), 35, 1.55],
+	["seashell", Vector2(-6.9, 40.5), 260, 1.3],
+	["seashell", Vector2(-12.6, 21.4), 95, 1.35],
+	["seashell", Vector2(-19.8, 27.6), 310, 1.25],
 	# The fish shelter: an overhang on two rock feet, with its fish beneath and two hermit
 	# crabs picking over the scraps beside it. A third crab works the open sand.
 	["shelter", SHELTER, 20, 3.6],
@@ -145,6 +158,13 @@ const PLACED := [
 	["sea_star", Vector2(-38.5, 24.6), 300, 1.55],
 	["sea_star", Vector2(-17.3, -13.1), 275, 1.4],
 	["sea_star", Vector2(-45.9, -9.9), 145, 1.35],
+	["sea_star", Vector2(4.6, 29.9), 55, 1.4],
+	["sea_star", Vector2(-34.6, -9.5), 230, 1.45],
+	["sea_star", Vector2(-43.9, 27.6), 120, 1.4],
+	["sea_star", Vector2(-21.4, 44.0), 340, 1.95],
+	["sea_star", Vector2(-51.6, -22.5), 190, 1.9],
+	["sea_star", Vector2(11.4, -3.6), 70, 1.9],
+	["sea_star", Vector2(0.9, 49.6), 280, 1.95],
 	# Rocks broken from the rim that rolled into the pool, each alone so the goo passes around it.
 	["loose_rock", Vector2(-44.7, -24.1), 130, 2.3],
 	["loose_rock", Vector2(40.2, -28.3), 15, 2.2],
@@ -155,6 +175,7 @@ const PLACED := [
 	["loose_rock", Vector2(-24.9, -29.6), 85, 2.1],
 	["loose_rock", Vector2(-2.1, -31.3), 330, 2.0],
 	["loose_rock", Vector2(-8.4, -0.3), 160, 2.2],
+	["loose_rock", Vector2(-1.3, 8.2), 40, 2.2],
 	# Anemones spaced along the spill's inner lip, each claiming its own share of the wash. The gaps
 	# are wider than the goo that still cannot eat them: a narrow gap or an overlap is a trap.
 	["anemone", Vector2(19.0, 28.0), 0, 1.5],
@@ -184,22 +205,24 @@ const PLACED := [
 	["rim_boulder", Vector2(22.1, 43.3), 230, 3.7],
 	["rim_boulder", Vector2(-11.3, 46.4), 110, 2.4],
 	["rim_boulder", Vector2(-38.5, 33.5), 280, 2.9],
-	# Rocks and great boulders fallen from the headlands onto the beach around the pool, the
-	# greatest in its far corners.
+	# Rocks and great boulders fallen from the headlands onto the beach around the pool.
 	["beach_rock", Vector2(-64.3, -31.2), 70, 3.4],
 	["beach_rock", Vector2(66.1, 19.4), 190, 3.2],
 	["beach_rock", Vector2(36.7, -55.1), 310, 3.6],
-	["beach_rock", Vector2(-41.2, 56.3), 25, 3.1],
+	["beach_rock", Vector2(-30.5, 50.5), 25, 3.1],
 	["beach_rock", Vector2(-66.5, 8.7), 140, 3.3],
 	["beach_rock", Vector2(14.8, 53.2), 290, 2.4],
 	["beach_rock", Vector2(47.4, -44.6), 215, 3.5],
+	["beach_rock", Vector2(-48.6, -44.9), 100, 3.3],
+	["beach_rock", Vector2(-52.1, 31.9), 320, 3.2],
 	["beach_boulder", Vector2(-61.5, 44.8), 150, 4.7],
 	["beach_boulder", Vector2(60.3, -47.2), 20, 4.9],
-	["beach_boulder", Vector2(-60.8, -52.7), 265, 4.6],
-	["beach_boulder", Vector2(61.2, 50.9), 105, 4.8],
+	["beach_boulder", Vector2(-39.5, -52.0), 265, 4.6],
+	["beach_boulder", Vector2(52.0, 47.5), 105, 4.8],
 	["beach_boulder", Vector2(-3.1, 58.6), 335, 4.5],
 	["beach_boulder", Vector2(-66.2, -11.4), 50, 4.4],
 	["beach_boulder", Vector2(66.4, -17.2), 230, 4.5],
+	["beach_boulder", Vector2(55.8, 33.9), 175, 4.4],
 ]
 
 # Scree fallen from the cliff behind the deep end and from the west pair: scenery only,
@@ -238,7 +261,7 @@ func definition() -> Dictionary:
 		"jumps": [{"radius": 0.55, "view_size": 14.0}, {"radius": 0.85, "view_size": 20.0},
 			{"radius": 1.55, "view_size": 32.0}, {"radius": 2.4, "view_size": 45.0},
 			{"radius": 3.4, "view_size": 64.0}],
-		"growth_scale": 0.4,
+		"growth_scale": 0.35,
 		"simple": {"plankton": "", "periwinkle": "", "snail": "", "coral_branch": ""}}
 
 func ground_height(point: Vector3) -> float:
