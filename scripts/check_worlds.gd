@@ -3,11 +3,12 @@ extends SceneTree
 var _trials := 1
 var _seed := 9217
 var _randomized := false
-# Levels built from a placement table; tickets 09 to 11 add the other three.
-const HAND_PLACED := [1, 2, 3]
 # Seconds of spawn-point release each tier may draw on to reach its next jump, on top of the food
 # it already holds; about the time the route should spend in a view.
 const SUPPLY_SECONDS := 90.0
+# Whole-second steps release at most one mover per step and round every wait up to the next
+# second, which undercounts a spawn point's stated rate by up to a fifth; quarter seconds do not.
+const SUPPLY_STEP := 0.25
 const GLOW := preload("res://shaders/star_halo.gdshader")
 
 func _initialize() -> void:
@@ -34,8 +35,7 @@ func _run() -> void:
 			world.build(level)
 			if trial == 0:
 				success = _check_membership(world) and success
-				if level in HAND_PLACED:
-					success = _check_placement(world, level) and success
+				success = _check_placement(world, level) and success
 			var valid := _check_ladder(world)
 			success = valid and success
 			print("WORLD_TRIAL level=", level, " seed=", trial_seed, " randomized=", _randomized, " pass=", valid)
@@ -148,8 +148,8 @@ func _check_ladder(world: GameWorld) -> bool:
 			changed = gained > 0.0
 			volume += gained
 			if not changed and not world.spawns.is_empty() and supplied < SUPPLY_SECONDS:
-				world._physics_process(1.0)
-				supplied += 1.0
+				world._physics_process(SUPPLY_STEP)
+				supplied += SUPPLY_STEP
 				changed = true
 		var closes := volume + 0.00001 >= pow(target, 3.0)
 		valid = valid and closes

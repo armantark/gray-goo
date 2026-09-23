@@ -123,7 +123,7 @@ func _check_eat_rule(game: Node3D, kind: String) -> void:
 # Parts act as their own food until the goo eats the whole, and the whole then takes every
 # surviving part once. Each case bites one part and then the whole by contact, in every level.
 func _check_composite_meals(game: Node3D) -> void:
-	for case in [[0, "Water molecule · H2O", "Hydrogen atom"], [1, "Coral head", "Living coral branch"],
+	for case in [[0, "Helium atom", "Helium nucleus"], [1, "Coral head", "Living coral branch"],
 			[1, "Hermit crab", "Hermit crab shell"], [2, "Skater", "Skateboard"], [3, "Spiral galaxy", "Spiral arm"]]:
 		game.start_level(case[0])
 		# Spawn points add food as the level runs; this case audits one composite in a closed level.
