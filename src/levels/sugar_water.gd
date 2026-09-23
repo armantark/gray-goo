@@ -162,12 +162,9 @@ const PLACED := [
 	["hydrogen", Vector2(-76.3, 26.4), 0, 0.8],
 	# Bound nuclei settled at the ends of the tracks, heaped at the three long ones, a few that
 	# rolled on past them, and the lightest, which settled early between the tracks.
-	["nucleus", Vector2(-29.2, 28.6), 60, 0.47],
 	["nucleus", Vector2(-41.8, 16.9), 250, 0.49],
 	["nucleus", Vector2(-56.9, 27.4), 130, 0.46],
 	["nucleus", Vector2(-36.8, 46.3), 10, 0.5],
-	["nucleus", Vector2(-32.8, 14.1), 290, 0.48],
-	["nucleus", Vector2(-60.2, 36.3), 175, 0.47],
 	["nucleus", NORTH_TIP, 90, 0.66],
 	["nucleus", Vector2(-21.6, 18.9), 200, 0.52],
 	["nucleus", Vector2(-26.8, 13.1), 310, 0.58],
@@ -202,6 +199,11 @@ const PLACED := [
 	["nucleus", Vector2(-38.2, -20.5), 280, 0.5],
 	["nucleus", Vector2(-6.2, 9.4), 215, 0.48],
 	["nucleus", Vector2(-16.8, -2.1), 55, 0.46],
+	["nucleus", Vector2(-2.1, 12.8), 140, 0.5],
+	["nucleus", Vector2(6.9, 1.6), 265, 0.55],
+	["nucleus", Vector2(18.4, 6.7), 25, 0.48],
+	["nucleus", Vector2(2.8, 23.9), 190, 0.6],
+	["nucleus", Vector2(-9.8, -12.7), 330, 0.52],
 	# Newly formed atoms at the vertex, where the goo starts among them.
 	["new_hydrogen", Vector2(-41.1, 28.0), 0, 1.3],
 	["new_helium", Vector2(-40.7, 31.2), 120, 1.3],
@@ -675,7 +677,7 @@ func _build_spawns() -> void:
 	for tip in [NORTH_TIP, WEST_TIP]:
 		_world_spawn("", "Nucleus", 2, fusing, [tip], Vector2(0.45, 0.55), Vector2i(1, 2), 0.2, 4, 60.0, _drift_on, _bound_nucleus)
 	var condensing := "Atoms condensed in the shower drift in across the drop."
-	_world_spawn("", "Hydrogen atom", 3, condensing, WEST_RIM, Vector2(0.8, 0.9), Vector2i(2, 3), 0.4, 7, 70.0,
+	_world_spawn("", "Hydrogen atom", 3, condensing, WEST_RIM, Vector2(0.8, 0.9), Vector2i(2, 3), 0.4, 7, 30.0,
 		_cross.bind(2.2), _light_atom.bind(1, 0))
 	_world_spawn("", "Oxygen atom", 3, condensing, [Vector2(-42.0, -60.0), Vector2(-6.0, -64.0)], Vector2(1.4, 1.45), Vector2i(2, 3),
 		0.2, 5, 70.0, _cross.bind(2.6), _light_atom.bind(8, 8))
