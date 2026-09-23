@@ -41,7 +41,7 @@ func _run() -> void:
 	_check(game.rig.subject == game.goo and game.rig._focus.distance_to(game.goo.global_position) < game.rig.camera.size, "camera follows moving subject")
 	# Stage the final bite near the current volume; the real game loop must complete it.
 	game.world.config.goal_radius = pow(game._volume * 1.1, 1.0 / 3.0)
-	var final_meal := _food_at_body(game, game._volume * 0.2)
+	var final_meal := _food_at_body(game, game._volume * 0.2 / game.world.growth_scale)
 	game._physics_process(1.0 / 60.0)
 	_check(not final_meal.active and game._won, "contact bite crosses staged goal")
 	_check(game.goo._celebration > 0.0 and Engine.time_scale < 1.0, "goal celebrates")
