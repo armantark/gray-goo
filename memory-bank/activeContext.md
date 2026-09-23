@@ -2,7 +2,11 @@
 
 Last staleness sweep: 2026-09-05
 
-## Current state, 2026-09-23 01:15
+## Current state, 2026-09-23 10:35
+
+Sugar Water follows the owner's food mix and momentum rules: 178 hand-placed rows supply 76 to 81% of each view's growth, ten out-of-view spawn points the rest, growth scale 0.215, jumps at 0.16, 0.38, 0.85, 1.5, 2.1. Routes: procedural 342.2 and 349.7 s (just under the 360 s floor), shell 559.0 and 590.0 s; no missed meals or stalls; longest meal gap 4.2 to 4.7 s procedural, 5.8 to 7.2 s shell, over the 4 s gate. The shell body moves at about half its commanded speed (see papercuts), so with constant momentum both bodies cannot fit 360 to 600 s at once. Tide Pool, Skatepark Bowl, and Cosmic Web still win on the new shared mechanics but are not rebalanced to the mix (their check shares print as not enforced). Evidence: `builds/evidence/momentum/`.
+
+## Previous state, 2026-09-23 01:15
 
 The hand-placed levels and feel spec is complete and moved to `memory-bank/specs/done/hand-placed-levels-and-feel/`; results page `memory-bank/status-updates/hand-placed-levels-results-2026-09-23.html`. All four levels are hand-placed and win in 366 to 532 simulated seconds with both bodies, zero missed edible contacts, no stall over 2 s, and 59.2 to 59.9 fps native. Ticket 12 plateaued at 7.08 (shoe merged). Open for the owner: the unmerged `coral-crown` branch (table coral, Astra 6.05), setting the speed slider to 100% once, the Muse Sounds and Larry Seyer license check before a public release, and the overdue memory-bank staleness sweep. Local Pinchtab screenshots fail with error -32000; browser play ran on the MacBook Pro.
 
