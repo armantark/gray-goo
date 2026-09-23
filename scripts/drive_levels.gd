@@ -81,6 +81,8 @@ func _begin() -> void:
 	_route_rng.seed = _route_seed
 	if _simulation_clock:
 		Engine.max_fps = 0
+		OS.low_processor_usage_mode = false
+		OS.low_processor_usage_mode_sleep_usec = 0
 	DirAccess.make_dir_recursive_absolute(_output.get_base_dir())
 	_game = load("res://main.tscn").instantiate()
 	root.add_child(_game)
