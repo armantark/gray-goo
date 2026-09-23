@@ -4,7 +4,7 @@
 
 **Blocked by:** 08 Spawn points and the first hand-placed level, Tide Pool.
 
-**Status:** open
+**Status:** claimed by opus-5.5 ticket-12 agent
 
 - [ ] Four-angle renders exist for each revision, and each revision has a short note of what Opus saw and changed.
 - [ ] GPT-6 Astra scores the final revision above 8.0, and GLM 5.3 Flash gives a second vote. No Opus critic is used.
