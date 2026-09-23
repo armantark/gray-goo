@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 Tasty Planet eat rule.
 
-**Status:** open
+**Status:** claimed by opus-5.5 ticket agent
 
 - [ ] A command reproduces the poor collision before the fix and passes after it.
 - [ ] The route driver reports no stall longer than two seconds in any level.
