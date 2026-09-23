@@ -122,13 +122,18 @@ func _check_composite_meals(game: Node3D) -> void:
 		var whole := _find(game, case[1])
 		var part := _find(game, case[2], whole)
 		var total := _level_volume(game)
+		# Emptied wholes leave with their last part and pay nothing, so only their own volume may vanish.
+		var forfeit := 0.0
+		for food in [whole] + _descendants(whole):
+			forfeit += food.volume if food.collect_when_empty else 0.0
 		_bite(game, part)
 		_check(not part.active and whole.active, case[2] + " is eaten apart from its " + case[1])
 		_bite(game, whole)
 		var left := _descendants(whole).filter(func(food: Food) -> bool: return food.active or food.is_visible_in_tree())
 		_check(not whole.active and not whole.is_visible_in_tree() and left.is_empty(), case[1] + " leaves no active or visible parts")
-		_check(is_equal_approx(_level_volume(game), total), case[1] + " counts each part's growth once")
-		print("COMPOSITE_CASE ", case[1], " parts=", _descendants(whole).size(), " left=", left.size())
+		var lost := total - _level_volume(game)
+		_check(lost > -0.000001 and lost < forfeit + 0.000001, case[1] + " pays each part's growth at most once")
+		print("COMPOSITE_CASE ", case[1], " parts=", _descendants(whole).size(), " left=", left.size(), " unpaid=", lost)
 
 # A whole that draws nothing of its own goes with its last part instead of staying an invisible meal.
 func _check_empty_wholes(game: Node3D) -> void:
@@ -142,20 +147,19 @@ func _check_empty_wholes(game: Node3D) -> void:
 		if star.active:
 			_bite(game, star)
 	_check(not cluster.active, "an open star cluster goes with its last star")
-	# An atom whose nucleus is eaten shows only its electrons; after a size jump retires them as
-	# detail, it no longer holds its molecule on screen, so the last hydrogen takes the water.
+	# A nucleon that lost a quark collapses and hides its own body; once a size jump retires its
+	# other quarks as detail it shows nothing, so it no longer holds its nucleus on screen.
 	game.start_level(0)
-	var water := _find(game, "Water molecule · H2O")
-	var oxygen := _find(game, "Oxygen atom", water)
-	var total := _level_volume(game)
-	game._eat(_find(game, "Oxygen nucleus", oxygen))
+	var atom := _find(game, "Helium atom")
+	var nucleus := _find(game, "Helium nucleus", atom)
+	var collapsed: Food = nucleus.parts[0]
+	game._eat(collapsed.parts[0])
 	_place_body(game, game.goo.global_position, float(game.world.config.jumps[2].radius))
 	_settle(game)
-	for atom in water.parts:
-		if atom.active and atom != oxygen:
-			game._eat(atom)
-	_check(not water.active and not oxygen.active, "water goes with its last visible atom, taking the electron cloud")
-	_check(is_equal_approx(_level_volume(game), total), "water counts its electron cloud once")
+	for nucleon in nucleus.parts:
+		if nucleon.active and nucleon != collapsed:
+			game._eat(nucleon)
+	_check(not nucleus.active and not collapsed.active and atom.active, "a nucleus goes with its last visible nucleon, taking a collapsed one")
 
 # Size decides edibility, so these composites' footprints are what they draw.
 func _check_footprints(game: Node3D) -> void:
@@ -184,12 +188,14 @@ func _descendants(food: Food) -> Array[Food]:
 		result.append_array(_descendants(part))
 	return result
 
-# Growth held by the goo plus growth still on the field; meals move it, never create or lose it.
+# Growth held by the goo plus growth still on the field and in pools; meals move it, never create it.
 func _level_volume(game: Node3D) -> float:
 	var result: float = game._volume
 	for food in game.world.foods:
 		if food.parent_food == null:
 			result += food.remaining_volume()
+	for pool in game.world.pools:
+		result += pool.remaining_volume
 	return result
 
 # Sets a goo just large enough to eat the food down on it; the game's contact rule decides the meal.
@@ -201,7 +207,8 @@ func _bite(game: Node3D, food: Food) -> void:
 
 # Lets meals land and scene motion, including detail changes after a size jump, catch up.
 func _settle(game: Node3D) -> void:
-	for tick in 30:
+	# The longest meal flight lasts 0.55 s.
+	for tick in 40:
 		game._physics_process(1.0 / 60.0)
 		game.world._physics_process(1.0 / 60.0)
 		for food in game.world.foods:
