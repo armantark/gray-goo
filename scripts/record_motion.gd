@@ -1,5 +1,7 @@
 extends SceneTree
 
+const ScriptArgs := preload("res://scripts/script_args.gd")
+
 const ROUTE_SEED := 439
 const WARMUP := 2.0
 const ROUTE := [
@@ -28,11 +30,11 @@ var _finished := false
 
 func _initialize() -> void:
 	_fixed_frame = not Engine.get_write_movie_path().is_empty()
-	for argument in OS.get_cmdline_user_args():
-		if argument.begins_with("--duration="):
-			_duration = argument.trim_prefix("--duration=").to_float()
-		elif argument.begins_with("--output="):
-			_output = argument.trim_prefix("--output=")
+	var args = ScriptArgs.parse(self, {"--duration": _duration, "--output": _output})
+	if args == null:
+		return
+	_duration = args["--duration"]
+	_output = args["--output"]
 	if _duration < 16.0:
 		push_error("Use --duration=<seconds>, at least 16 seconds for the full route")
 		quit(2)

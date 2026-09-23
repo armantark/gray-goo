@@ -1,5 +1,7 @@
 extends SceneTree
 
+const ScriptArgs := preload("res://scripts/script_args.gd")
+
 var _game: Node3D
 var _frames := PackedFloat64Array()
 var _sample := false
@@ -19,13 +21,12 @@ func _process(_delta: float) -> bool:
 	return false
 
 func _run() -> void:
-	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--output="):
-			_output = arg.trim_prefix("--output=")
-		elif arg.begins_with("--level="):
-			_level = int(arg.trim_prefix("--level="))
-		elif arg.begins_with("--tier="):
-			_tier = int(arg.trim_prefix("--tier="))
+	var args = ScriptArgs.parse(self, {"--output": _output, "--level": _level, "--tier": _tier})
+	if args == null:
+		return
+	_output = args["--output"]
+	_level = args["--level"]
+	_tier = args["--tier"]
 	if _level < -1 or _level > 3 or _tier < -1 or _tier > 4:
 		push_error("Choose a level from 0 to 3 and a tier from 0 to 4")
 		quit(1)

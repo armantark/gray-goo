@@ -78,6 +78,8 @@ Check that each tier can fund the next jump and each food belongs to a visible w
 
 Require `WORLD_CHECK_OK=true` and no script errors. Godot can return exit status zero after a script parse failure.
 
+Every tool script that takes flags rejects one it does not know, or a value of the wrong type, and exits with status 2 after listing the flags it accepts.
+
 Use `-- --trials=8 --seed=9217` for a randomized food-order sweep. Check wheel pivots and compare cached obstacle queries with the full scan:
 
 ```sh

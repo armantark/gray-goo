@@ -6,6 +6,8 @@ extends SceneTree
 # Output: --output=<dir> with PNGs and camera.json (real seconds, time scale, view size,
 # and the camera's frame-to-frame acceleration in screen pixels during the turn).
 
+const ScriptArgs := preload("res://scripts/script_args.gd")
+
 const JUMP_SHOTS := [0.0, 0.2, 0.45, 0.75, 1.1, 1.6, 2.3]
 const TURN_SHOTS := [0.0, 0.25, 0.5, 0.75, 1.0, 1.5, 2.2]
 var _output := "res://builds/jump-camera"
@@ -18,9 +20,10 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--output="):
-			_output = arg.trim_prefix("--output=")
+	var args = ScriptArgs.parse(self, {"--output": _output})
+	if args == null:
+		return
+	_output = args["--output"]
 	DirAccess.make_dir_recursive_absolute(_output)
 	_game = load("res://main.tscn").instantiate()
 	root.add_child(_game)

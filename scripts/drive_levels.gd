@@ -1,5 +1,7 @@
 extends SceneTree
 
+const ScriptArgs := preload("res://scripts/script_args.gd")
+
 var _game: Node3D
 var _target: Food
 var _level := 0
@@ -56,21 +58,17 @@ func _initialize() -> void:
 	call_deferred("_begin")
 
 func _begin() -> void:
-	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--start="):
-			_level = int(arg.trim_prefix("--start="))
-		elif arg.begins_with("--last="):
-			_last_level = int(arg.trim_prefix("--last="))
-		elif arg.begins_with("--limit="):
-			_limit = float(arg.trim_prefix("--limit="))
-		elif arg.begins_with("--output="):
-			_output = arg.trim_prefix("--output=")
-		elif arg == "--simulation-clock":
-			_simulation_clock = true
-		elif arg.begins_with("--seed="):
-			_route_seed = int(arg.trim_prefix("--seed="))
-		elif arg.begins_with("--speed="):
-			_speed = float(arg.trim_prefix("--speed="))
+	var args = ScriptArgs.parse(self, {"--start": _level, "--last": _last_level, "--limit": _limit, "--output": _output,
+		"--simulation-clock": _simulation_clock, "--seed": _route_seed, "--speed": _speed})
+	if args == null:
+		return
+	_level = args["--start"]
+	_last_level = args["--last"]
+	_limit = args["--limit"]
+	_output = args["--output"]
+	_simulation_clock = args["--simulation-clock"]
+	_route_seed = args["--seed"]
+	_speed = args["--speed"]
 	if _speed <= 0.0:
 		push_error("Use --speed=<positive multiplier>")
 		quit(2)

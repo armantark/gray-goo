@@ -3,15 +3,18 @@ extends SceneTree
 # Captures the HUD states the view inspector cannot reach: the last-meal card,
 # the completion card, and the scene menu. Output: --output=<dir>.
 
+const ScriptArgs := preload("res://scripts/script_args.gd")
+
 var _output := "res://builds/hud-views"
 
 func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--output="):
-			_output = arg.trim_prefix("--output=")
+	var args = ScriptArgs.parse(self, {"--output": _output})
+	if args == null:
+		return
+	_output = args["--output"]
 	DirAccess.make_dir_recursive_absolute(_output)
 	var game: Node3D = load("res://main.tscn").instantiate()
 	root.add_child(game)

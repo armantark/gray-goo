@@ -5,6 +5,8 @@ extends SceneTree
 # the goo past their size. Fixtures are ordinary foods placed beside the idle goo in Tide Pool.
 # Output: --output=<dir>. Run muted with --audio-driver Dummy.
 
+const ScriptArgs := preload("res://scripts/script_args.gd")
+
 var _output := "res://builds/eat-feel/frames"
 var _game: Node3D
 
@@ -12,9 +14,10 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--output="):
-			_output = arg.trim_prefix("--output=")
+	var args = ScriptArgs.parse(self, {"--output": _output})
+	if args == null:
+		return
+	_output = args["--output"]
 	DirAccess.make_dir_recursive_absolute(_output)
 	_game = load("res://main.tscn").instantiate()
 	root.add_child(_game)

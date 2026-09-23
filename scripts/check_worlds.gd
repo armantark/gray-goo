@@ -1,5 +1,7 @@
 extends SceneTree
 
+const ScriptArgs := preload("res://scripts/script_args.gd")
+
 var _trials := 1
 var _seed := 9217
 var _randomized := false
@@ -18,11 +20,11 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--trials="):
-			_trials = int(arg.trim_prefix("--trials="))
-		elif arg.begins_with("--seed="):
-			_seed = int(arg.trim_prefix("--seed="))
+	var args = ScriptArgs.parse(self, {"--trials": _trials, "--seed": _seed})
+	if args == null:
+		return
+	_trials = args["--trials"]
+	_seed = args["--seed"]
 	if _trials < 1:
 		push_error("The world check requires at least one trial")
 		quit(1)

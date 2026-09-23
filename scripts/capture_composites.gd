@@ -4,6 +4,8 @@ extends SceneTree
 # after it eats the whole. The goo leaves the frame before each photo, so anything left behind
 # shows. Output: --output=<dir>. Run muted with --audio-driver Dummy.
 
+const ScriptArgs := preload("res://scripts/script_args.gd")
+
 const SUBJECTS := [
 	{"whole": "Water molecule · H2O", "part": "Hydrogen atom"},
 	{"whole": "Coral head", "part": "Living coral branch"},
@@ -18,9 +20,10 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--output="):
-			_output = arg.trim_prefix("--output=")
+	var args = ScriptArgs.parse(self, {"--output": _output})
+	if args == null:
+		return
+	_output = args["--output"]
 	DirAccess.make_dir_recursive_absolute(_output)
 	_game = load("res://main.tscn").instantiate()
 	root.add_child(_game)

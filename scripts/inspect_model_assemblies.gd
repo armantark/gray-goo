@@ -1,5 +1,7 @@
 extends SceneTree
 
+const ScriptArgs := preload("res://scripts/script_args.gd")
+
 var _only := ""
 var _output := "res://builds/model-review/game"
 
@@ -7,11 +9,11 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--model="):
-			_only = arg.trim_prefix("--model=")
-		if arg.begins_with("--output="):
-			_output = arg.trim_prefix("--output=")
+	var args = ScriptArgs.parse(self, {"--model": _only, "--output": _output})
+	if args == null:
+		return
+	_only = args["--model"]
+	_output = args["--output"]
 	DirAccess.make_dir_recursive_absolute(_output)
 	var game: Node3D = load("res://main.tscn").instantiate()
 	root.add_child(game)

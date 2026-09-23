@@ -7,6 +7,8 @@ extends SceneTree
 # Run in a short native window with --audio-driver Dummy:
 # Godot --audio-driver Dummy --path . --script scripts/capture_layout.gd -- --level=1 --output=res://builds/layout/pass-1
 
+const ScriptArgs := preload("res://scripts/script_args.gd")
+
 const TIER_COLORS := [Color("2ee6ff"), Color("5dff6a"), Color("ffe23d"), Color("ff9a2e"), Color("ff3b3b")]
 const WIDTH := 2400
 var _output := "res://builds/layout"
@@ -18,15 +20,13 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--level="):
-			_level = int(arg.trim_prefix("--level="))
-		elif arg.begins_with("--output="):
-			_output = arg.trim_prefix("--output=")
-		elif arg.begins_with("--seconds="):
-			_seconds = float(arg.trim_prefix("--seconds="))
-		elif arg.begins_with("--tier="):
-			_tier = int(arg.trim_prefix("--tier="))
+	var args = ScriptArgs.parse(self, {"--level": _level, "--output": _output, "--seconds": _seconds, "--tier": _tier})
+	if args == null:
+		return
+	_level = args["--level"]
+	_output = args["--output"]
+	_seconds = args["--seconds"]
+	_tier = args["--tier"]
 	DirAccess.make_dir_recursive_absolute(_output)
 	var game: Node3D = load("res://main.tscn").instantiate()
 	root.add_child(game)
