@@ -4,7 +4,7 @@ An eat-and-grow game for Mac and desktop browsers with four scenes: Sugar Water,
 
 ## Play
 
-Download the standalone Mac app from [GitHub Releases](https://github.com/armantark/gray-goo/releases/latest), or [play in your browser](https://gray-goo.tarkavor.chatgpt.site). The browser version is public and requires no login. The Mac app is ad-hoc signed and is not notarized; macOS can require **Privacy & Security → Open Anyway** after the first launch attempt.
+Download the standalone Mac app from [GitHub Releases](https://github.com/armantark/gray-goo/releases/latest). The [browser version](https://gray-goo.tarkavor.chatgpt.site) is public and requires no login, but it still runs the 2026-09-05 release, before the tech demo below. The Mac app is ad-hoc signed and is not notarized; macOS can require **Privacy & Security → Open Anyway** after the first launch attempt.
 
 For a local build, open `builds/Gray Goo.app` after exporting. The game starts in the particle field. Use the Scenes menu to replay any of the four scenes.
 
@@ -18,7 +18,34 @@ For a local build, open `builds/Gray Goo.app` after exporting. The game starts i
 
 Eat smaller objects to reach the goal size. A pointer and yellow outline identify the nearest edible object. The bottom-left portrait shows the last consumed item. Each scene has its own starting size. The HUD shows body diameter and goal diameter in metric units. The goal-reaching bite celebrates completion; the scene remains playable until you choose Next level.
 
-Open the scene menu to adjust Movement speed from 10% to 200%. The native default is 100% and the browser default is 200%, and the setting applies to both keyboard and mouse steering. The game saves it between launches. The Music button enables or mutes the current scene’s original music and saves the choice.
+Open the scene menu to adjust Movement speed from 10% to 200%. The default of 100% is twice the speed of the 2026-09-05 release, and the setting applies to both keyboard and mouse steering. The game saves it between launches. The Music button enables or mutes the current scene’s original music and saves the choice.
+
+## Tech demo: Opus 5.5 in 24 hours
+
+GPT-6 Astra built the game up to the 2026-09-05 release. From 2026-09-22 15:11 to 2026-09-23 14:40, Claude Opus 5.5 continued that work as a test of its coding ability: one orchestrator session dispatched one Opus 5.5 agent per ticket, often four at a time in separate worktrees, and merged their branches. Other models only reviewed (GPT-6 Astra, Kimi K3, GLM 5.3 Flash). The owner gave direction and played the builds. The result is 131 commits.
+
+### What changed
+
+- **Hand-placed levels.** Code no longer scatters thousands of objects. Each level places 172 to 230 objects by hand, in groups that follow the level's story, with no rings, rows, or even spacing. About 80% of each view's growth comes from placed food, and the world check fails a level outside 70% to 90%.
+- **Spawn points.** Moving food enters from outside the camera view: particles in Sugar Water, plankton and fish in the tide pool, caps, boards, skaters and vehicles in the skatepark, and stars and galaxies along the cosmic filaments.
+- **Tasty Planet eat rule.** The goo eats anything that looks smaller than itself on first contact, and larger objects block it. The goo slides along what it cannot eat. Edible food never acts as a wall.
+- **Pacing.** Each level takes about 7 to 9 minutes, and the goo always has food in reach. A per-level growth scale makes each meal feed less. Before, Sugar Water took less than one minute.
+- **Feel.** The default speed is twice the old default, and the goo reaches it. Meals pull in with a sound, a pulse, and a burst that grow with the meal. Food flashes when it becomes edible, and the arrow to the nearest meal grows with its reward. A size jump has a short slow moment, an eased zoom out, and the new tier's name. The camera looks ahead.
+- **Simple shapes.** After late size jumps, small composites draw as one shape: a proton as one sphere, a skateboard as one board.
+- **New music.** Four upbeat samba, bossa nova, and jazz pieces for a jazz band, rendered with Muse Sounds and a sampled upright bass.
+- **One goo body.** The experimental procedural body is removed; the shell body remains.
+- **Models.** A new skate shoe, built and revised in Blender by Opus 5.5.
+
+### Findings
+
+1. **A target without the experience in it gets gamed.** The first "6 to 10 minutes per level" target was met by releasing food slowly from spawn points, so the player waited for food at the end of each view. The owner found it boring. The fix was a measure of the experience itself, the longest gap between meals, and a rule that length comes from smaller meals.
+2. **The route driver is not a player.** Automatic play-throughs found real bugs (missed meals, stalls, a food grid that lost drifting plankton, molecules that paid growth twice). But about 90 s of one level's time was the driver waiting at a gate for skaters it could not reach, and its stall timer counted waits as stalls. Automated times need their own audit.
+3. **Measure the test harness.** For most of the demo, a "simulated" route ran at real-time speed, because headless Godot sleeps about 6.9 ms after each frame. Nobody timed the harness until the owner asked. With the sleep off, a fixed 60 fps clock, and one process per level, a check of all four levels takes about 4 to 5 minutes; before, one run of all four levels with both bodies took about 20.
+4. **A probe must measure everything a fix can change.** A fix that made the goo reach its commanded speed measured speed only. The goo also stretched to 3.3 to 4.3 times its width, and the owner saw it at once. A second measure, body length, and one screenshot would have caught it.
+5. **Retire failed experiments early.** Two goo bodies doubled every route run, and their speeds differed by 1.5 to 1.8 times, so no level length could suit both. Removing the weaker body made every check faster and simpler.
+6. **3D modeling reached recognizable, not great.** Opus 5.5 built a skate shoe and a table coral, looked at renders from several angles after each revision, and revised. Both stopped below the 8.0 rubric bar (7.08 and 6.05 from GPT-6 Astra). The critic's scores moved by about 0.2 on unchanged parts, and the game camera's silhouette mattered more than model detail. The shoe shipped; the coral did not.
+7. **Parallel agents work when shared files are few.** Four agents at a time in pooled worktrees merged with conflicts only on one-line lists and notes. The costly failures were outside the code: a quota limit and a session restart stopped agents mid-task, and one wrong flag in a shared brief (`--route-seed` for `--seed`) silently made four agents repeat the same seed.
+8. **Agents report misses honestly, but they stop at limits.** Opus 5.5 agents stated plateaus, failed gates, and their own mistakes without prompting. They also obeyed pass limits and old rules literally, so the orchestrator had to resume them to finish.
 
 ## Run from the project
 
@@ -72,7 +99,7 @@ Each level result also counts missed edible contacts (the goo touches food the g
 
 `--seed=439` varies target choices reproducibly. The driver retries another target if it stops moving or makes no growth for 15 seconds, so it cannot chase an inaccessible moving part forever. After 30 seconds without growth it ends the level and reports it as `stuck`.
 
-For routine eat-rule and timing runs, use `--headless --audio-driver Dummy --fixed-fps 60` before `--script` and `--simulation-clock` after `--`. Those reports use simulation seconds and identify the headless display server. They do not establish native completion time or render performance.
+For routine eat-rule and timing runs, use `scripts/route.sh <out_dir> [level ...]`. It runs one headless process per level in parallel on a fixed 60 fps game clock, about 2.3 times faster than real time, and prints each level's time, missed meals, stalls, and longest gap between meals. Add `ROUTE_FLAGS="--seed=21"` for another seed. Those reports use simulation seconds. They do not establish native completion time or render performance.
 
 Inspect untouched scenes at all five sizes and measure their uncapped render performance:
 
@@ -86,7 +113,7 @@ Use `-- --level=0 --tier=4` for a single view. Stop other simulation jobs before
 
 ## Manual verification
 
-Play each scene from its starting size through completion. Check keyboard and mouse steering, camera rotation and limits, object engulfing, retained food color, attached parts, and the nearest-food pointer. Watch the body reach and grip with uneven forward lobes while rear contacts stretch and peel. Release the controls for several seconds and check that it spreads into an irregular shallow puddle with unequal, slowly spreading lobes; move again and check that it gathers into a rolling mass. During keyboard steering, check that the pupils look toward the highlighted target. Hold the left mouse button to switch to cursor-following eyes, and confirm that the chosen gaze mode persists after release. After a colored bite, check that the contact patch blends slowly and leaves a lasting tint. In the tide pool, cross the water and check that only local sections disappear. In the skatepark, nudge moving boards and cross the curved ground. In spacetime, consume the final fabric and keep moving in the void. After each goal, verify continued play and Next level.
+Play each scene from its starting size through completion. Check keyboard and mouse steering, camera rotation and limits, object engulfing, retained food color, attached parts, and the nearest-food pointer. Watch the body reach and grip with uneven forward lobes while rear contacts stretch and peel. Release the controls for several seconds and check that it spreads into an irregular shallow puddle with unequal, slowly spreading lobes; move again and check that it gathers into a rolling mass. During keyboard steering, check that the pupils look toward the highlighted target. Hold the left mouse button to switch to cursor-following eyes, and confirm that the chosen gaze mode persists after release. After a colored bite, check that the contact patch blends slowly and leaves a lasting tint. In the tide pool, cross the water and check that only local sections disappear. In the skatepark, nudge moving boards and cross the curved ground. After each goal, verify continued play and Next level.
 
 Change Movement speed in the scene menu, resume play, and check that steering responds at the selected rate. Restart the app and check that the setting remains selected. Visit all four scenes and check that each plays its own song. Mute Music, change scenes, and confirm it stays muted; enable it and restart to verify persistence.
 
