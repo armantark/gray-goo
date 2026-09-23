@@ -16,8 +16,7 @@ func _run() -> void:
 		game.start_level(1)
 		game._switch_body(kind)
 		# Fixtures sit where a four-body-length drive meets them. At the default eight, the
-		# procedural body slides past the larger can before its skin touches it, and the shell's
-		# staged final bite misses one run in three; ticket 03 owns that collision.
+		# shell's staged final bite misses one run in three.
 		game.hud.movement_speed = 0.5
 		var initial_radius: float = game.goo.radius
 		var initial_tint: Color = game.goo.tint
@@ -100,8 +99,8 @@ func _check_eat_rule(game: Node3D, kind: String) -> void:
 	var small: Food = game.world._add_food("rock", Vector2(at.x, at.z), game.goo.radius * 0.5, 0.01, "Later-tier canary", false, 4)
 	game._physics_process(1.0 / 60.0)
 	_check(not small.active, kind + " smaller later-tier object is eaten on contact")
-	# The owner plays at twice the old default speed, where the shell used to roll over the can.
-	game.hud.movement_speed = 2.0
+	# At the default speed, where the shell used to roll over the can.
+	game.hud.movement_speed = 1.0
 	Input.action_press("move_up")
 	var heading: Vector3 = game.rig.movement_direction()
 	at = game.goo.global_position + heading * game.goo.radius * 3.0

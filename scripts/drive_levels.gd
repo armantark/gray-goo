@@ -66,6 +66,10 @@ func _begin() -> void:
 			_speed = float(arg.trim_prefix("--speed="))
 		elif arg.begins_with("--body="):
 			_body = arg.trim_prefix("--body=")
+	if _speed <= 0.0 or _body not in ["", "shell", "procedural"]:
+		push_error("Use --speed=<positive multiplier> and --body=shell|procedural")
+		quit(2)
+		return
 	_route_rng.seed = _route_seed
 	if _simulation_clock:
 		Engine.max_fps = 0

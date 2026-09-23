@@ -4,8 +4,8 @@
 
 **Blocked by:** 02 Tasty Planet eat rule.
 
-**Status:** claimed by opus-5.5 ticket agent
+**Status:** done
 
-- [ ] A command reproduces the poor collision before the fix and passes after it.
-- [ ] The route driver reports no stall longer than two seconds in any level.
-- [ ] A native clip or frame series of the goo along a large object shows no jitter.
+- [x] A command reproduces the poor collision before the fix and passes after it.
+- [x] The route driver reports no stall longer than two seconds in any level.
+- [x] A native clip or frame series of the goo along a large object shows no jitter.
