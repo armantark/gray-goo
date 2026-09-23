@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 Tasty Planet eat rule.
 
-**Status:** open
+**Status:** claimed by opus-5.5 ticket agent
 
 - [ ] Native frame series show a small meal and a large meal with a clearly different response.
 - [ ] A native frame series shows objects signal at the moment the goo grows past their size.
