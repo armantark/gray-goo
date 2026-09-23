@@ -52,12 +52,16 @@ const CORE := [["giant", Vector2.ZERO, 0.3, 0], ["elliptical", Vector2(-0.24, -0
 	["elliptical", Vector2(0.5, -0.24), 0.18, 120], ["elliptical", Vector2(0.23, 0.5), 0.18, 210],
 	["elliptical", Vector2(-0.5, 0.22), 0.18, 300], ["dwarf", Vector2(-0.8, 0.35), 0.12, 0], ["dwarf", Vector2(0.35, 0.8), 0.12, 90]]
 
-# Stars along the outer half of one arm of a rich spiral, [kind, point, size], and its star-forming
-# nebula, [point, size]. Points are in the arm model's own units, where the arm arcs from
-# (-0.7, -0.73) past (0.5, -0.3) to (0.85, 0.7); its inner half runs beside the next arm, so it stays
-# bare. A blue giant stands alone mid-arm: the starting goo must grow to eat it.
-const ARM_STARS := [["blue_giant", Vector2(0.25, -0.5), 0.5], ["yellow_star", Vector2(0.86, 0.62), 0.24]]
-const ARM_NEBULA := [Vector2(0.74, -0.02), 0.62]
+# The stars and star-forming nebula of each arm of a rich spiral, [[kind, point, size], ...] and
+# [point, size]. Points are in the arm model's own units, where the arm arcs from (-0.7, -0.73) past
+# (0.5, -0.3) to (0.85, 0.7); its inner half runs beside the next arm, so stars keep to the outer
+# half. Blue giants stand alone: the starting goo must grow to eat them.
+const ARMS := [
+	[[["blue_giant", Vector2(0.84, 0.25), 0.5], ["yellow_star", Vector2(0.86, 0.66), 0.22]], [Vector2(0.36, -0.42), 0.55]],
+	[[["yellow_star", Vector2(0.55, -0.3), 0.2], ["blue_giant", Vector2(0.85, 0.45), 0.52]], [Vector2(0.12, -0.58), 0.55]],
+	[[["red_dwarf", Vector2(0.3, -0.46), 0.15], ["yellow_star", Vector2(0.82, 0.12), 0.22], ["red_dwarf", Vector2(0.86, 0.68), 0.16]],
+		[Vector2(0.6, -0.26), 0.5]],
+]
 # An open cluster, [kind, offset and size in cluster sizes], young and bright at its heart.
 const OPEN_CLUSTER := [["blue_giant", Vector2(0.05, 0.0), 0.3], ["yellow_star", Vector2(-0.6, -0.33), 0.22],
 	["red_dwarf", Vector2(0.55, -0.5), 0.2], ["yellow_star", Vector2(0.5, 0.55), 0.22], ["red_dwarf", Vector2(-0.45, 0.62), 0.18]]
@@ -97,6 +101,8 @@ var _world: GameWorld
 var _web: Node3D
 var _home: Food
 var _spinning: Array[Food] = []
+var _clusters: Array[Food] = []
+var _tier := 0
 
 func definition() -> Dictionary:
 	return {"title": "Cosmic Web", "meters_per_unit": 9.4607e15,
@@ -125,7 +131,7 @@ func build(world: GameWorld) -> void:
 	var kinds := {
 		"supercluster": {"label": "Filament supercluster", "tier": 4, "density": 0.18, "whole": _web,
 			"reason": "The great node, where four filaments of the web meet.", "build": _supercluster},
-		"cluster": {"label": "Galaxy cluster", "tier": 4, "density": 0.07, "whole": _web,
+		"cluster": {"label": "Galaxy cluster", "tier": 4, "density": 0.04, "whole": _web,
 			"reason": "Clusters sit where filaments of the web meet.", "build": _group.bind(CLUSTER, Color(0.3, 0.26, 0.2))},
 		"local_group": {"label": "Local galaxy group", "tier": 3, "density": 0.025, "whole": _web,
 			"reason": reason, "build": _group.bind(LOCAL_GROUP, Color(0.2, 0.24, 0.3))},
@@ -207,39 +213,40 @@ func _supercluster(core: Food) -> void:
 func _galaxy(parent: Food, kind: String, at: Vector2, size: float, turn: float) -> void:
 	match kind:
 		"home_spiral", "rich_spiral", "spiral":
-			var galaxy := _part("", parent, at, size, 0.02, "Spiral galaxy", 2, turn)
+			var galaxy := _part("", parent, at, size, 0.012, "Spiral galaxy", 2, turn)
 			_composite(galaxy)
-			galaxy.visual.add_child(Art.model("galaxy_bulge", size * 0.22))
-			var hole := _part("black_hole", galaxy, Vector2.ZERO, size * 0.22, 0.1, "Black hole with accretion disk", 1, 0)
+			galaxy.visual.add_child(Art.model("galaxy_bulge", size * 0.2))
+			var hole := _part("black_hole", galaxy, Vector2.ZERO, size * 0.16, 0.2, "Black hole with accretion disk", 1, 0)
 			hole.position.y = 0.05
 			for index in 3:
 				# Arms reach a little short of the galaxy, so the goo that can eat an arm cannot yet eat the galaxy.
-				var arm := _part("galaxy_arm", galaxy, Vector2.ZERO, size * 0.91, 0.006, "Spiral arm", 2, index * 120.0)
+				var arm := _part("galaxy_arm", galaxy, Vector2.ZERO, size * 0.91, 0.005, "Spiral arm", 2, index * 120.0)
 				arm.visual.scale /= ARM_FIT
 				arm.height /= ARM_FIT
 				_nonblocking(arm)
 				if kind != "spiral":
-					_arm_stars(arm, arm.radius / ARM_FIT)
+					_arm_stars(arm, arm.radius / ARM_FIT, ARMS[index])
 			galaxy.part_consumed.connect(_spiral_changed.bind(galaxy))
 			_spinning.append(galaxy)
 			if kind == "home_spiral":
 				_home = galaxy
 		"elliptical", "giant":
-			_nonblocking(_part("elliptical_galaxy", parent, at, size, 0.04,
+			_nonblocking(_part("elliptical_galaxy", parent, at, size, 0.024,
 				"Giant elliptical galaxy" if kind == "giant" else "Elliptical galaxy", 2, turn))
 		"dwarf":
 			_nonblocking(_part("dwarf_galaxy", parent, at, size, 0.06, "Dwarf galaxy", 1, turn))
 
 # `unit` is the arm model's drawn scale, so the stars and nebula follow the arm's curve.
-func _arm_stars(arm: Food, unit: float) -> void:
-	for entry in ARM_STARS:
+func _arm_stars(arm: Food, unit: float, layout: Array) -> void:
+	for entry in layout[0]:
 		_part(entry[0], arm, entry[1] * unit, entry[2], 0.15, STARS[entry[0]], 0, 0, 0.025)
-	var nebula := _part("nebula", arm, ARM_NEBULA[0] * unit, ARM_NEBULA[1], 0.06, "Stellar nursery nebula", 1, 0)
+	var nebula := _part("nebula", arm, layout[1][0] * unit, layout[1][1], 0.04, "Stellar nursery nebula", 1, 0)
 	_nonblocking(nebula)
 	var cluster := _part("", nebula, Vector2.ZERO, nebula.radius * 0.85, 0.0, "Open star cluster", 0, 0)
 	_composite(cluster)
 	# The cluster draws nothing but its stars, so it goes with the last one.
 	cluster.collect_when_empty = true
+	_clusters.append(cluster)
 	for entry in OPEN_CLUSTER:
 		_part(entry[0], cluster, entry[1] * cluster.radius, entry[2] * cluster.radius, 0.15, STARS[entry[0]], 0, 0, 0.025)
 
@@ -266,34 +273,35 @@ func _spiral_changed(part: Food, galaxy: Food) -> void:
 			arms += 1
 	galaxy.title = "Bare galactic bulge" if arms == 0 else "Spiral galaxy · " + str(arms) + " arms"
 
+# Every mover is small enough to eat from the moment its view opens, so none blocks the goo.
 func _build_spawns() -> void:
-	_world.spawn({"kind": {"model": "yellow_star", "label": "Runaway star", "tier": 0, "density": 0.3,
+	_world.spawn({"kind": {"model": "yellow_star", "label": "Runaway star", "tier": 0, "density": 0.6,
 			"whole": _home, "reason": "The home galaxy's black hole flings stars out of its core.", "lift": 0.025},
 		"from": [HOME], "sizes": Vector2(0.16, 0.3), "tiers": Vector2i(0, 1),
-		"rate": 0.4, "limit": 4, "lifetime": 14.0, "move": _fling})
+		"rate": 0.4, "limit": 5, "lifetime": 14.0, "move": _fling})
 	for source in [Vector2(-70, 25), Vector2(-20, 6)]:
 		_world.spawn({"kind": {"model": "nebula", "label": "Infalling gas cloud", "tier": 1, "density": 0.15,
 				"whole": _web, "reason": "Gas flows along the filament into the Local group."},
-			"from": [source], "sizes": Vector2(0.7, 1.2), "tiers": Vector2i(1, 2),
+			"from": [source], "sizes": Vector2(0.7, 1.0), "tiers": Vector2i(1, 2),
 			"rate": 0.15, "limit": 2, "lifetime": 40.0, "move": _infall})
-	for path in [[Vector2(-178, 43), Vector2(-132, 30), WEST], [Vector2(178, -60), Vector2(128, -42), Vector2(82, -38), NODE],
-			[Vector2(96, 133), Vector2(104, 104), SOUTH_EAST]]:
+	for path in [[Vector2(-168, 41), Vector2(-132, 30), WEST], [Vector2(168, -56), Vector2(128, -42), Vector2(82, -38), NODE],
+			[Vector2(97, 124), Vector2(104, 104), SOUTH_EAST]]:
 		_world.spawn({"kind": {"model": "dwarf_galaxy", "label": "Satellite galaxy", "tier": 2, "density": 0.06,
 				"whole": _web, "reason": "Galaxies stream along the filament toward its node."},
-			"from": [path[0]], "sizes": Vector2(1.5, 2.4), "tiers": Vector2i(2, 3),
+			"from": [path[0]], "sizes": Vector2(1.5, 2.05), "tiers": Vector2i(2, 3),
 			"rate": 0.12, "limit": 2, "lifetime": 60.0, "move": _stream.bind(path, 7.0)})
-	for path in [[Vector2(-178, -116), Vector2(-88, -108), NORTH], [Vector2(16, -133), Vector2(-8, -116), NORTH],
-			[Vector2(178, 99), Vector2(148, 74), SOUTH_EAST], [Vector2(-116, 133), Vector2(-98, 72), WEST]]:
-		_world.spawn({"kind": {"model": "galaxy_group", "label": "Infalling galaxy group", "tier": 3, "density": 0.1,
+	for path in [[Vector2(-166, -114), Vector2(-88, -108), NORTH], [Vector2(13, -124), Vector2(-8, -116), NORTH],
+			[Vector2(167, 93), Vector2(148, 74), SOUTH_EAST], [Vector2(-114, 124), Vector2(-98, 72), WEST]]:
+		_world.spawn({"kind": {"model": "galaxy_group", "label": "Infalling galaxy group", "tier": 3, "density": 0.13,
 				"whole": _web, "reason": "Small groups fall along the filaments into the clusters."},
-			"from": [path[0]], "sizes": Vector2(3.3, 5.2), "tiers": Vector2i(3, 4),
-			"rate": 0.08, "limit": 2, "lifetime": 60.0, "move": _stream.bind(path, 12.0)})
-	for path in [[Vector2(-178, 43), Vector2(-132, 30), WEST, Vector2(-45, 15), NODE], [Vector2(178, -60), Vector2(128, -42), NODE],
-			[Vector2(96, 133), Vector2(104, 104), SOUTH_EAST, Vector2(55, 12), NODE]]:
-		_world.spawn({"kind": {"model": "galaxy_group", "label": "Infalling galaxy cluster", "tier": 4, "density": 0.1,
+			"from": [path[0]], "sizes": Vector2(2.8, 3.8), "tiers": Vector2i(3, 4),
+			"rate": 0.055, "limit": 2, "lifetime": 60.0, "move": _stream.bind(path, 12.0)})
+	for path in [[Vector2(-160, 38), Vector2(-132, 30), WEST, Vector2(-45, 15), NODE], [Vector2(160, -53), Vector2(128, -42), NODE],
+			[Vector2(98, 118), Vector2(104, 104), SOUTH_EAST, Vector2(55, 12), NODE]]:
+		_world.spawn({"kind": {"model": "galaxy_group", "label": "Infalling galaxy cluster", "tier": 4, "density": 0.08,
 				"whole": _web, "reason": "Whole clusters fall along the filaments toward the great node."},
 			"from": [path[0]], "sizes": Vector2(5.5, 7.0), "tiers": Vector2i(4, 4),
-			"rate": 0.05, "limit": 1, "lifetime": 60.0, "move": _stream.bind(path, 20.0)})
+			"rate": 0.022, "limit": 2, "lifetime": 60.0, "move": _stream.bind(path, 20.0)})
 
 # Runaway stars leave the core in straight lines, each on its own heading.
 func _fling(mover: Dictionary, _delta: float) -> Vector2:
@@ -306,9 +314,14 @@ func _infall(mover: Dictionary, delta: float) -> Vector2:
 	var around := inward.orthogonal() * (0.6 if mover.seed > 0.5 else -0.6)
 	return mover.at + (inward + around) * 2.6 * delta
 
-# Movers follow a filament's points toward its node, each in its own lane beside the spine.
+# Movers follow a filament's points toward its node, each in its own lane beside the spine, and
+# circle the node once there instead of piling onto it.
 func _stream(mover: Dictionary, delta: float, path: Array, speed: float) -> Vector2:
 	var leg: int = mover.get("leg", 1)
+	var end: Vector2 = path[-1]
+	if leg == path.size() - 1 and mover.at.distance_to(end) < 14.0:
+		var orbit: Vector2 = end + (mover.at - end).normalized().rotated(0.6) * lerpf(6.0, 12.0, mover.seed)
+		return mover.at + (orbit - mover.at).limit_length(speed * delta)
 	if mover.at.distance_to(path[leg]) < 3.0 and leg < path.size() - 1:
 		leg += 1
 		mover.leg = leg
@@ -316,6 +329,12 @@ func _stream(mover: Dictionary, delta: float, path: Array, speed: float) -> Vect
 	return mover.at + (path[leg] + lane - mover.at).limit_length(speed * delta)
 
 func step(delta: float) -> void:
+	# A size jump retires a cluster's stars as detail; the cluster then shows nothing, so it retires too.
+	if _world.current_tier != _tier:
+		_tier = _world.current_tier
+		for cluster in _clusters:
+			if cluster._last_visible_part(null):
+				cluster.detail_hidden = true
 	for index in _spinning.size():
 		var galaxy := _spinning[index]
 		if galaxy.active:
