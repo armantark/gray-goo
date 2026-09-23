@@ -148,7 +148,7 @@ const PLACED := [
 	["shoe", Vector2(-33.8, -15.2), 140, 0.65],
 	["helmet", Vector2(-22.8, -27.6), 355, 0.65],
 	["board", Vector2(-20.9, -31.3), 250, 1.3],
-	["board", Vector2(-43.0, -19.4), 20, 1.3],
+	["board", Vector2(-41.0, -19.4), 20, 1.3],
 	["bench", Vector2(-30.2, 24.5), 105, 2.4],
 	["dropped_cap", Vector2(-33.4, 27.6), 90, 0.18],
 	["trash_can", Vector2(-35.4, 21.9), 0, 1.2],
@@ -161,9 +161,8 @@ const PLACED := [
 	# way in. A bench and its can look over the north coping.
 	["pipe", Vector2(-39.5, -39.8), 30, 2.9],
 	["rail", Vector2(-26.0, -38.5), 350, 2.4],
-	["bench", Vector2(-17.4, -40.2), 350, 1.9],
-	["bench", Vector2(0.6, -41.4), 10, 1.8],
-	["trash_can", Vector2(6.3, -44.2), 0, 1.15],
+	["bench", Vector2(0.6, -38.8), 10, 1.8],
+	["trash_can", Vector2(6.8, -40.9), 0, 1.15],
 	["board", Vector2(13.6, -40.3), 290, 1.25],
 	["bench", Vector2(15.6, -26.3), 160, 1.8],
 	["trash_can", Vector2(8.4, -25.6), 0, 1.35],
@@ -176,7 +175,7 @@ const PLACED := [
 	["board", Vector2(-1.5, -30.0), 200, 1.25],
 	["board", Vector2(21.2, -29.1), 340, 1.2],
 	["shoe", Vector2(-14.1, -29.4), 110, 0.6],
-	["helmet", Vector2(3.4, -38.6), 30, 0.7],
+	["helmet", Vector2(3.1, -35.4), 30, 0.7],
 	["water_bottle", Vector2(37.9, -30.8), 0, 0.5],
 	# The north-east corner: a quarter pipe angled at the bowl under a shade tree.
 	["pipe", Vector2(39.8, -26.4), 200, 3.2],
@@ -230,7 +229,6 @@ const PLACED := [
 	["dropped_cap", Vector2(12.1, 44.9), 35, 0.18],
 	["dropped_cap", Vector2(-9.2, 40.1), 250, 0.17],
 	["dropped_cap", Vector2(17.9, 44.6), 140, 0.2],
-	["bench", Vector2(5.2, 45.6), 180, 1.7],
 	["tree", Vector2(-26.8, 43.2), 130, 4.0],
 	["tree", Vector2(34.8, 42.6), 250, 4.2],
 ]
